@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  sensor_msgs
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -58,6 +60,10 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_executable(navigator src/navigator.cpp)
 target_link_libraries(navigator ${catkin_LIBRARIES})
 add_dependencies(navigator ${catkin_EXPORTED_TARGETS})
+
+add_executable(sender src/sender.cpp)
+target_link_libraries(sender ${catkin_LIBRARIES})
+add_dependencies(sender ${catkin_EXPORTED_TARGETS})
 ## Generate services in the 'srv' folder
 # add_service_files(
 #   FILES
@@ -88,9 +94,10 @@ add_dependencies(navigator ${catkin_EXPORTED_TARGETS})
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS 
+  #include
   LIBRARIES beginner_tutorials
-  CATKIN_DEPENDS husky_base husky_gazebo roscpp rospy std_msgs
+  CATKIN_DEPENDS husky_base husky_gazebo roscpp rospy std_msgs sensor_msgs
   DEPENDS system_lib
 )
 

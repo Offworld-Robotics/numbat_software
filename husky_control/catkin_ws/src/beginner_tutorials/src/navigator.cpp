@@ -39,8 +39,7 @@
         //indicate we are sending
         ROS_INFO("Sending\n"); 
         
-        
-        
+                
         vel_pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();

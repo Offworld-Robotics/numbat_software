@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(beginner_tutorials_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT "include" STREQUAL "")
+if(NOT "" STREQUAL "")
   set(beginner_tutorials_INCLUDE_DIRS "")
-  set(_include_dirs "include")
+  set(_include_dirs "")
   foreach(idir ${_include_dirs})
     if(IS_ABSOLUTE ${idir} AND IS_DIRECTORY ${idir})
       set(include ${idir})
@@ -153,7 +153,7 @@ foreach(t ${beginner_tutorials_EXPORTED_TARGETS})
   endif()
 endforeach()
 
-set(depends "husky_base;husky_gazebo;roscpp;rospy;std_msgs")
+set(depends "husky_base;husky_gazebo;roscpp;rospy;std_msgs;sensor_msgs")
 foreach(depend ${depends})
   string(REPLACE " " ";" depend_list ${depend})
   # the package name of the dependency must be kept in a unique variable so that it is not overwritten in recursive calls

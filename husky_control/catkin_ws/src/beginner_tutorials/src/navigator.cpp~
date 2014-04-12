@@ -21,7 +21,7 @@
     //this tells ros you want to publish to the robot
     ros::Publisher vel_pub = n.advertise<geometry_msgs::Twist>("/husky/cmd_vel", 1000);
     
-    ros:Rate loop_rate(10);
+    ros::Rate loop_rate(10);
     
     while(ros::ok()) { //loop whilst ros is running
          
