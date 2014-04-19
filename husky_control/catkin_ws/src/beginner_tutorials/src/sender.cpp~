@@ -8,13 +8,20 @@ Date 22/03/2014
 
 #include "ros/ros.h"
 #include "sensor_msgs/JointState.h"
-#define ARRAY_SIZE 4
+#define FLOAT_BYTES 4
+#define logFolder "~/logs/"
+#define logName "encoders.txt"
+
+FILE logFile;
+void writeLog(const char* message);
 
 void reciveMsg(const sensor_msgs::JointState::ConstPtr& msg) {
-        
+    
+    assert(msg);
+    
     ROS_INFO("recived a message");
-    const int arraySize = ARRAY_SIZE;//sizeof(msg->name);
-    //TODO: This is realy bad pracise, need someway to check the array size!
+    const int arraySize = 4 ;
+    
     int count = 0;
     
     std::ostringstream streamHeader;
@@ -27,25 +34,52 @@ void reciveMsg(const sensor_msgs::JointState::ConstPtr& msg) {
     streamHeader << "effort";
     std::string messageHeader(streamHeader.str());
     ROS_INFO(messageHeader.c_str());
+    bool error = false;
     
     
-    while(count < arraySize) {
+    while((count < arraySize) && !error) {
+        error = false;
         std::ostringstream stream;
-        stream << msg->name[count];
-        stream << "\t";
-        stream << msg->position[count];
-        stream << "\t";
-        stream << msg->velocity[count];
-        stream << "\t";
-        stream << msg->effort[count];
-        std::string message(stream.str());
-        ROS_INFO(message.c_str());
+//        if(*(msg->name) != NULL) {
+            stream << msg->name[count];
+            stream << "\t";/*
+        } else {  
+            error = true;
+        }
+        if(*(msg->position) != NULL) {*/
+            stream << msg->position[count];
+            stream << "\t";/*
+        } else {  
+            error = true;
+        }   
+        if(*(msg->velocity) != NULL) {*/
+            stream << msg->velocity[count];
+            stream << "\t";/*
+        } else {  
+            error = true;
+        }
+        if(*(msg->effort) != NULL) {*/
+            stream << msg->effort[count];
+         /*   
+        } else {  
+            error = true;
+        }*/
+        
+        if(!error) {
+            std::string message(stream.str());
+            ROS_INFO(message.c_str());
+        }
         count++;
     }
     ROS_INFO((const char*) msg->name[0].c_str());
 }
 
 int main(int argc, char** argv) {
+    
+    //init log
+    
+   // logFile = fopen(strcpy(logFolder,logName), "a");
+    
 
     //initialise the ros package
     ros::init(argc, argv, "encoderLogger");
@@ -62,3 +96,6 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+void writeLog(const char* message) {
+    //fprintf(logFile, "%s %c",message, '\n');
+}
