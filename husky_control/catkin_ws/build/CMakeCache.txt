@@ -175,6 +175,12 @@ DOXYGEN_EXECUTABLE:FILEPATH=/usr/bin/doxygen
 //Doxygen found
 DOXYGEN_FOUND:BOOL=TRUE
 
+//Value Computed by CMake
+Drive_Husky_BINARY_DIR:STATIC=/home/ros/owr/owr_software/husky_control/catkin_ws/build/Drive_Husky
+
+//Value Computed by CMake
+Drive_Husky_SOURCE_DIR:STATIC=/home/ros/owr/owr_software/husky_control/catkin_ws/src/Drive_Husky
+
 //Path to a program.
 EMPY_EXECUTABLE:FILEPATH=/usr/bin/empy
 
@@ -243,6 +249,12 @@ catkin_DIR:PATH=/opt/ros/hydro/share/catkin/cmake
 
 //The directory containing a CMake configuration file for cpp_common.
 cpp_common_DIR:PATH=/opt/ros/hydro/share/cpp_common/cmake
+
+//Value Computed by CMake
+drive_husky_BINARY_DIR:STATIC=/home/ros/owr/owr_software/husky_control/catkin_ws/build/drive_husky
+
+//Value Computed by CMake
+drive_husky_SOURCE_DIR:STATIC=/home/ros/owr/owr_software/husky_control/catkin_ws/src/drive_husky
 
 //The directory containing a CMake configuration file for geometry_msgs.
 geometry_msgs_DIR:PATH=/opt/ros/hydro/share/geometry_msgs/cmake

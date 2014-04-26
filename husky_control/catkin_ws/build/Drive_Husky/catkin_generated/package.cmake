@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "Drive_Husky")
+set(Drive_Husky_MAINTAINER "ros <ros@todo.todo>")
+set(Drive_Husky_DEPRECATED "")
+set(Drive_Husky_VERSION "0.0.1")
+set(Drive_Husky_BUILD_DEPENDS "husky_base" "husky_gazebo" "roscpp" "rospy" "std_msgs" "sensor_msgs")
+set(Drive_Husky_RUN_DEPENDS "husky_base" "husky_gazebo" "roscpp" "rospy" "std_msgs" "sensor_msgs")
+set(Drive_Husky_BUILDTOOL_DEPENDS "catkin")
