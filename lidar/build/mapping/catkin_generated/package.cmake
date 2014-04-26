@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "mapping")
+set(mapping_MAINTAINER "ros <ros@todo.todo>")
+set(mapping_DEPRECATED "")
+set(mapping_VERSION "0.0.0")
+set(mapping_BUILD_DEPENDS "pcl_conversions" "pcl_ros" "roscpp" "sensor_msgs" "libpcl-all-dev" "laser_geometry")
+set(mapping_RUN_DEPENDS "pcl_conversions" "pcl_ros" "roscpp" "sensor_msgs" "libpcl-all" "laser_geometry")
+set(mapping_BUILDTOOL_DEPENDS "catkin")
