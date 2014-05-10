@@ -36,7 +36,7 @@ int main(int argc, char ** argv) {
     ros::NodeHandle node;
     
     //pass the void that is called when a message is recived
-    ros::Subscriber sub = node.subscribe("/scan", CACHE_SIZE, reciveMsg);   
+    ros::Subscriber sub = node.subscribe("/base_scan/scan", CACHE_SIZE, reciveMsg);   
     
     //let ros know we also want to send messages
     cloudPublisher = node.advertise<sensor_msgs::PointCloud>("/scanConverted",  CACHE_SIZE);
@@ -44,7 +44,7 @@ int main(int argc, char ** argv) {
     //loop with callbacks
     ros::spin();
     
-    projector_.~LaserProjector();
+
     return 0;
 }
 
@@ -54,7 +54,7 @@ void reciveMsg(const sensor_msgs::LaserScan::ConstPtr& msg) {
     
     //convert
     projector_.projectLaser(*msg, cloud);
-    cloudPublisher.publish(msg);
+    cloudPublisher.publish(cloud);
     
     ros::spinOnce();   
 }
