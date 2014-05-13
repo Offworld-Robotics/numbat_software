@@ -43,7 +43,7 @@ CMAKE_BINARY_DIR = /home/ros/owr/owr_software/husky_control/catkin_ws/build
 include CMakeFiles/clean_test_results.dir/progress.make
 
 CMakeFiles/clean_test_results:
-	/usr/bin/cmake -E remove_directory /home/ros/owr/owr_software/husky_control/catkin_ws/build/test_results
+	/usr/bin/cmake -E remove_directory ../build/test_results
 
 clean_test_results: CMakeFiles/clean_test_results
 clean_test_results: CMakeFiles/clean_test_results.dir/build.make

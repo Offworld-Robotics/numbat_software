@@ -66,7 +66,7 @@ endif()
 set(drive_husky_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
-if("FALSE" STREQUAL "TRUE")
+if("TRUE" STREQUAL "TRUE")
   set(drive_husky_SOURCE_PREFIX /home/ros/owr/owr_software/husky_control/catkin_ws/src/drive_husky)
   set(drive_husky_DEVEL_PREFIX ../devel)
   set(drive_husky_INSTALL_PREFIX "")
@@ -103,7 +103,7 @@ if(NOT "" STREQUAL "")
         message(FATAL_ERROR "Project 'drive_husky' specifies '${idir}' as an include dir, which is not found.  It does not exist in '${include}'.  Ask the maintainer 'ros <ros@todo.todo>' to fix it.")
       endif()
     else()
-      message(FATAL_ERROR "Project 'drive_husky' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '../install/${idir}'.  Ask the maintainer 'ros <ros@todo.todo>' to fix it.")
+      message(FATAL_ERROR "Project 'drive_husky' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/ros/owr/owr_software/husky_control/catkin_ws/src/drive_husky/${idir}'.  Ask the maintainer 'ros <ros@todo.todo>' to fix it.")
     endif()
     _list_append_unique(drive_husky_INCLUDE_DIRS ${include})
   endforeach()
@@ -122,7 +122,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path ../install/lib;/opt/ros/hydro/lib)
+    foreach(path ../devel/lib;/opt/ros/hydro/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

@@ -2,7 +2,7 @@
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  SET(CMAKE_INSTALL_PREFIX "/home/ros/owr/owr_software/husky_control/catkin_ws/install")
+  SET(CMAKE_INSTALL_PREFIX "../install")
 ENDIF(NOT DEFINED CMAKE_INSTALL_PREFIX)
 STRING(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -33,45 +33,31 @@ IF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ros/owr/owr_software/husky_control/catkin_ws/install/.catkin")
-FILE(INSTALL DESTINATION "/home/ros/owr/owr_software/husky_control/catkin_ws/install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/.catkin")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/../install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/.catkin")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ros/owr/owr_software/husky_control/catkin_ws/install/_setup_util.py")
-FILE(INSTALL DESTINATION "/home/ros/owr/owr_software/husky_control/catkin_ws/install" TYPE PROGRAM FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/_setup_util.py")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/../install" TYPE PROGRAM FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/_setup_util.py")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ros/owr/owr_software/husky_control/catkin_ws/install/env.sh")
-FILE(INSTALL DESTINATION "/home/ros/owr/owr_software/husky_control/catkin_ws/install" TYPE PROGRAM FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/env.sh")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/../install" TYPE PROGRAM FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/env.sh")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ros/owr/owr_software/husky_control/catkin_ws/install/setup.bash")
-FILE(INSTALL DESTINATION "/home/ros/owr/owr_software/husky_control/catkin_ws/install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/setup.bash")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/../install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/setup.bash")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ros/owr/owr_software/husky_control/catkin_ws/install/setup.sh")
-FILE(INSTALL DESTINATION "/home/ros/owr/owr_software/husky_control/catkin_ws/install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/setup.sh")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/../install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/setup.sh")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ros/owr/owr_software/husky_control/catkin_ws/install/setup.zsh")
-FILE(INSTALL DESTINATION "/home/ros/owr/owr_software/husky_control/catkin_ws/install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/setup.zsh")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/../install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/setup.zsh")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ros/owr/owr_software/husky_control/catkin_ws/install/.rosinstall")
-FILE(INSTALL DESTINATION "/home/ros/owr/owr_software/husky_control/catkin_ws/install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/.rosinstall")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/../install" TYPE FILE FILES "/home/ros/owr/owr_software/husky_control/catkin_ws/build/catkin_generated/installspace/.rosinstall")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")

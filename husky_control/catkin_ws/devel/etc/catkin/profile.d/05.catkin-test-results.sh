@@ -1,4 +1,4 @@
 # generated from catkin/cmake/env-hooks/05.catkin-test-results.sh.develspace.in
 
-export CATKIN_TEST_RESULTS_DIR="/home/ros/owr/owr_software/husky_control/catkin_ws/build/test_results"
+export CATKIN_TEST_RESULTS_DIR="../build/test_results"
 export ROS_TEST_RESULTS_DIR="$CATKIN_TEST_RESULTS_DIR"

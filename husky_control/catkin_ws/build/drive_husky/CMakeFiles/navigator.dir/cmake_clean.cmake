@@ -1,7 +1,7 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/navigator.dir/src/navigator.cpp.o"
-  "/home/ros/owr/owr_software/husky_control/catkin_ws/devel/lib/drive_husky/navigator.pdb"
-  "/home/ros/owr/owr_software/husky_control/catkin_ws/devel/lib/drive_husky/navigator"
+  "../devel/lib/drive_husky/navigator.pdb"
+  "../devel/lib/drive_husky/navigator"
 )
 
 # Per-language clean rules from dependency scanning.
