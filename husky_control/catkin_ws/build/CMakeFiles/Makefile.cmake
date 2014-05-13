@@ -52,6 +52,7 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "/opt/ros/hydro/share/catkin/cmake/python.cmake"
   "/opt/ros/hydro/share/catkin/cmake/safe_execute_process.cmake"
   "/opt/ros/hydro/share/catkin/cmake/stamp.cmake"
+  "/opt/ros/hydro/share/catkin/cmake/string_starts_with.cmake"
   "/opt/ros/hydro/share/catkin/cmake/templates/_setup_util.py.in"
   "/opt/ros/hydro/share/catkin/cmake/templates/env.sh.in"
   "/opt/ros/hydro/share/catkin/cmake/templates/generate_cached_setup.py.in"
