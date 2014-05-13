@@ -1,0 +1,7 @@
+
+<launch>
+
+  <include file="$(find agvc_gps)/launch/agvc_gps_tcp.launch"/>
+
+</launch>
+

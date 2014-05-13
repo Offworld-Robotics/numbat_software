@@ -1,0 +1,10 @@
+(cl:defpackage agvc_gps-srv
+  (:use )
+  (:export
+   "CONVERTGPSORIGIN"
+   "<CONVERTGPSORIGIN-REQUEST>"
+   "CONVERTGPSORIGIN-REQUEST"
+   "<CONVERTGPSORIGIN-RESPONSE>"
+   "CONVERTGPSORIGIN-RESPONSE"
+  ))
+

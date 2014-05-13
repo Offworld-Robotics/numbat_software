@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/ros/owr/git/owr_software/gps/devel/setup.sh
