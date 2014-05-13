@@ -1,7 +1,0 @@
-set(_CATKIN_CURRENT_PACKAGE "nmea_navsat_driver")
-set(nmea_navsat_driver_MAINTAINER "Eric Perko <eric@ericperko.com>")
-set(nmea_navsat_driver_DEPRECATED "")
-set(nmea_navsat_driver_VERSION "0.4.0")
-set(nmea_navsat_driver_BUILD_DEPENDS "geometry_msgs" "nmea_msgs" "sensor_msgs")
-set(nmea_navsat_driver_RUN_DEPENDS "rospy" "python-serial" "geometry_msgs" "nmea_msgs" "sensor_msgs")
-set(nmea_navsat_driver_BUILDTOOL_DEPENDS "catkin")

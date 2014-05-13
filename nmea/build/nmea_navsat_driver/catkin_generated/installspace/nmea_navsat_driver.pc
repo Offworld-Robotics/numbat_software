@@ -1,8 +1,0 @@
-prefix=/home/ros/owr/nmea/install
-
-Name: nmea_navsat_driver
-Description: Description of nmea_navsat_driver
-Version: 0.4.0
-Cflags: 
-Libs: -L/home/ros/owr/nmea/install/lib 
-Requires: geometry_msgs nmea_msgs sensor_msgs
