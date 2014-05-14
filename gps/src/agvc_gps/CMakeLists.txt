@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   rospy
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -53,11 +54,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+   FILES
+   ConvertGPSOrigin.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -67,10 +67,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   nav_msgs#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   nav_msgs
+ )
 
 ###################################
 ## catkin specific configuration ##
@@ -181,3 +181,5 @@ add_dependencies(${AGVC_GPS_DIAGNOSTICS_NODE} ${catkin_EXPORTED_TARGETS})
 add_executable(${AGVC_GPS_ORIGIN_NODE} src/agvc_gps_origin_node.cpp)
 target_link_libraries(${AGVC_GPS_ORIGIN_NODE} ${catkin_LIBRARIES})
 add_dependencies(${AGVC_GPS_ORIGIN_NODE} ${catkin_EXPORTED_TARGETS})
+
+
