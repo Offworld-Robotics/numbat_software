@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(agvc_gps)
+catkin_python_setup()
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -67,10 +68,10 @@ add_service_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   nav_msgs#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   nav_msgs
+ )
 
 ###################################
 ## catkin specific configuration ##
@@ -127,10 +128,12 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+ install(PROGRAMS
+   src/http_gps_driver.py
+   src/nmea_gps_driver.py
+   src/tcp_nmea_gps_driver.py
+   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ )
 
 ## Mark executables and/or libraries for installation
 # install(TARGETS agvc_gps agvc_gps_node

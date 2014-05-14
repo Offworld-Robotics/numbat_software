@@ -1,0 +1,41 @@
+
+<launch>
+
+  <!-- Driver for GPS -->
+  <node pkg="nmea_gps_driver" type="nmea_gps_driver.py" name="nmea_gps_driver" output="screen">
+<!--    <param name="port" value="/dev/ttyUSB0"/> -->
+    <rosparam file="$(find agvc_sensors)/config/usb_ports.yaml" ns="/"/>
+    <param name="baud" value="38400"/>
+    <remap from="fix" to="gps/fix"/>
+    <remap from="vel" to="gps/vel"/>
+  </node>
+
+  <!-- Ignore altitude -->
+  <node pkg="agvc_gps" type="agvc_gps_2d_node" name="gps_2d" output="screen">
+    <param name="gps_fix_topic" value="gps/fix"/>
+    <param name="gps_fix_2d_topic" value="gps/fix_2d"/>
+  </node>
+
+  <!-- Convert to metres -->
+  <node pkg="gps_common" type="utm_odometry_node" name="utm_odometry_node" output="screen">
+    <remap from="fix" to="gps/fix_2d"/>
+    <remap from="odom" to="gps/odom"/>
+  </node>
+
+  <!-- Convert origin -->
+  <node pkg="agvc_gps" type="agvc_gps_origin_node" name="gps_origin" output="screen">
+    <param name="gps_global_topic" value="gps/odom"/>
+    <param name="gps_local_topic" value="gps/odom_origin"/>
+    <param name="gps_origin_service_name" value="gps_origin"/>
+  </node>
+
+  <!-- Diagnostics -->
+  <node pkg="agvc_gps" type="agvc_gps_diagnostics_node" name="gps_diagnostics" output="screen">
+    <param name="gps_fix_topic" value="gps/fix_2d"/>
+  </node>
+
+  <!-- GPS tf -->
+  <include file="$(find agvc_gps)/launch/agvc_gps_tf.launch"/>
+
+</launch>
+

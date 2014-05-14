@@ -33,14 +33,15 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import roslib
-roslib.load_manifest('nmea_gps_driver')
+#roslib.load_manifest('nmea_gps_driver')
 import rospy
 from sensor_msgs.msg import NavSatFix
 from sensor_msgs.msg import NavSatStatus
 from sensor_msgs.msg import TimeReference
 from geometry_msgs.msg import TwistStamped
 
-import serial, string, math, time, calendar
+import socket, string, math, time, calendar
+
 
 #nmea_utc should be a string of form hhmmss
 def convertNMEATimeToROS(nmea_utc):
@@ -86,9 +87,9 @@ if __name__ == "__main__":
     gpspub = rospy.Publisher('fix', NavSatFix)
     gpsVelPub = rospy.Publisher('vel',TwistStamped)
     gpstimePub = rospy.Publisher('time_reference', TimeReference)
-    #Init GPS port
-    GPSport = rospy.get_param('~port','/dev/ttyUSB0')
-    GPSrate = rospy.get_param('~baud',4800)
+    #Init GPS port and addr
+    GPSport = rospy.get_param('~ipport',28001)
+    GPSaddr = rospy.get_param('~ipaddr','192.168.3.16')
     frame_id = rospy.get_param('~frame_id','gps')
     if frame_id[0] != "/":
         frame_id = addTFPrefix(frame_id)
@@ -105,7 +106,11 @@ if __name__ == "__main__":
     gpsVel.header.frame_id = frame_id
     GPSLock = False
     try:
-        GPS = serial.Serial(port=GPSport, baudrate=GPSrate, timeout=2)
+        GPSsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        GPSsock.connect((GPSaddr, GPSport))
+        #GPSsock.settimeout(1)
+         
+        GPS = GPSsock.makefile()
         #Read in GPS
         while not rospy.is_shutdown():
             #read GPS line
@@ -213,6 +218,8 @@ if __name__ == "__main__":
                         gpstimePub.publish(gpstime)
             except ValueError as e:
                 rospy.logwarn("Value error, likely due to missing fields in the NMEA messages. Error was: %s" % e)
+            except socket.timeout as e:
+                rospy.logwarn("GPS socket timed out, retrying")
 
     except rospy.ROSInterruptException:
         GPS.close() #Close GPS serial port
