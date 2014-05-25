@@ -89,7 +89,7 @@ if __name__ == "__main__":
     gpstimePub = rospy.Publisher('time_reference', TimeReference)
     #Init GPS port and addr
     GPSport = rospy.get_param('~ipport',28001)
-    GPSaddr = rospy.get_param('~ipaddr','192.168.3.16')
+    GPSaddr = rospy.get_param('~ipaddr','192.168.3.18')
     frame_id = rospy.get_param('~frame_id','gps')
     if frame_id[0] != "/":
         frame_id = addTFPrefix(frame_id)

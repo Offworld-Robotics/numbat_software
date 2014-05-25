@@ -1,8 +1,6 @@
-
 <launch>
-
   <!-- Driver for GPS -->
-  <node pkg="agvc_gps" type="tcp_nmea_gps_driver.py" name="nmea_gps_driver" output="screen">
+  <node pkg="agvc_gps" type="tcp_nmea_gps_driver.py" name="gps_driver" output="screen">
     <param name="ipport" value="28001"/>
     <param name="ipaddr" value="192.168.3.18"/>
     <remap from="fix" to="gps/fix"/>

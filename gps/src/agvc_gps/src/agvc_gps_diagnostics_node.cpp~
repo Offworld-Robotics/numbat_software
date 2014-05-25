@@ -2,7 +2,7 @@
 #include <agvc_gps/agvc_gps_diagnostics_node.h>
 
 //required_freq is the frequency we expect the /gps/fix topic to have messages occuring on it
-//can be checked by using "rostopic hz /gps/fix"
+//can be checked by using "rostopic hz /gps/fix
 AGVCGPSDiagnosticsNode::AGVCGPSDiagnosticsNode() : required_freq_(20.0f), freq_monitor_("GPS fix", diag_updater_, diagnostic_updater::FrequencyStatusParam(&required_freq_, &required_freq_, 0.1, 10))
 {
 
