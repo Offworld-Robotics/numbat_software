@@ -1,4 +1,9 @@
-
+/*
+ * GPSLogger Node
+ * Logs GPS input to KML
+ * By Harry J.E Day for Bluesat OWR
+ * Date: 31/05/2014
+ */
 #include "owr_gps_logging/gpsLogger.h"
 
 int main(int argc, char** argv) { 
@@ -35,7 +40,10 @@ void GPSLogger::reciveMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
     //open the file
     std::ofstream kmlFile; 
     kmlFile.open(LOG_FILE);
-    kmlFile << KML_HEADER
+    kmlFile << KML_HEADER;
+    //TODO: add in co-ords
+    kmlFile<<KML_FOOTER;
+    kmlFile.close();
 }
 
 

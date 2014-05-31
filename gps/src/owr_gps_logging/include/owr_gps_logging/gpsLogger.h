@@ -3,10 +3,12 @@
  *Created by Harry J.E Day for BlueSat UNSW
  *Date 30/05/2014
  */
+#ifndef GPSLogger_H
+#define GPSLogger_H
 
 #include <ros/ros.h>
 
-#include <sensor_msgs/navSatFix.h>
+#include <sensor_msgs/NavSatFix.h>
 #define FLOAT_BYTES 4
 #define LOG_FILE "~/logs/log.kml"
 #define KML_HEADER "<?xml version="1.0" encoding="UTF-8"?>" \ 
@@ -47,5 +49,7 @@ class GPSLogger {
         GPSLogger();
         void reciveMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
     private:
-        char * coOrdList = NULL;
+        char * coOrdList;
 };
+
+#endif

@@ -166,7 +166,7 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 set(BLUESAT_OWR_GPS_LOGGER_NODE gpsLogger)
-add_executable(${BLUESAT_OWR_GPS_LOGGER_NODE} src/${BLUESAT_OWR_GPS_LOGGER_NODE}.c)
+add_executable(${BLUESAT_OWR_GPS_LOGGER_NODE} src/${BLUESAT_OWR_GPS_LOGGER_NODE}.cpp)
 target_link_libraries(${BLUESAT_OWR_GPS_LOGGER_NODE} ${catkin_LIBRARIES})
 add_dependencies(${BLUESAT_OWR_GPS_LOGGER_NODEE} ${catkin_EXPORTED_TARGETS})
 
