@@ -19,6 +19,7 @@ int main(int argc, char** argv) {
 }
 
 GPSLogger::GPSLogger() {
+    
     //a nodehandler is used to communiate with the rest of ros
     ros::NodeHandle n;
 
@@ -36,6 +37,21 @@ void GPSLogger::reciveMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
     ROS_INFO("recived a message");
     const int arraySize = 4 ;
     ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
+    
+    //add the latest corodinates
+    std::ostringstream cordStream;
+    //check that coOrd is not null
+    cordStream << coOrdList;
+    cordStream << msg->longitude;
+    cordStream << ",";
+    cordStream << msg->latitude;
+    cordStream << ",";
+    cordStream << msg->altitude;
+    cordStream << "\n";
+    std::string cordStreamString(cordStream.str());
+    coOrdList = cordStreamString;
+    
+    
     
     //open the file
     std::ofstream kmlFile; 
@@ -63,6 +79,7 @@ void GPSLogger::reciveMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 	kmlFile << "        <tessellate>1</tessellate>";
 	kmlFile << "        <altitudeMode>absolute</altitudeMode>";
 	kmlFile << "        <coordinates>";
+	kmlFile << coOrdList;
     //TODO: add in co-ords
     kmlFile << KML_FOOTER;
     kmlFile.close();
