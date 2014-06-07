@@ -10,7 +10,7 @@
 
 #include <sensor_msgs/NavSatFix.h>
 #define FLOAT_BYTES 4
-#define LOG_FILE "~/logs/log.kml"
+#define LOG_FILE "log.kml"
 
 
 
@@ -25,9 +25,12 @@ class GPSLogger {
 
     public:
         GPSLogger();
+        void spin();
         void reciveMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
+        
     private:
         std::string coOrdList;
+        ros::Subscriber sub;
 };
 
 #endif

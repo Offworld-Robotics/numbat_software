@@ -25,9 +25,12 @@ class GPSLogger {
 
     public:
         GPSLogger();
+        void spin();
         void reciveMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
+        
     private:
-        char * coOrdList;
+        std::string coOrdList;
+        ros::Subscriber sub;
 };
 
 #endif
