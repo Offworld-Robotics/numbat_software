@@ -10,6 +10,10 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
+add_executable(imagesubscriber src/imagesubscriber.cpp)
+target_link_libraries(imagesubscriber ${catkin_LIBRARIES})
+add_dependencies(imagesubscriber ${catkin_EXPORTED_TARGETS})
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
