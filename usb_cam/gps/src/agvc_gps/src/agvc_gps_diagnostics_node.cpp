@@ -1,0 +1,104 @@
+
+#include <agvc_gps/agvc_gps_diagnostics_node.h>
+
+//required_freq is the frequency we expect the /gps/fix topic to have messages occuring on it
+//can be checked by using "rostopic hz /gps/fix"
+AGVCGPSDiagnosticsNode::AGVCGPSDiagnosticsNode() : required_freq_(20.0f), freq_monitor_("GPS fix", diag_updater_, diagnostic_updater::FrequencyStatusParam(&required_freq_, &required_freq_, 0.1, 10))
+{
+
+  ros::NodeHandle private_node_handle("~");
+
+  // Read in topic to subscribe to.
+  std::string gps_topic("fix");
+  if (!private_node_handle.getParam("gps_fix_topic", gps_topic))
+  {
+    ROS_WARN("[AGVC GPS Diagnostics Node] : <gps_fix_topic> not specified, defaulting to %s", gps_topic.c_str());
+  }
+  else
+  {
+    ROS_INFO("[AGVC GPS Diagnostics Node] : <gps_Fix_topic> set to %s", gps_topic.c_str());
+  }
+
+  // Subcribe to topic.
+  gps_sub_ = node_handle_.subscribe(gps_topic, 20, &AGVCGPSDiagnosticsNode::navSatFixCallback, this);
+
+  // Read in desired frequency. 
+  if (!private_node_handle.getParam("required_frequency", required_freq_))
+  {
+    ROS_WARN("[AGVC GPS Diagnostics Node] : <required_frequency> not specified, defaulting to %f", required_freq_);
+  }
+  else
+  {
+    ROS_INFO("[AGVC GPS Diagnostics Node] : <required_frequency> set to %f", required_freq_);
+  }
+
+  // Initialise status.
+  prev_nav_sat_status_.status = sensor_msgs::NavSatStatus::STATUS_NO_FIX;
+
+  // Initialise diagnostics.
+  diag_updater_.setHardwareID("GPS");
+
+  diag_updater_.add("Satellite Fix Status", this, &AGVCGPSDiagnosticsNode::diagnoseGPS);
+
+}
+
+void AGVCGPSDiagnosticsNode::spin()
+{
+
+  ros::Rate r(50);
+
+  while (ros::ok())
+  {
+    
+    ros::spinOnce();
+    diag_updater_.update();
+
+    r.sleep();
+
+  }
+
+}
+
+void AGVCGPSDiagnosticsNode::navSatFixCallback(const sensor_msgs::NavSatFix::ConstPtr & nav_sat_fix)
+{
+
+  prev_nav_sat_status_.status = nav_sat_fix->status.status;
+
+  freq_monitor_.tick();
+
+}
+
+void AGVCGPSDiagnosticsNode::diagnoseGPS(diagnostic_updater::DiagnosticStatusWrapper & status)
+{
+
+  if (prev_nav_sat_status_.status == sensor_msgs::NavSatStatus::STATUS_NO_FIX)
+  {
+    status.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "Unable to fix position");
+  }
+  else if (prev_nav_sat_status_.status == sensor_msgs::NavSatStatus::STATUS_FIX)
+  {
+    status.summary(diagnostic_msgs::DiagnosticStatus::WARN, "Unaugmented fix");
+  }
+  else if (prev_nav_sat_status_.status == sensor_msgs::NavSatStatus::STATUS_SBAS_FIX)
+  {
+    status.summary(diagnostic_msgs::DiagnosticStatus::OK, "Satellite-based augmented fix");
+  }
+  else if (prev_nav_sat_status_.status == sensor_msgs::NavSatStatus::STATUS_SBAS_FIX)
+  {
+    status.summary(diagnostic_msgs::DiagnosticStatus::OK, "Ground-based augmented fix");
+  }
+
+}
+
+int main(int argc, char ** argv)
+{
+
+  ros::init(argc, argv, "agvc_gps_diagnostics_node");
+
+  AGVCGPSDiagnosticsNode agvc_gps_diagnostics_node;
+
+  agvc_gps_diagnostics_node.spin();
+
+  return 0;
+
+}

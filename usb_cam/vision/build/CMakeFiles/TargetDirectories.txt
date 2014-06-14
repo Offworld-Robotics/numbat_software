@@ -1,0 +1,6 @@
+/home/ros/owr/owr_software/vision/build/CMakeFiles/clean_test_results.dir
+/home/ros/owr/owr_software/vision/build/CMakeFiles/doxygen.dir
+/home/ros/owr/owr_software/vision/build/gtest/CMakeFiles/gtest.dir
+/home/ros/owr/owr_software/vision/build/gtest/CMakeFiles/gtest_main.dir
+/home/ros/owr/owr_software/vision/build/CMakeFiles/run_tests.dir
+/home/ros/owr/owr_software/vision/build/CMakeFiles/tests.dir

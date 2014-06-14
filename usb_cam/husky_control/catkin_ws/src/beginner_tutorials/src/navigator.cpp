@@ -1,0 +1,51 @@
+/*
+ * This program make the hydro go round in circles
+ * Author: Harry J.E Day for BlueSat
+ * Date: 22/03/2014
+ */
+ 
+ //include the ros package and the we need
+ #include "ros/ros.h"
+ #include "geometry_msgs/Twist.h"
+ 
+ 
+ int main(int argc, char **argv) {
+    
+    //initialise the ros package
+    ros::init(argc, argv, "navigator");
+    
+    //a nodehandler is used to communiate with the rest of ros
+    ros::NodeHandle n;
+    
+    
+    //this tells ros you want to publish to the robot
+    ros::Publisher vel_pub = n.advertise<geometry_msgs::Twist>("/husky/cmd_vel", 1000);
+    
+    ros::Rate loop_rate(10);
+    
+    while(ros::ok()) { //loop whilst ros is running
+         
+        //create a twist message type
+        geometry_msgs::Twist msg;
+        msg.linear.x = 1.0;
+        msg.linear.y = 1.0;
+        msg.linear.z = 1.0;
+        
+        msg.angular.x = 0.0;
+        msg.angular.y = 0.0;
+        msg.angular.x = 0.0;
+        
+        
+        //indicate we are sending
+        ROS_INFO("Sending\n"); 
+        
+                
+        vel_pub.publish(msg);
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
+    
+    return 0;
+    
+ }
+
