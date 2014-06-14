@@ -1,0 +1,14 @@
+<package>
+  <description brief="agvc_sensors">
+
+     agvc_sensors
+
+  </description>
+  <author>Sam Marden</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/agvc_sensors</url>
+
+</package>
+
+

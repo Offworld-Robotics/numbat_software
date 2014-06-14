@@ -1,0 +1,10 @@
+
+<launch>
+
+  <node pkg="LMS1xx" type="LMS100" name="panning_laser_driver" output="screen">
+    <rosparam file="$(find agvc_sensors)/config/panning_laser_params.yaml"/>
+    <remap from="scan" to="panning_laser/scan"/>
+  </node>
+
+</launch>
+
