@@ -1,8 +1,0 @@
-prefix=/home/ros/owr/owr_software/lidar/devel
-
-Name: mapping
-Description: Description of mapping
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/ros/owr/owr_software/lidar/devel/lib 
-Requires: 

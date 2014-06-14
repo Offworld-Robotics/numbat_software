@@ -1,9 +1,0 @@
-
-<launch>
-
-  <node pkg="openni2_camera" type="openni2_camera_node" name="openni2_camera_driver">
-    <rosparam file="$(find agvc_sensors)/config/openni2_camera_params.yaml"/>
-  </node>
-
-</launch>
-
