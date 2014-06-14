@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/ros/owr/owr_software/vision/devel/setup.sh

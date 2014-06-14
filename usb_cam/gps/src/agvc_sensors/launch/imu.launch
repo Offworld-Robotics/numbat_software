@@ -1,0 +1,18 @@
+
+<!-- Launch file for Microstrain IMU, configurable from config file -->
+
+<launch>
+
+  <!-- IMU node -->
+  <node pkg="microstrain_3dmgx2_imu" type="imu_node" name="microstrain_imu" output="screen">
+    <rosparam file="$(find agvc_sensors)/config/usb_ports.yaml" ns="/"/>
+    <rosparam file="$(find agvc_sensors)/config/imu_params.yaml"/>
+    <remap from="imu/data" to="imu_3d/data"/>
+  </node>
+
+  <!-- IMU 3D -> 2D node -->
+  <node pkg="agvc_imu" type="agvc_imu_2d_node" name="imu_2d" output="screen">
+  </node>
+
+</launch>
+
