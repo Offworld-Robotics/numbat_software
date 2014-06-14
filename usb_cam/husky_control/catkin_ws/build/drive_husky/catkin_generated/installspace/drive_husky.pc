@@ -1,8 +1,0 @@
-prefix=../install
-
-Name: drive_husky
-Description: Description of drive_husky
-Version: 0.0.1
-Cflags: 
-Libs: -L../install/lib -lbeginner_tutorials
-Requires: husky_base husky_gazebo roscpp rospy std_msgs sensor_msgs

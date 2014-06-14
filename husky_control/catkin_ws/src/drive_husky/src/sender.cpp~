@@ -67,7 +67,7 @@ void reciveMsg(const sensor_msgs::JointState::ConstPtr& msg) {
         
         if(!error) {
             std::string message(stream.str());
-            ROS_ERROR(message.c_str());
+            ROS_INFO("encoder",message.c_str());
         }
         count++;
     }
