@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>owr_rqt_gps_visuliser</name>
-  <version>0.0.0</version>
-  <description>The owr_rqt_gps_visuliser package</description>
+  <name>owr_gui</name>
+  <version>0.1.0</version>
+  <description>The owr_gui package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -13,13 +13,13 @@
   <!-- One license tag required, multiple allowed, one license per tag -->
   <!-- Commonly used license strings: -->
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-  <license>TODO</license>
+  <license>Apache 2.0</license>
 
 
   <!-- Url tags are optional, but mutiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/owr_rqt_gps_visuliser</url> -->
+  <!-- <url type="website">http://wiki.ros.org/owr_gui</url> -->
 
 
   <!-- Author tags are optional, mutiple are allowed, one per tag -->
@@ -41,23 +41,21 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>gps_common</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>rqt_gui</build_depend>
-  <build_depend>rqt_gui_cpp</build_depend>
+  <build_depend>rosjava</build_depend>
+  <build_depend>rosjava_core</build_depend>
+  <build_depend>rosjava_build_tools</build_depend>
+  <build_depend>rosjava_messages</build_depend>
+  <build_depend>sensor_msgs</build_depend>
   <run_depend>gps_common</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>rqt_gui</run_depend>
-  <run_depend>rqt_gui_cpp</run_depend>
-
-
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>rosjava_messages</run_depend>
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- You can specify that this package is a metapackage here: -->
     <!-- <metapackage/> -->
-    
+
     <!-- Other tools can request additional information be placed here -->
-    <rqt_gui plugin="${prefix}/plugin.xml"/>
+
   </export>
 </package>
