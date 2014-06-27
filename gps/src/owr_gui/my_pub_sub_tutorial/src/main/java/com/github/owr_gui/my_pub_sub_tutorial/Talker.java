@@ -55,8 +55,11 @@ public class Talker extends AbstractNodeMain {
         message.toRawMessage().setFloat64("latitude",-33.9179);
         publisher.publish(message);
         
-        message.toRawMessage().setFloat64("longitude",151.234);
-        message.toRawMessage().setFloat64("latitude",-33.918);
+        message = publisher.newMessage();
+        message.toRawMessage().setFloat64("longitude",152.234);
+        message.toRawMessage().setFloat64("latitude",-33.928);
+        publisher.publish(message);
+        
         publisher.publish(message);
         
         sequenceNumber++;

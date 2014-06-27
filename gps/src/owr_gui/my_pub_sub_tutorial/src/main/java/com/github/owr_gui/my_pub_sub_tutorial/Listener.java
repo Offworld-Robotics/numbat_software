@@ -61,27 +61,28 @@ public class Listener extends AbstractNodeMain {
     subscriber.addMessageListener(new MessageListener<sensor_msgs.NavSatFix>() {
       @Override
       public void onNewMessage(sensor_msgs.NavSatFix message) {
-        doDrawing(message);
+        doDrawing(message, log);
         log.info("I heard: \"" + message.toRawMessage().getFloat64("longitude") + "\"");
       }
     });
     while(true) {}
   }
   
-  public void doDrawing(sensor_msgs.NavSatFix message) {
-        int x = (int) (message.toRawMessage().getFloat64("longitude")*1000);
-        int y = (int) (message.toRawMessage().getFloat64("latitude")*1000);
+  public void doDrawing(sensor_msgs.NavSatFix message, Log log) {
+        int x = (int) (message.toRawMessage().getFloat64("longitude")*100);
+        int y = (int) (message.toRawMessage().getFloat64("latitude")*100);
         if(yOffset == 0) {
             //centre first point
-            yOffset = y + frameSize/2;
-            xOffset = x + frameSize/2;
+            yOffset = y - frameSize/2;
+            xOffset = x - frameSize/2;
             lastX = x;
             lastY = y;
             
         }
         
         Graphics2D g =(Graphics2D) FRAME.getGraphics();
-        g.drawLine(lastX + xOffset,lastY + yOffset,x + xOffset,y + yOffset);
+        log.info("x1:" + (lastX - xOffset) + "y1:" + (lastY - yOffset) + "x2:" + (x - xOffset) + "y2" +  (y - yOffset));
+        g.drawLine(lastX - xOffset,lastY - yOffset,x - xOffset,y - yOffset);
         
   }
 }
