@@ -86,7 +86,7 @@ public class Listener extends AbstractNodeMain {
   
   class GPSPanel extends JPanel {
     
-    int scale = 0;
+    double scale = 0;
     int offsetX = 0;
     int offsetY = 0;
     final int SIZE = 500;
@@ -101,6 +101,7 @@ public class Listener extends AbstractNodeMain {
 
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
+        g2d.clearRect(0,0,SIZE,SIZE);
         //get copies of the stacks for drawing
         Stack<Double> x = (Stack) LONGITUDES.clone();
         Stack<Double> y = (Stack) LATITUDES.clone();
@@ -136,7 +137,7 @@ public class Listener extends AbstractNodeMain {
                     offsetX = (int) (longitude*scale) - SIZE/2;
                     offsetY = (int) (latitude*scale) - SIZE/2;
                     System.out.println(scale);
-                } while(((longitude * scale) - offsetX) > SIZE);
+                } while(((longitude * (double)scale) - offsetX) > SIZE);
                 scale = scale*2;
                 //scale = 10000;
                 

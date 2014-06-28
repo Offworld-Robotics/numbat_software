@@ -101,6 +101,7 @@ public class Listener extends AbstractNodeMain {
 
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
+        g2d.clearRect(0,0,SIZE,SIZE);
         //get copies of the stacks for drawing
         Stack<Double> x = (Stack) LONGITUDES.clone();
         Stack<Double> y = (Stack) LATITUDES.clone();
@@ -130,14 +131,14 @@ public class Listener extends AbstractNodeMain {
                    
                     test = (int) (longitude*scale);
                 }*/
-                scale=1;
+                scale=100000;
                 do  {
-                    scale = scale*10;
+                    scale = scale/2;
                     offsetX = (int) (longitude*scale) - SIZE/2;
                     offsetY = (int) (latitude*scale) - SIZE/2;
                     System.out.println(scale);
                 } while(((longitude * (double)scale) - offsetX) > SIZE);
-                scale = scale*2;
+
                 //scale = 10000;
                 
                 
