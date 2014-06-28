@@ -18,6 +18,7 @@
 
 package com.github.owr_gui.my_pub_sub_tutorial;
 
+import java.util.*;
 import org.apache.commons.logging.Log;
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
@@ -35,6 +36,7 @@ public class Listener extends AbstractNodeMain {
   
   
   JFrame FRAME;
+  GPSPanel PANEL;
   int lastX = 0;
   int lastY = 0;
   int xOffset = 0;
@@ -44,6 +46,8 @@ public class Listener extends AbstractNodeMain {
   public Listener() {
     super();
     FRAME = new JFrame("OWR GPS");  
+    PANEL = new GPSPanel();
+    FRAME.add(PANEL);
   }
 
   @Override
@@ -54,6 +58,7 @@ public class Listener extends AbstractNodeMain {
   @Override
   public void onStart(ConnectedNode connectedNode) {
     FRAME.setSize(frameSize,frameSize);
+    
     FRAME.setVisible(true);
     
     final Log log = connectedNode.getLog();
@@ -69,20 +74,80 @@ public class Listener extends AbstractNodeMain {
   }
   
   public void doDrawing(sensor_msgs.NavSatFix message, Log log) {
-        int x = (int) (message.toRawMessage().getFloat64("longitude")*100);
-        int y = (int) (message.toRawMessage().getFloat64("latitude")*100);
-        if(yOffset == 0) {
-            //centre first point
-            yOffset = y - frameSize/2;
-            xOffset = x - frameSize/2;
-            lastX = x;
-            lastY = y;
-            
+        
+        
+        
+        
+        PANEL.addCords( message.toRawMessage().getFloat64("longitude"), 
+            message.toRawMessage().getFloat64("latitude"));
+       
+        
+  }
+  
+  class GPSPanel extends JPanel {
+    
+    int scale = 0;
+    int offsetX = 0;
+    int offsetY = 0;
+    final int SIZE = 500;
+    final Stack<Double> LONGITUDES = new Stack<Double>();
+    final Stack<Double> LATITUDES = new Stack<Double>();
+    
+    protected GPSPanel() {
+        super();
+        super.setSize(SIZE,SIZE);
+        
+    }
+
+    public void paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        //get copies of the stacks for drawing
+        Stack<Double> x = (Stack) LONGITUDES.clone();
+        Stack<Double> y = (Stack) LATITUDES.clone();
+        
+        if(!x.empty()) {
+            double currentLong = x.peek();
+            double currentLat = y.peek();
+            g2d.drawString("current Longitude: " + currentLong + " current Lattitude" +
+                currentLat, 10,10);
+        }
+        while(!x.empty()) {
+            int x0 = (int) (x.pop()*scale) - offsetX;
+            int y0 = (int) (y.pop()*scale) - offsetY;
+            g2d.fillOval(x0,y0,5,5);
+            System.out.println(x0 + "," + y0);
         }
         
-        Graphics2D g =(Graphics2D) FRAME.getGraphics();
-        log.info("x1:" + (lastX - xOffset) + "y1:" + (lastY - yOffset) + "x2:" + (x - xOffset) + "y2" +  (y - yOffset));
-        g.drawLine(lastX - xOffset,lastY - yOffset,x - xOffset,y - yOffset);
         
+    }
+    
+    public void addCords(double longitude, double latitude) {
+            if(scale == 0) {
+                
+               /* int test = (int) longitude;
+                while((test - (longitude * scale)) < 0) {
+                    scale = scale*10;
+                   
+                    test = (int) (longitude*scale);
+                }*/
+                scale=1;
+                do  {
+                    scale = scale*10;
+                    offsetX = (int) (longitude*scale) - SIZE/2;
+                    offsetY = (int) (latitude*scale) - SIZE/2;
+                    System.out.println(scale);
+                } while(((longitude * scale) - offsetX) > SIZE);
+                scale = scale*2;
+                //scale = 10000;
+                
+                
+            }
+            //put them on the stack
+            LONGITUDES.push(longitude);
+            LATITUDES.push(latitude);
+            
+         
+            this.paint(this.getGraphics());
+    }
   }
 }

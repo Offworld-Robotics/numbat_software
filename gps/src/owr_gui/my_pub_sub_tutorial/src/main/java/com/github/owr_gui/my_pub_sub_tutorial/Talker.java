@@ -51,17 +51,17 @@ public class Talker extends AbstractNodeMain {
       protected void loop() throws InterruptedException {
         sensor_msgs.NavSatFix message = publisher.newMessage();
         //str.setData("Hello world! " + sequenceNumber);
-        message.toRawMessage().setFloat64("longitude",151.231);
-        message.toRawMessage().setFloat64("latitude",-33.9179);
+        message.toRawMessage().setFloat64("longitude",151.13921239972115);
+        message.toRawMessage().setFloat64("latitude",-33.71817896926869);
         publisher.publish(message);
         
         message = publisher.newMessage();
-        message.toRawMessage().setFloat64("longitude",152.234);
-        message.toRawMessage().setFloat64("latitude",-33.928);
+        message.toRawMessage().setFloat64("longitude",151.1393103003502);
+        message.toRawMessage().setFloat64("latitude",-33.71828605732435);
         publisher.publish(message);
         
         publisher.publish(message);
-        
+        System.out.println("sent");
         sequenceNumber++;
         Thread.sleep(1000);
       }
