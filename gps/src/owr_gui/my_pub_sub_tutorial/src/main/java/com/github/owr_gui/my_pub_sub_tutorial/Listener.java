@@ -62,7 +62,7 @@ public class Listener extends AbstractNodeMain {
     FRAME.setVisible(true);
     
     final Log log = connectedNode.getLog();
-    Subscriber<sensor_msgs.NavSatFix> subscriber = connectedNode.newSubscriber("chatter", sensor_msgs.NavSatFix._TYPE);
+    Subscriber<sensor_msgs.NavSatFix> subscriber = connectedNode.newSubscriber("gps/fix", sensor_msgs.NavSatFix._TYPE);
     subscriber.addMessageListener(new MessageListener<sensor_msgs.NavSatFix>() {
       @Override
       public void onNewMessage(sensor_msgs.NavSatFix message) {
