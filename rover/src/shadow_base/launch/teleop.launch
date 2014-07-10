@@ -1,0 +1,19 @@
+<launch>
+  <arg name="drive_speed" default="1.0" />
+  <arg name="turn_speed" default="1.0" />
+  <arg name="joy_dev" default="/dev/input/js0" />
+  <arg name="cmd_topic" default="husky/cmd_vel" />
+  <arg name="aux_topic" default="husky/aux_move" />
+
+  <node pkg="joy" type="joy_node" name="joy_node">
+    <param name="dev" value="$(arg joy_dev)" />
+    <param name="deadzone" value="0.3" />
+  </node>
+
+  <node pkg="shadow_base" type="joystick_teleop" name="shadow_joystick">
+    <param name="turn_scale" value="$(arg turn_speed)" />
+    <param name="drive_scale" value="$(arg drive_speed)" />
+    <remap from="cmd_vel" to="$(arg cmd_topic)" />
+    <remap from="aux_move" to="$(arg aux_topic)" />
+  </node>
+</launch>

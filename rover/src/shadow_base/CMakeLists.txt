@@ -43,10 +43,10 @@ generate_messages(DEPENDENCIES geometry_msgs std_msgs)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
+#add_message_files(
 #   FILES
-#   Message1.msg
-#   Message2.msg
+#   ShadowStatus.msg
+#   ShadowAuxMove.msg
 # )
 
 ## Generate services in the 'srv' folder
@@ -66,8 +66,9 @@ generate_messages(DEPENDENCIES geometry_msgs std_msgs)
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+#   geometry_msgs
+  # std_msgs  # Or other packages containing msgs
+#)
 
 ###################################
 ## catkin specific configuration ##

@@ -15,6 +15,7 @@
 #include <clearpath_base/Encoders.h>
 #include <clearpath_base/Encoder.h>
 #include <shadow_base/ShadowStatus.h>
+#include <shadow_base/ShadowAuxMove.h>
 #include <Servo.h>
 
 // Only have enough interrupt pins for wire A on each encoder
@@ -39,6 +40,9 @@
 
 Servo leftDrive;
 Servo rightDrive;
+Servo camPan;
+Servo camTilt;
+Servo bucket;
 
 int encCountR = 0;
 int encCountL = 0;
@@ -64,9 +68,12 @@ unsigned long lastDriveMsgTime = 0;
 char *cmd_vel = "/husky/cmd_vel";
 char *enc_pub_path = "/husky/data/encoders";
 char *status_pub_path = "/shadowStatus";
+char *aux_move_path = "/husky/aux_move";
+
 clearpath_base::Encoders encs_msg;
 clearpath_base::Encoder encoders[2];
 shadow_base::ShadowStatus shadowStatus;
+shadow_base::ShadowAuxMove auxMove;
 
 ros::Publisher enc_pub(enc_pub_path, &encs_msg);
 ros::Publisher status_pub(status_pub_path, &shadowStatus);
@@ -82,7 +89,13 @@ void moveBaseCb(const geometry_msgs::Twist& move_msg) {
   //setMotorSpeeds(linear - rotate/4, linear + rotate/4);
   lastDriveMsgTime = millis();
 }
+
+void auxMoveCb(const shadow_base::ShadowAuxMove move_msg) {
+   driveAux(move_msg.cameraPan.x, move_msg.cameraPan.y, move_msg.bucketSpeed);
+}
+
 ros::Subscriber<geometry_msgs::Twist> sub(cmd_vel, &moveBaseCb);
+ros::Subscriber<shadow_base::ShadowAuxMove> sub(aux_move_path, &auxMoveCb);
 
 void setup()
 {
@@ -92,6 +105,9 @@ void setup()
    encs_msg.encoders_length = 2;
    leftDrive.attach(10);
    rightDrive.attach(9);
+   camPan.attach(8);
+   camTilt.attach(7);
+   bucket.attach(6);
 
    attachInterrupt(ENCODER_RIGHT_INT, encRInc, RISING);
    attachInterrupt(ENCODER_LEFT_INT, encLInc, RISING);
@@ -146,6 +162,7 @@ void loop()
    // Stop the drive base if a drive msg hasn't been recieved recently
    if (millis() - lastDriveMsgTime > DRIVE_CMD_WATCHDOG_MS) {
      driveMotors(0,0);
+     driveAux(0, 0, 0);
      shadowStatus.noDriveMsgStopped = true;
    } else {
      //speedControlMotors();
@@ -206,6 +223,15 @@ void driveMotors(float leftSpeed, float rightSpeed) {
   int servoValR = -rightSpeed * 500 + 1500;
   leftDrive.writeMicroseconds(servoValL);
   rightDrive.writeMicroseconds(servoValR);
+}
+
+void driveAux(float panSpeed, float tiltSpeed, float bucketSpeed) {
+  int servoValP = panSpeed * 500 + 1500;
+  int servoValT = tiltSpeed * 500 + 1500;
+  int servoValB = bucketSpeed * 500 + 1500;
+  camPan.writeMicroseconds(servoValP);
+  camTilt.writeMicroseconds(servoValT);
+  bucket.writeMicroseconds(servoValB);
 }
 
 
