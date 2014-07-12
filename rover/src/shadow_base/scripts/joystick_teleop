@@ -4,7 +4,7 @@ import rospy
 
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
-from shadow_base.msg import ShadowAuxMove
+#from shadow_base.msg import ShadowAuxMove
 
 class Teleop:
     def __init__(self):
@@ -21,42 +21,42 @@ class Teleop:
 	self.aux_move = None
         self.joy = Joy()
         cmd_pub = rospy.Publisher('cmd_vel', Twist)
-	aux_move_pub = rospy.Publisher('aux_move', ShadowAuxMove)
+#	aux_move_pub = rospy.Publisher('aux_move', ShadowAuxMove)
 
         rospy.Subscriber("joy", Joy, self.callback)
         
-        rate = rospy.Rate(rospy.get_param('~hz', 20))
+        rate = rospy.Rate(rospy.get_param('~hz', 10))
         
         while not rospy.is_shutdown():
             rate.sleep()
             if self.cmd:
                 cmd_pub.publish(self.cmd)
-	    if self.aux_move:
-	        aux_move_pub.publish(self.aux_move)
+#	    if self.aux_move:
+#	        aux_move_pub.publish(self.aux_move)
     def callback(self, data):
         """ Receive joystick data, formulate Twist message.
         Use planner if a secondary button is pressed """
         self.joy = data
         cmd = Twist()
-	aux_move = ShadowAuxMove()
-        cmd.linear.x = data.axes[3] * self.drive_scale
+#	aux_move = ShadowAuxMove()
+        cmd.linear.x = data.axes[1] * self.drive_scale
         cmd.angular.z = data.axes[0] * self.turn_scale
 
-	aux_move.cameraPan.x = data.axes[6];
-	aux_move.cameraPan.y = data.axes[7];
+	cmd.angular.x = data.axes[6];
+	cmd.angular.y = data.axes[7];
 
 	if data.buttons[self.bucket_up_button] == 1:
-	    aux_move.bucketSpeed = self.bucket_speed
+	    cmd.linear.z = self.bucket_speed
 	elif data.buttons[self.bucket_down_button] == 1:
-	    aux_move.bucketSpeed = -self.bucket_speed
+	    cmd.linear.z = -self.bucket_speed
 	else: 
-	    aux_move.bucketSpeed = 0
+	    cmd.linear.z = 0
 
         if data.buttons[self.deadman_button] == 1:
             self.cmd = cmd
-	    self.aux_move = aux_move	
+#	    self.aux_move = aux_move	
         else:
             self.cmd = None
-	    self.aux_move = None
+#	    self.aux_move = None
 
 if __name__ == "__main__": Teleop()
