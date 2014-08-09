@@ -1,9 +1,9 @@
 package bluesat_owr_protobuf;
 
 message Vector {
-    repeated double x = 1;
-    repeated double y = 2;
-    repeated double z = 3;
+    repeated double x = 0;
+    repeated double y = 1;
+    repeated double z = 2;
 
 }
 

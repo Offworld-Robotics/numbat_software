@@ -103,7 +103,7 @@ include_directories(
 )
 
 
-PROTOBUF_GENERATE_CPP( src include messages1.proto)
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/messages1.proto)
 
 
 ## Declare a cpp library
@@ -112,7 +112,7 @@ PROTOBUF_GENERATE_CPP( src include messages1.proto)
 # )
 
 ## Declare a cpp executable
-add_executable(PBuffRelay src/PBuffRelay.cpp)
+add_executable(PBuffRelay src/PBuffRelay.cpp ${PROTO_SRCS} ${PROTO_HDRS})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes

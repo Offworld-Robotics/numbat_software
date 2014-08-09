@@ -15,7 +15,8 @@
  
  
  PBuffRelay::PBuffRelay() {
- 
+    //required to make sure protobuf will work correctly
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
     
  }
  

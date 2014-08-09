@@ -7,6 +7,7 @@
 #ifndef PBuffRelay_H
 #define PBuffRelay_H
 
+#include "messages1.pb.h"
 #include <ros/ros.h>
 
 class PBuffRelay {
