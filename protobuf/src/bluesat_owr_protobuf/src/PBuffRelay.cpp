@@ -4,11 +4,13 @@
  * Date: 2/08/2014
  */
  
- #include "bluesat_owr_protobuff/PBuffRelay.c"
+ #include "bluesat_owr_protobuf/PBuffRelay.h"
+ 
+ 
  
  int main(int argc, char ** argv) {
  
-    
+    return EXIT_SUCCESS;   
  }
  
  

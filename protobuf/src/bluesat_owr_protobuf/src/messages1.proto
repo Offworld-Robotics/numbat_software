@@ -1,0 +1,19 @@
+package bluesat_owr_protobuf;
+
+message Vector {
+    repeated double x = 0;
+    repeated double y = 1;
+    repeated double z = 2;
+
+}
+
+message test1 {
+    repeated string aaa = 1;
+    
+    enum TestEnum {
+        MODE1 = 0;
+        MODE2 = 1;
+        MODE3 = 2;
+    }
+
+}
