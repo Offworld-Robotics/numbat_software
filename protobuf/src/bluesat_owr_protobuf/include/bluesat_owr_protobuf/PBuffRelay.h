@@ -14,6 +14,7 @@ class PBuffRelay {
     
     public:
         PBuffRelay();
+        void spin();
         
     private:
         ros::Subscriber sub;

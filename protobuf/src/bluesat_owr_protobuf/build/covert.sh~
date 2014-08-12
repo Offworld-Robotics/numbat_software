@@ -1,0 +1,9 @@
+# Converts protobuf .proto files to ros .msg files
+# Author: Harry J.E Day
+# Date:   9/08/14
+#! 
+for file in *.proto
+do
+    sed -r "/^package [A-Za-z-]+$/d" $file | sed -r "s/^.*\{\s$/ /"  | sed -r "s/double/float64" | sed "/repeated/d" | sed "/ ?= [0-9][0-9]*/d  > ../messages/$file.msg
+    
+done

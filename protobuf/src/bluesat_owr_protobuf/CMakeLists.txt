@@ -5,7 +5,9 @@ project(bluesat_owr_protobuf)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS   roscpp)
+find_package(catkin REQUIRED COMPONENTS   
+    roscpp
+    message_generation)
 find_package(Protobuf REQUIRED)
 
 
@@ -45,12 +47,16 @@ find_package(Protobuf REQUIRED)
 ##   * uncomment the generate_messages entry below
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
+#coverts files from .proto to message
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.sh  ${CMAKE_CURRENT_SOURCE_DIR}/src/messages1.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/messages1.msg
+
+                 )
+
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+ add_message_files(
+   FILES
+   messages1.msg
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -67,10 +73,10 @@ find_package(Protobuf REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs  # Or other packages containing msgs
+ )
 
 ###################################
 ## catkin specific configuration ##
@@ -84,13 +90,15 @@ find_package(Protobuf REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES bluesat_owr_protobuf
-  CATKIN_DEPENDS roscpp
-  DEPENDS system_lib
+  CATKIN_DEPENDS roscpp message_runtime
+  DEPENDS system_lib convert
 )
 
 ###########
 ## Build ##
 ###########
+
+
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
