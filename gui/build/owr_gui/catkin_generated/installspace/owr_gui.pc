@@ -1,0 +1,8 @@
+prefix=/home/yiweih/owr/owr_software/gui/install
+
+Name: owr_gui
+Description: Description of owr_gui
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/yiweih/owr/owr_software/gui/install/lib 
+Requires: 

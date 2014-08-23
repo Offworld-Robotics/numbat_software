@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "owr_gui")
+set(owr_gui_MAINTAINER "yiweih <yiweih@todo.todo>")
+set(owr_gui_DEPRECATED "")
+set(owr_gui_VERSION "0.0.0")
+set(owr_gui_BUILD_DEPENDS "roscpp" "std_msgs")
+set(owr_gui_RUN_DEPENDS "roscpp" "std_msgs")
+set(owr_gui_BUILDTOOL_DEPENDS "catkin")
