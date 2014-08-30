@@ -188,5 +188,4 @@ void display(void) {
 	displayText();
 	glFlush();
 	glutSwapBuffers();
-	usleep(1000);
 }

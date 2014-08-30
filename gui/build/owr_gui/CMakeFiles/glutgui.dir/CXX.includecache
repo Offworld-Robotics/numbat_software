@@ -15,6 +15,12 @@ string.h
 -
 math.h
 -
+stdlib.h
+-
+unistd.h
+-
+sys/time.h
+-
 GL/glut.h
 -
 
