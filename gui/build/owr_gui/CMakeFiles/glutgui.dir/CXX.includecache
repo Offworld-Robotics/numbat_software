@@ -11,11 +11,11 @@ iostream
 -
 string
 -
-string.h
+cstring
 -
-math.h
+cmath
 -
-stdlib.h
+cstdlib
 -
 unistd.h
 -
