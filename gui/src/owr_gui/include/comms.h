@@ -1,11 +1,17 @@
+#ifndef H_COMMS
+#define H_COMMS
+
+typedef struct _vector2D * ListNode;
 
 typedef struct _vector2D {
     double x;
     double y;
-    vector2D * next;
+    ListNode next;
 } vector2D;
 
-typedef vector2D * ListNode;
+
 
 
 void updateConstants(float battery, float signal, ListNode points, vector2D target);
+
+#endif

@@ -3,9 +3,7 @@
  * By Harry J.E Day for BlueSat OWR <Harry@dayfamilyweb.com>
  */
 
-#include 
-
-
+#include "comms.h"
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 
@@ -19,6 +17,7 @@ class GPSGUI {
     private:
         std::string coOrdList;
         ros::Subscriber sub;
-        
+        ListNode list;
+        ListNode end;
 };
 

@@ -98,7 +98,8 @@ include_directories(
   include
 )
 
-add_executable(glutgui src/glutgui.cpp) 
+
+add_executable(glutgui src/glutgui.cpp src/GPSGUI.cpp) 
 target_link_libraries(glutgui ${catkin_LIBRARIES} GL GLU glut)
 add_dependencies(glutgui ${catkin_EXPORTED_TARGETS})
 
