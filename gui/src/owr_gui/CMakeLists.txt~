@@ -94,6 +94,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  /usr/include/gstreamer-0.10
 )
 
 add_executable(glutgui src/glutgui.cpp) 
