@@ -6,58 +6,20 @@
 #include <cstring>
 #include <cmath>
 #include <cstdlib>
+#include <cstdio>
 #include <unistd.h>
-#include <sys/time.h>
 #include <GL/glut.h>
+//#include "comms.h"
 
 using namespace std;
 
 #define PI 3.1415926535897932384626433832795
 
-#define WINDOW_W 500
+#define WINDOW_W 1000
 #define WINDOW_H 500
-
-// Viewmodes
-#define NONE 0
-#define CAM1 1
-#define CAM2 2
-#define CAM3 3
-
-#define EMPTY  0
-#define LOW    1
-#define MEDIUM 2
-#define HIGH   3
-#define FULL   4
-
-/*class Button {
-	unsigned int centreX;
-	unsigned int centreY;
-	unsigned int length;
-	float r, g, b;
-	float txtR, txtG, txtB;
-public:
-	Button(float red, float green, float blue, unsigned int x, unsigned int y, unsigned int len);
-	bool isInButton(unsigned int x, unsigned int y);
-	
-};
-
-Button::Button(float red, float green, float blue, unsigned int x, unsigned int y, unsigned int len) {
-	r = red;
-	g = green;
-	b = blue;
-	centreX = x;
-	centreY = y;
-	length = len;
-	txtR = txtG = txtB = 0;
-}
-
-bool Button::isInButton(unsigned int x, unsigned int y) {
-	return false;
-}*/
 
 void init();
 void keyboard(unsigned char key, int x, int y);
-void mouse(int button, int state, int x, int y);
 void reshape(int w, int h);
 void display();
 
@@ -67,16 +29,18 @@ void drawBattery();
 void drawSignal();
 void displayText();
 
-unsigned char viewMode = NONE;
-unsigned char batteryLevel = FULL;
-unsigned char signal = FULL;
+float battery = 0;
+float signal = 0;
+float tiltX = 30; // degrees
+float tiltY = 30; // degrees
+
+double longitude = 0;
+double latitude = 0;
 
 unsigned int currentWindowH = WINDOW_H;
 unsigned int currentWindowW = WINDOW_W;
-unsigned int bufferSize = currentWindowH*currentWindowW*3;
 
 int main(int argc, char *argv[]) {
-	srand(time(NULL));
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
@@ -87,43 +51,118 @@ int main(int argc, char *argv[]) {
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutIdleFunc(display);
-	glutMouseFunc(mouse);
-	glBegin(GL_DEPTH_TEST);
 	glutMainLoop();
 	return 0;
 }
 
-void drawButtons(void) {
+void drawFeeds(void) {
 	glPushMatrix();
 	
-	glColor3f(1.0, 1.0, 1.0);
+	glColor3ub(0, 153, 0);
 	glTranslated(50, -50, 0);
-	glRectd(-25, -25, 25, 25);
+	glRectd(-30, -25, 30, 25);
 	glColor3f(0.0, 0.0, 1.0);
-	glRasterPos3d(-5, -6, 0);
+	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '1');
 	
-	glColor3f(1.0, 1.0, 1.0);
+	glColor3ub(255, 133, 51);
 	glTranslated(0, -75, 0);
-	glRectd(-25, -25, 25, 25);
+	glRectd(-30, -25, 30, 25);
 	glColor3f(0.0, 0.0, 1.0);
-	glRasterPos3d(-5, -6, 0);
+	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '2');
 	
-	glColor3f(1.0, 1.0, 1.0);
+	glColor3ub(255, 133, 51);
 	glTranslated(0, -75, 0);
-	glRectd(-25, -25, 25, 25);
+	glRectd(-30, -25, 30, 25);
 	glColor3f(0.0, 0.0, 1.0);
-	glRasterPos3d(-5, -6, 0);
+	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '3');
 	
+	glColor3ub(230, 0, 0);
+	glTranslated(0, -75, 0);
+	glRectd(-30, -25, 30, 25);
+	glColor3f(0.0, 0.0, 1.0);
+	glRasterPos2i(-5, -6);
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '4');
+	
+	glPopMatrix();
+}
+
+void drawGPS() { // far from complete
+	glPushMatrix();
+	glTranslated(425, -275, 0);
+	glColor3ub(255, 0, 0);
+	
+	glBegin(GL_POLYGON);
+	glVertex2i(-25, 0);
+	glVertex2i(25, 0);
+	glVertex2i(0, 75);
+	glEnd();
+	
+	glColor3f(0, 0, 0);
+	glTranslated(-50, -150, 0);
+	char GPSLat[20];
+	char GPSLong[20];
+	sprintf(GPSLat, "Lat: %.10f", latitude);
+	sprintf(GPSLong, "Long: %.10f", longitude);
+	int x = 0;
+	for (unsigned int i = 0; i < strlen(GPSLat); i++) {
+		glRasterPos3f(x, 0, 0);
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, GPSLat[i]);
+		x += 10;
+	}
+	glTranslated(0, -20, 0);
+	x = 0;
+	for (unsigned int i = 0; i < strlen(GPSLong); i++) {
+		glRasterPos3f(x, 0, 0);
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, GPSLong[i]);
+		x += 10;
+	}
+	
+	glPopMatrix();
+}
+
+void drawTilt() {
+	glPushMatrix();
+	glTranslated(700, -150, 0);
+	glColor3f(0, 0, 0);
+	glBegin(GL_LINES);
+	glVertex2d(0, 0);
+	glVertex2d(100, 0);
+	glVertex2d(-100*sin(tiltX * PI / 180), 100*cos(tiltX * PI / 180));
+	glEnd();
+	glTranslated(0, -50, 0);
+	char text[30];
+	sprintf(text, "X: %.2fdeg", tiltX);
+	int x = 0;
+	for (unsigned int i = 0; i < strlen(text); i++) {
+		glRasterPos3f(x, 0, 0);
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
+		x += 10;
+	}
+	
+	glTranslated(0, -200, 0);
+	glBegin(GL_LINES);
+	glVertex2d(0, 0);
+	glVertex2d(100, 0);
+	glVertex2d(-100*sin(tiltY * PI / 180), 100*cos(tiltY * PI / 180));
+	glEnd();
+	glTranslated(0, -50, 0);
+	sprintf(text, "Y: %.2fdeg", tiltY);
+	x = 0;
+	for (unsigned int i = 0; i < strlen(text); i++) {
+		glRasterPos3f(x, 0, 0);
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
+		x += 10;
+	}
 	glPopMatrix();
 }
 
 void drawBattery() {
 	glPushMatrix();
 	
-	if (batteryLevel == EMPTY || batteryLevel == LOW)
+	if (battery < 1)
 		glColor3f(1,0,0);
 	else
 		glColor3f(0,1,0);
@@ -143,77 +182,29 @@ void drawBattery() {
 	glVertex2i(115, 15);
 	glEnd();
 	
-	glTranslated(5, 0, 0);
-	for (unsigned int i = 0;i < batteryLevel;i++) {
-		glRectf(0, 25, 20, -25);
-		glTranslated(25, 0, 0);
-	}
-	
 	glPopMatrix();
 }
 
 void drawSignal() {
 	glPushMatrix();
-	if (signal == NONE || signal == LOW)
+	if (signal < 1)
 		glColor3f(1,0,0);
 	else
 		glColor3f(0,1,0);
 	
-	glTranslated(currentWindowW - 100, -((int) currentWindowH - 100), 0);
-	glRotated(-45, 0, 0, 1);
-	unsigned int radius = 20;
-	float theta = 0;
-	for (unsigned int i = 0;i < signal;i++) {
-		glBegin(GL_POLYGON);
-		for (unsigned int j = 0;j < 100;j++) {
-			glVertex2f(radius*cos(theta), radius*sin(theta));
-			theta += 2.0 * PI / (8*100.0);
-		}
-		glEnd();
-		radius += 5;
-	}
+	glTranslated(currentWindowW - 150, -((int) currentWindowH - 100), 0);
 	
-	for (unsigned int i = 0;i < signal;i++) {
-		glRectf(-30, 0, 30, 20);
-		glTranslated(0, 25, 0);
-	}
+	glBegin(GL_POLYGON);
+	glVertex2i(0, 0);
+	glVertex2i(100, 0);
+	glVertex2i(100, 50);
+	glEnd();
 	
 	glPopMatrix();
 }
 
-void displayText() {
-	string str;
-	char *modeText;
-	switch (viewMode) {
-		case CAM1:
-			str = "CAM 1 ACTIVE";
-			break;
-		case CAM2:
-			str = "CAM 2 ACTIVE";
-			break;
-		case CAM3:
-			str = "CAM 3 ACTIVE";
-			break;
-		default:
-			str = "OFF";
-	}
-		
-	modeText = &str[0];
-	
-	int length = strlen(modeText);
-	
-	glColor3f(1.0, 1.0, 1.0);
-	int x = currentWindowW/2-length*20/2; // dynamic x-ordinate depending on text length
-	for (int i = 0; i < length; i++) {
-		glRasterPos3f(x, -25, 0);
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, modeText[i]);
-		x += 20;
-	}
-	glRasterPos2i(0, 0);
-}
-
 void init(void) {
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glShadeModel(GL_FLAT);
 }
 
@@ -224,34 +215,9 @@ void keyboard(unsigned char key, int x, int y) {
 	}
 }
 
-void mouse(int button, int state, int x, int y) {
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		if (x > 25 && x < 75) {
-			if (y > 25 && y < 75) {
-				if (viewMode != CAM1)
-					viewMode = CAM1;
-				else
-					viewMode = NONE;
-			} else if (y > 100 && y < 150) {
-				if (viewMode != CAM2)
-					viewMode = CAM2;
-				else
-					viewMode = NONE;
-			} else if (y > 175 && y < 225) {
-				if (viewMode != CAM3)
-					viewMode = CAM3;
-				else
-					viewMode = NONE;
-			}
-		}
-	}
-	glutPostRedisplay();
-}
-
 void reshape(int w, int h) {
 	currentWindowH = h;
 	currentWindowW = w;
-	bufferSize = currentWindowH*currentWindowW*3;
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -260,34 +226,15 @@ void reshape(int w, int h) {
 }
 
 void display(void) {
-	// replace following bit with code to draw the camera feed
-	/*if (viewMode == CAM1)
-		glClearColor(1.0, 0.0, 0.0, 0.0);
-	else if (viewMode == CAM2)
-		glClearColor(0.0, 1.0, 0.0, 0.0);
-	else if (viewMode == CAM3)
-		glClearColor(0.0, 0.0, 1.0, 0.0);
-	else
-		glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT);*/
-	
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glRasterPos2i(0, -currentWindowH);
 	
-	float *buffer = new float[bufferSize];
-	// create chaos
-	for (unsigned int i = 0;i < bufferSize;i++) {
-		buffer[i]= ((float)(rand() % 100))/100.0;
-	}
-	
-	glDrawPixels((GLsizei) currentWindowW, (GLsizei) currentWindowH, GL_RGB, GL_FLOAT, buffer);
-	delete buffer;
-	drawButtons();
+	drawFeeds();
+	drawGPS();
+	drawTilt();
 	drawBattery();
 	drawSignal();
-	displayText();
 	glFlush();
 	glutSwapBuffers();
-	usleep(0.02 * 1000);
+	usleep(16666);
 }
