@@ -12,11 +12,11 @@ class GPSGUI {
     public:
         GPSGUI();
         void spin();
-        void reciveMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
+        void reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
         
     private:
         std::string coOrdList;
-        ros::Subscriber sub;
+        ros::Subscriber gpsSub;
         ListNode list;
         ListNode end;
 };

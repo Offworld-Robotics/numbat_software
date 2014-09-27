@@ -7,18 +7,15 @@
 #include "GpsGUI.h"
 #include <fstream>
 
-
-
 GPSGUI::GPSGUI() {
     ROS_INFO("initlising GPSLogger");
     //a nodehandler is used to communiate with the rest of ros
     ros::NodeHandle n("~");
 
     //pass the function that is called when a message is recived
-    sub = n.subscribe("/gps/fix", 1000, &GPSGUI::reciveMsg, this);
+    gpsSub = n.subscribe("/gps/fix", 1000, &GPSGUI::reciveGpsMsg, this);
     list = NULL;
     end = NULL;
-    
 }
 
 void GPSGUI::spin() {
@@ -29,7 +26,7 @@ void GPSGUI::spin() {
 
 
 
-void GPSGUI::reciveMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
+void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
     assert(msg);
     
     ROS_INFO("recived a message");
