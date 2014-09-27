@@ -71,8 +71,8 @@ unsigned char viewMode = NONE;
 unsigned char batteryLevel = FULL;
 unsigned char signal = FULL;
 
-int currentWindowH = WINDOW_H;
-int currentWindowW = WINDOW_W;
+unsigned int currentWindowH = WINDOW_H;
+unsigned int currentWindowW = WINDOW_W;
 unsigned int bufferSize = currentWindowH*currentWindowW*3;
 
 int main(int argc, char *argv[]) {
@@ -159,18 +159,19 @@ void drawSignal() {
 	else
 		glColor3f(0,1,0);
 	
-	glTranslated(currentWindowW - 50, -(currentWindowH - 10), 0);
-	/*unsigned int radius = 20;
+	glTranslated(currentWindowW - 100, -((int) currentWindowH - 100), 0);
+	glRotated(-45, 0, 0, 1);
+	unsigned int radius = 20;
 	float theta = 0;
 	for (unsigned int i = 0;i < signal;i++) {
-		glBegin(GL_);
+		glBegin(GL_POLYGON);
 		for (unsigned int j = 0;j < 100;j++) {
 			glVertex2f(radius*cos(theta), radius*sin(theta));
 			theta += 2.0 * PI / (8*100.0);
 		}
 		glEnd();
 		radius += 5;
-	}*/
+	}
 	
 	for (unsigned int i = 0;i < signal;i++) {
 		glRectf(-30, 0, 30, 20);
