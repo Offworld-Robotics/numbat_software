@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <GL/glut.h>
-//#include "comms.h"
+#include "comms.h"
 
 using namespace std;
 
@@ -22,6 +22,8 @@ void init();
 void keyboard(unsigned char key, int x, int y);
 void reshape(int w, int h);
 void display();
+
+void drawText(char *text, int x, int y);
 
 void drawBackground();
 void drawButtons();
@@ -90,72 +92,75 @@ void drawFeeds(void) {
 }
 
 void drawGPS() { // far from complete
+	char GPSLat[30];
+	char GPSLong[30];
 	glPushMatrix();
-	glTranslated(425, -275, 0);
+	glTranslated(425, -250, 0);
 	glColor3ub(255, 0, 0);
 	
 	glBegin(GL_POLYGON);
-	glVertex2i(-25, 0);
-	glVertex2i(25, 0);
-	glVertex2i(0, 75);
+	glVertex2i(-15, 0);
+	glVertex2i(15, 0);
+	glVertex2i(0, 45);
 	glEnd();
 	
+	
+	// draw text for co-ordinates
 	glColor3f(0, 0, 0);
 	glTranslated(-50, -150, 0);
-	char GPSLat[20];
-	char GPSLong[20];
 	sprintf(GPSLat, "Lat: %.10f", latitude);
 	sprintf(GPSLong, "Long: %.10f", longitude);
-	int x = 0;
-	for (unsigned int i = 0; i < strlen(GPSLat); i++) {
-		glRasterPos3f(x, 0, 0);
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, GPSLat[i]);
-		x += 10;
-	}
+	drawText(GPSLat, 0, 0);
 	glTranslated(0, -20, 0);
-	x = 0;
-	for (unsigned int i = 0; i < strlen(GPSLong); i++) {
-		glRasterPos3f(x, 0, 0);
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, GPSLong[i]);
-		x += 10;
-	}
+	drawText(GPSLong, 0, 0);
 	
 	glPopMatrix();
 }
 
 void drawTilt() {
-	glPushMatrix();
-	glTranslated(700, -150, 0);
-	glColor3f(0, 0, 0);
-	glBegin(GL_LINES);
-	glVertex2d(0, 0);
-	glVertex2d(100, 0);
-	glVertex2d(-100*sin(tiltX * PI / 180), 100*cos(tiltX * PI / 180));
-	glEnd();
-	glTranslated(0, -50, 0);
 	char text[30];
-	sprintf(text, "X: %.2fdeg", tiltX);
-	int x = 0;
-	for (unsigned int i = 0; i < strlen(text); i++) {
-		glRasterPos3f(x, 0, 0);
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
-		x += 10;
-	}
+	glPushMatrix();
 	
-	glTranslated(0, -200, 0);
-	glBegin(GL_LINES);
+	glTranslated(700, -100, 0);
+	glColor3f(0, 0, 0);
+	glBegin(GL_LINE_STRIP);
 	glVertex2d(0, 0);
 	glVertex2d(100, 0);
-	glVertex2d(-100*sin(tiltY * PI / 180), 100*cos(tiltY * PI / 180));
+	glVertex2d(100-100*cos(tiltX * PI / 180), 100*sin(tiltX * PI / 180));
 	glEnd();
-	glTranslated(0, -50, 0);
-	sprintf(text, "Y: %.2fdeg", tiltY);
-	x = 0;
-	for (unsigned int i = 0; i < strlen(text); i++) {
-		glRasterPos3f(x, 0, 0);
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
-		x += 10;
-	}
+	
+	glPushMatrix();
+	glTranslated(-30, -50, 0);
+	sprintf(text, "Left");
+	drawText(text, 0, 0);
+	glTranslated(100, 0, 0);
+	sprintf(text, "Right");
+	drawText(text, 0, 0);
+	glPopMatrix();
+	
+	glTranslated(0, -100, 0);
+	sprintf(text, "X : %.2fdeg", tiltX);
+	drawText(text, 0, 0);
+	
+	glTranslated(0, -150, 0);
+	glBegin(GL_LINE_STRIP);
+	glVertex2d(0, 0);
+	glVertex2d(100, 0);
+	glVertex2d(100-100*cos(tiltY * PI / 180), 100*sin(tiltY * PI / 180));
+	glEnd();
+	
+	glPushMatrix();
+	glTranslated(-30, -50, 0);
+	sprintf(text, "Back");
+	drawText(text, 0, 0);
+	glTranslated(100, 0, 0);
+	sprintf(text, "Front");
+	drawText(text, 0, 0);
+	glPopMatrix();
+	
+	glTranslated(0, -100, 0);
+	sprintf(text, "Y : %.2fdeg", tiltY);
+	drawText(text, 0, 0);
 	glPopMatrix();
 }
 
@@ -192,7 +197,7 @@ void drawSignal() {
 	else
 		glColor3f(0,1,0);
 	
-	glTranslated(currentWindowW - 200, -((int) currentWindowH - 100), 0);
+	glTranslated(currentWindowW - 150, -((int) currentWindowH - 100), 0);
 	
 	glBegin(GL_POLYGON);
 	glVertex2i(0, 0);
@@ -237,4 +242,12 @@ void display(void) {
 	glFlush();
 	glutSwapBuffers();
 	usleep(16666);
+}
+
+void drawText(char *text, int x, int y) {
+	for (unsigned int i = 0; i < strlen(text); i++) {
+		glRasterPos3f(x, y, 0);
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
+		x += 10;
+	}
 }
