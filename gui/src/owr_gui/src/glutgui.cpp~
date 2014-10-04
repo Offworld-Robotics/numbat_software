@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstdio>
+#include <ctime>
 #include <unistd.h>
 #include <GL/glut.h>
 #include "comms.h"
@@ -24,25 +25,25 @@ void reshape(int w, int h);
 void display();
 
 void drawText(char *text, int x, int y);
-
-void drawBackground();
-void drawButtons();
-void drawBattery();
-void drawSignal();
-void displayText();
+void GPSShiftRandPos();
+void printGPSPath();
 
 float battery = 0;
 float signal = 0;
 float tiltX = 30; // degrees
 float tiltY = 30; // degrees
-
 double longitude = 0;
 double latitude = 0;
 
+ListNode path = NULL;
+
 unsigned int currentWindowH = WINDOW_H;
 unsigned int currentWindowW = WINDOW_W;
+unsigned int frame = 0;
 
 int main(int argc, char *argv[]) {
+	srand(time(NULL));
+	GPSShiftRandPos();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
@@ -91,7 +92,7 @@ void drawFeeds(void) {
 	glPopMatrix();
 }
 
-void drawGPS() { // far from complete
+void drawGPS() {
 	char GPSLat[30];
 	char GPSLong[30];
 	glPushMatrix();
@@ -104,10 +105,27 @@ void drawGPS() { // far from complete
 	glVertex2i(0, 45);
 	glEnd();
 	
+	if (frame % 60 == 0)
+		GPSShiftRandPos();
+	//printGPSPath();
+	glPushMatrix();
+	glColor3f(0, 0, 1);
+	int xoff = path->x, yoff = path->y;
+	if (path->next != NULL) {
+		glRotated(atan((double)path->next->y/(double)path->next->x) * 180 /PI, 0, 0, 1);
+	}
+	ListNode curr = path;
+	glBegin(GL_LINE_STRIP);
+	while (curr != NULL) {
+		glVertex2d(curr->x - xoff, curr->y - yoff);
+		curr = curr->next;
+	}
+	glEnd();
+	glPopMatrix();
 	
 	// draw text for co-ordinates
 	glColor3f(0, 0, 0);
-	glTranslated(-50, -150, 0);
+	glTranslated(-50, -175, 0);
 	sprintf(GPSLat, "Lat: %.10f", latitude);
 	sprintf(GPSLong, "Long: %.10f", longitude);
 	drawText(GPSLat, 0, 0);
@@ -242,6 +260,9 @@ void display(void) {
 	glFlush();
 	glutSwapBuffers();
 	usleep(16666);
+	frame++;
+	if (frame > 6001)
+		frame -= 6000;
 }
 
 void drawText(char *text, int x, int y) {
@@ -250,4 +271,29 @@ void drawText(char *text, int x, int y) {
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
 		x += 10;
 	}
+}
+
+void GPSShiftRandPos() {
+	if (path == NULL) {
+		path = (ListNode) malloc(sizeof(_vector2D));
+		path->x = 0;
+		path->y = 0;
+		path->next = NULL;
+	} else {
+		ListNode rest = path;
+		path = (ListNode) malloc(sizeof(_vector2D));
+		path->x = rand() % 100;
+		path->y = rand() % 100;
+		path->next = rest;
+	}
+}
+
+void printGPSPath() {
+	ListNode curr = path;
+	cout << "Start" << endl;
+	while (curr != NULL) {
+		cout << curr->x << ", " << curr->y << endl;
+		curr = curr->next;
+	}
+	cout << "End" << endl;
 }
