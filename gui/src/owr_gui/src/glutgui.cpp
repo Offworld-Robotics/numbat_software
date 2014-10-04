@@ -28,8 +28,8 @@ void drawText(char *text, int x, int y);
 void GPSShiftRandPos();
 void printGPSPath();
 
-float battery = 0;
-float signal = 0;
+float battery = 5;
+float signal = 5;
 float tiltX = 30; // degrees
 float tiltY = 30; // degrees
 double longitude = 0;
@@ -157,7 +157,7 @@ void drawTilt() {
 	glPopMatrix();
 	
 	glTranslated(0, -100, 0);
-	sprintf(text, "X : %.2fdeg", tiltX);
+	sprintf(text, "X :%.2fdeg", tiltX);
 	drawText(text, 0, 0);
 	
 	glTranslated(0, -150, 0);
@@ -177,7 +177,7 @@ void drawTilt() {
 	glPopMatrix();
 	
 	glTranslated(0, -100, 0);
-	sprintf(text, "Y : %.2fdeg", tiltY);
+	sprintf(text, "Y :%.2fdeg", tiltY);
 	drawText(text, 0, 0);
 	glPopMatrix();
 }
@@ -185,43 +185,70 @@ void drawTilt() {
 void drawBattery() {
 	glPushMatrix();
 	
-	if (battery < 1)
+	if (battery < 3)
 		glColor3f(1,0,0);
 	else
 		glColor3f(0,1,0);
+	
+	if (battery > 10)
+		battery = 10;
 	
 	glTranslated(currentWindowW - 125, -50, 0);
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(0, 30);
 	glVertex2i(0, -30);
-	glVertex2i(105, -30);
-	glVertex2i(105, 30);
+	glVertex2i(100, -30);
+	glVertex2i(100, 30);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex2i(0, 30);
+	glVertex2i(0, -30);
+	glVertex2i(battery * 10, -30);
+	glVertex2i(battery * 10, 30);
 	glEnd();
 	
 	glBegin(GL_LINE_LOOP);
-	glVertex2i(105, 15);
-	glVertex2i(105, -15);
-	glVertex2i(115, -15);
-	glVertex2i(115, 15);
+	glVertex2i(100, 15);
+	glVertex2i(100, -15);
+	glVertex2i(110, -15);
+	glVertex2i(110, 15);
 	glEnd();
+	
+	glTranslated(0, -50, 0);
+	glColor3f(0, 0, 0);
+	char text[] = "Battery";
+	drawText(text, 15, 0);
 	
 	glPopMatrix();
 }
 
 void drawSignal() {
 	glPushMatrix();
-	if (signal < 1)
+	if (signal < 3)
 		glColor3f(1,0,0);
 	else
 		glColor3f(0,1,0);
 	
-	glTranslated(currentWindowW - 150, -((int) currentWindowH - 100), 0);
+	if (signal > 10)
+		signal = 10;
 	
-	glBegin(GL_POLYGON);
+	glTranslated(currentWindowW - 125, -((int) currentWindowH - 100), 0);
+	
+	glBegin(GL_LINE_LOOP);
 	glVertex2i(0, 0);
 	glVertex2i(100, 0);
 	glVertex2i(100, 50);
 	glEnd();
+	glBegin(GL_POLYGON);
+	glVertex2i(0, 0);
+	glVertex2i(signal * 10, 0);
+	glVertex2i(signal * 10, 50* signal/10);
+	glEnd();
+	
+	glTranslated(0, -20, 0);
+	glColor3f(0, 0, 0);
+	char text[] = "Signal";
+	drawText(text, 25, 0);
 	
 	glPopMatrix();
 }
