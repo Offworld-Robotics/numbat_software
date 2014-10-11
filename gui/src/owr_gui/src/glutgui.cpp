@@ -209,15 +209,16 @@ void drawTilt() {
 	glPopMatrix();
 }
 
-// draws the owr_battery level near the top-right of the window
-void drawowr_battery() {
+// draws the battery level near the top-right of the window
+void drawBattery() {
 	glPushMatrix();
 	
 	if (owr_battery < 3)
 		glColor3f(1,0,0);
 	else
 		glColor3f(0,1,0);
-	
+	if (owr_battery < 0)
+		owr_battery = 0;
 	if (owr_battery > 10)
 		owr_battery = 10;
 	
@@ -244,20 +245,22 @@ void drawowr_battery() {
 	
 	glTranslated(0, -50, 0);
 	glColor3f(0, 0, 0);
-	char text[] = "owr_battery";
+	char text[] = "battery";
 	drawText(text, 15, 0);
 	
 	glPopMatrix();
 }
 
-// draw the owr_signal level near the bottom-right of the window
-void drawowr_signal() {
+// draw the signal level near the bottom-right of the window
+void drawSignal() {
 	glPushMatrix();
+	
 	if (owr_signal < 3)
 		glColor3f(1,0,0);
 	else
 		glColor3f(0,1,0);
-	
+	if (owr_signal < 0)
+		owr_signal = 0;
 	if (owr_signal > 10)
 		owr_signal = 10;
 	
@@ -276,7 +279,7 @@ void drawowr_signal() {
 	
 	glTranslated(0, -20, 0);
 	glColor3f(0, 0, 0);
-	char text[] = "owr_signal";
+	char text[] = "signal";
 	drawText(text, 25, 0);
 	
 	glPopMatrix();
@@ -311,8 +314,8 @@ void display(void) {
 	drawFeeds();
 	drawGPS();
 	drawTilt();
-	drawowr_battery();
-	drawowr_signal();
+	drawBattery();
+	drawSignal();
 	glFlush();
 	glutSwapBuffers();
 	usleep(16666);
