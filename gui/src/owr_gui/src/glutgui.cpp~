@@ -25,7 +25,7 @@ void reshape(int w, int h);
 void display();
 
 void drawText(char *text, int x, int y);
-void GPSShiftRandPos();
+void GPSAddRandPos();
 void printGPSPath();
 
 float battery = 5;
@@ -43,7 +43,8 @@ unsigned int frame = 0;
 
 int main(int argc, char *argv[]) {
 	srand(time(NULL));
-	GPSShiftRandPos();
+	GPSAddRandPos();
+	//GPSAddRandPos();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
@@ -106,14 +107,17 @@ void drawGPS() {
 	glEnd();
 	
 	if (frame % 60 == 0)
-		GPSShiftRandPos();
+		GPSAddRandPos();
 	//printGPSPath();
+	
 	glPushMatrix();
 	glColor3f(0, 0, 1);
 	int xoff = path->x, yoff = path->y;
-	/*if (path->next != NULL) {
-		glRotated(atan((double)path->next->y/(double)path->next->x) * 180 /PI, 0, 0, 1);
-	}*/
+	if (path->next != NULL) {
+		double angle = -atan2(path->next->y - path->y, path->next->x - path->x) * 180/PI - 90;
+		cout << angle << endl;
+		glRotated(angle, 0, 0, 1);
+	}
 	ListNode curr = path;
 	glBegin(GL_LINE_STRIP);
 	while (curr != NULL) {
@@ -127,7 +131,7 @@ void drawGPS() {
 	glColor3f(0, 0, 0);
 	glTranslated(-50, -175, 0);
 	sprintf(GPSLat, "Lat: %.10f", latitude);
-	sprintf(GPSLong, "Long: %.10f", longitude);
+	sprintf(GPSLong, "Lon: %.10f", longitude);
 	drawText(GPSLat, 0, 0);
 	glTranslated(0, -20, 0);
 	drawText(GPSLong, 0, 0);
@@ -241,7 +245,7 @@ void drawSignal() {
 	glEnd();
 	glBegin(GL_POLYGON);
 	glVertex2i(0, 0);
-	glVertex2i(100, 0);
+	glVertex2i(signal * 10, 0);
 	glVertex2i(signal * 10, 50* signal/10);
 	glEnd();
 	
@@ -300,7 +304,7 @@ void drawText(char *text, int x, int y) {
 	}
 }
 
-void GPSShiftRandPos() {
+void GPSAddRandPos() {
 	if (path == NULL) {
 		path = (ListNode) malloc(sizeof(_vector2D));
 		path->x = 0;
@@ -309,8 +313,8 @@ void GPSShiftRandPos() {
 	} else {
 		ListNode rest = path;
 		path = (ListNode) malloc(sizeof(_vector2D));
-		path->x = rand() % 100;
-		path->y = rand() % 100;
+		path->x = rand() % 50;
+		path->y = rand() % 50;
 		path->next = rest;
 	}
 }
