@@ -1,3 +1,16 @@
+/*
+ * Main source for OffWorld Robotics Widget Gui
+ *
+ * Draws a gui for ground station for BLUEsat OffWorld Robotics Groundstation
+ *    Gui shows video feed controls
+ *    GPS
+ *    Signal strength
+ *    Robot Battery level
+ *
+ * Contributers
+ *
+ */
+
 // catkin_make
 // source devel/setup.bash
 // rosrun owr_gui glutgui
@@ -18,6 +31,18 @@ using namespace std;
 
 #define WINDOW_W 1000
 #define WINDOW_H 500
+
+#define VID_FEED_ACTIVE_BUTTON_RED 0
+#define VID_FEED_ACTIVE_BUTTON_GREEN 153
+#define VID_FEED_ACTIVE_BUTTON_BLUE 0
+
+#define VID_FEED_ACTIVE_NOT_LIVE_BUTTON_RED 235
+#define VID_FEED_ACTIVE_NOT_LIVE_BUTTON_GREEN 133
+#define VID_FEED_ACTIVE_NOT_LIVE_BUTTON_BLUE 51
+
+#define VID_FEED_INACTIVE_BUTTON_RED 230
+#define VID_FEED_INACTIVE_BUTTON_GREEN 0
+#define VID_FEED_INACTIVE_BUTTON_BLUE 0
 
 void init();
 void keyboard(unsigned char key, int x, int y);
@@ -61,28 +86,28 @@ int main(int argc, char *argv[]) {
 void drawFeeds(void) {
 	glPushMatrix();
 	
-	glColor3ub(0, 153, 0);
+	glColor3ub(VID_FEED_ACTIVE_BUTTON_RED, VID_FEED_ACTIVE_BUTTON_GREEN, VID_FEED_ACTIVE_BUTTON_BLUE);
 	glTranslated(50, -50, 0);
 	glRectd(-30, -25, 30, 25);
 	glColor3f(0.0, 0.0, 1.0);
 	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '1');
 	
-	glColor3ub(255, 133, 51);
+	glColor3ub(VID_FEED_ACTIVE_NOT_LIVE_BUTTON_RED, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_GREEN, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_BLUE);
 	glTranslated(0, -75, 0);
 	glRectd(-30, -25, 30, 25);
 	glColor3f(0.0, 0.0, 1.0);
 	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '2');
 	
-	glColor3ub(255, 133, 51);
+	glColor3ub(VID_FEED_ACTIVE_NOT_LIVE_BUTTON_RED, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_GREEN, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_BLUE);
 	glTranslated(0, -75, 0);
 	glRectd(-30, -25, 30, 25);
 	glColor3f(0.0, 0.0, 1.0);
 	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '3');
 	
-	glColor3ub(230, 0, 0);
+	glColor3ub(VID_FEED_INACTIVE_BUTTON_RED, VID_FEED_INACTIVE_BUTTON_GREEN, VID_FEED_INACTIVE_BUTTON_BLUE);
 	glTranslated(0, -75, 0);
 	glRectd(-30, -25, 30, 25);
 	glColor3f(0.0, 0.0, 1.0);
