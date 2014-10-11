@@ -59,8 +59,8 @@ void GPSAddRandPos();
 void printGPSPath();
 
 // default status values
-float battery = 5;
-float signal = 5;
+float owr_battery = 5;
+float owr_signal = 5;
 float tiltX = 30; // degrees
 float tiltY = 30; // degrees
 double longitude = 0;
@@ -76,13 +76,13 @@ unsigned int currentWindowW = WINDOW_W;
 unsigned int frame = 0;
 
 void updateConstants(float bat, float sig, ListNode points, vector2D tar) {
-	battery = bat;
-	signal = sig;
+	owr_battery = bat;
+	owr_signal = sig;
 	path = points;
 	target = tar;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char **argv) {
 	//srand(time(NULL));
 	//GPSAddRandPos();
 	ros::init(argc, argv, "GUI");
@@ -238,13 +238,14 @@ void drawTilt() {
 void drawBattery() {
 	glPushMatrix();
 	
-	if (battery < 3)
+	if (owr_battery < 3)
 		glColor3f(1,0,0);
 	else
 		glColor3f(0,1,0);
-	
-	if (battery > 10)
-		battery = 10;
+	if (owr_battery < 0)
+		owr_battery = 0;
+	if (owr_battery > 10)
+		owr_battery = 10;
 	
 	glTranslated(currentWindowW - 125, -50, 0);
 	glBegin(GL_LINE_LOOP);
@@ -256,8 +257,8 @@ void drawBattery() {
 	glBegin(GL_QUADS);
 	glVertex2i(0, 30);
 	glVertex2i(0, -30);
-	glVertex2i(battery * 10, -30);
-	glVertex2i(battery * 10, 30);
+	glVertex2i(owr_battery * 10, -30);
+	glVertex2i(owr_battery * 10, 30);
 	glEnd();
 	
 	glBegin(GL_LINE_LOOP);
@@ -269,7 +270,7 @@ void drawBattery() {
 	
 	glTranslated(0, -50, 0);
 	glColor3f(0, 0, 0);
-	char text[] = "Battery";
+	char text[] = "battery";
 	drawText(text, 15, 0);
 	
 	glPopMatrix();
@@ -278,13 +279,15 @@ void drawBattery() {
 // draw the signal level near the bottom-right of the window
 void drawSignal() {
 	glPushMatrix();
-	if (signal < 3)
+	
+	if (owr_signal < 3)
 		glColor3f(1,0,0);
 	else
 		glColor3f(0,1,0);
-	
-	if (signal > 10)
-		signal = 10;
+	if (owr_signal < 0)
+		owr_signal = 0;
+	if (owr_signal > 10)
+		owr_signal = 10;
 	
 	glTranslated(currentWindowW - 125, -((int) currentWindowH - 100), 0);
 	
@@ -295,13 +298,13 @@ void drawSignal() {
 	glEnd();
 	glBegin(GL_POLYGON);
 	glVertex2i(0, 0);
-	glVertex2i(signal * 10, 0);
-	glVertex2i(signal * 10, 5 * signal);
+	glVertex2i(owr_signal * 10, 0);
+	glVertex2i(owr_signal * 10, 5 * owr_signal);
 	glEnd();
 	
 	glTranslated(0, -20, 0);
 	glColor3f(0, 0, 0);
-	char text[] = "Signal";
+	char text[] = "signal";
 	drawText(text, 25, 0);
 	
 	glPopMatrix();
