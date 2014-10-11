@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <GL/glut.h>
 #include "comms.h"
+#include "GpsGUI.h"
 
 using namespace std;
 
@@ -53,12 +54,14 @@ void updateConstants(float bat, float sig, ListNode points, vector2D tar) {
 	battery = bat;
 	signal = sig;
 	path = points;
-	target =tar;
+	target = tar;
 }
 
 int main(int argc, char *argv[]) {
-	srand(time(NULL));
+	//srand(time(NULL));
 	//GPSAddRandPos();
+	ros::init(argc, argv, "GUI");
+	GPSGUI *gpsnode = new GPSGUI(updateConstants);
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
