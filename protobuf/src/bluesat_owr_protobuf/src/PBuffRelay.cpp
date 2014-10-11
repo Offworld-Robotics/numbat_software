@@ -32,7 +32,7 @@
     ros::NodeHandle node("~");
     
     
-    bluesat_owr_protobuf::test1 test_message;
+    bluesat_owr_protobuf::message_1 test_message;
     
     
  }
