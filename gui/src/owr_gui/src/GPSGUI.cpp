@@ -42,8 +42,8 @@ void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
         
     //create a new node
     ListNode l = (ListNode) malloc(sizeof(vector2D));
-    l->x = msg->longitude; 
-    l->y = msg->latitude;
+    l->x = msg->latitude; 
+    l->y = msg->longitude;
     l->next = NULL;
     
     if(end == NULL) {
