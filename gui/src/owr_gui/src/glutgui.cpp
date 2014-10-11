@@ -16,6 +16,7 @@ using namespace std;
 
 #define PI 3.1415926535897932384626433832795
 
+// default window size
 #define WINDOW_W 1000
 #define WINDOW_H 500
 
@@ -24,10 +25,14 @@ void keyboard(unsigned char key, int x, int y);
 void reshape(int w, int h);
 void display();
 
+// function to display some text
 void drawText(char *text, int x, int y);
+// function to insert a co-ordinate to the front of the path list
 void GPSAddRandPos();
+// function to print the path
 void printGPSPath();
 
+// default status values
 float battery = 5;
 float signal = 5;
 float tiltX = 30; // degrees
@@ -35,15 +40,24 @@ float tiltY = 30; // degrees
 double longitude = 0;
 double latitude = 0;
 
+// GPS related variables
 ListNode path = NULL;
+vector2D target;
 
+// OpenGL control related variables
 unsigned int currentWindowH = WINDOW_H;
 unsigned int currentWindowW = WINDOW_W;
 unsigned int frame = 0;
 
+void updateConstants(float bat, float sig, ListNode points, vector2D tar) {
+	battery = bat;
+	signal = sig;
+	path = points;
+	target =tar;
+}
+
 int main(int argc, char *argv[]) {
 	srand(time(NULL));
-	GPSAddRandPos();
 	//GPSAddRandPos();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -59,6 +73,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+// draws feeds boxes on the left side of the window
 void drawFeeds(void) {
 	glPushMatrix();
 	
@@ -93,6 +108,7 @@ void drawFeeds(void) {
 	glPopMatrix();
 }
 
+// draws GPS path and co-ordinates near the centre of the window
 void drawGPS() {
 	char GPSLat[30];
 	char GPSLong[30];
@@ -100,16 +116,20 @@ void drawGPS() {
 	glTranslated(425, -250, 0);
 	glColor3ub(255, 0, 0);
 	
+	// draw the rover as a red triangle
 	glBegin(GL_POLYGON);
 	glVertex2i(-15, 0);
 	glVertex2i(15, 0);
 	glVertex2i(0, 45);
 	glEnd();
 	
+	// insert a new co-ordinate every second-ish
 	if (frame % 60 == 0)
 		GPSAddRandPos();
-	//printGPSPath();
 	
+	latitude = path->x;
+	longitude = path->y;
+	// draws out the path so that the forward direction of the rover always facing up on the screen
 	glPushMatrix();
 	glColor3f(0, 0, 1);
 	int xoff = path->x, yoff = path->y;
@@ -126,7 +146,7 @@ void drawGPS() {
 	glEnd();
 	glPopMatrix();
 	
-	// draw text for co-ordinates
+	// draw text for GPS co-ordinates
 	glColor3f(0, 0, 0);
 	glTranslated(-50, -175, 0);
 	sprintf(GPSLat, "Lat: %.10f", latitude);
@@ -138,6 +158,7 @@ void drawGPS() {
 	glPopMatrix();
 }
 
+// draws the tilt angles for the left-right and front-back directions near the right of the screen
 void drawTilt() {
 	char text[30];
 	glPushMatrix();
@@ -185,6 +206,7 @@ void drawTilt() {
 	glPopMatrix();
 }
 
+// draws the battery level near the top-right of the window
 void drawBattery() {
 	glPushMatrix();
 	
@@ -225,6 +247,7 @@ void drawBattery() {
 	glPopMatrix();
 }
 
+// draw the signal level near the bottom-right of the window
 void drawSignal() {
 	glPushMatrix();
 	if (signal < 3)
@@ -245,7 +268,7 @@ void drawSignal() {
 	glBegin(GL_POLYGON);
 	glVertex2i(0, 0);
 	glVertex2i(signal * 10, 0);
-	glVertex2i(signal * 10, 50* signal/10);
+	glVertex2i(signal * 10, 5 * signal);
 	glEnd();
 	
 	glTranslated(0, -20, 0);
@@ -304,18 +327,11 @@ void drawText(char *text, int x, int y) {
 }
 
 void GPSAddRandPos() {
-	if (path == NULL) {
-		path = (ListNode) malloc(sizeof(_vector2D));
-		path->x = 0;
-		path->y = 0;
-		path->next = NULL;
-	} else {
-		ListNode rest = path;
-		path = (ListNode) malloc(sizeof(_vector2D));
-		path->x = rand() % 50;
-		path->y = rand() % 50;
-		path->next = rest;
-	}
+	ListNode rest = path;
+	path = (ListNode) malloc(sizeof(_vector2D));
+	path->x = rand() % 50;
+	path->y = rand() % 50;
+	path->next = rest;
 }
 
 void printGPSPath() {
