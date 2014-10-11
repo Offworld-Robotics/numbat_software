@@ -55,13 +55,13 @@ void updateConstants(float bat, float sig, ListNode points, vector2D tar) {
 	owr_signal = sig;
 	path = points;
 	target = tar;
+	ROS_INFO("Updated");
 }
 
 int main(int argc, char **argv) {
-	//srand(time(NULL));
-	//GPSAddRandPos();
 	ros::init(argc, argv, "GUI");
 	GPSGUI *gpsnode = new GPSGUI(updateConstants);
+	//gpsnode->spin();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
@@ -126,12 +126,10 @@ void drawGPS() {
 	glVertex2i(0, 45);
 	glEnd();
 	
-	// insert a new co-ordinate every second-ish
-	if (frame % 60 == 0)
-		GPSAddRandPos();
-	
+	if (path != NULL) {
 	latitude = path->x;
 	longitude = path->y;
+	printf("Drawing GPS: %.20f %.20f\n", latitude, longitude);
 	// draws out the path so that the forward direction of the rover always facing up on the screen
 	glPushMatrix();
 	glColor3f(0, 0, 1);
@@ -157,7 +155,7 @@ void drawGPS() {
 	drawText(GPSLat, 0, 0);
 	glTranslated(0, -20, 0);
 	drawText(GPSLong, 0, 0);
-	
+	}
 	glPopMatrix();
 }
 
@@ -308,14 +306,15 @@ void reshape(int w, int h) {
 }
 
 void display(void) {
+	ros::spinOnce();
 	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	drawFeeds();
 	drawGPS();
 	drawTilt();
-	drawowr_battery();
-	drawowr_signal();
+	drawBattery();
+	drawSignal();
 	glFlush();
 	glutSwapBuffers();
 	usleep(16666);
