@@ -10,7 +10,7 @@
 class GPSGUI {
 
     public:
-        GPSGUI();
+        GPSGUI(void  (*updateConst)(float, float, ListNode, vector2D));
         void spin();
         void reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
         
@@ -19,5 +19,11 @@ class GPSGUI {
         ros::Subscriber gpsSub;
         ListNode list;
         ListNode end;
+        float battery;
+        float signal;
+        float tiltX;
+        float tiltY;
+        vector2D target;
+        void  (*updateConstants)(float, float, ListNode, vector2D);
 };
 

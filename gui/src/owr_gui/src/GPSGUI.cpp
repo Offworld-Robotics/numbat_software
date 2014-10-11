@@ -7,15 +7,23 @@
 #include "GpsGUI.h"
 #include <fstream>
 
-GPSGUI::GPSGUI() {
+GPSGUI::GPSGUI(void  (*updateConst)(float, float, ListNode, vector2D)) {
     ROS_INFO("initlising GPSLogger");
+    updateConstants = updateConst;
     //a nodehandler is used to communiate with the rest of ros
     ros::NodeHandle n("~");
-
-    //pass the function that is called when a message is recived
-    gpsSub = n.subscribe("/gps/fix", 1000, &GPSGUI::reciveGpsMsg, this);
+    
+    battery = 5;
+    signal = 5;
+    tiltX = 30;
+    tiltY = 30;
     list = NULL;
     end = NULL;
+    
+    //pass the function that is called when a message is recived
+    gpsSub = n.subscribe("/gps/fix", 1000, &GPSGUI::reciveGpsMsg, this);
+    
+    
 }
 
 void GPSGUI::spin() {
@@ -45,6 +53,8 @@ void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
         end->next = l;
         end = l;
     }
+    updateConstants(battery,signal,list,target);
+    
 }
 
 
