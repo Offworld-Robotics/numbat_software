@@ -116,8 +116,8 @@ void drawGPS() {
 	//if (frame == 0 || frame % 60 == 0) {GPSAddRandPos();}
 		
 	if (path != NULL) {
-		latitude = path->x;
-		longitude = path->y;
+		longitude = path->x;
+		latitude = path->y;
 		//printGPSPath();
 		
 		// draws out the path so that the forward direction of the rover always facing up on the screen
@@ -138,6 +138,7 @@ void drawGPS() {
 			curr = curr->next;
 		}
 		glEnd();
+		
 		glPopMatrix();
 		
 		// draw text for GPS co-ordinates
