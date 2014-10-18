@@ -84,6 +84,7 @@ void updateConstants(float bat, float sig, ListNode points, vector2D tar) {
 }
 
 int main(int argc, char **argv) {
+	srand(time(NULL));
 	ros::init(argc, argv, "GUI");
 	GPSGUI *gpsnode = new GPSGUI(updateConstants);
 	//gpsnode->spin();
@@ -99,6 +100,82 @@ int main(int argc, char **argv) {
 	glutIdleFunc(display);
 	glutMainLoop();
 	return 0;
+}
+
+void GPSAddRandPos() {
+	ListNode rest = path;
+	path = (ListNode) malloc(sizeof(_vector2D));
+	double randn;
+	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	path->x = randn + 151.139;
+	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	path->y = randn - 33.718;
+	path->next = rest;
+}
+
+void printGPSPath() {
+	ListNode curr = path;
+	cout << "Start" << endl;
+	while (curr != NULL) {
+		printf("%.15f, %.15f\n", curr->x, curr->y);
+		curr = curr->next;
+	}
+	cout << "End" << endl;
+}
+
+// draws GPS path and co-ordinates near the centre of the window
+void drawGPS() {
+	char GPSLat[30];
+	char GPSLong[30];
+	glPushMatrix();
+	glTranslated(425, -250, 0);
+	glColor3ub(255, 0, 0);
+	
+	// draw the rover as a red triangle
+	glBegin(GL_POLYGON);
+	glVertex2i(-15, 0);
+	glVertex2i(15, 0);
+	glVertex2i(0, 45);
+	glEnd();
+	
+	//if (frame == 0 || frame % 60 == 0) {GPSAddRandPos();}
+		
+	if (path != NULL) {
+		longitude = path->x;
+		latitude = path->y;
+		//printGPSPath();
+		
+		// draws out the path so that the forward direction of the rover always facing up on the screen
+		glPushMatrix();
+		glScaled(100000,100000,1);
+		glColor3f(0, 0, 1);
+		double xoff = path->x, yoff = path->y;
+		if (path->next != NULL) {
+			double angle = -atan2(path->next->y - path->y, path->next->x - path->x) * 180.0/PI - 90;
+			glRotated(angle, 0, 0, 1);
+			//printf("angle: %f\n", angle);
+		}
+		glTranslated(-xoff, -yoff, 0);
+		ListNode curr = path;
+		glBegin(GL_LINE_STRIP);
+		while (curr != NULL) {
+			glVertex2d(curr->x, curr->y);
+			curr = curr->next;
+		}
+		glEnd();
+		
+		glPopMatrix();
+		
+		// draw text for GPS co-ordinates
+		glColor3f(0, 0, 0);
+		glTranslated(-50, -175, 0);
+		sprintf(GPSLat, "Lat: %.10f", latitude);
+		sprintf(GPSLong, "Lon: %.10f", longitude);
+		drawText(GPSLat, 0, 0);
+		glTranslated(0, -20, 0);
+		drawText(GPSLong, 0, 0);
+	}
+	glPopMatrix();
 }
 
 // draws feeds boxes on the left side of the window
@@ -133,55 +210,6 @@ void drawFeeds(void) {
 	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '4');
 	
-	glPopMatrix();
-}
-
-// draws GPS path and co-ordinates near the centre of the window
-void drawGPS() {
-	char GPSLat[30];
-	char GPSLong[30];
-	glPushMatrix();
-	glTranslated(425, -250, 0);
-	glColor3ub(255, 0, 0);
-	
-	// draw the rover as a red triangle
-	glBegin(GL_POLYGON);
-	glVertex2i(-15, 0);
-	glVertex2i(15, 0);
-	glVertex2i(0, 45);
-	glEnd();
-	
-	if (path != NULL) {
-	latitude = path->x;
-	longitude = path->y;
-	//printf("Drawing GPS: %.20f %.20f\n", latitude, longitude);
-	printGPSPath();
-	// draws out the path so that the forward direction of the rover always facing up on the screen
-	glPushMatrix();
-	glColor3f(0, 0, 1);
-	int xoff = path->x, yoff = path->y;
-	if (path->next != NULL) {
-		double angle = -atan2(path->next->y - path->y, path->next->x - path->x) * 180/PI - 90;
-		glRotated(angle, 0, 0, 1);
-	}
-	ListNode curr = path;
-	glBegin(GL_LINE_STRIP);
-	while (curr != NULL) {
-		glVertex2d(curr->x - xoff, curr->y - yoff);
-		curr = curr->next;
-	}
-	glEnd();
-	glPopMatrix();
-	
-	// draw text for GPS co-ordinates
-	glColor3f(0, 0, 0);
-	glTranslated(-50, -175, 0);
-	sprintf(GPSLat, "Lat: %.10f", latitude);
-	sprintf(GPSLong, "Lon: %.10f", longitude);
-	drawText(GPSLat, 0, 0);
-	glTranslated(0, -20, 0);
-	drawText(GPSLong, 0, 0);
-	}
 	glPopMatrix();
 }
 
@@ -355,22 +383,4 @@ void drawText(char *text, int x, int y) {
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
 		x += 10;
 	}
-}
-
-void GPSAddRandPos() {
-	ListNode rest = path;
-	path = (ListNode) malloc(sizeof(_vector2D));
-	path->x = rand() % 50;
-	path->y = rand() % 50;
-	path->next = rest;
-}
-
-void printGPSPath() {
-	ListNode curr = path;
-	cout << "Start" << endl;
-	while (curr != NULL) {
-		cout << curr->x << ", " << curr->y << endl;
-		curr = curr->next;
-	}
-	cout << "End" << endl;
 }
