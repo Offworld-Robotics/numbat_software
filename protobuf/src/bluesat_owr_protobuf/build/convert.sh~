@@ -1,14 +1,27 @@
+#!/usr/bin/perl
 # Converts protobuf .proto files to ros .msg files
 # Author: Harry J.E Day
-# Date:   9/08/14
-#! 
+# Date:   9/08/14 
 
-echo $
-pwd
-echo "Converting proto to msg $1"
+use strict; 
+use warnings;
 
-    sed -r "/^package \w+; *$/d" $1 |
-    sed -r "s/^.*(\{|\}).*$/ /"  |
-    sed -r "s/double/float64/"  |
-    sed  -r "s/= *[0-9]*;//" | sed "s/repeated//" | sed -r "s/^$//"  > $2
+open(INPUT, "<$ARGV[0]");
+open(OUTPUT, ">$ARGV[1]");
+
+my @input = <INPUT>;
+
+foreach my $line (<INPUT>) {
+    $line =~ /^package \w+;*$/dg;
+    #$line =~ s/^.*(\{|\}).*$/ /g;
+    #$line =~ s/double/float64/g;
+    #$line =~ s/repeated//g;
+    print OUTPUT $line;
+}
+
+
+
+
+
+
     

@@ -1,18 +1,9 @@
 
+
  
-     float64 x 
-     float64 y 
-     float64 z 
+     float64 x = 1
+     float64 y = 2
+     float64 z = 3
 
  
 
- 
-     string aaa 
-    
- 
-        MODE1 
-        MODE2 
-        MODE3 
- 
-
- 

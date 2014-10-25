@@ -48,7 +48,7 @@ find_package(Protobuf REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 #coverts files from .proto to message
-execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.sh  ${CMAKE_CURRENT_SOURCE_DIR}/src/messages1.proto ${CMAKE_CURRENT_SOURCE_DIR}/msgs/messages1.msg
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.sh  ${CMAKE_CURRENT_SOURCE_DIR}/src/messages1.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/messages1.msg
 
                  )
 
