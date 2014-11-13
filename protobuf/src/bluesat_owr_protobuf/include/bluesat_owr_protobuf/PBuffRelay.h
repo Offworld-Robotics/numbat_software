@@ -7,6 +7,11 @@
 #ifndef PBuffRelay_H
 #define PBuffRelay_H
 
+#define MESSAGE_CLASS message1
+#define MESSAGE_CLASS_ROS message1_ros
+
+#define TOPIC "/owr_protobuf/" "MESSAGE_CLASS"
+
 #include "messages1.pb.h"
 #include <ros/ros.h>
 
@@ -18,6 +23,8 @@ class PBuffRelay {
         
     private:
         ros::Subscriber sub;
+        bluesat_owr_protobuf::MESSAGE_CLASS testMessage;
+        ros::NodeHandle node;
 };
 
 

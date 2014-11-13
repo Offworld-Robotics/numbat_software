@@ -5,6 +5,7 @@
  */
  
  #include "bluesat_owr_protobuf/PBuffRelay.h"
+ #include <iostream>
  
  
  
@@ -26,17 +27,18 @@
  PBuffRelay::PBuffRelay() {
  
     ROS_INFO("Initialising relay");
-    
-    //get a node handle
-    
-    ros::NodeHandle node("~");
+    node = ros::NodeHandle("~");
     
     
-    bluesat_owr_protobuf::message1 test_message;
     
     
  }
  
  void PBuffRelay::spin() {
-    ros::spin();
+    while(ros::ok()) {
+        testMessage.ParseFromIstream(&std::cin);
+        ros::Publisher pub = node.advertise<bluesat_owr_protobuf::MESSAGE_CLASS_ROS>(TOPIC,  1000);
+        
+        ros::spinOnce();
+    }
  }

@@ -6,8 +6,11 @@ project(bluesat_owr_protobuf)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS   
-    roscpp
-    message_generation)
+   roscpp
+   rospy
+   std_msgs
+   message_generation
+    )
 find_package(Protobuf REQUIRED)
 
 
@@ -48,14 +51,14 @@ find_package(Protobuf REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 #coverts files from .proto to message
-execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/messages1.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/messages1.msg
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/message1.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/message1_ros.msg
 
                  )
 
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   messages1.msg
+   message1_ros.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -75,7 +78,8 @@ execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_C
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
-   std_msgs  # Or other packages containing msgs
+   std_msgs
+     # Or other packages containing msgs
  )
 
 ###################################
@@ -111,7 +115,7 @@ include_directories(
 )
 
 
-PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/messages1.proto)
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/message1.proto)
 
 
 ## Declare a cpp library
