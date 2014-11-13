@@ -1,4 +1,4 @@
-package bluesat_owr_protobuf_proto;
+package bluesat_owr_protobuf;
 
 message message1 {
     repeated double x = 1;

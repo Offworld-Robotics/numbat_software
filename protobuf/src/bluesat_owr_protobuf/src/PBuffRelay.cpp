@@ -37,7 +37,7 @@
  void PBuffRelay::spin() {
     while(ros::ok()) {
         testMessage.ParseFromIstream(&std::cin);
-        ros::Publisher pub = node.advertise<bluesat_owr_protobuf::MESSAGE_CLASS_ROS>(TOPIC,  1000);        
+        ros::Publisher pub = node.advertise<MESSAGE_CLASS_ROS>(TOPIC,  1000);        
         ros::spinOnce();
     }
  }
