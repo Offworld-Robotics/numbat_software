@@ -124,7 +124,7 @@ PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/message1.proto)
 # )
 
 ## Declare a cpp executable
-add_executable(PBuffRelay src/PBuffRelay.cpp ${PROTO_SRCS} ${PROTO_HDRS})
+add_executable(PBuffRelay src/PBuffRelay.cpp src/main.cpp ${PROTO_SRCS} ${PROTO_HDRS})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes

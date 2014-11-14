@@ -7,37 +7,31 @@
  #include "bluesat_owr_protobuf/PBuffRelay.h"
  #include <iostream>
  
+#define MESSAGE_CLASS bluesat_owr_protobuf_proto::message1
+#define MESSAGE_CLASS_ROS bluesat_owr_protobuf::message1_ros
  
  
- int main(int argc, char ** argv) {
-    //required to make sure protobuf will work correctly
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
-    
-    //init ros
-    ros::init(argc, argv, "PBuffRelay");
-    
-    PBuffRelay relay;
-    
-    relay.spin();
-    
-    return EXIT_SUCCESS;   
- }
+
  
- 
- PBuffRelay::PBuffRelay() {
- 
+template <class rosMessageType, class pbuffMessageType>
+PBuffRelay<rosMessageType,pbuffMessageType>::PBuffRelay
+(std::string messageTopic) {
+    topic = messageTopic;
     ROS_INFO("Initialising relay");
     node = ros::NodeHandle("~");
-    
-    
-    
-    
- }
- 
- void PBuffRelay::spin() {
+}
+
+template <class rosMessageType, class pbuffMessageType>
+void PBuffRelay<rosMessageType,pbuffMessageType>::spin() {
     while(ros::ok()) {
         testMessage.ParseFromIstream(&std::cin);
-        ros::Publisher pub = node.advertise<MESSAGE_CLASS_ROS>(TOPIC,  1000);        
+        ros::Publisher pub = node.advertise<rosMessageType>(topic,  1000);        
         ros::spinOnce();
     }
- }
+}
+ 
+//Add all used message types here!
+//TODO: do this with hash defines
+#include "message1.pb.h"
+#include "bluesat_owr_protobuf/message1_ros.h"
+template class PBuffRelay<bluesat_owr_protobuf::message1_ros, bluesat_owr_protobuf_proto::message1>;
