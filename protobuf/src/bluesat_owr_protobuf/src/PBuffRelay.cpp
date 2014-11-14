@@ -24,7 +24,7 @@ PBuffRelay<rosMessageType,pbuffMessageType>::PBuffRelay
 template <class rosMessageType, class pbuffMessageType>
 void PBuffRelay<rosMessageType,pbuffMessageType>::spin() {
     while(ros::ok()) {
-        testMessage.ParseFromIstream(&std::cin);
+        pbuffMessage.ParseFromIstream(&std::cin);
         ros::Publisher pub = node.advertise<rosMessageType>(topic,  1000);        
         ros::spinOnce();
     }

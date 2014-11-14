@@ -18,7 +18,7 @@ template <class rosMessageType, class pbuffMessageType> class PBuffRelay {
         
     private:
         ros::Subscriber sub;
-        pbuffMessageType testMessage;
+        pbuffMessageType pbuffMessage;
         ros::NodeHandle node;
         std::string topic;
 };

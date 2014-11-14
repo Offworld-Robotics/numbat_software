@@ -24,7 +24,7 @@ PBuffRelay<rosMessageType,pbuffMessageType>::PBuffRelay
 template <class rosMessageType, class pbuffMessageType>
 void PBuffRelay<rosMessageType,pbuffMessageType>::spin() {
     while(ros::ok()) {
-        testMessage.ParseFromIstream(&std::cin);
+        pbuffMessage.ParseFromIstream(&std::cin);
         ros::Publisher pub = node.advertise<rosMessageType>(topic,  1000);        
         ros::spinOnce();
     }
@@ -34,4 +34,4 @@ void PBuffRelay<rosMessageType,pbuffMessageType>::spin() {
 //TODO: do this with hash defines
 #include "message1.pb.h"
 #include "bluesat_owr_protobuf/message1_ros.h"
-template class PBuffRelay<bluesat_owr_protobuf::message1_rosbluesat_owr_protobuf_proto::message1>;
+template class PBuffRelay<bluesat_owr_protobuf::message1_ros, bluesat_owr_protobuf_proto::message1>;
