@@ -7,20 +7,23 @@
 #ifndef PBuffRelay_H
 #define PBuffRelay_H
 
-
 #include <ros/ros.h>
 
 template <class rosMessageType, class pbuffMessageType> class PBuffRelay {
     
     public:
         PBuffRelay(std::string topic);
-        void spin();
-        
+        void spin(rosMessageType convertFunc (pbuffMessageType) );
+    protected:
+        virtual rosMessageType doPbuffToROS(pbuffMessageType pbuffMsg);
+        ros::Publisher publisher;     
+    
     private:
         ros::Subscriber sub;
-        pbuffMessageType testMessage;
+        pbuffMessageType pbuffMessage;
         ros::NodeHandle node;
         std::string topic;
+   
 };
 
 

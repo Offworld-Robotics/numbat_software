@@ -123,6 +123,7 @@ PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/message1.proto)
 #   src/${PROJECT_NAME}/bluesat_owr_protobuf.cpp
 # )
 
+
 ## Declare a cpp executable
 add_executable(PBuffRelay src/PBuffRelay.cpp src/main.cpp ${PROTO_SRCS} ${PROTO_HDRS})
 

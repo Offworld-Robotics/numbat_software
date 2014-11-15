@@ -4,13 +4,10 @@
  * Date: 14/12/14
  */
  
-#include "bluesat_owr_protobuf/PBuffRelay.h"
-#include "message1.pb.h"
-#include "bluesat_owr_protobuf/message1_ros.h"
+
+#include "bluesat_owr_protobuf/Message1Relay.h"
  
-#define MESSAGE_CLASS bluesat_owr_protobuf_proto::message1
-#define MESSAGE_CLASS_ROS bluesat_owr_protobuf::message1_ros
-#define TOPIC "/owr_protobuf/message1"
+
  
  
 int main(int argc, char ** argv) {
@@ -20,9 +17,21 @@ int main(int argc, char ** argv) {
     //init ros
     ros::init(argc, argv, "PBuffRelay");
     
-    PBuffRelay<MESSAGE_CLASS_ROS,MESSAGE_CLASS> relay(TOPIC);
+    Message1Relay relay(TOPIC);
     
     relay.spin();
     
     return EXIT_SUCCESS;   
- }
+}
+
+
+MESSAGE_CLASS_ROS Message1Relay::doPbuffToROS(MESSAGE_CLASS pbuffMsg) {
+    MESSAGE_CLASS_ROS rosMsg;
+    ROS_INFO("Converting...");
+    rosMsg.x = pbuffMsg.x();
+    rosMsg.y = pbuffMsg.y();
+    rosMsg.z = pbuffMsg.z();
+    return rosMsg;
+}
+
+Message1Relay::Message1Relay (std::string topic) :PBuffRelay(topic) {}

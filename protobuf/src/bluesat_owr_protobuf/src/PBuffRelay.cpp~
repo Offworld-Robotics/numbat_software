@@ -19,19 +19,21 @@ PBuffRelay<rosMessageType,pbuffMessageType>::PBuffRelay
     topic = messageTopic;
     ROS_INFO("Initialising relay");
     node = ros::NodeHandle("~");
+    publisher = node.advertise<rosMessageType>(topic,  1000);
 }
 
+/*
+ * Warning: this is an endless loop
+ * Logic loop that converts pbuff messages into ros
+ */
 template <class rosMessageType, class pbuffMessageType>
 void PBuffRelay<rosMessageType,pbuffMessageType>::spin() {
     while(ros::ok()) {
         pbuffMessage.ParseFromIstream(&std::cin);
-        ros::Publisher pub = node.advertise<rosMessageType>(topic,  1000);        
+        rosMessageType rosMsg = doPbuffToROS(pbuffMsg);
+        publisher.publish(rosMsg);
         ros::spinOnce();
     }
 }
  
-//Add all used message types here!
-//TODO: do this with hash defines
-#include "message1.pb.h"
-#include "bluesat_owr_protobuf/message1_ros.h"
-template class PBuffRelay<bluesat_owr_protobuf::message1_ros, bluesat_owr_protobuf_proto::message1>;
+

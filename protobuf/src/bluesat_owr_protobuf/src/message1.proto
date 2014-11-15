@@ -1,9 +1,9 @@
 package bluesat_owr_protobuf_proto;
 
 message message1 {
-    repeated double x = 1;
-    repeated double y = 2;
-    repeated double z = 3;
+    required double x = 1;
+    required double y = 2;
+    required double z = 3;
 
 }
 

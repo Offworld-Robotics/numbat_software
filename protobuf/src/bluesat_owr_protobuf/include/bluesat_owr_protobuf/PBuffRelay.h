@@ -7,7 +7,6 @@
 #ifndef PBuffRelay_H
 #define PBuffRelay_H
 
-
 #include <ros/ros.h>
 
 template <class rosMessageType, class pbuffMessageType> class PBuffRelay {
@@ -15,12 +14,16 @@ template <class rosMessageType, class pbuffMessageType> class PBuffRelay {
     public:
         PBuffRelay(std::string topic);
         void spin();
-        
+    protected:
+        virtual rosMessageType doPbuffToROS(pbuffMessageType pbuffMsg);
+        ros::Publisher publisher;     
+    
     private:
         ros::Subscriber sub;
         pbuffMessageType pbuffMessage;
         ros::NodeHandle node;
         std::string topic;
+   
 };
 
 

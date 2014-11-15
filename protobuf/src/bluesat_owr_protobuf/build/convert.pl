@@ -16,6 +16,7 @@ foreach my $line (<INPUT>) {
     $line =~ s/^.*(\{|\}).*$/ /g;
     $line =~ s/double/float64/g;
     $line =~ s/repeated//g;
+    $line =~ s/required//g;
     $line =~ s/;//g;
     $line =~ s/\=.*//g;
     print OUTPUT $line;
