@@ -24,6 +24,12 @@ int main(int argc, char ** argv) {
     return EXIT_SUCCESS;   
 }
 
+void Message1Relay::reciveMsg(const MESSAGE_CLASS_ROS::ConstPtr& rosMsg){
+    MESSAGE_CLASS pbuffMsg;
+    pbuffMsg.set_x(rosMsg->x);
+    pbuffMsg.set_y(rosMsg->y);
+    pbuffMsg.set_z(rosMsg->z);
+}
 
 MESSAGE_CLASS_ROS Message1Relay::doPbuffToROS(MESSAGE_CLASS pbuffMsg) {
     MESSAGE_CLASS_ROS rosMsg;

@@ -20,6 +20,8 @@ PBuffRelay<rosMessageType,pbuffMessageType>::PBuffRelay
     ROS_INFO("Initialising relay");
     node = ros::NodeHandle("~");
     publisher = node.advertise<rosMessageType>(topic,  1000);
+    //pass the function that is called when a message is recived
+    subscriber = node.subscribe(topic, 1000, &PBuffRelay::ReciveMessage, this);
 }
 
 /*
@@ -30,10 +32,15 @@ template <class rosMessageType, class pbuffMessageType>
 void PBuffRelay<rosMessageType,pbuffMessageType>::spin() {
     while(ros::ok()) {
         pbuffMessage.ParseFromIstream(&std::cin);
-        rosMessageType rosMsg = doPbuffToROS(pbuffMsg);
+        rosMessageType rosMsg = doPbuffToROS(pbuffMessage);
         publisher.publish(rosMsg);
         ros::spinOnce();
     }
 }
- 
+
+//Add all used message types here!
+//TODO: do this with hash defines
+#include "message1.pb.h"
+#include "bluesat_owr_protobuf/message1_ros.h"
+template class PBuffRelay<bluesat_owr_protobuf::message1_ros, bluesat_owr_protobuf_proto::message1>;
 

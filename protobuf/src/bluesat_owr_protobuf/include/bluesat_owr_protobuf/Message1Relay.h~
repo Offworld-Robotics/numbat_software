@@ -18,8 +18,10 @@
 class Message1Relay : public PBuffRelay<MESSAGE_CLASS_ROS,MESSAGE_CLASS> {
     public:
         Message1Relay (std::string topic);
+        
     protected:
-        MESSAGE_CLASS_ROS doPbuffToROS(MESSAGE_CLASS pbuffMsg);
+        MESSAGE_CLASS doPbuffToROS(MESSAGE_CLASS_ROS rosMsg);
+        void reciveMsg(const MESSAGE_CLASS_ROS::ConstPtr& msg);
 };
 
 

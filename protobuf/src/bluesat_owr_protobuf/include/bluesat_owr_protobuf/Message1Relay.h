@@ -12,14 +12,16 @@
 #include "bluesat_owr_protobuf/PBuffRelay.h"
 #include "message1.pb.h"
 #include "bluesat_owr_protobuf/message1_ros.h"
-#include "../src/PBuffRelay.cpp"
+
 
 
 class Message1Relay : public PBuffRelay<MESSAGE_CLASS_ROS,MESSAGE_CLASS> {
     public:
         Message1Relay (std::string topic);
+        
     protected:
         MESSAGE_CLASS_ROS doPbuffToROS(MESSAGE_CLASS pbuffMsg);
+        void reciveMsg(const MESSAGE_CLASS_ROS::ConstPtr& msg);
 };
 
 
