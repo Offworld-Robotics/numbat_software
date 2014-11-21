@@ -38,9 +38,10 @@ void PBuffRelay<rosMessageType,pbuffMessageType>::spin() {
     }
 }
 
+
 //Add all used message types here!
 //TODO: do this with hash defines
-#include "message1.pb.h"
-#include "bluesat_owr_protobuf/message1_ros.h"
-template class PBuffRelay<bluesat_owr_protobuf::message1_ros, bluesat_owr_protobuf_proto::message1>;
+//#include "message1.pb.h"
+//#include "bluesat_owr_protobuf/message1_ros.h"
+//template class PBuffRelay<bluesat_owr_protobuf::message1_ros, bluesat_owr_protobuf_proto::message1>;
 

@@ -7,7 +7,7 @@
 
 #include "bluesat_owr_protobuf/Message1Relay.h"
  
-
+ #include <iostream>
  
  
 int main(int argc, char ** argv) {
@@ -29,6 +29,8 @@ void Message1Relay::reciveMsg(const MESSAGE_CLASS_ROS::ConstPtr& rosMsg){
     pbuffMsg.set_x(rosMsg->x);
     pbuffMsg.set_y(rosMsg->y);
     pbuffMsg.set_z(rosMsg->z);
+    ROS_INFO("Recived");
+    pbuffMsg.SerializeToOstream(&std::cout);
 }
 
 MESSAGE_CLASS_ROS Message1Relay::doPbuffToROS(MESSAGE_CLASS pbuffMsg) {

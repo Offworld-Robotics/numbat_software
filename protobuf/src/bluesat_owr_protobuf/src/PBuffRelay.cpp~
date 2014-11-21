@@ -21,7 +21,7 @@ PBuffRelay<rosMessageType,pbuffMessageType>::PBuffRelay
     node = ros::NodeHandle("~");
     publisher = node.advertise<rosMessageType>(topic,  1000);
     //pass the function that is called when a message is recived
-    subscriber = node.subscribe(topic, 1000, &PBuffRelay::ReciveMessage, this);
+    subscriber = node.subscribe(topic, 1000, &PBuffRelay::reciveMsg, this);
 }
 
 /*
@@ -37,6 +37,7 @@ void PBuffRelay<rosMessageType,pbuffMessageType>::spin() {
         ros::spinOnce();
     }
 }
+
 
 //Add all used message types here!
 //TODO: do this with hash defines

@@ -16,7 +16,7 @@ template <class rosMessageType, class pbuffMessageType> class PBuffRelay {
         void spin();
     protected:
         virtual rosMessageType doPbuffToROS(pbuffMessageType pbuffMsg) {};
-        virtual void reciveMsg(boost::shared_ptr<rosMessageType const> msg) {};
+        virtual void reciveMsg(boost::shared_ptr<rosMessageType const> & msg) {};
         ros::Publisher  publisher;   
         ros::Subscriber subscriber;  
     
