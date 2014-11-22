@@ -107,38 +107,56 @@ void drawGPS() {
 	glColor3ub(255, 0, 0);
 	
 	// draw the rover as a red triangle
-	glBegin(GL_POLYGON);
+	/*glBegin(GL_POLYGON);
 	glVertex2i(-15, 0);
 	glVertex2i(15, 0);
 	glVertex2i(0, 45);
-	glEnd();
+	glEnd();*/
 	
-	//if (frame == 0 || frame % 60 == 0) {GPSAddRandPos();}
+	if (frame == 0 || frame % 60 == 0) GPSAddRandPos(); // debug - randomly generate GPS values
 		
 	if (path != NULL) {
 		longitude = path->x;
 		latitude = path->y;
-		//printGPSPath();
+		//printGPSPath(); // debug - print out the list of GPS co-ordinates
+		
+		// draw out the scale of the path
+		glPushMatrix();
+		glTranslated(0, -120, 0);
+		glColor3f(0,0,0);
+		glScaled(100000,100000,1);
+		glBegin(GL_LINE_STRIP);
+		glColor3f(0,0,0);
+		glVertex2d(0,0);
+		glVertex2d(0.0001 / 0.9059, 0); // scale - this is 1 metre (approx)
+		glEnd();
+		glPopMatrix();
 		
 		// draws out the path so that the forward direction of the rover always facing up on the screen
 		glPushMatrix();
 		glScaled(100000,100000,1);
+		
 		glColor3f(0, 0, 1);
 		double xoff = path->x, yoff = path->y;
 		if (path->next != NULL) {
 			double angle = -atan2(path->next->y - path->y, path->next->x - path->x) * 180.0/PI - 90;
 			glRotated(angle, 0, 0, 1);
-			//printf("angle: %f\n", angle);
 		}
 		glTranslated(-xoff, -yoff, 0);
 		ListNode curr = path;
+		
+		glPointSize(10);
+		glBegin(GL_POINTS);
+		glVertex2d(curr->x, curr->y);
+		glEnd();
+		glPointSize(1);
+		
 		glBegin(GL_LINE_STRIP);
 		while (curr != NULL) {
 			glVertex2d(curr->x, curr->y);
 			curr = curr->next;
 		}
 		glEnd();
-		
 		glPopMatrix();
 		
 		// draw text for GPS co-ordinates
