@@ -245,8 +245,11 @@ void drawFeeds(void) {
 void drawTilt() {
 	char text[30];
 	glPushMatrix();
-	
+
 	glTranslated(720, -250, 0);
+
+        glPushMatrix();
+
 	glColor3f(0,0,0);
 	glBegin(GL_LINE_STRIP);
 	glVertex2d(-70,0);
@@ -271,7 +274,9 @@ void drawTilt() {
 	glVertex2d(-70,0);
 	glVertex2d(70,0);
 	glEnd();
-	
+        glPopMatrix();
+
+        // Draw Tilt-Text
 	glTranslated(-50, -100, 0);
 	sprintf(text, "Left-Right: %.2fdeg", tiltX);
 	drawText(text, 0, 0);
