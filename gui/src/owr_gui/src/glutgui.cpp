@@ -21,6 +21,8 @@ using namespace std;
 #define WINDOW_W 1000
 #define WINDOW_H 500
 
+#define SCALE 150000
+
 void init();
 void keyboard(unsigned char key, int x, int y);
 void reshape(int w, int h);
@@ -36,8 +38,8 @@ void printGPSPath();
 // default status values
 float owr_battery = 5;
 float owr_signal = 5;
-float tiltX = 30; // degrees
-float tiltY = 30; // degrees
+float tiltX = 0; // tilt of left-right in degrees
+float tiltY = 0; // tilt of forward-back in degrees
 double longitude = 0;
 double latitude = 0;
 
@@ -102,8 +104,9 @@ void printGPSPath() {
 void drawGPS() {
 	char GPSLat[30];
 	char GPSLong[30];
+	char scale[] = "Scale: 1 metre";
 	glPushMatrix();
-	glTranslated(425, -250, 0);
+	glTranslated(425, -200, 0);
 	glColor3ub(255, 0, 0);
 	
 	// draw the rover as a red triangle
@@ -122,19 +125,23 @@ void drawGPS() {
 		
 		// draw out the scale of the path
 		glPushMatrix();
-		glTranslated(0, -120, 0);
+		glTranslated(-20, -200, 0);
 		glColor3f(0,0,0);
-		glScaled(100000,100000,1);
+		glScaled(SCALE,SCALE,1);
 		glBegin(GL_LINE_STRIP);
 		glColor3f(0,0,0);
 		glVertex2d(0,0);
 		glVertex2d(0.0001 / 0.9059, 0); // scale - this is 1 metre (approx)
 		glEnd();
 		glPopMatrix();
+		glPushMatrix();
+		glTranslated(10, -205, 0);
+		drawText(scale, 0,0);
+		glPopMatrix();
 		
 		// draws out the path so that the forward direction of the rover always facing up on the screen
 		glPushMatrix();
-		glScaled(100000,100000,1);
+		glScaled(SCALE,SCALE,1);
 		
 		glColor3f(0, 0, 1);
 		double xoff = path->x, yoff = path->y;
@@ -144,24 +151,27 @@ void drawGPS() {
 		}
 		glTranslated(-xoff, -yoff, 0);
 		ListNode curr = path;
-		
-		glPointSize(10);
-		glBegin(GL_POINTS);
-		glVertex2d(curr->x, curr->y);
-		glEnd();
-		glPointSize(1);
+		ListNode prev = NULL;
 		
 		glBegin(GL_LINE_STRIP);
 		while (curr != NULL) {
 			glVertex2d(curr->x, curr->y);
+			prev = curr;
 			curr = curr->next;
 		}
 		glEnd();
+		
+		// draw the origin point bigger
+		glPointSize(10);
+		glBegin(GL_POINTS);
+		glVertex2d(prev->x, prev->y);
+		glEnd();
+		glPointSize(1);
 		glPopMatrix();
 		
 		// draw text for GPS co-ordinates
 		glColor3f(0, 0, 0);
-		glTranslated(-50, -175, 0);
+		glTranslated(-50, -250, 0);
 		sprintf(GPSLat, "Lat: %.10f", latitude);
 		sprintf(GPSLong, "Lon: %.10f", longitude);
 		drawText(GPSLat, 0, 0);
@@ -211,47 +221,43 @@ void drawTilt() {
 	char text[30];
 	glPushMatrix();
 	
-	glTranslated(700, -100, 0);
-	glColor3f(0, 0, 0);
+	glTranslated(720, -250, 0);
+	glColor3f(0,0,0);
 	glBegin(GL_LINE_STRIP);
-	glVertex2d(0, 0);
-	glVertex2d(100, 0);
-	glVertex2d(100-100*cos(tiltX * PI / 180), 100*sin(tiltX * PI / 180));
+	glVertex2d(-70,0);
+	glVertex2d(70,0);
 	glEnd();
 	
-	glPushMatrix();
-	glTranslated(-30, -50, 0);
-	sprintf(text, "Left");
-	drawText(text, 0, 0);
-	glTranslated(100, 0, 0);
-	sprintf(text, "Right");
-	drawText(text, 0, 0);
-	glPopMatrix();
+	int randn = rand() % 100 + 1;
+	if (randn <= 25)
+		tiltX++;
+	else if (randn <= 50)
+		tiltX--;
+	else if (randn <= 75)
+		tiltY++;
+	else
+		tiltY--; 
 	
-	glTranslated(0, -100, 0);
-	sprintf(text, "X :%.2fdeg", tiltX);
-	drawText(text, 0, 0);
+	if ((int) tiltY % 90 == 0) tiltY = 0;
 	
-	glTranslated(0, -150, 0);
+	glTranslated(0, 100*tan(tiltY*PI/180),0);
+	glRotated(tiltX,0,0,1);
 	glBegin(GL_LINE_STRIP);
-	glVertex2d(0, 0);
-	glVertex2d(100, 0);
-	glVertex2d(100-100*cos(tiltY * PI / 180), 100*sin(tiltY * PI / 180));
+	glVertex2d(-70,0);
+	glVertex2d(70,0);
 	glEnd();
 	
-	glPushMatrix();
-	glTranslated(-30, -50, 0);
-	sprintf(text, "Back");
+	glTranslated(-50, -100, 0);
+	sprintf(text, "Left-Right: %.2fdeg", tiltX);
 	drawText(text, 0, 0);
-	glTranslated(100, 0, 0);
-	sprintf(text, "Front");
+	glTranslated(0, -20, 0);
+	sprintf(text, "Front-Back: %.2fdeg", tiltY);
 	drawText(text, 0, 0);
+	
 	glPopMatrix();
 	
-	glTranslated(0, -100, 0);
-	sprintf(text, "Y :%.2fdeg", tiltY);
-	drawText(text, 0, 0);
-	glPopMatrix();
+	// todo: write leftright inside the floating bar
+	// todo: draw so that the horizon moves instead of the bar
 }
 
 // draws the battery level near the top-right of the window
