@@ -250,12 +250,18 @@ void drawTilt() {
 
         glPushMatrix();
 
+        //DRAW robot indicator
 	glColor3f(0,0,0);
 	glBegin(GL_LINE_STRIP);
 	glVertex2d(-70,0);
 	glVertex2d(70,0);
 	glEnd();
-	
+	glBegin(GL_LINE_STRIP);
+	glVertex2d(0,-70);
+	glVertex2d(0,70);
+	glEnd();
+
+        // produce random tilt data
 	int randn = rand() % 100 + 1;
 	if (randn <= 25)
 		tiltX++;
@@ -265,15 +271,48 @@ void drawTilt() {
 		tiltY++;
 	else
 		tiltY--; 
-	
+
+        // clean tilt data
 	if ((int) tiltY % 90 == 0) tiltY = 0;
-	
-	glTranslated(0, 100*tan(tiltY*PI/180),0);
-	glRotated(tiltX,0,0,1);
+
+        // daw horizon
+	glTranslated(0, 100*tan(-tiltY*PI/180),0);
+	glRotated(-tiltX,0,0,1);
 	glBegin(GL_LINE_STRIP);
 	glVertex2d(-70,0);
 	glVertex2d(70,0);
 	glEnd();
+
+        // draw sky indicator lines
+        glPushMatrix();
+	glColor3f(0,0,1);
+        glTranslated(0, 15, 0);
+        glBegin(GL_LINE_STRIP);
+	glVertex2d(-50,0);
+	glVertex2d(50,0);
+	glEnd();
+        glTranslated(0, 15, 0);
+        glBegin(GL_LINE_STRIP);
+	glVertex2d(-30,0);
+	glVertex2d(30,0);
+	glEnd();
+        glPopMatrix();
+
+        // draw ground (ie below horizon) indicator lines
+        glPushMatrix();
+	glColor3f(0,0,0);
+        glTranslated(0, -15, 0);
+        glBegin(GL_LINE_STRIP);
+	glVertex2d(-50,0);
+	glVertex2d(50,0);
+	glEnd();
+        glTranslated(0, -15, 0);
+        glBegin(GL_LINE_STRIP);
+	glVertex2d(-30,0);
+	glVertex2d(30,0);
+	glEnd();
+        glPopMatrix();
+
         glPopMatrix();
 
         // Draw Tilt-Text
@@ -286,8 +325,7 @@ void drawTilt() {
 	
 	glPopMatrix();
 	
-	// todo: write leftright inside the floating bar
-	// todo: draw so that the horizon moves instead of the bar
+	// todo: write leftright inside the crosshair
 }
 
 // draws the battery level near the top-right of the window
