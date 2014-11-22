@@ -47,7 +47,9 @@ using namespace std;
 #define VID_FEED_INACTIVE_BUTTON_BLUE 0
 
 #define SCALE 150000
-
+#define ARTIFICIAL_HORIZON_SKY_HEIGHT 50
+#define ARTIFICIAL_HORIZON_SKY_HALF_WIDTH 70
+#define ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH 40
 void init();
 void keyboard(unsigned char key, int x, int y);
 void reshape(int w, int h);
@@ -249,18 +251,6 @@ void drawTilt() {
 	glTranslated(720, -250, 0);
 
         glPushMatrix();
-
-        //DRAW robot indicator
-	glColor3f(0,0,0);
-	glBegin(GL_LINE_STRIP);
-	glVertex2d(-70,0);
-	glVertex2d(70,0);
-	glEnd();
-	glBegin(GL_LINE_STRIP);
-	glVertex2d(0,-70);
-	glVertex2d(0,70);
-	glEnd();
-
         // produce random tilt data
 	int randn = rand() % 100 + 1;
 	if (randn <= 25)
@@ -286,34 +276,44 @@ void drawTilt() {
         // draw sky indicator lines
         glPushMatrix();
 	glColor3f(0,0,1);
-        glTranslated(0, 15, 0);
-        glBegin(GL_LINE_STRIP);
-	glVertex2d(-50,0);
-	glVertex2d(50,0);
-	glEnd();
-        glTranslated(0, 15, 0);
-        glBegin(GL_LINE_STRIP);
-	glVertex2d(-30,0);
-	glVertex2d(30,0);
+        //glTranslated(0, 15, 0);
+        glBegin(GL_QUADS);
+	glVertex2d(-ARTIFICIAL_HORIZON_SKY_HALF_WIDTH,0);
+	glVertex2d(ARTIFICIAL_HORIZON_SKY_HALF_WIDTH,0);
+	//glEnd();
+        //glTranslated(0, 15, 0);
+        //glBegin(GL_LINE_STRIP);
+	glVertex2d(ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH,ARTIFICIAL_HORIZON_SKY_HEIGHT);
+	glVertex2d(-ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH,ARTIFICIAL_HORIZON_SKY_HEIGHT);
 	glEnd();
         glPopMatrix();
 
         // draw ground (ie below horizon) indicator lines
         glPushMatrix();
-	glColor3f(0,0,0);
-        glTranslated(0, -15, 0);
-        glBegin(GL_LINE_STRIP);
-	glVertex2d(-50,0);
-	glVertex2d(50,0);
-	glEnd();
-        glTranslated(0, -15, 0);
-        glBegin(GL_LINE_STRIP);
-	glVertex2d(-30,0);
-	glVertex2d(30,0);
+	glColor3f(0.1,0.1,0.1);
+        glBegin(GL_QUADS);
+	glVertex2d(-ARTIFICIAL_HORIZON_SKY_HALF_WIDTH,0);
+	glVertex2d(ARTIFICIAL_HORIZON_SKY_HALF_WIDTH,0);
+	//glEnd();
+        //glTranslated(0, 15, 0);
+        //glBegin(GL_LINE_STRIP);
+	glVertex2d(ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH,-ARTIFICIAL_HORIZON_SKY_HEIGHT);
+	glVertex2d(-ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH,-ARTIFICIAL_HORIZON_SKY_HEIGHT);
 	glEnd();
         glPopMatrix();
 
         glPopMatrix();
+
+        //DRAW robot indicator
+	glColor3f(1,0,0);
+	glBegin(GL_LINE_STRIP);
+	glVertex2d(-70,0);
+	glVertex2d(70,0);
+	glEnd();
+	glBegin(GL_LINE_STRIP);
+	glVertex2d(0,-70);
+	glVertex2d(0,70);
+	glEnd();
 
         // Draw Tilt-Text
 	glTranslated(-50, -100, 0);
