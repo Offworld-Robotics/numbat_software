@@ -87,8 +87,18 @@ void updateConstants(float bat, float sig, ListNode points, vector2D tar) {
 	ROS_INFO("Updated");
 }
 
+void generateTarget() {
+	double randn;
+	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	target.x = randn + 151.139;
+	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	target.y = randn - 33.718;
+	target.next = NULL;
+}
+
 int main(int argc, char **argv) {
 	srand(time(NULL));
+	generateTarget();
 	ros::init(argc, argv, "GUI");
 	GPSGUI *gpsnode = new GPSGUI(updateConstants);
 	//gpsnode->spin();
@@ -134,16 +144,15 @@ void drawGPS() {
 	char scale[] = "Scale: 1 metre";
 	glPushMatrix();
 	glTranslated(425, -200, 0);
-	glColor3ub(255, 0, 0);
 	
-	// draw the rover as a red triangle
-	/*glBegin(GL_POLYGON);
-	glVertex2i(-15, 0);
-	glVertex2i(15, 0);
-	glVertex2i(0, 45);
-	glEnd();*/
+	// draw the rover as a red square
+	glPointSize(10);
+	glBegin(GL_POINTS);
+	glColor3f(1,0,0);
+	glVertex2d(0, 0);
+	glEnd();
 	
-	if (frame == 0 || frame % 60 == 0) GPSAddRandPos(); // debug - randomly generate GPS values
+	if (frame == 0 || frame % 60 == 0) GPSAddRandPos(); // debug - randomly generate GPS values every second or so
 		
 	if (path != NULL) {
 		longitude = path->x;
@@ -192,6 +201,13 @@ void drawGPS() {
 		glPointSize(10);
 		glBegin(GL_POINTS);
 		glVertex2d(prev->x, prev->y);
+		glEnd();
+		
+		// draw the target as green square
+		glPointSize(10);
+		glColor3f(0,1,0);
+		glBegin(GL_POINTS);
+		glVertex2d(target.x, target.y);
 		glEnd();
 		glPointSize(1);
 		glPopMatrix();
