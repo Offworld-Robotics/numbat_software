@@ -50,21 +50,42 @@ using namespace std;
 #define ARTIFICIAL_HORIZON_SKY_HEIGHT 50
 #define ARTIFICIAL_HORIZON_SKY_HALF_WIDTH 70
 #define ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH 40
+
+#define UP    0
+#define DOWN  1
+#define LEFT  2
+#define RIGHT 3
+
+// OpenGL essential functions
 void init();
-void keyboard(unsigned char key, int x, int y);
 void reshape(int w, int h);
+void idle();
 void display();
+
+// OpenGL keyboard functions (mainly for debugging)
+void keydown(unsigned char key, int x, int y);
+//void keyup(unsigned char key, int x, int y);
+void special_keydown(int keycode, int x, int y);
+void special_keyup(int keycode, int x, int y);
 
 // function to display some text
 void drawText(char *text, int x, int y);
 // function to insert a co-ordinate to the front of the path list
 void GPSAddRandPos();
+// function to generate a target co-ordinate
+void generateTarget();
 // function to print the path
 void printGPSPath();
+// draw functions
+void drawFeeds();
+void drawGPS();
+void drawTilt();
+void drawBattery();
+void drawSignal();
 
 // default status values
-float owr_battery = 5;
-float owr_signal = 5;
+float owr_battery = 0;
+float owr_signal = 0;
 float tiltX = 0; // tilt of left-right in degrees
 float tiltY = 0; // tilt of forward-back in degrees
 double longitude = 0;
@@ -78,13 +99,107 @@ vector2D target;
 unsigned int currentWindowH = WINDOW_H;
 unsigned int currentWindowW = WINDOW_W;
 unsigned int frame = 0;
+bool arrowKeys[3] = {0};
 
-void updateConstants(float bat, float sig, ListNode points, vector2D tar) {
-	owr_battery = bat;
-	owr_signal = sig;
-	path = points;
-	target = tar;
-	ROS_INFO("Updated");
+int main(int argc, char **argv) {
+	srand(time(NULL));
+	generateTarget();
+	ros::init(argc, argv, "GUI");
+	GPSGUI *gpsnode = new GPSGUI(updateConstants);
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitWindowSize(WINDOW_W, WINDOW_H);
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("OWR GUI");
+	init();
+	glutKeyboardFunc(keydown);
+	glutSpecialFunc(special_keydown);
+	glutSpecialUpFunc(special_keyup);
+	glutDisplayFunc(display);
+	glutReshapeFunc(reshape);
+	glutIdleFunc(idle);
+	glutMainLoop();
+	return 0;
+}
+
+void idle(void) {
+	ros::spinOnce();
+	
+	/*// produce random tilt data
+	int randn = rand() % 100 + 1;
+	if (randn <= 25)
+		tiltX++;
+	else if (randn <= 50)
+		tiltX--;
+	else if (randn <= 75)
+		tiltY++;
+	else
+		tiltY--;*/
+	
+	// debug - arrow key control
+	if (arrowKeys[UP])
+		tiltY--;
+	if (arrowKeys[DOWN])
+		tiltY++;
+	if (arrowKeys[LEFT])
+		tiltX--;
+	if (arrowKeys[RIGHT])
+		tiltX++;
+
+   // clean tilt data
+	if ((int) tiltY % 90 == 0) tiltY = 0;
+	
+	// debug - animate battery and signal
+	owr_battery += 0.01;
+	owr_signal -= 0.01;
+	if (owr_battery < 0)
+		owr_battery = 10;
+	if (owr_battery > 10)
+		owr_battery = 0;
+	if (owr_signal < 0)
+		owr_signal = 10;
+	if (owr_signal > 10)
+		owr_signal = 0;
+	
+	// debug - randomly generate GPS values every second
+	if (frame == 0 || frame % 60 == 0) GPSAddRandPos();
+	
+	frame++;
+	if (frame > 6001)
+		frame -= 6000;
+		
+	display();
+	usleep(16666);
+}
+
+void display(void) {
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	drawFeeds();
+	drawGPS();
+	drawTilt();
+	drawBattery();
+	drawSignal();
+	glutSwapBuffers();
+}
+
+void GPSAddRandPos() {
+	double randx, randy;
+	ListNode rest = path;
+	path = (ListNode) malloc(sizeof(_vector2D));
+	randx = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	randy = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	if (rest == NULL) {
+		path->x = randx + 151.139;
+		path->y = randy - 33.718;
+	} else {
+		randx -= 1.0/1000.0/2.0;
+		path->x = rest->x + randx;
+		randy -= 1.0/1000.0/2.0;
+		path->y = rest->y + randy;
+	}
+	path->next = rest;
 }
 
 void generateTarget() {
@@ -94,37 +209,6 @@ void generateTarget() {
 	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
 	target.y = randn - 33.718;
 	target.next = NULL;
-}
-
-int main(int argc, char **argv) {
-	srand(time(NULL));
-	generateTarget();
-	ros::init(argc, argv, "GUI");
-	GPSGUI *gpsnode = new GPSGUI(updateConstants);
-	//gpsnode->spin();
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(WINDOW_W, WINDOW_H);
-	glutInitWindowPosition(100, 100);
-	glutCreateWindow("OWR GUI");
-	init();
-	glutKeyboardFunc(keyboard);
-	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
-	glutIdleFunc(display);
-	glutMainLoop();
-	return 0;
-}
-
-void GPSAddRandPos() {
-	ListNode rest = path;
-	path = (ListNode) malloc(sizeof(_vector2D));
-	double randn;
-	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
-	path->x = randn + 151.139;
-	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
-	path->y = randn - 33.718;
-	path->next = rest;
 }
 
 void printGPSPath() {
@@ -151,8 +235,6 @@ void drawGPS() {
 	glColor3f(1,0,0);
 	glVertex2d(0, 0);
 	glEnd();
-	
-	if (frame == 0 || frame % 60 == 0) GPSAddRandPos(); // debug - randomly generate GPS values every second or so
 		
 	if (path != NULL) {
 		longitude = path->x;
@@ -266,22 +348,9 @@ void drawTilt() {
 
 	glTranslated(720, -250, 0);
 
-        glPushMatrix();
-        // produce random tilt data
-	int randn = rand() % 100 + 1;
-	if (randn <= 25)
-		tiltX++;
-	else if (randn <= 50)
-		tiltX--;
-	else if (randn <= 75)
-		tiltY++;
-	else
-		tiltY--; 
+   glPushMatrix();
 
-        // clean tilt data
-	if ((int) tiltY % 90 == 0) tiltY = 0;
-
-        // daw horizon
+        // draw horizon
 	glTranslated(0, 100*tan(-tiltY*PI/180),0);
 	glRotated(-tiltX,0,0,1);
 	glBegin(GL_LINE_STRIP);
@@ -425,10 +494,44 @@ void init(void) {
 	glShadeModel(GL_FLAT);
 }
 
-void keyboard(unsigned char key, int x, int y) {
+void keydown(unsigned char key, int x, int y) {
 	switch (key) {
 	case 27:
 		exit(0);
+	}
+}
+
+void special_keydown(int keycode, int x, int y) {
+	switch (keycode) {
+	case GLUT_KEY_UP:
+		arrowKeys[0] = 1;
+		break;
+	case GLUT_KEY_DOWN:
+		arrowKeys[1] = 1;
+		break;
+	case GLUT_KEY_LEFT:
+		arrowKeys[2] = 1;
+		break;
+	case GLUT_KEY_RIGHT:
+		arrowKeys[3] = 1;
+		break;
+	}
+}
+
+void special_keyup(int keycode, int x, int y) {
+	switch (keycode) {
+	case GLUT_KEY_UP:
+		arrowKeys[0] = 0;
+		break;
+	case GLUT_KEY_DOWN:
+		arrowKeys[1] = 0;
+		break;
+	case GLUT_KEY_LEFT:
+		arrowKeys[2] = 0;
+		break;
+	case GLUT_KEY_RIGHT:
+		arrowKeys[3] = 0;
+		break;
 	}
 }
 
@@ -442,28 +545,18 @@ void reshape(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void display(void) {
-	ros::spinOnce();
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	drawFeeds();
-	drawGPS();
-	drawTilt();
-	drawBattery();
-	drawSignal();
-	glFlush();
-	glutSwapBuffers();
-	usleep(16666);
-	frame++;
-	if (frame > 6001)
-		frame -= 6000;
-}
-
 void drawText(char *text, int x, int y) {
 	for (unsigned int i = 0; i < strlen(text); i++) {
 		glRasterPos3f(x, y, 0);
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
 		x += 10;
 	}
+}
+
+void updateConstants(float bat, float sig, ListNode points, vector2D tar) {
+	owr_battery = bat;
+	owr_signal = sig;
+	path = points;
+	target = tar;
+	ROS_INFO("Updated");
 }
