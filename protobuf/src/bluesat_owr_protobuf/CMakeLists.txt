@@ -125,14 +125,19 @@ PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/message1.proto)
 
 
 ## Declare a cpp executable
-add_executable(PBuffRelay  src/main.cpp ${PROTO_SRCS} ${PROTO_HDRS})
+add_executable(PBufftoRosRelay  src/pbuffToROS.cpp src/Message1Relay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
+add_executable(ROStoPBuffRelay  src/rosToPbuff.cpp src/Message1Relay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(bluesat_owr_protobuf_node bluesat_owr_protobuf_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(PBuffRelay
+ target_link_libraries(PBufftoRosRelay
+   ${catkin_LIBRARIES}
+   ${PROTOBUF_LIBRARIES}
+ )
+ target_link_libraries(ROStoPBuffRelay
    ${catkin_LIBRARIES}
    ${PROTOBUF_LIBRARIES}
  )

@@ -13,10 +13,11 @@ template <class rosMessageType, class pbuffMessageType> class PBuffRelay {
     
     public:
         PBuffRelay(std::string topic);
+        void initROStoPBuff();
         void spin();
     protected:
         virtual rosMessageType doPbuffToROS(pbuffMessageType pbuffMsg) {};
-        virtual void reciveMsg(boost::shared_ptr<rosMessageType const> & msg) {};
+        virtual void reciveMsg(const boost::shared_ptr<rosMessageType const> & msg) =0;
         ros::Publisher  publisher;   
         ros::Subscriber subscriber;  
     
