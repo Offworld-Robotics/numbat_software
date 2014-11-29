@@ -7,8 +7,8 @@
 #include "bluesat_owr_protobuf/PBuffRelay.h"
 #include <iostream>
  
-#define MESSAGE_CLASS bluesat_owr_protobuf_proto::message1
-#define MESSAGE_CLASS_ROS bluesat_owr_protobuf::message1_ros
+//#define MESSAGE_CLASS bluesat_owr_protobuf_proto::message1
+///#define MESSAGE_CLASS_ROS bluesat_owr_protobuf::message1_ros
  
 template <class rosMessageType, class pbuffMessageType>
 PBuffRelay<rosMessageType,pbuffMessageType>::PBuffRelay

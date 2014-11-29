@@ -1,0 +1,6 @@
+package bluesat_owr_protobuf_proto;
+
+message battery {
+    required float voltage = 1;
+}
+

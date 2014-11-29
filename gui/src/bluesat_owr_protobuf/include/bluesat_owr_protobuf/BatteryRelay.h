@@ -10,12 +10,12 @@
 #define TOPIC "/owr_protobuf/battery"
 
 #include "bluesat_owr_protobuf/PBuffRelay.h"
-#include "message1.pb.h"
+#include "battery.pb.h"
 #include "bluesat_owr_protobuf/battery_ros.h"
 
 #include "../src/PBuffRelay.cpp"
 
-class BatteryRelay : public BatteryRelay<MESSAGE_CLASS_ROS,MESSAGE_CLASS> {
+class BatteryRelay : public PBuffRelay<MESSAGE_CLASS_ROS,MESSAGE_CLASS> {
     public:
         BatteryRelay (std::string topic);
         

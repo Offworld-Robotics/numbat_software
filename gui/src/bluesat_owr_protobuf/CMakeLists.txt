@@ -52,13 +52,20 @@ find_package(Protobuf REQUIRED)
 
 #coverts files from .proto to message
 execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/message1.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/message1_ros.msg
-
                  )
-
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/battery.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/battery_ros.msg
+                 )
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/signal.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/signal_ros.msg
+                 )
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/tilt.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/tilt_ros.msg
+                 )
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
    message1_ros.msg
+   battery_ros.msg
+   signal_ros.msg
+   tilt_ros.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -116,7 +123,7 @@ include_directories(
 
 
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/message1.proto)
-
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/battery.proto)
 
 ## Declare a cpp library
 # add_library(bluesat_owr_protobuf
@@ -125,23 +132,32 @@ PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/message1.proto)
 
 
 ## Declare a cpp executable
-add_executable(PBufftoRosRelay  src/pbuffToROS.cpp src/Message1Relay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
-add_executable(ROStoPBuffRelay  src/rosToPbuff.cpp src/Message1Relay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
+#add_executable(PBufftoRosRelay  src/pbuffToROS.cpp src/Message1Relay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
+#add_executable(ROStoPBuffRelay  src/rosToPbuff.cpp src/Message1Relay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
+add_executable(PBufftoRosRelayBattery  src/pbuffToROSBattery.cpp src/BatteryRelay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
+add_executable(ROStoPBuffRelayBattery  src/rosToPbuffBattery.cpp src/BatteryRelay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(bluesat_owr_protobuf_node bluesat_owr_protobuf_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(PBufftoRosRelay
+ target_link_libraries(PBufftoRosRelayBattery
    ${catkin_LIBRARIES}
    ${PROTOBUF_LIBRARIES}
  )
- target_link_libraries(ROStoPBuffRelay
+ target_link_libraries(ROStoPBuffRelayBattery
    ${catkin_LIBRARIES}
    ${PROTOBUF_LIBRARIES}
  )
- 
+#  target_link_libraries(PBufftoRosRelay
+#   ${catkin_LIBRARIES}
+#   ${PROTOBUF_LIBRARIES}
+# )
+# target_link_libraries(ROStoPBuffRelay
+#   ${catkin_LIBRARIES}
+#   ${PROTOBUF_LIBRARIES}
+# )
  #add_dependencies(PBuffRelay ${catkin_EXPORTED_TRAGETS})
 
 #############

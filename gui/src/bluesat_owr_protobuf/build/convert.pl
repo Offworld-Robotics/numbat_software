@@ -14,6 +14,7 @@ open(OUTPUT, ">$ARGV[1]");
 foreach my $line (<INPUT>) {
     $line =~ s/^package \w+\;.*$//g;
     $line =~ s/^.*(\{|\}).*$/ /g;
+    $line =~ s/float/float32/g;
     $line =~ s/double/float64/g;
     $line =~ s/repeated//g;
     $line =~ s/required//g;

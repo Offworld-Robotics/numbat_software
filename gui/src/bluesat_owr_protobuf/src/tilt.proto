@@ -1,0 +1,7 @@
+package bluesat_owr_protobuf_proto;
+
+message tilt {
+    required float tiltx;
+    required float tilty;
+}
+

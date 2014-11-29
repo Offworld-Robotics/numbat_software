@@ -22,7 +22,7 @@ PBuffRelay<rosMessageType,pbuffMessageType>::PBuffRelay
 
 
 template <class rosMessageType, class pbuffMessageType>
-void PBuffRelay<rosMessageType,pbuffMessageType>::init() {
+void PBuffRelay<rosMessageType,pbuffMessageType>::initROStoPBuff() {
     //pass the function that is called when a message is recived
     subscriber = node.subscribe(topic, 1000, &PBuffRelay::reciveMsg, this);
     ros::spin();
