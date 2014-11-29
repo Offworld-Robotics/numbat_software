@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+# Converts protobuf .proto files to ros .msg files
+# Author: Harry J.E Day
+# Date:   9/08/14 
+
+use strict; 
+use warnings;
+
+open(INPUT, "<$ARGV[0]");
+open(OUTPUT, ">$ARGV[1]");
+
+my @input = <INPUT>;
+
+foreach my $line (<INPUT>) {
+    $line =~ /^package \w+;*$/dg;
+    #$line =~ s/^.*(\{|\}).*$/ /g;
+    #$line =~ s/double/float64/g;
+    #$line =~ s/repeated//g;
+    print OUTPUT $line;
+}
+
+
+
+
+
+
+    

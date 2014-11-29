@@ -1,0 +1,9 @@
+package bluesat_owr_protobuf_proto;
+
+message message1 {
+    double x = 1;
+    double y = 2;
+    double z = 3;
+
+}
+
