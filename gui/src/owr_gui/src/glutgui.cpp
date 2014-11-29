@@ -11,7 +11,7 @@
  *
  */
 
-// catkin_make
+// catkin_make // (add argument "-j4" for ros indigo)
 // source devel/setup.bash
 // rosrun owr_gui glutgui
 #include <iostream>
@@ -32,7 +32,7 @@ using namespace std;
 
 // default window size
 #define WINDOW_W 1000
-#define WINDOW_H 500
+#define WINDOW_H 300
 
 #define VID_FEED_ACTIVE_BUTTON_RED 0
 #define VID_FEED_ACTIVE_BUTTON_GREEN 153
@@ -70,7 +70,9 @@ void special_keyup(int keycode, int x, int y);
 
 // function to display some text
 void drawText(char *text, int x, int y);
-// function to insert a co-ordinate to the front of the path list
+// function to insert a given co-ordinate to the front of the path list
+void GPSAddPos(double x, double y);
+// function to insert a random co-ordinate to the front of the path list
 void GPSAddRandPos();
 // function to generate a target co-ordinate
 void generateTarget();
@@ -90,6 +92,7 @@ float tiltX = 0; // tilt of left-right in degrees
 float tiltY = 0; // tilt of forward-back in degrees
 double longitude = 0;
 double latitude = 0;
+double prevAngle = 90;
 
 // GPS related variables
 ListNode path = NULL;
@@ -136,7 +139,7 @@ void idle(void) {
 	else
 		tiltY--;*/
 	
-	// debug - arrow key control
+	// debug - arrow key control for tilt
 	if (arrowKeys[UP])
 		tiltY--;
 	if (arrowKeys[DOWN])
@@ -149,6 +152,29 @@ void idle(void) {
    // clean tilt data
 	if ((int) tiltY % 90 == 0) tiltY = 0;
 	
+	// debug - randomly generate GPS values every second
+	if (frame == 0 || frame % 60 == 0) GPSAddRandPos();
+	
+	// debug - arrow key control for path
+	/*if (path != NULL) {
+		double X = path->x, Y = path->y;
+		double inc = 1.0/1000.0/200.0;
+		if (arrowKeys[UP])
+			Y += inc;
+		if (arrowKeys[DOWN])
+			Y -= inc;
+		if (arrowKeys[LEFT])
+			X -= inc;
+		if (arrowKeys[RIGHT])
+			X += inc;
+		GPSAddPos(X, Y);
+	} else if (path == NULL) {
+		GPSAddRandPos();
+	}*/
+	
+	// debug - print out the list of GPS co-ordinates
+	//printGPSPath();
+		
 	// debug - animate battery and signal
 	owr_battery += 0.01;
 	owr_signal -= 0.01;
@@ -161,9 +187,6 @@ void idle(void) {
 	if (owr_signal > 10)
 		owr_signal = 0;
 	
-	// debug - randomly generate GPS values every second
-	if (frame == 0 || frame % 60 == 0) GPSAddRandPos();
-	
 	frame++;
 	if (frame > 6001)
 		frame -= 6000;
@@ -173,7 +196,7 @@ void idle(void) {
 }
 
 void display(void) {
-	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glClearColor(1,1,1,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	drawFeeds();
@@ -202,6 +225,14 @@ void GPSAddRandPos() {
 	path->next = rest;
 }
 
+void GPSAddPos(double x, double y) {
+	ListNode rest = path;
+	path = (ListNode) malloc(sizeof(_vector2D));
+	path->x = x;
+	path->y = y;
+	path->next = rest;
+}
+
 void generateTarget() {
 	double randn;
 	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
@@ -227,7 +258,7 @@ void drawGPS() {
 	char GPSLong[30];
 	char scale[] = "Scale: 1 metre";
 	glPushMatrix();
-	glTranslated(425, -200, 0);
+	glTranslated(400, -WINDOW_H/3, 0);
 	
 	// draw the rover as a red square
 	glPointSize(10);
@@ -239,11 +270,10 @@ void drawGPS() {
 	if (path != NULL) {
 		longitude = path->x;
 		latitude = path->y;
-		//printGPSPath(); // debug - print out the list of GPS co-ordinates
 		
 		// draw out the scale of the path
 		glPushMatrix();
-		glTranslated(-20, -200, 0);
+		glTranslated(-20, -WINDOW_H/3 - 15, 0);
 		glColor3f(0,0,0);
 		glScaled(SCALE,SCALE,1);
 		glBegin(GL_LINE_STRIP);
@@ -253,7 +283,7 @@ void drawGPS() {
 		glEnd();
 		glPopMatrix();
 		glPushMatrix();
-		glTranslated(10, -205, 0);
+		glTranslated(10, -WINDOW_H/3 - 20, 0);
 		drawText(scale, 0,0);
 		glPopMatrix();
 		
@@ -265,6 +295,11 @@ void drawGPS() {
 		double xoff = path->x, yoff = path->y;
 		if (path->next != NULL) {
 			double angle = -atan2(path->next->y - path->y, path->next->x - path->x) * 180.0/PI - 90;
+			// if the rover did not move, its orientation is the same as previously
+			if (angle == 0)
+				angle = prevAngle;
+			else
+				prevAngle = angle;
 			glRotated(angle, 0, 0, 1);
 		}
 		glTranslated(-xoff, -yoff, 0);
@@ -286,7 +321,6 @@ void drawGPS() {
 		glEnd();
 		
 		// draw the target as green square
-		glPointSize(10);
 		glColor3f(0,1,0);
 		glBegin(GL_POINTS);
 		glVertex2d(target.x, target.y);
@@ -296,7 +330,7 @@ void drawGPS() {
 		
 		// draw text for GPS co-ordinates
 		glColor3f(0, 0, 0);
-		glTranslated(-50, -250, 0);
+		glTranslated(-50, -WINDOW_H/2, 0);
 		sprintf(GPSLat, "Lat: %.10f", latitude);
 		sprintf(GPSLong, "Lon: %.10f", longitude);
 		drawText(GPSLat, 0, 0);
@@ -311,7 +345,7 @@ void drawFeeds(void) {
 	glPushMatrix();
 	
 	glColor3ub(VID_FEED_ACTIVE_BUTTON_RED, VID_FEED_ACTIVE_BUTTON_GREEN, VID_FEED_ACTIVE_BUTTON_BLUE);
-	glTranslated(50, -50, 0);
+	glTranslated(50, -37.5, 0);
 	glRectd(-30, -25, 30, 25);
 	glColor3f(0.0, 0.0, 1.0);
 	glRasterPos2i(-5, -6);
@@ -346,7 +380,7 @@ void drawTilt() {
 	char text[30];
 	glPushMatrix();
 
-	glTranslated(720, -250, 0);
+	glTranslated(720, -WINDOW_H/2, 0);
 
    glPushMatrix();
 
