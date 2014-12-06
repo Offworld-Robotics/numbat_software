@@ -252,6 +252,10 @@ void printGPSPath() {
 	cout << "End" << endl;
 }
 
+double distance(double x1, double y1, double x2, double y2) {
+	return sqrt(pow(x2-x1, 2) + pow(y2-y1, 2));
+}
+
 // draws GPS path and co-ordinates near the centre of the window
 void drawGPS() {
 	char GPSLat[30];
@@ -320,11 +324,16 @@ void drawGPS() {
 		glVertex2d(prev->x, prev->y);
 		glEnd();
 		
-		// draw the target as green square
+		// draw the path to target green
 		glColor3f(0,1,0);
+		glBegin(GL_LINES);
+		glVertex2d(path->x, path->y);
+		glVertex2d(target.x, target.y);
+		glEnd();
 		glBegin(GL_POINTS);
 		glVertex2d(target.x, target.y);
 		glEnd();
+		
 		glPointSize(1);
 		glPopMatrix();
 		
@@ -532,6 +541,19 @@ void keydown(unsigned char key, int x, int y) {
 	switch (key) {
 	case 27:
 		exit(0);
+		break;
+	case '1':
+		// activate feed 1
+		break;
+	case '2':
+		// activate feed 2
+		break;
+	case '3':
+		// activate feed 3
+		break;
+	case '4':
+		// activate feed 4
+		break;
 	}
 }
 
