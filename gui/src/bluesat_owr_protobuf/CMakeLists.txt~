@@ -133,16 +133,33 @@ PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/signal.proto src/battery.proto  
 add_executable(PBufftoRosRelayBattery  src/pbuffToROSBattery.cpp src/BatteryRelay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
 add_executable(ROStoPBuffRelayBattery  src/rosToPbuffBattery.cpp src/BatteryRelay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
 
+add_executable(PBufftoRosRelaySignal  src/pbuffToROSSignal.cpp src/SignalRelay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
+add_executable(ROStoPBuffRelaySignal  src/rosToPbuffSignal.cpp src/SignalRelay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
+
+add_executable(PBufftoRosRelayTilt  src/pbuffToROSSignal.cpp src/SignalRelay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
+add_executable(ROStoPBuffRelayTilt  src/rosToPbuffSignal.cpp src/SignalRelay.cpp  ${PROTO_SRCS} ${PROTO_HDRS})
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
+add_dependencies(PBufftoRosRelaySignal bluesat_owr_protobuf_generate_messages_cpp)
+add_dependencies(ROStoPBuffRelaySignal bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(PBufftoRosRelayBattery bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(ROStoPBuffRelayBattery bluesat_owr_protobuf_generate_messages_cpp)
+add_dependencies(PBufftoRosRelayTilt bluesat_owr_protobuf_generate_messages_cpp)
+add_dependencies(ROStoPBuffRelayTilt bluesat_owr_protobuf_generate_messages_cpp)
 ## Specify libraries to link a library or executable target against
  target_link_libraries(PBufftoRosRelayBattery
    ${catkin_LIBRARIES}
    ${PROTOBUF_LIBRARIES}
  )
  target_link_libraries(ROStoPBuffRelayBattery
+   ${catkin_LIBRARIES}
+   ${PROTOBUF_LIBRARIES}
+ )
+ target_link_libraries(PBufftoRosRelaySignal
+   ${catkin_LIBRARIES}
+   ${PROTOBUF_LIBRARIES}
+ )
+ target_link_libraries(ROStoPBuffRelaySignal
    ${catkin_LIBRARIES}
    ${PROTOBUF_LIBRARIES}
  )
@@ -154,7 +171,7 @@ add_dependencies(ROStoPBuffRelayBattery bluesat_owr_protobuf_generate_messages_c
 #   ${catkin_LIBRARIES}
 #   ${PROTOBUF_LIBRARIES}
 # )
-add_dependencies(PBuffRelay ${catkin_EXPORTED_TRAGETS})
+#add_dependencies(PBuffRelay ${catkin_EXPORTED_TRAGETS})
 
 #############
 ## Install ##
@@ -171,7 +188,7 @@ add_dependencies(PBuffRelay ${catkin_EXPORTED_TRAGETS})
 # )
 
 ## Mark executables and/or libraries for installation
- install(TARGETS PBufftoRosRelayBattery ROStoPBuffRelayBattery 
+ install(TARGETS PBufftoRosRelayBattery ROStoPBuffRelayBattery PBufftoRosRelaySignal ROStoPBuffRelaySignal
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
