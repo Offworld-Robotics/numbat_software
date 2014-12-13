@@ -6,6 +6,7 @@
 #include "comms.h"
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
+#include "../../devel/include/bluesat_owr_protobuf/battery_ros.h"
 
 class GPSGUI {
 
@@ -13,10 +14,12 @@ class GPSGUI {
         GPSGUI(void  (*updateConst)(float, float, ListNode, vector2D));
         void spin();
         void reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
+        void reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
         
     private:
         std::string coOrdList;
         ros::Subscriber gpsSub;
+        ros::Subscriber batterySub;
         ListNode list;
         ListNode end;
         float battery;

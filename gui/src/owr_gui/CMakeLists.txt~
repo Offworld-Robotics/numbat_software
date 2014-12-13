@@ -79,12 +79,12 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES owr_gui
-#  CATKIN_DEPENDS roscpp std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES owr_gui
+  CATKIN_DEPENDS  message_runtime roscpp std_msgs bluesat_owr_protobuf
+  DEPENDS system_lib
 )
-
+#find_package(bluesat_owr_protobuf)
 ###########
 ## Build ##
 ###########
@@ -93,15 +93,22 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include 
   ${catkin_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  ${CATKIN_PACKAGE_LIB_DESTINATION}
   /usr/include/gstreamer-0.10
-  include
+
 )
+#find_package(bluesat_owr_protobuf)
 
 
-add_executable(glutgui src/glutgui.cpp src/GPSGUI.cpp) 
-target_link_libraries(glutgui ${catkin_LIBRARIES} GL GLU glut)
+add_executable(glutgui src/glutgui.cpp src/GPSGUI.cpp ) 
 add_dependencies(glutgui ${catkin_EXPORTED_TARGETS})
+add_dependencies(glutgui bluesat_owr_protobuf_generate_messages_cpp)
+add_dependencies(glutgui bluesat_owr_protobuf)
+target_link_libraries(glutgui ${catkin_LIBRARIES} GL GLU glut)
 
 ## Declare a cpp library
 # add_library(owr_gui

@@ -1,6 +1,6 @@
 
 
  
-     float32 signal
+     float32 signalValue 
  
 

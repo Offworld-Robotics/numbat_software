@@ -5,12 +5,7 @@ project(bluesat_owr_protobuf)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS   
-   roscpp
-   rospy
-   std_msgs
-   message_generation
-    )
+find_package(catkin REQUIRED COMPONENTS  roscpp rospy std_msgs message_generation)
 find_package(Protobuf REQUIRED)
 
 
@@ -89,6 +84,15 @@ execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_C
      # Or other packages containing msgs
  )
 
+## Specify additional locations of header files
+## Your package locations should be listed before other locations
+include_directories(include)
+include_directories(
+   include
+  ${catkin_INCLUDE_DIRS}
+  ${PROTOBUF_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_BINARY_DIR}
+)
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -111,19 +115,11 @@ catkin_package(
 
 
 
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-include_directories(include)
-include_directories(
-   include
-  ${catkin_INCLUDE_DIRS}
-  ${PROTOBUF_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_BINARY_DIR}
-)
 
 
-PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/message1.proto)
-PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/battery.proto)
+
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS src/signal.proto src/battery.proto  src/message1.proto src/tilt.proto)
+
 
 ## Declare a cpp library
 # add_library(bluesat_owr_protobuf
@@ -139,8 +135,8 @@ add_executable(ROStoPBuffRelayBattery  src/rosToPbuffBattery.cpp src/BatteryRela
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(bluesat_owr_protobuf_node bluesat_owr_protobuf_generate_messages_cpp)
-
+add_dependencies(PBufftoRosRelayBattery bluesat_owr_protobuf_generate_messages_cpp)
+add_dependencies(ROStoPBuffRelayBattery bluesat_owr_protobuf_generate_messages_cpp)
 ## Specify libraries to link a library or executable target against
  target_link_libraries(PBufftoRosRelayBattery
    ${catkin_LIBRARIES}
@@ -154,11 +150,11 @@ add_executable(ROStoPBuffRelayBattery  src/rosToPbuffBattery.cpp src/BatteryRela
 #   ${catkin_LIBRARIES}
 #   ${PROTOBUF_LIBRARIES}
 # )
- target_link_libraries(ROStoPBuffRelay
-   ${catkin_LIBRARIES}
-   ${PROTOBUF_LIBRARIES}
- )
- #add_dependencies(PBuffRelay ${catkin_EXPORTED_TRAGETS})
+# target_link_libraries(ROStoPBuffRelay
+#   ${catkin_LIBRARIES}
+#   ${PROTOBUF_LIBRARIES}
+# )
+add_dependencies(PBuffRelay ${catkin_EXPORTED_TRAGETS})
 
 #############
 ## Install ##
@@ -175,18 +171,18 @@ add_executable(ROStoPBuffRelayBattery  src/rosToPbuffBattery.cpp src/BatteryRela
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS bluesat_owr_protobuf bluesat_owr_protobuf_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+ install(TARGETS PBufftoRosRelayBattery ROStoPBuffRelayBattery 
+   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ )
 
 ## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
+ install(DIRECTORY include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
+   PATTERN ".svn" EXCLUDE
+ )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES

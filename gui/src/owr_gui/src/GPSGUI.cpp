@@ -22,8 +22,8 @@ GPSGUI::GPSGUI(void  (*updateConst)(float, float, ListNode, vector2D)) {
     
     //pass the function that is called when a message is recived
     gpsSub = n.subscribe("/gps/fix", 1000, &GPSGUI::reciveGpsMsg, this);
-    
-    
+    //same for battery
+    batterySub = n.subscribe("/status/battery", 1000, &GPSGUI::reciveBatteryMsg,this);
 }
 
 void GPSGUI::spin() {
@@ -57,4 +57,15 @@ void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
     
 }
 
+
+void GPSGUI::reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg) {
+    assert(msg);
+    
+    ROS_INFO("recived a message");
+    ROS_INFO("voltage %f", msg->voltage);
+        
+    
+    updateConstants(msg->voltage,signal,list,target);
+    
+}
 

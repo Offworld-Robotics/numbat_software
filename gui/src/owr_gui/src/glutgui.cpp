@@ -26,6 +26,8 @@
 #include "comms.h"
 #include "GpsGUI.h"
 
+//enable this to put in random data
+//#define RANDOM
 using namespace std;
 
 #define PI 3.1415926535897932384626433832795
@@ -152,8 +154,10 @@ void idle(void) {
    // clean tilt data
 	if ((int) tiltY % 90 == 0) tiltY = 0;
 	
+	#ifdef RANDOM
 	// debug - randomly generate GPS values every second
 	if (frame == 0 || frame % 60 == 0) GPSAddRandPos();
+	#endif
 	
 	// debug - arrow key control for path
 	/*if (path != NULL) {
@@ -174,7 +178,8 @@ void idle(void) {
 	
 	// debug - print out the list of GPS co-ordinates
 	//printGPSPath();
-		
+	
+	#ifdef RANDOM	
 	// debug - animate battery and signal
 	owr_battery += 0.01;
 	owr_signal -= 0.01;
@@ -186,6 +191,7 @@ void idle(void) {
 		owr_signal = 10;
 	if (owr_signal > 10)
 		owr_signal = 0;
+	#endif
 	
 	frame++;
 	if (frame > 6001)
