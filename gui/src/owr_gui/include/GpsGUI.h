@@ -11,7 +11,7 @@
 class GPSGUI {
 
     public:
-        GPSGUI(void  (*updateConst)(float, float, ListNode, vector2D));
+        GPSGUI(void  (*updateConst)UPDATE_CONST_FUNCTION_DEF);
         void spin();
         void reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
         void reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
@@ -26,7 +26,8 @@ class GPSGUI {
         float signal;
         float tiltX;
         float tiltY;
+        float ultrasonic;
         vector2D target;
-        void  (*updateConstants)(float, float, ListNode, vector2D);
+        void  (*updateConstants)UPDATE_CONST_FUNCTION_DEF;
 };
 
