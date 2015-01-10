@@ -23,6 +23,7 @@
 #include <ctime>
 #include <unistd.h>
 #include <GL/glut.h>
+#include  <stdio.h>
 #include "comms.h"
 #include "GpsGUI.h"
 
@@ -570,22 +571,22 @@ void init(void) {
 }
 
 void keydown(unsigned char key, int x, int y) {
-	switch (key) {
-	case 27:
+
+    
+	if (key==27) {
 		exit(0);
-		break;
-	case '1':
-		// activate feed 1
-		break;
-	case '2':
-		// activate feed 2
-		break;
-	case '3':
-		// activate feed 3
-		break;
-	case '4':
-		// activate feed 4
-		break;
+    } else if (key >= '0' && key <= '9')  {
+        printf("%c\n",key);
+       #define PROGRAM_PATH "/opt/ros/hydro/bin/rosrun image_view image_view image:=/camera/image_raw"
+       //#define PROGRAM_PATH "gedit&"
+	    FILE* proc = popen(PROGRAM_PATH,"r");
+	    if (proc) {
+	        printf("supposedly not fail\n");
+	    } else {
+	        printf("fail :(\n");
+	        
+	    }
+
 	}
 }
 
