@@ -405,6 +405,7 @@ void OwrGui::drawFeeds(void) {
 	glColor3ub(VID_FEED_ACTIVE_NOT_LIVE_BUTTON_RED, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_GREEN, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_BLUE);
 	glTranslated(0, -75, 0);
 	glRectd(-30, -25, 30, 25);
+
 	glColor3f(0.0, 0.0, 1.0);
 	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '3');
