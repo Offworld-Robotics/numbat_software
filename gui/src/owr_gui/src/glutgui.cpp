@@ -26,6 +26,8 @@
 #include  <stdio.h>
 #include "comms.h"
 #include "GpsGUI.h"
+#include <ros/ros.h>
+#include "../../devel/include/owr_camera_control/stream.h"
 
 //enable this to put in random data
 //#define RANDOM
@@ -109,6 +111,10 @@ unsigned int currentWindowW = WINDOW_W;
 unsigned int frame = 0;
 bool arrowKeys[3] = {0};
 
+//ros stuff
+ros::Publisher streamPub;
+void toggleStream(int stream, bool active);
+
 void updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar) {
     owr_battery = bat;
     owr_signal = sig;
@@ -122,6 +128,10 @@ int main(int argc, char **argv) {
 	srand(time(NULL));
 	generateTarget();
 	ros::init(argc, argv, "GUI");
+	ros::NodeHandle node;
+	
+    streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
+    toggleStream(0,true);
 	GPSGUI *gpsnode = new GPSGUI(updateConstants);
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -382,17 +392,37 @@ void drawUltrasonic() {
 	glPopMatrix();
 }
 
+// draw the buttons
+void drawButton(float a, float b, float c, bool active, char feedNumber) {
+    
+    if (active) {
+        glColor3ub(VID_FEED_ACTIVE_BUTTON_RED, VID_FEED_ACTIVE_BUTTON_GREEN, VID_FEED_ACTIVE_BUTTON_BLUE);
+    } else {
+        glColor3ub(VID_FEED_ACTIVE_NOT_LIVE_BUTTON_RED, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_GREEN, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_BLUE);
+    }
+    
+    glTranslated(a, b, c);
+	glRectd(-30, -25, 30, 25);
+	glColor3f(0.0, 0.0, 1.0);
+	glRasterPos2i(-5, -6);
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, feedNumber);
+    
+    
+}
+
 // draws feeds boxes on the left side of the window
 void drawFeeds(void) {
 	glPushMatrix();
 	
-	glColor3ub(VID_FEED_ACTIVE_BUTTON_RED, VID_FEED_ACTIVE_BUTTON_GREEN, VID_FEED_ACTIVE_BUTTON_BLUE);
-	glTranslated(50, -37.5, 0);
-	glRectd(-30, -25, 30, 25);
-	glColor3f(0.0, 0.0, 1.0);
-	glRasterPos2i(-5, -6);
-	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '1');
+	drawButton(50,-37.5,0,true, '0');
 	
+	drawButton(0, -75, 0,false, '1');
+	
+	drawButton(0, -75, 0, false, '2');
+	
+	drawButton(0, -75, 0, false, '3');
+	
+	/*
 	glColor3ub(VID_FEED_ACTIVE_NOT_LIVE_BUTTON_RED, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_GREEN, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_BLUE);
 	glTranslated(0, -75, 0);
 	glRectd(-30, -25, 30, 25);
@@ -413,7 +443,7 @@ void drawFeeds(void) {
 	glColor3f(0.0, 0.0, 1.0);
 	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '4');
-	
+	*/
 	glPopMatrix();
 }
 
@@ -570,20 +600,51 @@ void init(void) {
 	glShadeModel(GL_FLAT);
 }
 
+
+void toggleStream(int stream, bool active) {
+
+    owr_camera_control::stream msg;
+    msg.stream = stream;
+    msg.on = active;
+    streamPub.publish(msg);
+    
+    ros::spinOnce();
+    printf("%d\n",stream);
+   #define PROGRAM_PATH "/opt/ros/hydro/bin/rosrun image_view image_view image:=/camera/image_raw"
+    //#define PROGRAM_PATH "gedit&"
+    FILE* proc = popen(PROGRAM_PATH,"r");
+    if (proc) {
+        printf("fail\n");
+    } else {
+        printf("success\n");
+        
+    }
+
+}
+
+
+
 void keydown(unsigned char key, int x, int y) {
 
     
 	if (key==27) {
 		exit(0);
     } else if (key >= '0' && key <= '9')  {
+        
+        char str[2];
+        str[0] = key;
+        str[1] = '\0';
+
+        toggleStream(atoi(str),true);
+        
         printf("%c\n",key);
        #define PROGRAM_PATH "/opt/ros/hydro/bin/rosrun image_view image_view image:=/camera/image_raw"
        //#define PROGRAM_PATH "gedit&"
 	    FILE* proc = popen(PROGRAM_PATH,"r");
 	    if (proc) {
-	        printf("supposedly not fail\n");
+	        printf("fail\n");
 	    } else {
-	        printf("fail :(\n");
+	        printf("success\n");
 	        
 	    }
 
