@@ -18,7 +18,7 @@ def callback(data):
 def activateFeeds():
     rospy.init_node('activateFeeds')
     rospy.Subscriber("control/activateFeeds", stream, callback)
-    
+    print "running"
     #loops while ros is running
     rospy.spin()
     
