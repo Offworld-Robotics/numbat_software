@@ -23,6 +23,7 @@
 #include <ctime>
 #include <unistd.h>
 #include <GL/glut.h>
+#include  <stdio.h>
 #include "comms.h"
 #include "GpsGUI.h"
 
@@ -87,12 +88,14 @@ void drawGPS();
 void drawTilt();
 void drawBattery();
 void drawSignal();
+void drawUltrasonic();
 
 // default status values
 float owr_battery = 0;
 float owr_signal = 0;
 float tiltX = 0; // tilt of left-right in degrees
 float tiltY = 0; // tilt of forward-back in degrees
+float ultrasonic = 0;
 double longitude = 0;
 double latitude = 0;
 double prevAngle = 90;
@@ -106,6 +109,15 @@ unsigned int currentWindowH = WINDOW_H;
 unsigned int currentWindowW = WINDOW_W;
 unsigned int frame = 0;
 bool arrowKeys[3] = {0};
+
+void updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar) {
+    owr_battery = bat;
+    owr_signal = sig;
+    path = points;
+    target = tar;
+    ultrasonic = ultrason;
+    ROS_INFO("Updated");
+}
 
 int main(int argc, char **argv) {
 	srand(time(NULL));
@@ -209,6 +221,7 @@ void display(void) {
 	drawTilt();
 	drawBattery();
 	drawSignal();
+	drawUltrasonic();
 	glutSwapBuffers();
 }
 
@@ -374,6 +387,20 @@ void drawGPS() {
 		glTranslated(0, -20, 0);
 		drawText(GPSLong, 0, 0);
 	}
+	glPopMatrix();
+}
+
+// draw the ultrasonic
+void drawUltrasonic() {
+	char ultrasonicText[30];
+	glPushMatrix();
+	glTranslated(400, -WINDOW_H/3, 0);
+		
+	// draw text for GPS co-ordinates
+	glColor3f(0, 0, 0);
+	glTranslated(-50, 50.0, 0);
+	sprintf(ultrasonicText, "Ultrasonic: %f m", ultrasonic);
+	drawText(ultrasonicText, 0, 0);
 	glPopMatrix();
 }
 
@@ -566,22 +593,22 @@ void init(void) {
 }
 
 void keydown(unsigned char key, int x, int y) {
-	switch (key) {
-	case 27:
+
+    
+	if (key==27) {
 		exit(0);
-		break;
-	case '1':
-		// activate feed 1
-		break;
-	case '2':
-		// activate feed 2
-		break;
-	case '3':
-		// activate feed 3
-		break;
-	case '4':
-		// activate feed 4
-		break;
+    } else if (key >= '0' && key <= '9')  {
+        printf("%c\n",key);
+       #define PROGRAM_PATH "/opt/ros/hydro/bin/rosrun image_view image_view image:=/camera/image_raw"
+       //#define PROGRAM_PATH "gedit&"
+	    FILE* proc = popen(PROGRAM_PATH,"r");
+	    if (proc) {
+	        printf("supposedly not fail\n");
+	    } else {
+	        printf("fail :(\n");
+	        
+	    }
+
 	}
 }
 
