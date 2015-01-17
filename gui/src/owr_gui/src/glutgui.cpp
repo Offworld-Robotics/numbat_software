@@ -27,7 +27,7 @@
 #include "GpsGUI.h"
 
 //enable this to put in random data
-//#define RANDOM
+#define RANDOM
 using namespace std;
 
 #define PI 3.1415926535897932384626433832795
@@ -49,6 +49,7 @@ using namespace std;
 #define VID_FEED_INACTIVE_BUTTON_BLUE 0
 
 #define SCALE 150000
+#define ONE_METRE 0.0001 / 0.9059 // approx
 #define ARTIFICIAL_HORIZON_SKY_HEIGHT 50
 #define ARTIFICIAL_HORIZON_SKY_HALF_WIDTH 70
 #define ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH 40
@@ -157,7 +158,6 @@ void idle(void) {
 	#ifdef RANDOM
 	// debug - randomly generate GPS values every second
 	if (frame == 0 || frame % 60 == 0) GPSAddRandPos();
-	#endif
 	
 	// debug - arrow key control for path
 	/*if (path != NULL) {
@@ -179,7 +179,6 @@ void idle(void) {
 	// debug - print out the list of GPS co-ordinates
 	//printGPSPath();
 	
-	#ifdef RANDOM	
 	// debug - animate battery and signal
 	owr_battery += 0.01;
 	owr_signal -= 0.01;
@@ -289,7 +288,7 @@ void drawGPS() {
 		glBegin(GL_LINE_STRIP);
 		glColor3f(0,0,0);
 		glVertex2d(0,0);
-		glVertex2d(0.0001 / 0.9059, 0); // scale - this is 1 metre (approx)
+		glVertex2d(ONE_METRE, 0); // scale - this is 1 metre (approx)
 		glEnd();
 		glPopMatrix();
 		glPushMatrix();
@@ -330,12 +329,35 @@ void drawGPS() {
 		glVertex2d(prev->x, prev->y);
 		glEnd();
 		
-		// draw the path to target green
-		glColor3f(0,1,0);
-		glBegin(GL_LINES);
-		glVertex2d(path->x, path->y);
-		glVertex2d(target.x, target.y);
-		glEnd();
+		// draw target indicator
+		// calculate distance to target
+		double v2tX = target.x - path->x;
+		double v2tY = target.y - path->y;
+		double length = distance(v2tX, v2tY, 0, 0);
+		if (length > ONE_METRE * 7) { // if the target is far away, draw as short purple path
+			double factor = ONE_METRE*5/length;
+			v2tX *= factor;
+			v2tY *= factor;
+			glColor3f(1,0,1);
+			glBegin(GL_LINES);
+			glVertex2d(path->x, path->y);
+			glVertex2d(path->x+v2tX, path->y+v2tY);
+			glEnd();
+			glBegin(GL_POINTS);
+			glVertex2d(path->x+v2tX, path->y+v2tY);
+			glEnd();
+		} else { // else draw as full-length green path
+			glColor3f(0,1,0);
+			glBegin(GL_LINES);
+			glVertex2d(path->x, path->y);
+			glVertex2d(target.x, target.y);
+			glEnd();
+			glBegin(GL_POINTS);
+			glVertex2d(target.x, target.y);
+			glEnd();
+		}
+		// debug - draw absolute position of target
+		glColor3f(0,0,0);
 		glBegin(GL_POINTS);
 		glVertex2d(target.x, target.y);
 		glEnd();
