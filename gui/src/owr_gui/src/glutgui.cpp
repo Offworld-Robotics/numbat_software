@@ -14,108 +14,104 @@
 // catkin_make // (add argument "-j4" for ros indigo)
 // source devel/setup.bash
 // rosrun owr_gui glutgui
-#include <iostream>
-#include <string>
-#include <cstring>
-#include <cmath>
-#include <cstdlib>
-#include <cstdio>
-#include <ctime>
-#include <unistd.h>
-#include <GL/glut.h>
-#include  <stdio.h>
-#include "comms.h"
+
+#include "OwrGui.h"
 #include "GpsGUI.h"
-#include <ros/ros.h>
-#include "../../devel/include/owr_camera_control/stream.h"
 
-//enable this to put in random data
-//#define RANDOM
-using namespace std;
 
-#define PI 3.1415926535897932384626433832795
 
-// default window size
-#define WINDOW_W 1000
-#define WINDOW_H 300
 
-#define VID_FEED_ACTIVE_BUTTON_RED 0
-#define VID_FEED_ACTIVE_BUTTON_GREEN 153
-#define VID_FEED_ACTIVE_BUTTON_BLUE 0
 
-#define VID_FEED_ACTIVE_NOT_LIVE_BUTTON_RED 235
-#define VID_FEED_ACTIVE_NOT_LIVE_BUTTON_GREEN 133
-#define VID_FEED_ACTIVE_NOT_LIVE_BUTTON_BLUE 51
+int main(int argc, char **argv) {
+    ros::init(argc, argv, "GUI");
+    glutInit(&argc, argv);
+    OwrGui gui;
+	OwrGui::createInstance(gui);
+	gui.init();
+	return EXIT_SUCCESS;
+}
+OwrGui * OwrGui::instance = NULL;
 
-#define VID_FEED_INACTIVE_BUTTON_RED 230
-#define VID_FEED_INACTIVE_BUTTON_GREEN 0
-#define VID_FEED_INACTIVE_BUTTON_BLUE 0
+void OwrGui::createInstance(OwrGui gui) {
+    instance =&gui;
+}
 
-#define SCALE 150000
-#define ARTIFICIAL_HORIZON_SKY_HEIGHT 50
-#define ARTIFICIAL_HORIZON_SKY_HALF_WIDTH 70
-#define ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH 40
 
-#define UP    0
-#define DOWN  1
-#define LEFT  2
-#define RIGHT 3
+//glut wrapper functions because it dosen't life c++ :(
+void OwrGui::reshape_wrapper(int w, int h) {
+    instance->reshape(w,h);
+}
+void OwrGui::idle_wrapper() {
+    instance->idle();
+}
+void OwrGui::display_wrapper() {
+    instance->display();
+}
+void OwrGui::keydown_wrapper(unsigned char key, int x, int y) {
+    instance->keydown(key,x,y);
+}
+void OwrGui::special_keydown_wrapper(int keycode, int x, int y) {
+    instance->special_keydown(keycode,x,y);
+}
+void OwrGui::special_keyup_wrapper(int keycode, int x, int y) {
+    instance->special_keyup(keycode, x,y);
+}  
 
-// OpenGL essential functions
-void init();
-void reshape(int w, int h);
-void idle();
-void display();
 
-// OpenGL keyboard functions (mainly for debugging)
-void keydown(unsigned char key, int x, int y);
-//void keyup(unsigned char key, int x, int y);
-void special_keydown(int keycode, int x, int y);
-void special_keyup(int keycode, int x, int y);
+OwrGui::OwrGui() {
+    owr_battery = 0;
+    owr_signal = 0;
+    tiltX = 0; // tilt of left-right in degrees
+    tiltY = 0; // tilt of forward-back in degrees
+    ultrasonic = 0;
+    longitude = 0;
+    latitude = 0;
+    prevAngle = 90;
 
-// function to display some text
-void drawText(char *text, int x, int y);
-// function to insert a given co-ordinate to the front of the path list
-void GPSAddPos(double x, double y);
-// function to insert a random co-ordinate to the front of the path list
-void GPSAddRandPos();
-// function to generate a target co-ordinate
-void generateTarget();
-// function to print the path
-void printGPSPath();
-// draw functions
-void drawFeeds();
-void drawGPS();
-void drawTilt();
-void drawBattery();
-void drawSignal();
-void drawUltrasonic();
+    // GPS related variables
+    path = NULL;
+    currentWindowH = WINDOW_H;
+    currentWindowW = WINDOW_W;
+    frame = 0;
+    arrowKeys[0] = 0;
+    arrowKeys[1] = 0;
+    arrowKeys[2] = 0;
 
-// default status values
-float owr_battery = 0;
-float owr_signal = 0;
-float tiltX = 0; // tilt of left-right in degrees
-float tiltY = 0; // tilt of forward-back in degrees
-float ultrasonic = 0;
-double longitude = 0;
-double latitude = 0;
-double prevAngle = 90;
 
-// GPS related variables
-ListNode path = NULL;
-vector2D target;
 
-// OpenGL control related variables
-unsigned int currentWindowH = WINDOW_H;
-unsigned int currentWindowW = WINDOW_W;
-unsigned int frame = 0;
-bool arrowKeys[3] = {0};
+    
+    
+    srand(time(NULL));
+	generateTarget();
+	
+	ros::NodeHandle node;
+	
+    streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
+    
+}
 
-//ros stuff
-ros::Publisher streamPub;
-void toggleStream(int stream, bool active);
+void OwrGui::init(void) {
+    toggleStream(0,true);
+	GPSGUI *gpsnode = new GPSGUI(this);
+	
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitWindowSize(WINDOW_W, WINDOW_H);
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("OWR GUI");
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glShadeModel(GL_FLAT);
+	glutKeyboardFunc(&keydown_wrapper);
+	glutSpecialFunc(special_keydown_wrapper);
+	glutSpecialUpFunc(special_keyup_wrapper);
+	glutDisplayFunc(display_wrapper);
+	glutReshapeFunc(reshape_wrapper);
+	glutIdleFunc(idle_wrapper);
+	glutMainLoop();
 
-void updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar) {
+}
+
+
+void OwrGui::updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar) {
     owr_battery = bat;
     owr_signal = sig;
     path = points;
@@ -124,32 +120,8 @@ void updateConstants(float bat, float sig,float ultrason, ListNode points, vecto
     ROS_INFO("Updated");
 }
 
-int main(int argc, char **argv) {
-	srand(time(NULL));
-	generateTarget();
-	ros::init(argc, argv, "GUI");
-	ros::NodeHandle node;
-	
-    streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
-    toggleStream(0,true);
-	GPSGUI *gpsnode = new GPSGUI(updateConstants);
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(WINDOW_W, WINDOW_H);
-	glutInitWindowPosition(100, 100);
-	glutCreateWindow("OWR GUI");
-	init();
-	glutKeyboardFunc(keydown);
-	glutSpecialFunc(special_keydown);
-	glutSpecialUpFunc(special_keyup);
-	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
-	glutIdleFunc(idle);
-	glutMainLoop();
-	return 0;
-}
 
-void idle(void) {
+void OwrGui::idle(void) {
 	ros::spinOnce();
 	
 	/*// produce random tilt data
@@ -223,7 +195,7 @@ void idle(void) {
 	usleep(16666);
 }
 
-void display(void) {
+void OwrGui::display(void) {
 	glClearColor(1,1,1,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -236,7 +208,7 @@ void display(void) {
 	glutSwapBuffers();
 }
 
-void GPSAddRandPos() {
+void OwrGui::GPSAddRandPos() {
 	double randx, randy;
 	ListNode rest = path;
 	path = (ListNode) malloc(sizeof(_vector2D));
@@ -254,7 +226,7 @@ void GPSAddRandPos() {
 	path->next = rest;
 }
 
-void GPSAddPos(double x, double y) {
+void OwrGui::GPSAddPos(double x, double y) {
 	ListNode rest = path;
 	path = (ListNode) malloc(sizeof(_vector2D));
 	path->x = x;
@@ -262,7 +234,7 @@ void GPSAddPos(double x, double y) {
 	path->next = rest;
 }
 
-void generateTarget() {
+void OwrGui::generateTarget() {
 	double randn;
 	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
 	target.x = randn + 151.139;
@@ -271,14 +243,14 @@ void generateTarget() {
 	target.next = NULL;
 }
 
-void printGPSPath() {
+void OwrGui::printGPSPath() {
 	ListNode curr = path;
-	cout << "Start" << endl;
+	std::cout << "Start" << std::endl;
 	while (curr != NULL) {
 		printf("%.15f, %.15f\n", curr->x, curr->y);
 		curr = curr->next;
 	}
-	cout << "End" << endl;
+	std::cout << "End" << std::endl;
 }
 
 double distance(double x1, double y1, double x2, double y2) {
@@ -286,7 +258,7 @@ double distance(double x1, double y1, double x2, double y2) {
 }
 
 // draws GPS path and co-ordinates near the centre of the window
-void drawGPS() {
+void OwrGui::drawGPS() {
 	char GPSLat[30];
 	char GPSLong[30];
 	char scale[] = "Scale: 1 metre";
@@ -379,7 +351,7 @@ void drawGPS() {
 }
 
 // draw the ultrasonic
-void drawUltrasonic() {
+void OwrGui::drawUltrasonic() {
 	char ultrasonicText[30];
 	glPushMatrix();
 	glTranslated(400, -WINDOW_H/3, 0);
@@ -393,7 +365,7 @@ void drawUltrasonic() {
 }
 
 // draw the buttons
-void drawButton(float a, float b, float c, bool active, char feedNumber) {
+void OwrGui::drawButton(float a, float b, float c, bool active, char feedNumber) {
     
     if (active) {
         glColor3ub(VID_FEED_ACTIVE_BUTTON_RED, VID_FEED_ACTIVE_BUTTON_GREEN, VID_FEED_ACTIVE_BUTTON_BLUE);
@@ -411,7 +383,7 @@ void drawButton(float a, float b, float c, bool active, char feedNumber) {
 }
 
 // draws feeds boxes on the left side of the window
-void drawFeeds(void) {
+void OwrGui::drawFeeds(void) {
 	glPushMatrix();
 	
 	drawButton(50,-37.5,0,true, '0');
@@ -448,7 +420,7 @@ void drawFeeds(void) {
 }
 
 // draws the tilt angles for the left-right and front-back directions near the right of the screen
-void drawTilt() {
+void OwrGui::drawTilt() {
 	char text[30];
 	glPushMatrix();
 
@@ -520,7 +492,7 @@ void drawTilt() {
 }
 
 // draws the battery level near the top-right of the window
-void drawBattery() {
+void OwrGui::drawBattery() {
 	glPushMatrix();
 	
 	if (owr_battery < 3)
@@ -562,7 +534,7 @@ void drawBattery() {
 }
 
 // draw the signal level near the bottom-right of the window
-void drawSignal() {
+void OwrGui::drawSignal() {
 	glPushMatrix();
 	
 	if (owr_signal < 3)
@@ -595,13 +567,10 @@ void drawSignal() {
 	glPopMatrix();
 }
 
-void init(void) {
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glShadeModel(GL_FLAT);
-}
 
 
-void toggleStream(int stream, bool active) {
+
+void OwrGui::toggleStream(int stream, bool active) {
 
     owr_camera_control::stream msg;
     msg.stream = stream;
@@ -624,7 +593,7 @@ void toggleStream(int stream, bool active) {
 
 
 
-void keydown(unsigned char key, int x, int y) {
+void OwrGui::keydown(unsigned char key, int x, int y) {
 
     
 	if (key==27) {
@@ -651,7 +620,7 @@ void keydown(unsigned char key, int x, int y) {
 	}
 }
 
-void special_keydown(int keycode, int x, int y) {
+void OwrGui::special_keydown(int keycode, int x, int y) {
 	switch (keycode) {
 	case GLUT_KEY_UP:
 		arrowKeys[0] = 1;
@@ -668,7 +637,7 @@ void special_keydown(int keycode, int x, int y) {
 	}
 }
 
-void special_keyup(int keycode, int x, int y) {
+void OwrGui::special_keyup(int keycode, int x, int y) {
 	switch (keycode) {
 	case GLUT_KEY_UP:
 		arrowKeys[0] = 0;
@@ -685,7 +654,7 @@ void special_keyup(int keycode, int x, int y) {
 	}
 }
 
-void reshape(int w, int h) {
+void OwrGui::reshape(int w, int h) {
 	currentWindowH = h;
 	currentWindowW = w;
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
@@ -695,7 +664,7 @@ void reshape(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void drawText(char *text, int x, int y) {
+void OwrGui::drawText(char *text, int x, int y) {
 	for (unsigned int i = 0; i < strlen(text); i++) {
 		glRasterPos3f(x, y, 0);
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
@@ -703,10 +672,4 @@ void drawText(char *text, int x, int y) {
 	}
 }
 
-void updateConstants(float bat, float sig, ListNode points, vector2D tar) {
-	owr_battery = bat;
-	owr_signal = sig;
-	path = points;
-	target = tar;
-	ROS_INFO("Updated");
-}
+

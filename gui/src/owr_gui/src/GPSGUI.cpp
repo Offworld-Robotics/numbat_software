@@ -7,9 +7,9 @@
 #include "GpsGUI.h"
 #include <fstream>
 
-GPSGUI::GPSGUI(void  (*updateConst)UPDATE_CONST_FUNCTION_DEF) {
+GPSGUI::GPSGUI(OwrGui * ogui) {
     ROS_INFO("initlising GPSLogger");
-    updateConstants = updateConst;
+    gui = ogui;
     //a nodehandler is used to communiate with the rest of ros
     ros::NodeHandle n("~");
     
@@ -54,7 +54,7 @@ void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
         end->next = l;
         end = l;
     }
-    updateConstants(battery,signal,ultrasonic,list,target);
+    gui->updateConstants(battery,signal,ultrasonic,list,target);
     
 }
 
@@ -66,7 +66,7 @@ void GPSGUI::reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr&
     ROS_INFO("voltage %f", msg->voltage);
         
     
-    updateConstants(msg->voltage,signal,ultrasonic,list,target);
+    gui->updateConstants(msg->voltage,signal,ultrasonic,list,target);
     
 }
 
