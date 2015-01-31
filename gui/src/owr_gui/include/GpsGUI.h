@@ -2,7 +2,8 @@
  * This manages input into the GUI from ROS
  * By Harry J.E Day for BlueSat OWR <Harry@dayfamilyweb.com>
  */
-
+#ifndef GPSGUI_H
+#define GPSGUI_H
 #include "comms.h"
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
@@ -16,13 +17,14 @@ class GPSGUI {
         void spin();
         void reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
         void reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
+        ListNode list;
         
     private:
         std::string coOrdList;
         OwrGui* gui;
         ros::Subscriber gpsSub;
         ros::Subscriber batterySub;
-        ListNode list;
+        
         ListNode end;
         float battery;
         float signal;
@@ -32,4 +34,4 @@ class GPSGUI {
         vector2D target;
         //void  (*updateConstants)UPDATE_CONST_FUNCTION_DEF;
 };
-
+#endif
