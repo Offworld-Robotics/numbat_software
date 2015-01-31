@@ -77,6 +77,7 @@ class OwrGui {
         void reshape(int w, int h);
         void idle();
         void display();
+        
 
         // OpenGL keyboard functions (mainly for debugging)
         void keydown(unsigned char key, int x, int y);
@@ -103,7 +104,8 @@ class OwrGui {
         void drawBattery();
         void drawSignal();
         void drawUltrasonic();
-
+        
+        void * gpsGui;
         // default status values
         float owr_battery;
         float owr_signal;
@@ -131,10 +133,3 @@ class OwrGui {
 
 
 #endif
-
-
-
-
-
-
-

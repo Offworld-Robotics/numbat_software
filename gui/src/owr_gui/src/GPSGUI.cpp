@@ -54,6 +54,8 @@ void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
         end->next = l;
         end = l;
     }
+    printf("gui %x\n", (int) &gui);
+    printf("THe path %lx\n", &list);
     gui->updateConstants(battery,signal,ultrasonic,list,target);
     
 }

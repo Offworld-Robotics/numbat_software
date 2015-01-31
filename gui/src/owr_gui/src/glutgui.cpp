@@ -26,8 +26,9 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "GUI");
     glutInit(&argc, argv);
     OwrGui gui;
+    //printf("gui  %lx\n", (long) (this));
 	OwrGui::createInstance(gui);
-	gui.init();
+	gui.instance->init();
 	return EXIT_SUCCESS;
 }
 OwrGui * OwrGui::instance = NULL;
@@ -67,7 +68,8 @@ OwrGui::OwrGui() {
     longitude = 0;
     latitude = 0;
     prevAngle = 90;
-
+    
+    
     // GPS related variables
     path = NULL;
     currentWindowH = WINDOW_H;
@@ -76,10 +78,6 @@ OwrGui::OwrGui() {
     arrowKeys[0] = 0;
     arrowKeys[1] = 0;
     arrowKeys[2] = 0;
-
-
-
-    
     
     srand(time(NULL));
 	generateTarget();
@@ -91,9 +89,10 @@ OwrGui::OwrGui() {
 }
 
 void OwrGui::init(void) {
+    printf("gui  %lx\n", (long) (this));
     toggleStream(0,true);
 	GPSGUI *gpsnode = new GPSGUI(this);
-	
+	this->gpsGui = gpsnode;
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
 	glutInitWindowPosition(100, 100);
@@ -114,10 +113,11 @@ void OwrGui::init(void) {
 void OwrGui::updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar) {
     owr_battery = bat;
     owr_signal = sig;
-    path = points;
+    this->path = points;
+    //printf("path %f, %f", this->path->x, this->path->y);
     target = tar;
     ultrasonic = ultrason;
-    ROS_INFO("Updated");
+    ROS_INFO("Updated Constants");
 }
 
 
@@ -171,7 +171,7 @@ void OwrGui::idle(void) {
 	}*/
 	
 	// debug - print out the list of GPS co-ordinates
-	//printGPSPath();
+	printGPSPath();
 	
 	#ifdef RANDOM	
 	// debug - animate battery and signal
@@ -209,6 +209,7 @@ void OwrGui::display(void) {
 }
 
 void OwrGui::GPSAddRandPos() {
+    printf("random pos");
 	double randx, randy;
 	ListNode rest = path;
 	path = (ListNode) malloc(sizeof(_vector2D));
@@ -227,6 +228,7 @@ void OwrGui::GPSAddRandPos() {
 }
 
 void OwrGui::GPSAddPos(double x, double y) {
+    printf("GPSAddPos");
 	ListNode rest = path;
 	path = (ListNode) malloc(sizeof(_vector2D));
 	path->x = x;
@@ -259,6 +261,7 @@ double distance(double x1, double y1, double x2, double y2) {
 
 // draws GPS path and co-ordinates near the centre of the window
 void OwrGui::drawGPS() {
+    //printf("%lx", this);
 	char GPSLat[30];
 	char GPSLong[30];
 	char scale[] = "Scale: 1 metre";
@@ -272,9 +275,18 @@ void OwrGui::drawGPS() {
 	glVertex2d(0, 0);
 	glEnd();
 		
-	if (path != NULL) {
-		longitude = path->x;
-		latitude = path->y;
+	printf("drawing gps\n");
+	//printf("THe path %lx\n", &path);
+	ListNode list = NULL;
+	if (gpsGui) {
+	    list =  ((GPSGUI *)gpsGui)->list;
+	    printf("\nyay\n");
+	}
+	
+	if (list != NULL) {
+	    printf("path exists!!\n");
+		longitude = list->x;
+		latitude = list->y;
 		
 		// draw out the scale of the path
 		glPushMatrix();
@@ -297,9 +309,9 @@ void OwrGui::drawGPS() {
 		glScaled(SCALE,SCALE,1);
 		
 		glColor3f(0, 0, 1);
-		double xoff = path->x, yoff = path->y;
-		if (path->next != NULL) {
-			double angle = -atan2(path->next->y - path->y, path->next->x - path->x) * 180.0/PI - 90;
+		double xoff = list->x, yoff = list->y;
+		if (list->next != NULL) {
+			double angle = -atan2(list->next->y - list->y, list->next->x - list->x) * 180.0/PI - 90;
 			// if the rover did not move, its orientation is the same as previously
 			if (angle == 0)
 				angle = prevAngle;
@@ -308,7 +320,7 @@ void OwrGui::drawGPS() {
 			glRotated(angle, 0, 0, 1);
 		}
 		glTranslated(-xoff, -yoff, 0);
-		ListNode curr = path;
+		ListNode curr = list;
 		ListNode prev = NULL;
 		
 		glBegin(GL_LINE_STRIP);
@@ -328,7 +340,7 @@ void OwrGui::drawGPS() {
 		// draw the path to target green
 		glColor3f(0,1,0);
 		glBegin(GL_LINES);
-		glVertex2d(path->x, path->y);
+		glVertex2d(list->x, list->y);
 		glVertex2d(target.x, target.y);
 		glEnd();
 		glBegin(GL_POINTS);
