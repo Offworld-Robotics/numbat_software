@@ -36,9 +36,9 @@ def talker():
        msg.header = Header()
        msg.latitude = float(result[1])
        msg.longitude = float(result[2])
-       rospy.loginfo(msg)
+       #rospy.loginfo(msg)
        pub.publish(msg)
-       rate.sleep()
+       #rate.sleep()
 
 if __name__ == '__main__':
     try:
