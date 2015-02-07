@@ -20,7 +20,6 @@ ANALYSISGUI::ANALYSISGUI() {
     ultrasonic = 0.0;
     pH = 0.0;
     humidity = 0.0;
-    frame = (unsigned char *)malloc(640*480*3);
     //pass the function that is called when a message is recived
     gpsSub = n.subscribe("/gps/fix", 1000, &ANALYSISGUI::reciveGpsMsg, this);
     //siteSub = n.subscribe("/gps/fix", 1000, &ANALYSISGUI::reciveSiteMsg, this);
@@ -62,8 +61,6 @@ void ANALYSISGUI::reciveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
     
     //ROS_INFO("recived video frame");
     
-    memcpy(frame, msg->data.data(), 640*480*3);
-    
-    updateSiteConstants(latitude, longitude, altitude, pH, ultrasonic, humidity, frame);
+    updateSiteConstants(latitude, longitude, altitude, pH, ultrasonic, humidity, (unsigned char *)msg->data.data());
 }
 

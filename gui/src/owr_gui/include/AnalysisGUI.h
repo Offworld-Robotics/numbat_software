@@ -27,7 +27,6 @@ class ANALYSISGUI {
         float pH;
         float ultrasonic;
         float humidity;
-        unsigned char *frame;
         //void  (*updateConstants)UPDATE_CONST_FUNCTION_DEF;
 };
 
