@@ -25,15 +25,12 @@ GPSGUI::GPSGUI(OwrGui * ogui) {
     gpsSub = n.subscribe("/gps/fix", 1000, &GPSGUI::reciveGpsMsg, this);
     //same for battery
     batterySub = n.subscribe("/status/battery", 1000, &GPSGUI::reciveBatteryMsg,this);
+    videoSub = n.subscribe("/camera/image_raw", 1000, &GPSGUI::reciveVideoMsg, this);
 }
 
 void GPSGUI::spin() {
-  
   ros::spin();
-
 }
-
-
 
 void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
     assert(msg);
@@ -56,7 +53,7 @@ void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
     }
     printf("gui %x\n", (int) &gui);
     printf("THe path %lx\n", &list);
-    gui->updateConstants(battery,signal,ultrasonic,list,target);
+    gui->updateConstants(battery,signal,ultrasonic,list,target, NULL);
     
 }
 
@@ -68,7 +65,15 @@ void GPSGUI::reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr&
     ROS_INFO("voltage %f", msg->voltage);
         
     
-    gui->updateConstants(msg->voltage,signal,ultrasonic,list,target);
+    gui->updateConstants(msg->voltage,signal,ultrasonic,list,target, NULL);
     
+}
+
+void GPSGUI::reciveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
+    assert(msg);
+    
+    ROS_INFO("recived video frame");
+    
+    gui->updateConstants(battery, signal, ultrasonic, list, target, (unsigned char *)msg->data.data());
 }
 

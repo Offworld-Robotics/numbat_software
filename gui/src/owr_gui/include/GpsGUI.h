@@ -7,6 +7,7 @@
 #include "comms.h"
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
+#include <sensor_msgs/Image.h>
 #include "../../devel/include/bluesat_owr_protobuf/battery_ros.h"
 #include  "OwrGui.h"
 
@@ -17,6 +18,7 @@ class GPSGUI {
         void spin();
         void reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
         void reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
+        void reciveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
         ListNode list;
         
     private:
@@ -24,6 +26,7 @@ class GPSGUI {
         OwrGui* gui;
         ros::Subscriber gpsSub;
         ros::Subscriber batterySub;
+        ros::Subscriber videoSub;
         
         ListNode end;
         float battery;

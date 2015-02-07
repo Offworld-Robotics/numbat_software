@@ -34,7 +34,6 @@ static float pH = 0;
 static float humidity = 0;
 static float altitude = 0;
 static float ultrasonic = 0;
-static unsigned char *frame = NULL;
 
 struct stat st = {0};
 
@@ -65,11 +64,10 @@ void updateSiteConstants(double lat, double lon, float alt, float PH, float uson
 	humidity = humid;
 	
 	if (f != NULL) {
-		memcpy(frame, f, PANO_DATA_SIZE);
 		glBindTexture(GL_TEXTURE_2D, textureNames[0]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, PANO_W, PANO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, PANO_W, PANO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
 		glBindTexture(GL_TEXTURE_2D, textureNames[1]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, PANO_W, PANO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, PANO_W, PANO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
 	}
 }
 
@@ -144,7 +142,6 @@ void loadTextures() {
 }
 
 int main(int argc, char **argv) {
-	frame = (unsigned char *)calloc(PANO_DATA_SIZE, 1);
 	ros::init(argc, argv, "ANALYSISGUI");
 	ANALYSISGUI *analysis = new ANALYSISGUI();
 	glutInit(&argc, argv);
@@ -187,20 +184,21 @@ void drawImages() {
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glColor3f(1, 1, 1);
+	// data from frame array is flipped, texcoords were changed to compensate
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
 	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0); glVertex2i(100, -400);  // Bottom Left
-		glTexCoord2f(1, 0); glVertex2i(1600, -400);  // Bottom Right
-		glTexCoord2f(1, 1); glVertex2i(1600, -100);  // Top Right
-		glTexCoord2f(0, 1); glVertex2i(100, -100);  // Top Left
+		glTexCoord2f(0, 1); glVertex2i(100, -400);  // Bottom Left
+		glTexCoord2f(1, 1); glVertex2i(1600, -400);  // Bottom Right
+		glTexCoord2f(1, 0); glVertex2i(1600, -100);  // Top Right
+		glTexCoord2f(0, 0); glVertex2i(100, -100);  // Top Left
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, textureNames[1]);
 	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0); glVertex2i(100, -800);  // Bottom Left
-		glTexCoord2f(1, 0); glVertex2i(700, -800);  // Bottom Right
-		glTexCoord2f(1, 1); glVertex2i(700, -420);  // Top Right
-		glTexCoord2f(0, 1); glVertex2i(100, -420);  // Top Left
+		glTexCoord2f(0, 1); glVertex2i(100, -800);  // Bottom Left
+		glTexCoord2f(1, 1); glVertex2i(700, -800);  // Bottom Right
+		glTexCoord2f(1, 0); glVertex2i(700, -420);  // Top Right
+		glTexCoord2f(0, 0); glVertex2i(100, -420);  // Top Left
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();

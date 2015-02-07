@@ -69,6 +69,7 @@ OwrGui::OwrGui() {
     latitude = 0;
     prevAngle = 90;
     
+    backTexture = 0;
     
     // GPS related variables
     path = NULL;
@@ -97,6 +98,12 @@ void OwrGui::init(void) {
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("OWR GUI");
+	glGenTextures(1, &(this->backTexture));
+	glBindTexture(GL_TEXTURE_2D, this->backTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glShadeModel(GL_FLAT);
 	glutKeyboardFunc(&keydown_wrapper);
@@ -110,13 +117,17 @@ void OwrGui::init(void) {
 }
 
 
-void OwrGui::updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar) {
+void OwrGui::updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar, unsigned char *f) {
     owr_battery = bat;
     owr_signal = sig;
     this->path = points;
     //printf("path %f, %f", this->path->x, this->path->y);
     target = tar;
     ultrasonic = ultrason;
+    if (f != NULL) {
+		glBindTexture(GL_TEXTURE_2D, backTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, VIDEO_W, VIDEO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
+	}
     ROS_INFO("Updated Constants");
 }
 
@@ -195,10 +206,29 @@ void OwrGui::idle(void) {
 	usleep(16666);
 }
 
+void OwrGui::drawBackground(void) {
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glColor3f(1, 1, 1);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glBindTexture(GL_TEXTURE_2D, backTexture);
+	
+	// data from frame array is flipped, texcoords were changed to compensate
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 1); glVertex2i(0, -(int)currentWindowH);  // Bottom Left
+		glTexCoord2f(1, 1); glVertex2i(currentWindowW, -(int)currentWindowH);  // Bottom Right
+		glTexCoord2f(1, 0); glVertex2i(currentWindowW, 0);  // Top Right
+		glTexCoord2f(0, 0); glVertex2i(0, 0);  // Top Left
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
+}
+
 void OwrGui::display(void) {
 	glClearColor(1,1,1,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	drawBackground();
 	drawFeeds();
 	drawGPS();
 	drawTilt();

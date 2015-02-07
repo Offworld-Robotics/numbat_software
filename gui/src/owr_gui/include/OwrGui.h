@@ -48,6 +48,9 @@
 #define ARTIFICIAL_HORIZON_SKY_HALF_WIDTH 70
 #define ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH 40
 
+#define VIDEO_W 640
+#define VIDEO_H 480
+
 #define UP    0
 #define DOWN  1
 #define LEFT  2
@@ -58,7 +61,7 @@ class OwrGui {
     
     public:
         OwrGui();
-        void updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar);
+        void updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar, unsigned char *f);
         //glut wrapper functions because it dosen't life c++ :(
         static OwrGui * instance;
         static void createInstance(OwrGui gui);
@@ -98,6 +101,7 @@ class OwrGui {
         // function to print the path
         void printGPSPath();
         // draw functions
+        void drawBackground();
         void drawFeeds();
         void drawGPS();
         void drawTilt();
@@ -124,6 +128,7 @@ class OwrGui {
         unsigned int currentWindowH;
         unsigned int currentWindowW;
         unsigned int frame;
+        GLuint backTexture;
         bool arrowKeys[3];
 
         //ros stuff

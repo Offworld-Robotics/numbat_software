@@ -11,9 +11,6 @@ typedef struct _vector2D {
     ListNode next;
 } vector2D;
 
-
-
-
-void updateConstants(float battery, float signal, float ultrasonic, ListNode points, vector2D target);
+void updateConstants(float battery, float signal, float ultrasonic, ListNode points, vector2D target, unsigned char *frame);
 
 #endif
