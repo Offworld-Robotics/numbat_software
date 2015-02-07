@@ -6,7 +6,6 @@
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>
-//#include "../../devel/include/bluesat_owr_protobuf/battery_ros.h"
 #include "site.h"
 
 class ANALYSISGUI {
@@ -19,7 +18,6 @@ class ANALYSISGUI {
         void reciveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
         
     private:
-        std::string coOrdList;
         ros::Subscriber gpsSub;
         //ros::Subscriber siteSub;
         ros::Subscriber videoSub;
@@ -29,7 +27,7 @@ class ANALYSISGUI {
         float pH;
         float ultrasonic;
         float humidity;
-        unsigned char *frame; // frame of video
+        unsigned char *frame;
         //void  (*updateConstants)UPDATE_CONST_FUNCTION_DEF;
 };
 

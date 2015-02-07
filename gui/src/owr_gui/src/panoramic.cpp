@@ -18,8 +18,10 @@ using namespace std;
 
 #define PANO_W 640
 #define PANO_H 480
+#define PANO_DATA_SIZE PANO_W*PANO_H*3
 #define HIRES_W 640
 #define HIRES_H 480
+#define HIRES_DATA_SIZE HIRES_W*HIRES_H*3
 
 // OpenGL control related variables
 static int currentWindowH = WINDOW_H;
@@ -54,20 +56,21 @@ void BGR2RGB(unsigned char *data, int size) {
 	}
 }
 
-void updateSiteConstants(float lat, float lon, float alt, float PH, float usonic, unsigned char *f) {
+void updateSiteConstants(double lat, double lon, float alt, float PH, float usonic, float humid, unsigned char *f) {
 	latitude = lat;
 	longitude = lon;
 	altitude = alt;
 	pH = PH;
 	ultrasonic = usonic;
+	humidity = humid;
 	
 	if (f != NULL) {
+		memcpy(frame, f, PANO_DATA_SIZE);
 		glBindTexture(GL_TEXTURE_2D, textureNames[0]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, PANO_W, PANO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
 		glBindTexture(GL_TEXTURE_2D, textureNames[1]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, PANO_W, PANO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
 	}
-	printf("updated\n");
 }
 
 void drawText(char *text, int x, int y) {
@@ -83,9 +86,14 @@ void loadTextures() {
 	unsigned char dataStart;
 	unsigned char *data;
 	FILE *pano, *hires;
-
-	pano = fopen("panoramic.bmp", "r");
-	hires = fopen("hires.bmp", "r");
+	
+	char *home = getenv("HOME");
+	
+	char filename[50] = {0};
+	sprintf(filename, "%s/panoramic.bmp", home);
+	pano = fopen(filename, "r");
+	sprintf(filename, "%s/hires.bmp", home);
+	hires = fopen(filename, "r");
 	if (pano == NULL) {
 		printf("Could not open 'panoramic.bmp'!\n");
 	} else if (hires == NULL) {
@@ -136,7 +144,9 @@ void loadTextures() {
 }
 
 int main(int argc, char **argv) {
-	frame = (unsigned char *)malloc(PANO_W*PANO_H*3*sizeof(unsigned char));
+	frame = (unsigned char *)calloc(PANO_DATA_SIZE, 1);
+	ros::init(argc, argv, "ANALYSISGUI");
+	ANALYSISGUI *analysis = new ANALYSISGUI();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
@@ -145,8 +155,6 @@ int main(int argc, char **argv) {
 	init();
 	//loadTextures();
 	glutKeyboardFunc(keydown);
-	//glutSpecialFunc(special_keydown);
-	//glutSpecialUpFunc(special_keyup);
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutIdleFunc(idle);
@@ -302,19 +310,19 @@ bool saveState() {
 		sprintf(filename, "%s/%s-panoramic.bmp", foldername, timestamp);
 		f = fopen(filename, "w");
 		if (f == NULL) return false;
-		bmp = (unsigned char *)malloc((PANO_W*PANO_H*3 + 0x36)*sizeof(unsigned char));
+		bmp = (unsigned char *)malloc((PANO_DATA_SIZE + 0x36)*sizeof(unsigned char));
 		if (bmp == NULL) return false;
 		fillBMPHeader(bmp, PANO_W, PANO_H);
 		glBindTexture(GL_TEXTURE_2D, textureNames[0]);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, &bmp[0x36]);
-		fwrite(bmp, PANO_W*PANO_H*3 + 0x36, 1, f);
+		fwrite(bmp, PANO_DATA_SIZE + 0x36, 1, f);
 		fclose(f);
 		free(bmp);
 		
 		sprintf(filename, "%s/%s-hires.bmp", foldername, timestamp);
 		f = fopen(filename, "w");
 		if (f == NULL) return false;
-		bmp = (unsigned char *)malloc((HIRES_W*HIRES_H*3 + 0x36)*sizeof(unsigned char));
+		bmp = (unsigned char *)malloc((HIRES_DATA_SIZE + 0x36)*sizeof(unsigned char));
 		if (bmp == NULL) return false;
 		fillBMPHeader(bmp, HIRES_W, HIRES_H);
 		glBindTexture(GL_TEXTURE_2D, textureNames[1]);

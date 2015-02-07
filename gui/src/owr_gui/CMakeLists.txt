@@ -110,7 +110,7 @@ add_dependencies(glutgui bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(glutgui bluesat_owr_protobuf)
 target_link_libraries(glutgui ${catkin_LIBRARIES} GL GLU glut)
 
-add_executable(analysis src/panoramic.cpp) 
+add_executable(analysis src/panoramic.cpp src/ANALYSISGUI.cpp) 
 add_dependencies(analysis ${catkin_EXPORTED_TARGETS})
 add_dependencies(analysis bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(analysis bluesat_owr_protobuf)
