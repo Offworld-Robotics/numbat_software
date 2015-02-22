@@ -28,7 +28,6 @@ class GPSGUI {
         ros::Subscriber batterySub;
         ros::Subscriber videoSub;
         
-        ListNode end;
         float battery;
         float signal;
         float tiltX;

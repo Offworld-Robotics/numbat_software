@@ -18,8 +18,6 @@ GPSGUI::GPSGUI(OwrGui * ogui) {
     tiltX = 30;
     tiltY = 30;
     ultrasonic = 0.0;
-    list = NULL;
-    end = NULL;
     
     //pass the function that is called when a message is recived
     gpsSub = n.subscribe("/gps/fix", 1000, &GPSGUI::reciveGpsMsg, this);
@@ -29,7 +27,7 @@ GPSGUI::GPSGUI(OwrGui * ogui) {
 }
 
 void GPSGUI::spin() {
-  ros::spin();
+	ros::spin();
 }
 
 void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
@@ -39,21 +37,10 @@ void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
     ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
         
     //create a new node
-    ListNode l = (ListNode) malloc(sizeof(vector2D));
-    l->y = msg->latitude; 
+    ListNode l = (ListNode)malloc(sizeof(vector2D));
+    l->y = msg->latitude;
     l->x = msg->longitude;
-    l->next = NULL;
-    
-    if(end == NULL) {
-        list = l;
-        end = l;
-    } else {
-        end->next = l;
-        end = l;
-    }
-    printf("gui %x\n", (int) &gui);
-    printf("THe path %lx\n", &list);
-    gui->updateConstants(battery,signal,ultrasonic,list,target, NULL);
+    gui->updateConstants(battery, signal, ultrasonic, l, target, NULL);
     
 }
 
@@ -63,10 +50,8 @@ void GPSGUI::reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr&
     
     ROS_INFO("recived a message");
     ROS_INFO("voltage %f", msg->voltage);
-        
     
-    gui->updateConstants(msg->voltage,signal,ultrasonic,list,target, NULL);
-    
+    gui->updateConstants(msg->voltage, signal, ultrasonic, NULL, target, NULL);
 }
 
 void GPSGUI::reciveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
@@ -74,6 +59,6 @@ void GPSGUI::reciveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
     
     ROS_INFO("recived video frame");
     
-    gui->updateConstants(battery, signal, ultrasonic, list, target, (unsigned char *)msg->data.data());
+    gui->updateConstants(battery, signal, ultrasonic, NULL, target, (unsigned char *)msg->data.data());
 }
 
