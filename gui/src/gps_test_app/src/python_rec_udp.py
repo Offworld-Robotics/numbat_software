@@ -14,7 +14,7 @@ import re
     
     
 def talker():
-    UDP_IP = "192.168.0.102"
+    UDP_IP = "192.168.0.107"
     UDP_PORT = 9002
 
     sock = socket.socket(socket.AF_INET, # Internet
