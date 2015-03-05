@@ -2,39 +2,36 @@
  * This manages input into the GUI from ROS
  * By Harry J.E Day for BlueSat OWR <Harry@dayfamilyweb.com>
  */
- 
-#ifndef GPSGUI_H
-#define GPSGUI_H
 
-#include "comms.h"
+#ifndef ANALYSISGUI_H
+#define ANALYSISGUI_H
+
+#include "site.h"
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>
-#include "../../devel/include/bluesat_owr_protobuf/battery_ros.h"
-#include  "OwrGui.h"
+#include "SiteGui.h"
 
-class GPSGUI {
+class ANALYSISGUI {
 
 	public:
-		GPSGUI(OwrGui *gui);
+		ANALYSISGUI(SiteGui *gui);
 		void spin();
 		void reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
-		void reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
+		//void reciveStatsMsg();// pH, ultrasonic, humidity
 		void reciveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
 		
 	private:
-		std::string coOrdList;
-		OwrGui *gui;
+		SiteGui *gui;
 		ros::Subscriber gpsSub;
-		ros::Subscriber batterySub;
+		//ros::Subscriber statsSub;
 		ros::Subscriber videoSub;
-		
-		float battery;
-		float signal;
-		float tiltX;
-		float tiltY;
+		double latitude;
+		double longitude;
+		float altitude;
+		float pH;
 		float ultrasonic;
-		vector2D target;
+		float humidity;
 };
 
 #endif

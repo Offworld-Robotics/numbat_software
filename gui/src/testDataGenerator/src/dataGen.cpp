@@ -1,6 +1,6 @@
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
-#include "../../devel/include/bluesat_owr_protobuf/battery_ros.h"
+#include "bluesat_owr_protobuf/battery_ros.h"
 
 int main(int argc, char ** argv) {
      ros::init (argc, argv, "dataGen");

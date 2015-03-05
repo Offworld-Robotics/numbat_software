@@ -15,21 +15,16 @@
 #include <ctime>
 #include <unistd.h>
 #include <GL/glut.h>
-#include  <stdio.h>
 #include "comms.h"
-//#include "GpsGUI.h"
 #include <ros/ros.h>
 #include "../../devel/include/owr_camera_control/stream.h"
-
-//enable this to put in random data
-//#define RANDOM
-
+#include <list>
 
 #define PI 3.1415926535897932384626433832795
 
 // default window size
-#define WINDOW_W 1000
-#define WINDOW_H 300
+#define WINDOW_W 1920
+#define WINDOW_H 892
 
 #define VID_FEED_ACTIVE_BUTTON_RED 0
 #define VID_FEED_ACTIVE_BUTTON_GREEN 153
@@ -43,41 +38,49 @@
 #define VID_FEED_INACTIVE_BUTTON_GREEN 0
 #define VID_FEED_INACTIVE_BUTTON_BLUE 0
 
-#define SCALE 150000
+#define DEFAULT_SCALE 30000
 #define ARTIFICIAL_HORIZON_SKY_HEIGHT 50
 #define ARTIFICIAL_HORIZON_SKY_HALF_WIDTH 70
 #define ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH 40
+
+#define VIDEO_W 640
+#define VIDEO_H 480
 
 #define UP    0
 #define DOWN  1
 #define LEFT  2
 #define RIGHT 3
 
+// feed related
+#define MAX_FEEDS 1
+#define NO_FEEDS -1
+#define ALL_FEEDS 0
+
+#define ALPHA 0.3 // transparency factor
 
 class OwrGui {
     
     public:
         OwrGui();
-        void updateConstants(float bat, float sig,float ultrason, ListNode points, vector2D tar);
-        //glut wrapper functions because it dosen't life c++ :(
-        static OwrGui * instance;
+        void updateConstants(float battery, float signal, float ultrasonic, ListNode current, vector2D target, unsigned char *frame);
+        
+        // glut wrapper functions because it doesn't like c++ :(
+        static OwrGui *instance;
         static void createInstance(OwrGui gui);
-        static void reshape_wrapper(int w, int h);
-        static void idle_wrapper();
-        static void display_wrapper();
-        static void keydown_wrapper(unsigned char key, int x, int y);
-        static void special_keydown_wrapper(int keycode, int x, int y);
-        static void special_keyup_wrapper(int keycode, int x, int y);
+        static void glut_reshape(int w, int h);
+        static void glut_idle();
+        static void glut_display();
+        static void glut_keydown(unsigned char key, int x, int y);
+        static void glut_special_keydown(int keycode, int x, int y);
+        static void glut_special_keyup(int keycode, int x, int y);
         
         void init();
         
     private:
         // OpenGL essential functions
-        
         void reshape(int w, int h);
         void idle();
         void display();
-        
 
         // OpenGL keyboard functions (mainly for debugging)
         void keydown(unsigned char key, int x, int y);
@@ -98,6 +101,7 @@ class OwrGui {
         // function to print the path
         void printGPSPath();
         // draw functions
+        void drawBackground();
         void drawFeeds();
         void drawGPS();
         void drawTilt();
@@ -105,8 +109,9 @@ class OwrGui {
         void drawSignal();
         void drawUltrasonic();
         
-        void * gpsGui;
-        // default status values
+        void *gpsGui;
+        
+        // status values
         float owr_battery;
         float owr_signal;
         float tiltX; // tilt of left-right in degrees
@@ -117,14 +122,17 @@ class OwrGui {
         double prevAngle;
 
         // GPS related variables
-        ListNode path;
+        std::list<ListNode> GPSList; // path history (front is current point, back is origin point)
         vector2D target;
 
         // OpenGL control related variables
-        unsigned int currentWindowH;
-        unsigned int currentWindowW;
-        unsigned int frame;
-        bool arrowKeys[3];
+        int currentWindowH;
+        int currentWindowW;
+        int frameCounter;
+        bool arrowKeys[4];
+        GLuint feedTextures[MAX_FEEDS];
+        int feedDisplayStatus;
+        double scale;
 
         //ros stuff
         ros::Publisher streamPub;
