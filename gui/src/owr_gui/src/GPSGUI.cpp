@@ -17,24 +17,23 @@ GPSGUI::GPSGUI(OwrGui * ogui) {
 	signal = 5;
 	tiltX = 30;
 	tiltY = 30;
-	ultrasonic = 0.0;
+	ultrasonic = 0;
 	
-	//pass the function that is called when a message is recived
-	gpsSub = n.subscribe("/gps/fix", 1000, &GPSGUI::reciveGpsMsg, this);
-	//same for battery
-	batterySub = n.subscribe("/status/battery", 1000, &GPSGUI::reciveBatteryMsg,this);
-	videoSub = n.subscribe("/camera/image_raw", 1000, &GPSGUI::reciveVideoMsg, this);
+	// pass the function that is called when a message is recived
+	gpsSub = n.subscribe("/gps/fix", 1000, &GPSGUI::receiveGpsMsg, this); // GPS related data
+	batterySub = n.subscribe("/status/battery", 1000, &GPSGUI::receiveBatteryMsg, this); // Power left on the battery
+	videoSub = n.subscribe("/camera/image_raw", 1000, &GPSGUI::receiveVideoMsg, this); // Frames of video from camera
 }
 
 void GPSGUI::spin() {
 	ros::spin();
 }
 
-void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
+void GPSGUI::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 	assert(msg);
 	
-	ROS_INFO("recived a message");
-	ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
+	//ROS_INFO("received a message");
+	//ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
 		
 	//create a new node
 	ListNode l = (ListNode)malloc(sizeof(vector2D));
@@ -44,19 +43,20 @@ void GPSGUI::reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 }
 
 
-void GPSGUI::reciveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg) {
+void GPSGUI::receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg) {
 	assert(msg);
 	
-	ROS_INFO("recived a message");
-	ROS_INFO("voltage %f", msg->voltage);
+	//ROS_INFO("received a message");
+	//ROS_INFO("voltage %f", msg->voltage);
+	battery = msg->voltage;
 	
-	gui->updateConstants(msg->voltage, signal, ultrasonic, NULL, target, NULL);
+	gui->updateConstants(battery, signal, ultrasonic, NULL, target, NULL);
 }
 
-void GPSGUI::reciveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
+void GPSGUI::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	assert(msg);
 	
-	ROS_INFO("recived video frame");
+	//ROS_INFO("received video frame");
 	
 	gui->updateConstants(battery, signal, ultrasonic, NULL, target, (unsigned char *)msg->data.data());
 }

@@ -11,13 +11,17 @@
  *
  */
 
-// catkin_make // (add argument "-j4" for ros indigo)
+// catkin_make
 // source devel/setup.bash
 // rosrun owr_gui glutgui
 
 #include "OwrGui.h"
 #include "GpsGUI.h"
 
+//#define DEBUG 1
+
+#ifndef DEBUG
+// debug gps co-ords makes up the area of UNSW
 static double cords[] =
 {
 	-33.914867, 151.225601,
@@ -28,45 +32,46 @@ static double cords[] =
 	-33.919419, 151.226454,
 	-33.914867, 151.225601
 };
-
-//#define DEBUG
+#endif
 
 int main(int argc, char **argv) {
-	ros::init(argc, argv, "GUI");
-	glutInit(&argc, argv);
-	OwrGui gui;
-	OwrGui::createInstance(gui);
-	gui.instance->init();
+	ros::init(argc, argv, "NavigationGUI");
+	OwrGui gui(&argc, argv);
+	gui.run();
 	return EXIT_SUCCESS;
 }
 
-OwrGui *OwrGui::instance = NULL;
-
-void OwrGui::createInstance(OwrGui gui) {
-	instance = &gui;
-}
-
-//glut wrapper functions because it doesn't like c++ :(
-void OwrGui::glut_reshape(int w, int h) {
-	instance->reshape(w,h);
-}
-void OwrGui::glut_idle() {
-	instance->idle();
-}
-void OwrGui::glut_display() {
-	instance->display();
-}
-void OwrGui::glut_keydown(unsigned char key, int x, int y) {
-	instance->keydown(key, x, y);
-}
-void OwrGui::glut_special_keydown(int keycode, int x, int y) {
-	instance->special_keydown(keycode, x, y);
-}
-void OwrGui::glut_special_keyup(int keycode, int x, int y) {
-	instance->special_keyup(keycode, x, y);
-}
-
-OwrGui::OwrGui() {
+OwrGui::OwrGui(int *argc, char **argv) : GLUTWindow() {
+	//toggleStream(0, true);
+	gpsGui = new GPSGUI(this);
+	glutInit(argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitWindowSize(WINDOW_W, WINDOW_H);
+	glutInitWindowPosition(0, 0);
+	glutCreateWindow("Navigation");
+	
+	glGenTextures(MAX_FEEDS, feedTextures);
+	
+	for(int i = 0;i < MAX_FEEDS;i++) {
+		glBindTexture(GL_TEXTURE_2D, feedTextures[i]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+	
+	glClearColor(1, 1, 1, 0);
+	glShadeModel(GL_FLAT);
+	//glEnable(GL_BLEND); // enables transparency
+	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	glutKeyboardFunc(glut_keydown);
+	//glutKeyboardUpFunc(glut_keyup);
+	glutSpecialFunc(glut_special_keydown);
+	glutSpecialUpFunc(glut_special_keyup);
+	glutDisplayFunc(glut_display);
+	glutReshapeFunc(glut_reshape);
+	glutIdleFunc(glut_idle);
+	
 	owr_battery = 0;
 	owr_signal = 0;
 	tiltX = 0; // tilt of left-right in degrees
@@ -75,15 +80,6 @@ OwrGui::OwrGui() {
 	longitude = 0;
 	latitude = 0;
 	prevAngle = 90;
-	
-	// OpenGL related variables
-	currentWindowH = WINDOW_H;
-	currentWindowW = WINDOW_W;
-	frameCounter = 0;
-	
-	for(int i = 0;i < MAX_FEEDS;i++) {
-		feedTextures[i] = 0;
-	}
 	
 	arrowKeys[0] = 0;
 	arrowKeys[1] = 0;
@@ -96,39 +92,12 @@ OwrGui::OwrGui() {
 	srand(time(NULL));
 	//generateTarget();
 	
-	ros::NodeHandle node;
+	//ros::NodeHandle node;
 	
-	streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
+	//streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
 }
 
-void OwrGui::init(void) {
-	toggleStream(0, true);
-	GPSGUI *gpsnode = new GPSGUI(this);
-	gpsGui = gpsnode;
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(WINDOW_W, WINDOW_H);
-	glutInitWindowPosition(0, 0);
-	glutCreateWindow("OWR GUI");
-	
-	glGenTextures(MAX_FEEDS, feedTextures);
-	
-	for(int i = 0;i < MAX_FEEDS;i++) {
-		glBindTexture(GL_TEXTURE_2D, feedTextures[i]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	}
-	glClearColor(1, 1, 1, 0);
-	glShadeModel(GL_FLAT);
-	//glEnable(GL_BLEND); // enables transparency in overlay items
-	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glutKeyboardFunc(glut_keydown);
-	glutSpecialFunc(glut_special_keydown);
-	glutSpecialUpFunc(glut_special_keyup);
-	glutDisplayFunc(glut_display);
-	glutReshapeFunc(glut_reshape);
-	glutIdleFunc(glut_idle);
+void OwrGui::run(void) {
 	glutMainLoop();
 }
 
@@ -148,7 +117,7 @@ void OwrGui::updateConstants(float bat, float sig,float ultrason, ListNode cur, 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, VIDEO_W, VIDEO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
 	}
 	
-	ROS_INFO("Updated Constants");
+	//ROS_INFO("Updated Constants");
 }
 
 
@@ -171,13 +140,11 @@ void OwrGui::idle(void) {
 	
 	#ifdef DEBUG
 	// debug - randomly generate GPS values every second
-	if (frameCounter % 60 == 0) GPSAddRandPos();
-	#endif
+	if (frameCount % 60 == 0) {
+		GPSAddRandPos();
+		printGPSPath(); // debug - print out the list of GPS co-ordinates
+	}
 	
-	// debug - print out the list of GPS co-ordinates
-	//printGPSPath();
-	
-	#ifdef DEBUG	
 	// debug - animate battery and signal
 	owr_battery += 0.01;
 	owr_signal -= 0.01;
@@ -191,12 +158,12 @@ void OwrGui::idle(void) {
 		owr_signal = 0;
 	#endif
 	
-	frameCounter++;
-	if (frameCounter > 6001)
-		frameCounter -= 6000;
+	frameCount++;
+	if (frameCount > 6001)
+		frameCount -= 6000;
 		
 	display();
-	usleep(16666);
+	usleep(15000);
 }
 
 void OwrGui::drawBackground(void) {
@@ -208,9 +175,9 @@ void OwrGui::drawBackground(void) {
 	
 	// data from frame array is flipped, texcoords were changed to compensate
 	glBegin(GL_QUADS);
-		glTexCoord2f(0, 1); glVertex2i(0, -currentWindowH); // Bottom Left
-		glTexCoord2f(1, 1); glVertex2i(currentWindowW, -currentWindowH); // Bottom Right
-		glTexCoord2f(1, 0); glVertex2i(currentWindowW, 0); // Top Right
+		glTexCoord2f(0, 1); glVertex2i(0, -currWinH); // Bottom Left
+		glTexCoord2f(1, 1); glVertex2i(currWinW, -currWinH); // Bottom Right
+		glTexCoord2f(1, 0); glVertex2i(currWinW, 0); // Top Right
 		glTexCoord2f(0, 0); glVertex2i(0, 0); // Top Left
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
@@ -274,17 +241,13 @@ void OwrGui::printGPSPath() {
 	printf("End\n");
 }
 
-double distance(double x1, double y1, double x2, double y2) {
-	return hypot(x2-x1, y2-y1);
-}
-
 // draws GPS path and co-ordinates near the centre of the window
 void OwrGui::drawGPS() {
 	glPushMatrix();
-	glTranslated(currentWindowW/2, -3*currentWindowH/5, 0);
+	glTranslated(currWinW/2, -3*currWinH/5, 0);
 	
 	if (GPSList.size() >= 2) {
-		// draws out the path so that the forward direction of the rover always facing up on the screen
+		// draws out the path so that the forward direction of the rover always faces up on the screen
 		glPushMatrix();
 		
 		ListNode first = *GPSList.begin();
@@ -320,16 +283,16 @@ void OwrGui::drawGPS() {
 		sprintf(GPSLon, "Lon: %.10f", (*GPSList.begin())->x);
 	}
 	glColor4f(0, 0, 0, ALPHA);
-	glTranslated(-50, -currentWindowH/4, 0);
-	drawText(GPSLat, 0, 0);
+	glTranslated(-50, -currWinH/4, 0);
+	drawText(GPSLat, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	glTranslated(0, -20, 0);
-	drawText(GPSLon, 0, 0);
+	drawText(GPSLon, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	
-	// draw text for opengl scale value
+	// draw text to display OpenGL scale value
 	char scaleValue[50];
 	glTranslated(0, -40, 0);
 	sprintf(scaleValue, "OpenGL Scale: %.0f", scale);
-	drawText(scaleValue, 0, 0);
+	drawText(scaleValue, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	glPopMatrix();
 }
 
@@ -337,13 +300,13 @@ void OwrGui::drawGPS() {
 void OwrGui::drawUltrasonic() {
 	char ultrasonicText[30];
 	glPushMatrix();
-	glTranslated(currentWindowW/4, -3*currentWindowH/4, 0);
+	glTranslated(currWinW/4, -3*currWinH/4, 0);
 		
 	// draw text for ultrasonic value
 	glColor4f(0, 0, 0, ALPHA);
 	glTranslated(-50, 50.0, 0);
 	sprintf(ultrasonicText, "Ultrasonic: %f m", ultrasonic);
-	drawText(ultrasonicText, 0, 0);
+	drawText(ultrasonicText, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	glPopMatrix();
 }
 
@@ -406,7 +369,7 @@ void OwrGui::drawTilt() {
 	char text[30];
 	glPushMatrix();
 
-	glTranslated(3*currentWindowW/4, -3*currentWindowH/4, 0);
+	glTranslated(3*currWinW/4, -3*currWinH/4, 0);
 
 	glPushMatrix();
 
@@ -463,10 +426,10 @@ void OwrGui::drawTilt() {
 	// Draw Tilt-Text
 	glTranslated(-50, -100, 0);
 	sprintf(text, "Left-Right: %.2fdeg", tiltX);
-	drawText(text, 0, 0);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	glTranslated(0, -20, 0);
 	sprintf(text, "Front-Back: %.2fdeg", tiltY);
-	drawText(text, 0, 0);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	
 	glPopMatrix();
 }
@@ -484,7 +447,7 @@ void OwrGui::drawBattery() {
 	if (owr_battery > 10)
 		owr_battery = 10;
 	
-	glTranslated(currentWindowW - 125, -50, 0);
+	glTranslated(currWinW - 125, -50, 0);
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(0, 30);
 	glVertex2i(0, -30);
@@ -508,7 +471,7 @@ void OwrGui::drawBattery() {
 	glTranslated(0, -50, 0);
 	glColor4f(0, 0, 0, ALPHA);
 	char text[] = "Battery";
-	drawText(text, 15, 0);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 15, 0);
 	
 	glPopMatrix();
 }
@@ -526,7 +489,7 @@ void OwrGui::drawSignal() {
 	if (owr_signal > 10)
 		owr_signal = 10;
 	
-	glTranslated(currentWindowW - 125, 100 - currentWindowH, 0);
+	glTranslated(currWinW - 125, 100 - currWinH, 0);
 	
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(0, 0);
@@ -542,7 +505,7 @@ void OwrGui::drawSignal() {
 	glTranslated(0, -20, 0);
 	glColor4f(0, 0, 0, ALPHA);
 	char text[] = "Signal";
-	drawText(text, 25, 0);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 25, 0);
 	
 	glPopMatrix();
 }
@@ -629,22 +592,6 @@ void OwrGui::special_keyup(int keycode, int x, int y) {
 	}
 }
 
-void OwrGui::reshape(int w, int h) {
-	currentWindowH = h;
-	currentWindowW = w;
-	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(0, (GLdouble)w, -(GLdouble)h, 0); // (0,0) is top left corner of window, use cartesian co-ordinates
-	glMatrixMode(GL_MODELVIEW);
+void OwrGui::keyup(unsigned char key, int x, int y) {
+
 }
-
-void OwrGui::drawText(char *text, int x, int y) {
-	for (unsigned int i = 0; i < strlen(text); i++) {
-		glRasterPos3f(x, y, 0);
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
-		x += glutBitmapWidth(GLUT_BITMAP_HELVETICA_18, text[i]);
-	}
-}
-
-

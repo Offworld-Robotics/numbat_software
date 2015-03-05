@@ -6,6 +6,7 @@
 #ifndef SITE_GUI_H
 #define SITE_GUI_H
 
+#include "GLUTWindow.h"
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -16,8 +17,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <GL/glut.h>
-#include "site.h"
+#include <GL/freeglut.h>
 #include <ros/ros.h>
 
 #define PI 3.1415926535897932384626433832795
@@ -28,6 +28,12 @@
 
 #define VIDEO_W 640
 #define VIDEO_H 480
+
+#define NUM_IMAGES 2
+#define PANORAMIC 0
+#define HIGH_RES 1
+
+#define BMP_HEADER_SIZE 0x36
 
 #define PANO_W 640
 #define PANO_H 480
@@ -41,41 +47,25 @@
 #define LEFT  2
 #define RIGHT 3
 
-class SiteGui {
+class SiteGui : public GLUTWindow {
 
 	public:
-		SiteGui();
+		SiteGui(int *argc, char **argv);
 		void updateSiteConstants(double latitude, double longitude, float altitude, float pH, float ultrasonic, float humidity, unsigned char *frame);
-		
-		// glut wrapper functions because it dosen't like c++ :(
-		static SiteGui *instance;
-		static void createInstance(SiteGui gui);
-		static void glut_reshape(int w, int h);
-		static void glut_idle();
-		static void glut_display();
-		static void glut_keydown(unsigned char key, int x, int y);
-		//static void glut_special_keydown(int keycode, int x, int y);
-		//static void glut_special_keyup(int keycode, int x, int y);
-		
-		void init();
+		void run();
 		
 	private:
-		// OpenGL essential functions
-		void reshape(int w, int h);
-		void idle();
+		// GLUT essential functions
 		void display();
-
-		// OpenGL keyboard functions (mainly for debugging)
-		void keydown(unsigned char key, int x, int y);
-		//void keyup(unsigned char key, int x, int y);
-		//void special_keydown(int keycode, int x, int y);
-		//void special_keyup(int keycode, int x, int y);
-
-		// function to display some text
-		void drawText(char *text, int x, int y);
+		void idle();
 		
-		void loadTextures();
-		void fillBMPHeader(unsigned char *data, int width, int height);
+		// GLUT keyboard functions
+		void keydown(unsigned char key, int x, int y);
+		void keyup(unsigned char key, int x, int y);
+		void special_keydown(int keycode, int x, int y);
+		void special_keyup(int keycode, int x, int y);
+		
+		// saves the panoramic image, hi-res image, and site stats to the home/owr_sites folder
 		bool saveState();
 		
 		// draw functions
@@ -83,9 +73,10 @@ class SiteGui {
 		void drawImages();
 		void drawTextInfo();
 		
+		// pointer to the ROS node
 		void *analysisGui;
 		
-		// site values
+		// site values to be displayed on the screen
 		double latitude;
 		double longitude;
 		float altitude;
@@ -94,13 +85,10 @@ class SiteGui {
 		float humidity;
 
 		// OpenGL control related variables
-		int currentWindowH;
-		int currentWindowW;
-		int frameCounter;
 		bool arrowKeys[4];
-		GLuint textures[2]; // 1 panoramic image, 1 hi-res image
+		GLuint imgTextures[NUM_IMAGES]; // 1 panoramic image, 1 hi-res image
 		
-		struct stat st; // for stat()
+		struct stat st; // needed for stat()
 
 		//TODO: functions to request site images
 };

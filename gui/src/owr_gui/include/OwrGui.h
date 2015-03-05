@@ -6,6 +6,8 @@
 #ifndef OWR_GUI_H
 #define OWR_GUI_H
 
+#include "GLUTWindow.h"
+#include "comms.h"
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -14,10 +16,9 @@
 #include <cstdio>
 #include <ctime>
 #include <unistd.h>
-#include <GL/glut.h>
-#include "comms.h"
+#include <GL/freeglut.h>
 #include <ros/ros.h>
-#include "../../devel/include/owr_camera_control/stream.h"
+#include "owr_camera_control/stream.h"
 #include <list>
 
 #define PI 3.1415926535897932384626433832795
@@ -58,40 +59,27 @@
 
 #define ALPHA 0.3 // transparency factor
 
-class OwrGui {
+class OwrGui : public GLUTWindow {
     
     public:
-        OwrGui();
+        OwrGui(int *argc, char **argv);
         void updateConstants(float battery, float signal, float ultrasonic, ListNode current, vector2D target, unsigned char *frame);
-        
-        // glut wrapper functions because it doesn't like c++ :(
-        static OwrGui *instance;
-        static void createInstance(OwrGui gui);
-        static void glut_reshape(int w, int h);
-        static void glut_idle();
-        static void glut_display();
-        static void glut_keydown(unsigned char key, int x, int y);
-        static void glut_special_keydown(int keycode, int x, int y);
-        static void glut_special_keyup(int keycode, int x, int y);
-        
-        void init();
+        void run();
         
     private:
-        // OpenGL essential functions
-        void reshape(int w, int h);
+        // GLUT essential functions
         void idle();
         void display();
 
-        // OpenGL keyboard functions (mainly for debugging)
-        void keydown(unsigned char key, int x, int y);
-        //void keyup(unsigned char key, int x, int y);
-        void special_keydown(int keycode, int x, int y);
-        void special_keyup(int keycode, int x, int y);
+        // GLUT keyboard functions
+		void keydown(unsigned char key, int x, int y);
+		void keyup(unsigned char key, int x, int y);
+		void special_keydown(int keycode, int x, int y);
+		void special_keyup(int keycode, int x, int y);
+		
         //draws button
         void drawButton(float, float, float, bool, char);
 
-        // function to display some text
-        void drawText(char *text, int x, int y);
         // function to insert a given co-ordinate to the front of the path list
         void GPSAddPos(double x, double y);
         // function to insert a random co-ordinate to the front of the path list
@@ -100,6 +88,7 @@ class OwrGui {
         void generateTarget();
         // function to print the path
         void printGPSPath();
+        
         // draw functions
         void drawBackground();
         void drawFeeds();
@@ -109,6 +98,7 @@ class OwrGui {
         void drawSignal();
         void drawUltrasonic();
         
+        // pointer to the ROS handler
         void *gpsGui;
         
         // status values
@@ -126,9 +116,6 @@ class OwrGui {
         vector2D target;
 
         // OpenGL control related variables
-        int currentWindowH;
-        int currentWindowW;
-        int frameCounter;
         bool arrowKeys[4];
         GLuint feedTextures[MAX_FEEDS];
         int feedDisplayStatus;

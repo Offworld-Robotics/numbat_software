@@ -6,6 +6,6 @@ typedef struct {
 	double y;
 } vector2D, *ListNode;
 
-void updateConstants(float battery, float signal, float ultrasonic, ListNode position, vector2D target, unsigned char *frame);
+//void updateConstants(float battery, float signal, float ultrasonic, ListNode position, vector2D target, unsigned char *frame);
 
 #endif

@@ -6,7 +6,6 @@
 #ifndef ANALYSISGUI_H
 #define ANALYSISGUI_H
 
-#include "site.h"
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>
@@ -17,9 +16,9 @@ class ANALYSISGUI {
 	public:
 		ANALYSISGUI(SiteGui *gui);
 		void spin();
-		void reciveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
-		//void reciveStatsMsg();// pH, ultrasonic, humidity
-		void reciveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
+		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
+		//void receiveStatsMsg();// pH, ultrasonic, humidity
+		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
 		
 	private:
 		SiteGui *gui;
