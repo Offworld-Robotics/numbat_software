@@ -1,61 +1,89 @@
-#include <iostream>
-#include <string>
-#include <cstring>
-#include <cstdlib>
-#include <cstdio>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <GL/glut.h>
-#include "site.h"
+
 #include "AnalysisGUI.h"
+#include "SiteGui.h"
 
-using namespace std;
-
-// default window size
-#define WINDOW_W 1800
-#define WINDOW_H 850
-
-#define PANO_W 640
-#define PANO_H 480
-#define PANO_DATA_SIZE PANO_W*PANO_H*3
-#define HIRES_W 640
-#define HIRES_H 480
-#define HIRES_DATA_SIZE HIRES_W*HIRES_H*3
-
-// OpenGL control related variables
-static int currentWindowH = WINDOW_H;
-static int currentWindowW = WINDOW_W;
-static GLuint textureNames[2] = {0}; // 1 panoramic image, 1 hi-res image
-
-static double longitude = 0;
-static double latitude = 0;
-static float pH = 0;
-static float humidity = 0;
-static float altitude = 0;
-static float ultrasonic = 0;
-
-struct stat st = {0};
-
-// OpenGL essential functions
-void init();
-void reshape(int w, int h);
-void idle();
-void display();
-
-void keydown(unsigned char key, int x, int y);
-
-// converts BMP color format (BGR) to RGB and vice versa
-void BGR2RGB(unsigned char *data, int size) {
-	unsigned char temp;
-	for (int i = 0; i < size; i += 3) {
-		temp = data[i];
-		data[i] = data[i + 2];
-		data[i + 2] = temp;
-	}
+int main(int argc, char **argv) {
+	ros::init(argc, argv, "GUI");
+	glutInit(&argc, argv);
+	SiteGui gui;
+	SiteGui::createInstance(gui);
+	gui.instance->init();
+	return EXIT_SUCCESS;
 }
 
-void updateSiteConstants(double lat, double lon, float alt, float PH, float usonic, float humid, unsigned char *f) {
+SiteGui *SiteGui::instance = NULL;
+
+void SiteGui::createInstance(SiteGui gui) {
+	instance = &gui;
+}
+
+//glut wrapper functions because it doesn't like c++ :(
+void SiteGui::glut_reshape(int w, int h) {
+	instance->reshape(w,h);
+}
+void SiteGui::glut_idle() {
+	instance->idle();
+}
+void SiteGui::glut_display() {
+	instance->display();
+}
+void SiteGui::glut_keydown(unsigned char key, int x, int y) {
+	instance->keydown(key, x, y);
+}
+
+SiteGui::SiteGui() {
+	latitude = 0;
+	longitude = 0;
+	altitude = 0;
+	pH = 0;
+	humidity = 0;
+	ultrasonic = 0;
+	
+	// OpenGL related variables
+	currentWindowH = WINDOW_H;
+	currentWindowW = WINDOW_W;
+	frameCounter = 0;
+	textures[0] = 0;
+	textures[1] = 0;
+	arrowKeys[0] = 0;
+	arrowKeys[1] = 0;
+	arrowKeys[2] = 0;
+	arrowKeys[3] = 0;
+}
+
+void SiteGui::init(void) {
+	ANALYSISGUI *analysisnode = new ANALYSISGUI(this);
+	analysisGui = analysisnode;
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitWindowSize(WINDOW_W, WINDOW_H);
+	glutInitWindowPosition(0, 0);
+	glutCreateWindow("SITE GUI");
+	
+	glGenTextures(2, textures);
+	
+	for(int i = 0;i < 2;i++) {
+		glBindTexture(GL_TEXTURE_2D, textures[i]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+	
+	glClearColor(1, 1, 1, 0);
+	glShadeModel(GL_FLAT);
+	//loadTextures();
+	//glEnable(GL_BLEND); // enables transparency in overlay items
+	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	glutKeyboardFunc(glut_keydown);
+	//glutSpecialFunc(glut_special_keydown);
+	//glutSpecialUpFunc(glut_special_keyup);
+	glutDisplayFunc(glut_display);
+	glutReshapeFunc(glut_reshape);
+	glutIdleFunc(glut_idle);
+	glutMainLoop();
+}
+
+void SiteGui::updateSiteConstants(double lat, double lon, float alt, float PH, float usonic, float humid, unsigned char *f) {
 	latitude = lat;
 	longitude = lon;
 	altitude = alt;
@@ -63,167 +91,19 @@ void updateSiteConstants(double lat, double lon, float alt, float PH, float uson
 	ultrasonic = usonic;
 	humidity = humid;
 	
-	if (f != NULL) {
-		glBindTexture(GL_TEXTURE_2D, textureNames[0]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, PANO_W, PANO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
-		glBindTexture(GL_TEXTURE_2D, textureNames[1]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, PANO_W, PANO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
-	}
-}
-
-void drawText(char *text, int x, int y) {
-	for (unsigned int i = 0; i < strlen(text); i++) {
-		glRasterPos3f(x, y, 0);
-		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, text[i]);
-		x += glutBitmapWidth(GLUT_BITMAP_TIMES_ROMAN_24, text[i]);
-	}
-}
-
-void loadTextures() {
-	int width, height, size;
-	unsigned char dataStart;
-	unsigned char *data;
-	FILE *pano, *hires;
+	/*if (f != NULL) {
+		printf("New frame received\n");
+		glBindTexture(GL_TEXTURE_2D, textures[0]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, VIDEO_W, VIDEO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
+		glBindTexture(GL_TEXTURE_2D, textures[1]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, VIDEO_W, VIDEO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
+	}*/
 	
-	char *home = getenv("HOME");
-	
-	char filename[50] = {0};
-	sprintf(filename, "%s/panoramic.bmp", home);
-	pano = fopen(filename, "r");
-	sprintf(filename, "%s/hires.bmp", home);
-	hires = fopen(filename, "r");
-	if (pano == NULL) {
-		printf("Could not open 'panoramic.bmp'!\n");
-	} else if (hires == NULL) {
-		printf("Could not open 'hires.bmp'!\n");
-	} else {
-		fseek(pano, 0x0A, SEEK_SET);
-		fread(&dataStart, sizeof(unsigned char), 1, pano); // get the location of starting byte of pixel data
-		fseek(pano, 0x12, SEEK_SET);
-		fread(&width, sizeof(int), 1, pano); // get the width of the image
-		fseek(pano, 0x16, SEEK_SET);
-		fread(&height, sizeof(int), 1, pano); // get the height of the image
-		size = width*height * 3;
-
-		data = (unsigned char *)malloc(size*sizeof(unsigned char));
-		fseek(pano, dataStart, SEEK_SET);
-		fread(data, size, 1, pano);
-		fclose(pano);
-
-		glBindTexture(GL_TEXTURE_2D, textureNames[0]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-		free(data);
-
-		fseek(hires, 0x0A, SEEK_SET);
-		fread(&dataStart, sizeof(unsigned char), 1, hires); // get the location of starting byte of pixel data
-		fseek(hires, 0x12, SEEK_SET);
-		fread(&width, sizeof(int), 1, hires); // get the width of the image
-		fseek(hires, 0x16, SEEK_SET);
-		fread(&height, sizeof(int), 1, hires); // get the height of the image
-		size = width*height * 3;
-
-		data = (unsigned char *)malloc(size*sizeof(unsigned char));
-		fseek(hires, dataStart, SEEK_SET);
-		fread(data, size, 1, hires);
-		fclose(hires);
-
-		glBindTexture(GL_TEXTURE_2D, textureNames[1]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-		free(data);
-	}
+	ROS_INFO("Updated Constants");
 }
 
-int main(int argc, char **argv) {
-	ros::init(argc, argv, "ANALYSISGUI");
-	ANALYSISGUI *analysis = new ANALYSISGUI();
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(WINDOW_W, WINDOW_H);
-	glutInitWindowPosition(50, 20);
-	glutCreateWindow("OWR Image Manager");
-	init();
-	//loadTextures();
-	glutKeyboardFunc(keydown);
-	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
-	glutIdleFunc(idle);
-	glutMainLoop();
-	return 0;
-}
-
-void idle() {
-	ros::spinOnce();
-	display();
-	usleep(16666);
-}
-
-void drawButtons() {
-	char text[20];
-	glPushMatrix();
-	glColor3f(0.7,0.7,0.7);
-	glRecti(10,-10,160,-90);
-	glRecti(170,-10,320,-90);
-	glRecti(330,-10, 480, -90);
-	glColor3f(1,1,0);
-	sprintf(text, "SAVE");
-	drawText(text, 50, -60);
-	sprintf(text, "LOAD");
-	drawText(text, 210, -60);
-	glPopMatrix();
-}
-
-void drawImages() {
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glColor3f(1, 1, 1);
-	// data from frame array is flipped, texcoords were changed to compensate
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 1); glVertex2i(100, -400);  // Bottom Left
-		glTexCoord2f(1, 1); glVertex2i(1600, -400);  // Bottom Right
-		glTexCoord2f(1, 0); glVertex2i(1600, -100);  // Top Right
-		glTexCoord2f(0, 0); glVertex2i(100, -100);  // Top Left
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, textureNames[1]);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 1); glVertex2i(100, -800);  // Bottom Left
-		glTexCoord2f(1, 1); glVertex2i(700, -800);  // Bottom Right
-		glTexCoord2f(1, 0); glVertex2i(700, -420);  // Top Right
-		glTexCoord2f(0, 0); glVertex2i(100, -420);  // Top Left
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-}
-
-void drawTextInfo() {
-	char text[30];
-	glPushMatrix();
-	glTranslated(currentWindowW - 600, 200-currentWindowH, 0);
-	glColor3f(0,0,0);
-	sprintf(text, "pH: %.2f", pH);
-	drawText(text, 0, 0);
-	sprintf(text, "Hum: %.2f%%", humidity);
-	drawText(text, 0, -30);
-	sprintf(text, "Lat: %.2fdeg", latitude);
-	drawText(text, 0, -60);
-	sprintf(text, "Lon: %.2fdeg", longitude);
-	drawText(text, 0, -90);
-	sprintf(text, "Alt: %.2fm", altitude);
-	drawText(text, 0, -120);
-	glPopMatrix();
-}
-
-void display(void) {
-	glClearColor(1,1,1,0);
+void SiteGui::display(void) {
+	glClearColor(1, 1, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	drawButtons();
@@ -233,23 +113,83 @@ void display(void) {
 	glutSwapBuffers();
 }
 
-void init(void) {
-	glGenTextures(2, textureNames);
-	glBindTexture(GL_TEXTURE_2D, textureNames[0]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glBindTexture(GL_TEXTURE_2D, textureNames[1]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glShadeModel(GL_FLAT);
+void SiteGui::drawText(char *text, int x, int y) {
+	for (unsigned int i = 0; i < strlen(text); i++) {
+		glRasterPos3f(x, y, 0);
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, text[i]);
+		x += glutBitmapWidth(GLUT_BITMAP_TIMES_ROMAN_24, text[i]);
+	}
 }
 
-void reshape(int w, int h) {
+void SiteGui::idle() {
+	ros::spinOnce();
+	display();
+	usleep(16666);
+}
+
+void SiteGui::drawButtons() {
+	char text[20];
+	glPushMatrix();
+		glColor3f(0.7,0.7,0.7);
+		glRecti(10,-10,160,-90);
+		glRecti(170,-10,320,-90);
+		glRecti(330,-10, 480, -90);
+		glColor3f(1,1,0);
+		sprintf(text, "SAVE");
+		drawText(text, 50, -60);
+		sprintf(text, "LOAD");
+		drawText(text, 210, -60);
+	glPopMatrix();
+}
+
+void SiteGui::drawImages() {
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	
+	glColor3f(1, 1, 1);
+	
+	// data from frame array is flipped, texcoords were changed to compensate
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 1); glVertex2i(100, -400);  // Bottom Left
+		glTexCoord2f(1, 1); glVertex2i(1600, -400);  // Bottom Right
+		glTexCoord2f(1, 0); glVertex2i(1600, -100);  // Top Right
+		glTexCoord2f(0, 0); glVertex2i(100, -100);  // Top Left
+	glEnd();
+	
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 1); glVertex2i(100, -800);  // Bottom Left
+		glTexCoord2f(1, 1); glVertex2i(700, -800);  // Bottom Right
+		glTexCoord2f(1, 0); glVertex2i(700, -420);  // Top Right
+		glTexCoord2f(0, 0); glVertex2i(100, -420);  // Top Left
+	glEnd();
+	
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
+}
+
+void SiteGui::drawTextInfo() {
+	char text[30];
+	glPushMatrix();
+		glTranslated(currentWindowW - 600, 200 - currentWindowH, 0);
+		glColor3f(0, 0, 0);
+		sprintf(text, "pH: %.2f", pH);
+		drawText(text, 0, 0);
+		sprintf(text, "Hum: %.2f%%", humidity);
+		drawText(text, 0, -30);
+		sprintf(text, "Lat: %.2fdeg", latitude);
+		drawText(text, 0, -60);
+		sprintf(text, "Lon: %.2fdeg", longitude);
+		drawText(text, 0, -90);
+		sprintf(text, "Alt: %.2fm", altitude);
+		drawText(text, 0, -120);
+	glPopMatrix();
+}
+
+void SiteGui::reshape(int w, int h) {
 	currentWindowH = h;
 	currentWindowW = w;
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
@@ -259,7 +199,7 @@ void reshape(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void fillBMPHeader(unsigned char *data, int width, int height) {
+void SiteGui::fillBMPHeader(unsigned char *data, int width, int height) {
 	memset(data, 0, 36);
 	int datasize = width*height*3;
 	data[0x00] = 'B';
@@ -278,7 +218,7 @@ void fillBMPHeader(unsigned char *data, int width, int height) {
 	data[0x2B] = 0x16;
 }
 
-bool saveState() {
+bool SiteGui::saveState() {
 	char *home = getenv("HOME");
 	if (home == NULL) {
 		printf("unable to get home dir\n");
@@ -311,7 +251,7 @@ bool saveState() {
 		bmp = (unsigned char *)malloc((PANO_DATA_SIZE + 0x36)*sizeof(unsigned char));
 		if (bmp == NULL) return false;
 		fillBMPHeader(bmp, PANO_W, PANO_H);
-		glBindTexture(GL_TEXTURE_2D, textureNames[0]);
+		glBindTexture(GL_TEXTURE_2D, textures[0]);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, &bmp[0x36]);
 		fwrite(bmp, PANO_DATA_SIZE + 0x36, 1, f);
 		fclose(f);
@@ -323,7 +263,7 @@ bool saveState() {
 		bmp = (unsigned char *)malloc((HIRES_DATA_SIZE + 0x36)*sizeof(unsigned char));
 		if (bmp == NULL) return false;
 		fillBMPHeader(bmp, HIRES_W, HIRES_H);
-		glBindTexture(GL_TEXTURE_2D, textureNames[1]);
+		glBindTexture(GL_TEXTURE_2D, textures[1]);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, &bmp[0x36]);
 		fwrite(bmp, HIRES_W*HIRES_H*3 + 0x36, 1, f);
 		fclose(f);
@@ -345,13 +285,12 @@ bool saveState() {
 		fwrite(stat, strlen(stat), 1, f);
 		fclose(f);
 		
-		
 		return true;
 	}
 	return false;
 }
 
-void keydown(unsigned char key, int x, int y) {
+void SiteGui::keydown(unsigned char key, int x, int y) {
 	switch (key) {
 	case 27:
 		exit(0);
@@ -363,5 +302,68 @@ void keydown(unsigned char key, int x, int y) {
 			printf("save unsuccessful\n");
 		}
 		break;
+	}
+}
+
+void SiteGui::loadTextures() {
+	int width, height, size;
+	unsigned char dataStart;
+	unsigned char *data;
+	FILE *pano, *hires;
+	
+	char *home = getenv("HOME");
+	
+	char filename[50] = {0};
+	sprintf(filename, "%s/panoramic.bmp", home);
+	pano = fopen(filename, "r");
+	sprintf(filename, "%s/hires.bmp", home);
+	hires = fopen(filename, "r");
+	if (pano == NULL) {
+		printf("Could not open 'panoramic.bmp'!\n");
+	} else if (hires == NULL) {
+		printf("Could not open 'hires.bmp'!\n");
+	} else {
+		fseek(pano, 0x0A, SEEK_SET);
+		fread(&dataStart, sizeof(unsigned char), 1, pano); // get the location of starting byte of pixel data
+		fseek(pano, 0x12, SEEK_SET);
+		fread(&width, sizeof(int), 1, pano); // get the width of the image
+		fseek(pano, 0x16, SEEK_SET);
+		fread(&height, sizeof(int), 1, pano); // get the height of the image
+		size = width*height * 3;
+
+		data = (unsigned char *)malloc(size*sizeof(unsigned char));
+		fseek(pano, dataStart, SEEK_SET);
+		fread(data, size, 1, pano);
+		fclose(pano);
+
+		glBindTexture(GL_TEXTURE_2D, textures[0]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+		free(data);
+
+		fseek(hires, 0x0A, SEEK_SET);
+		fread(&dataStart, sizeof(unsigned char), 1, hires); // get the location of starting byte of pixel data
+		fseek(hires, 0x12, SEEK_SET);
+		fread(&width, sizeof(int), 1, hires); // get the width of the image
+		fseek(hires, 0x16, SEEK_SET);
+		fread(&height, sizeof(int), 1, hires); // get the height of the image
+		size = width*height * 3;
+
+		data = (unsigned char *)malloc(size*sizeof(unsigned char));
+		fseek(hires, dataStart, SEEK_SET);
+		fread(data, size, 1, hires);
+		fclose(hires);
+
+		glBindTexture(GL_TEXTURE_2D, textures[1]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+		free(data);
+		printf("Placeholder textures loaded\n");
 	}
 }

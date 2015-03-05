@@ -104,7 +104,7 @@ include_directories(
 #find_package(bluesat_owr_protobuf)
 
 
-add_executable(glutgui src/glutgui.cpp src/GPSGUI.cpp ) 
+add_executable(glutgui src/glutgui.cpp src/GPSGUI.cpp )
 add_dependencies(glutgui ${catkin_EXPORTED_TARGETS})
 add_dependencies(glutgui bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(glutgui bluesat_owr_protobuf)

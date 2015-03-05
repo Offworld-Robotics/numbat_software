@@ -15,16 +15,10 @@
 #include <ctime>
 #include <unistd.h>
 #include <GL/glut.h>
-#include  <stdio.h>
 #include "comms.h"
-//#include "GpsGUI.h"
 #include <ros/ros.h>
 #include "../../devel/include/owr_camera_control/stream.h"
 #include <list>
-
-//enable this to put in random data
-//#define RANDOM
-
 
 #define PI 3.1415926535897932384626433832795
 
@@ -68,16 +62,17 @@ class OwrGui {
     
     public:
         OwrGui();
-        void updateConstants(float bat, float sig, float ultrason, ListNode cur, vector2D tar, unsigned char *f);
-        // glut wrapper functions because it dosen't like c++ :(
+        void updateConstants(float battery, float signal, float ultrasonic, ListNode current, vector2D target, unsigned char *frame);
+        
+        // glut wrapper functions because it doesn't like c++ :(
         static OwrGui *instance;
         static void createInstance(OwrGui gui);
-        static void reshape_wrapper(int w, int h);
-        static void idle_wrapper();
-        static void display_wrapper();
-        static void keydown_wrapper(unsigned char key, int x, int y);
-        static void special_keydown_wrapper(int keycode, int x, int y);
-        static void special_keyup_wrapper(int keycode, int x, int y);
+        static void glut_reshape(int w, int h);
+        static void glut_idle();
+        static void glut_display();
+        static void glut_keydown(unsigned char key, int x, int y);
+        static void glut_special_keydown(int keycode, int x, int y);
+        static void glut_special_keyup(int keycode, int x, int y);
         
         void init();
         

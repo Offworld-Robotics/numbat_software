@@ -18,7 +18,7 @@
 #include "OwrGui.h"
 #include "GpsGUI.h"
 
-double cords[] =
+static double cords[] =
 {
 	-33.914867, 151.225601,
 	-33.916532, 151.236523,
@@ -39,30 +39,31 @@ int main(int argc, char **argv) {
 	gui.instance->init();
 	return EXIT_SUCCESS;
 }
-OwrGui * OwrGui::instance = NULL;
+
+OwrGui *OwrGui::instance = NULL;
 
 void OwrGui::createInstance(OwrGui gui) {
 	instance = &gui;
 }
 
-//glut wrapper functions because it dosen't life c++ :(
-void OwrGui::reshape_wrapper(int w, int h) {
+//glut wrapper functions because it doesn't like c++ :(
+void OwrGui::glut_reshape(int w, int h) {
 	instance->reshape(w,h);
 }
-void OwrGui::idle_wrapper() {
+void OwrGui::glut_idle() {
 	instance->idle();
 }
-void OwrGui::display_wrapper() {
+void OwrGui::glut_display() {
 	instance->display();
 }
-void OwrGui::keydown_wrapper(unsigned char key, int x, int y) {
-	instance->keydown(key,x,y);
+void OwrGui::glut_keydown(unsigned char key, int x, int y) {
+	instance->keydown(key, x, y);
 }
-void OwrGui::special_keydown_wrapper(int keycode, int x, int y) {
-	instance->special_keydown(keycode,x,y);
+void OwrGui::glut_special_keydown(int keycode, int x, int y) {
+	instance->special_keydown(keycode, x, y);
 }
-void OwrGui::special_keyup_wrapper(int keycode, int x, int y) {
-	instance->special_keyup(keycode, x,y);
+void OwrGui::glut_special_keyup(int keycode, int x, int y) {
+	instance->special_keyup(keycode, x, y);
 }
 
 OwrGui::OwrGui() {
@@ -75,7 +76,7 @@ OwrGui::OwrGui() {
 	latitude = 0;
 	prevAngle = 90;
 	
-	// GPS related variables
+	// OpenGL related variables
 	currentWindowH = WINDOW_H;
 	currentWindowW = WINDOW_W;
 	frameCounter = 0;
@@ -103,16 +104,16 @@ OwrGui::OwrGui() {
 void OwrGui::init(void) {
 	toggleStream(0, true);
 	GPSGUI *gpsnode = new GPSGUI(this);
-	this->gpsGui = gpsnode;
+	gpsGui = gpsnode;
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("OWR GUI");
 	
-	glGenTextures(MAX_FEEDS, this->feedTextures);
+	glGenTextures(MAX_FEEDS, feedTextures);
 	
 	for(int i = 0;i < MAX_FEEDS;i++) {
-		glBindTexture(GL_TEXTURE_2D, this->feedTextures[i]);
+		glBindTexture(GL_TEXTURE_2D, feedTextures[i]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -122,15 +123,14 @@ void OwrGui::init(void) {
 	glShadeModel(GL_FLAT);
 	//glEnable(GL_BLEND); // enables transparency in overlay items
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glutKeyboardFunc(keydown_wrapper);
-	glutSpecialFunc(special_keydown_wrapper);
-	glutSpecialUpFunc(special_keyup_wrapper);
-	glutDisplayFunc(display_wrapper);
-	glutReshapeFunc(reshape_wrapper);
-	glutIdleFunc(idle_wrapper);
+	glutKeyboardFunc(glut_keydown);
+	glutSpecialFunc(glut_special_keydown);
+	glutSpecialUpFunc(glut_special_keyup);
+	glutDisplayFunc(glut_display);
+	glutReshapeFunc(glut_reshape);
+	glutIdleFunc(glut_idle);
 	glutMainLoop();
 }
-
 
 void OwrGui::updateConstants(float bat, float sig,float ultrason, ListNode cur, vector2D t, unsigned char *f) {
 	owr_battery = bat;
@@ -228,6 +228,7 @@ void OwrGui::display(void) {
 	drawBattery();
 	drawSignal();
 	drawUltrasonic();
+		
 	glutSwapBuffers();
 }
 
@@ -360,8 +361,6 @@ void OwrGui::drawButton(float a, float b, float c, bool active, char feedNumber)
 	glColor4f(0, 0, 1, ALPHA);
 	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, feedNumber);
-	
-	
 }
 
 // draws feeds boxes on the left side of the window
