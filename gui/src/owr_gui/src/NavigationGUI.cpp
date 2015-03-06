@@ -15,8 +15,8 @@
 // source devel/setup.bash
 // rosrun owr_gui glutgui
 
-#include "OwrGui.h"
-#include "GpsGUI.h"
+#include "NavigationGUI.h"
+#include "NavigationNode.h"
 
 //#define DEBUG 1
 
@@ -36,14 +36,14 @@ static double cords[] =
 
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "NavigationGUI");
-	OwrGui gui(&argc, argv);
+	NavigationGUI gui(&argc, argv);
 	gui.run();
 	return EXIT_SUCCESS;
 }
 
-OwrGui::OwrGui(int *argc, char **argv) : GLUTWindow() {
+NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	//toggleStream(0, true);
-	gpsGui = new GPSGUI(this);
+	navigationNode = new NavigationNode(this);
 	glutInit(argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
@@ -97,11 +97,11 @@ OwrGui::OwrGui(int *argc, char **argv) : GLUTWindow() {
 	//streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
 }
 
-void OwrGui::run(void) {
+void NavigationGUI::run(void) {
 	glutMainLoop();
 }
 
-void OwrGui::updateConstants(float bat, float sig,float ultrason, ListNode cur, vector2D t, unsigned char *f) {
+void NavigationGUI::updateConstants(float bat, float sig,float ultrason, ListNode cur, vector2D t, unsigned char *f) {
 	owr_battery = bat;
 	owr_signal = sig;
 	
@@ -121,7 +121,7 @@ void OwrGui::updateConstants(float bat, float sig,float ultrason, ListNode cur, 
 }
 
 
-void OwrGui::idle(void) {
+void NavigationGUI::idle(void) {
 	ros::spinOnce();
 	
 	// debug - arrow key control
@@ -166,7 +166,7 @@ void OwrGui::idle(void) {
 	usleep(15000);
 }
 
-void OwrGui::drawBackground(void) {
+void NavigationGUI::drawBackground(void) {
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glColor3f(1, 1, 1);
@@ -184,7 +184,7 @@ void OwrGui::drawBackground(void) {
 	glPopMatrix();
 }
 
-void OwrGui::display(void) {
+void NavigationGUI::display(void) {
 	glClearColor(1, 1, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -199,7 +199,7 @@ void OwrGui::display(void) {
 	glutSwapBuffers();
 }
 
-void OwrGui::GPSAddRandPos() {
+void NavigationGUI::GPSAddRandPos() {
 	printf("Generated random position\n");
 	double randx, randy;
 	ListNode n = (ListNode) malloc(sizeof(vector2D));
@@ -217,7 +217,7 @@ void OwrGui::GPSAddRandPos() {
 	GPSList.push_front(n);
 }
 
-void OwrGui::GPSAddPos(double x, double y) {
+void NavigationGUI::GPSAddPos(double x, double y) {
 	printf("GPSAddPos\n");
 	ListNode n = (ListNode) malloc(sizeof(vector2D));
 	n->x = x;
@@ -225,7 +225,7 @@ void OwrGui::GPSAddPos(double x, double y) {
 	GPSList.push_front(n);
 }
 
-void OwrGui::generateTarget() {
+void NavigationGUI::generateTarget() {
 	double randn;
 	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
 	target.x = randn + 151.139;
@@ -233,7 +233,7 @@ void OwrGui::generateTarget() {
 	target.y = randn - 33.718;
 }
 
-void OwrGui::printGPSPath() {
+void NavigationGUI::printGPSPath() {
 	printf("Begin\n");
 	for(std::list<ListNode>::iterator i = GPSList.begin();i != GPSList.end(); ++i) {
 		printf("%.15f, %.15f\n", (*i)->y, (*i)->x);
@@ -242,7 +242,7 @@ void OwrGui::printGPSPath() {
 }
 
 // draws GPS path and co-ordinates near the centre of the window
-void OwrGui::drawGPS() {
+void NavigationGUI::drawGPS() {
 	glPushMatrix();
 	glTranslated(currWinW/2, -3*currWinH/5, 0);
 	
@@ -297,7 +297,7 @@ void OwrGui::drawGPS() {
 }
 
 // draw the ultrasonic
-void OwrGui::drawUltrasonic() {
+void NavigationGUI::drawUltrasonic() {
 	char ultrasonicText[30];
 	glPushMatrix();
 	glTranslated(currWinW/4, -3*currWinH/4, 0);
@@ -311,7 +311,7 @@ void OwrGui::drawUltrasonic() {
 }
 
 // draw the buttons
-void OwrGui::drawButton(float a, float b, float c, bool active, char feedNumber) {
+void NavigationGUI::drawButton(float a, float b, float c, bool active, char feedNumber) {
 	
 	if (active) {
 		glColor4ub(VID_FEED_ACTIVE_BUTTON_RED, VID_FEED_ACTIVE_BUTTON_GREEN, VID_FEED_ACTIVE_BUTTON_BLUE, ALPHA * 255);
@@ -327,7 +327,7 @@ void OwrGui::drawButton(float a, float b, float c, bool active, char feedNumber)
 }
 
 // draws feeds boxes on the left side of the window
-void OwrGui::drawFeeds(void) {
+void NavigationGUI::drawFeeds(void) {
 	glPushMatrix();
 	
 	drawButton(50, -37.5, 0, true, '0');
@@ -365,7 +365,7 @@ void OwrGui::drawFeeds(void) {
 }
 
 // draws the tilt angles for the left-right and front-back directions near the right of the screen
-void OwrGui::drawTilt() {
+void NavigationGUI::drawTilt() {
 	char text[30];
 	glPushMatrix();
 
@@ -435,7 +435,7 @@ void OwrGui::drawTilt() {
 }
 
 // draws the battery level near the top-right of the window
-void OwrGui::drawBattery() {
+void NavigationGUI::drawBattery() {
 	glPushMatrix();
 	
 	if (owr_battery < 3)
@@ -477,7 +477,7 @@ void OwrGui::drawBattery() {
 }
 
 // draw the signal level near the bottom-right of the window
-void OwrGui::drawSignal() {
+void NavigationGUI::drawSignal() {
 	glPushMatrix();
 	
 	if (owr_signal < 3)
@@ -510,7 +510,7 @@ void OwrGui::drawSignal() {
 	glPopMatrix();
 }
 
-void OwrGui::toggleStream(int stream, bool active) {
+void NavigationGUI::toggleStream(int stream, bool active) {
 
 	owr_camera_control::stream msg;
 	msg.stream = stream;
@@ -529,7 +529,7 @@ void OwrGui::toggleStream(int stream, bool active) {
 	}
 }
 
-void OwrGui::keydown(unsigned char key, int x, int y) {
+void NavigationGUI::keydown(unsigned char key, int x, int y) {
 	if (key == 27) {
 		exit(0);
 	} else if (key >= '0' && key <= '9')  {
@@ -558,7 +558,7 @@ void OwrGui::keydown(unsigned char key, int x, int y) {
 	}
 }
 
-void OwrGui::special_keydown(int keycode, int x, int y) {
+void NavigationGUI::special_keydown(int keycode, int x, int y) {
 	switch (keycode) {
 	case GLUT_KEY_UP:
 		arrowKeys[UP] = 1;
@@ -575,7 +575,7 @@ void OwrGui::special_keydown(int keycode, int x, int y) {
 	}
 }
 
-void OwrGui::special_keyup(int keycode, int x, int y) {
+void NavigationGUI::special_keyup(int keycode, int x, int y) {
 	switch (keycode) {
 	case GLUT_KEY_UP:
 		arrowKeys[UP] = 0;
@@ -592,6 +592,6 @@ void OwrGui::special_keyup(int keycode, int x, int y) {
 	}
 }
 
-void OwrGui::keyup(unsigned char key, int x, int y) {
+void NavigationGUI::keyup(unsigned char key, int x, int y) {
 
 }

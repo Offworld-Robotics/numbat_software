@@ -1,16 +1,16 @@
 #include "GLUTWindow.h"
 #include "AnalysisGUI.h"
-#include "SiteGui.h"
+#include "AnalysisNode.h"
 
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "AnalysisGUI");
-	SiteGui gui(&argc, argv);
+	AnalysisGUI gui(&argc, argv);
 	gui.run();
 	return EXIT_SUCCESS;
 }
 
-SiteGui::SiteGui(int *argc, char **argv) : GLUTWindow() {
-	analysisGui = new ANALYSISGUI(this);
+AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
+	analysisNode = new AnalysisNode(this);
 	glutInit(argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
@@ -30,7 +30,7 @@ SiteGui::SiteGui(int *argc, char **argv) : GLUTWindow() {
 	glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
 	
-	//glEnable(GL_BLEND); // enables transparency in overlay items
+	//glEnable(GL_BLEND); // enables transparency
 	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	glutKeyboardFunc(glut_keydown);
 	//glutKeyboardUpFunc(glut_keyup);
@@ -53,11 +53,11 @@ SiteGui::SiteGui(int *argc, char **argv) : GLUTWindow() {
 	arrowKeys[3] = 0;
 }
 
-void SiteGui::run(void) {
+void AnalysisGUI::run(void) {
 	glutMainLoop();
 }
 
-void SiteGui::updateSiteConstants(double lat, double lon, float alt, float PH, float usonic, float humid, unsigned char *f) {
+void AnalysisGUI::updateSiteConstants(double lat, double lon, float alt, float PH, float usonic, float humid, unsigned char *f) {
 	latitude = lat;
 	longitude = lon;
 	altitude = alt;
@@ -75,7 +75,7 @@ void SiteGui::updateSiteConstants(double lat, double lon, float alt, float PH, f
 	//ROS_INFO("Updated Constants");
 }
 
-void SiteGui::display(void) {
+void AnalysisGUI::display(void) {
 	glClearColor(1, 1, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -86,13 +86,13 @@ void SiteGui::display(void) {
 	glutSwapBuffers();
 }
 
-void SiteGui::idle() {
+void AnalysisGUI::idle() {
 	ros::spinOnce();
 	display();
 	usleep(15000);
 }
 
-void SiteGui::drawButtons() {
+void AnalysisGUI::drawButtons() {
 	char text[20];
 	glPushMatrix();
 	glColor3f(0.7, 0.7, 0.7);
@@ -107,7 +107,7 @@ void SiteGui::drawButtons() {
 	glPopMatrix();
 }
 
-void SiteGui::drawImages() {
+void AnalysisGUI::drawImages() {
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	
@@ -136,7 +136,7 @@ void SiteGui::drawImages() {
 	glPopMatrix();
 }
 
-void SiteGui::drawTextInfo() {
+void AnalysisGUI::drawTextInfo() {
 	char text[30];
 	glPushMatrix();
 	glTranslated(currWinW - 600, 200 - currWinH, 0);
@@ -154,7 +154,7 @@ void SiteGui::drawTextInfo() {
 	glPopMatrix();
 }
 
-bool SiteGui::saveState() {
+bool AnalysisGUI::saveState() {
 	char *home = getenv("HOME");
 	if (home == NULL) {
 		printf("Unable to get home directory\n");
@@ -226,7 +226,7 @@ bool SiteGui::saveState() {
 	return false;
 }
 
-void SiteGui::keydown(unsigned char key, int x, int y) {
+void AnalysisGUI::keydown(unsigned char key, int x, int y) {
 	switch (key) {
 	case 27:
 		exit(0);
@@ -241,14 +241,14 @@ void SiteGui::keydown(unsigned char key, int x, int y) {
 	}
 }
 
-void SiteGui::keyup(unsigned char key, int x, int y) {
+void AnalysisGUI::keyup(unsigned char key, int x, int y) {
 
 }
 
-void SiteGui::special_keydown(int keycode, int x, int y) {
+void AnalysisGUI::special_keydown(int keycode, int x, int y) {
 
 }
 
-void SiteGui::special_keyup(int keycode, int x, int y) {
+void AnalysisGUI::special_keyup(int keycode, int x, int y) {
 
 }

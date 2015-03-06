@@ -1,21 +1,13 @@
 /*
- * Class to control the OWR GUI
+ * Class to control the Navigation GUI
  *
  */
  
-#ifndef OWR_GUI_H
-#define OWR_GUI_H
+#ifndef NAVIGATIONGUI_H
+#define NAVIGATIONGUI_H
 
 #include "GLUTWindow.h"
-#include "comms.h"
-#include <iostream>
-#include <string>
-#include <cstring>
-#include <cmath>
-#include <cstdlib>
-#include <cstdio>
-#include <ctime>
-#include <unistd.h>
+#include "ListNode.h"
 #include <GL/freeglut.h>
 #include <ros/ros.h>
 #include "owr_camera_control/stream.h"
@@ -44,8 +36,8 @@
 #define ARTIFICIAL_HORIZON_SKY_HALF_WIDTH 70
 #define ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH 40
 
-#define VIDEO_W 640
-#define VIDEO_H 480
+#define VIDEO_W 1280
+#define VIDEO_H 720
 
 #define UP    0
 #define DOWN  1
@@ -59,10 +51,10 @@
 
 #define ALPHA 0.3 // transparency factor
 
-class OwrGui : public GLUTWindow {
+class NavigationGUI : public GLUTWindow {
     
     public:
-        OwrGui(int *argc, char **argv);
+        NavigationGUI(int *argc, char **argv);
         void updateConstants(float battery, float signal, float ultrasonic, ListNode current, vector2D target, unsigned char *frame);
         void run();
         
@@ -99,7 +91,7 @@ class OwrGui : public GLUTWindow {
         void drawUltrasonic();
         
         // pointer to the ROS handler
-        void *gpsGui;
+        void *navigationNode;
         
         // status values
         float owr_battery;

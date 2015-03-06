@@ -10,10 +10,11 @@
 #include <fstream>
 #include <cstring>
 #include <cstdio>
-#include "AnalysisGUI.h"
+#include "AnalysisNode.h"
 
-ANALYSISGUI::ANALYSISGUI(SiteGui *sgui) {
-	gui = sgui;
+AnalysisNode::AnalysisNode(AnalysisGUI *newgui) {
+	ROS_INFO("Starting Analysis Node");
+	gui = newgui;
 	//a nodehandler is used to communiate with the rest of ros
 	ros::NodeHandle n("~");
 	
@@ -21,17 +22,17 @@ ANALYSISGUI::ANALYSISGUI(SiteGui *sgui) {
 	pH = 0;
 	humidity = 0;
 	
-	//pass the function that is called when a message is recived
-	gpsSub = n.subscribe("/gps/fix", 1000, &ANALYSISGUI::receiveGpsMsg, this);
-	//siteSub = n.subscribe("/gps/fix", 1000, &ANALYSISGUI::reciveSiteMsg, this);
-	videoSub = n.subscribe("/camera/image_raw", 1000, &ANALYSISGUI::receiveVideoMsg, this);
+	//pass the function that is called when a message is received
+	gpsSub = n.subscribe("/gps/fix", 1000, &AnalysisNode::receiveGpsMsg, this);
+	//siteSub = n.subscribe("/gps/fix", 1000, &AnalysisNode::reciveSiteMsg, this);
+	videoSub = n.subscribe("/camera/image_raw", 1000, &AnalysisNode::receiveVideoMsg, this);
 }
 
-void ANALYSISGUI::spin() {
+void AnalysisNode::spin() {
 	ros::spin();
 }
 
-void ANALYSISGUI::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
+void AnalysisNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received GPS message");
@@ -57,7 +58,7 @@ void ANALYSISGUI::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 	
 }*/
 
-void ANALYSISGUI::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
+void AnalysisNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received video frame");

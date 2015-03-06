@@ -3,27 +3,27 @@
  * By Harry J.E Day for BlueSat OWR <Harry@dayfamilyweb.com>
  */
  
-#ifndef GPSGUI_H
-#define GPSGUI_H
+#ifndef NAVIGATIONNODE_H
+#define NAVIGATIONNODE_H
 
-#include "comms.h"
+#include "ListNode.h"
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>
 #include "bluesat_owr_protobuf/battery_ros.h"
-#include  "OwrGui.h"
+#include "NavigationGUI.h"
 
-class GPSGUI {
+class NavigationNode {
 
 	public:
-		GPSGUI(OwrGui *gui);
+		NavigationNode(NavigationGUI *gui);
 		void spin();
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
 		
 	private:
-		OwrGui *gui;
+		NavigationGUI *gui;
 		ros::Subscriber gpsSub;
 		ros::Subscriber batterySub;
 		ros::Subscriber videoSub;
