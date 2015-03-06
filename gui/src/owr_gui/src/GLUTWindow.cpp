@@ -50,9 +50,8 @@ void GLUTWindow::reshape(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void GLUTWindow::drawText(char *text, void *font, int x, int y, float r, float g, float b, float alpha) {
+void GLUTWindow::drawText(char *text, void *font, int x, int y) {
 	glRasterPos2i(x, y);
-	glColor4f(r, g, b, alpha);
 	glutBitmapString(font, reinterpret_cast<const unsigned char *>(text));
 }
 
@@ -83,4 +82,23 @@ void GLUTWindow::loadTexture(char *filename, GLuint texture, GLenum format) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		free(data);
 	}
+}
+
+void GLUTWindow::fillBMPHeader(unsigned char *data, int width, int height) {
+	memset(data, 0, 36);
+	int datasize = width*height*3;
+	data[0x00] = 'B';
+	data[0x01] = 'M';
+	*(int *)&data[0x02] = datasize+0x36;
+	*(int *)&data[0x0A] = 0x36;
+	data[0x0E] = 0x28;
+	*(int *)&data[0x12] = width;
+	*(int *)&data[0x16] = height;
+	data[0x1A] = 0x01;
+	data[0x1C] = 0x18;
+	*(int *)&data[0x22] = datasize;
+	data[0x26] = 0x25;
+	data[0x27] = 0x16;
+	data[0x2A] = 0x25;
+	data[0x2B] = 0x16;
 }

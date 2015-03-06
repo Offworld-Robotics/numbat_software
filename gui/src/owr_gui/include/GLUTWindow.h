@@ -1,7 +1,7 @@
 #ifndef GLUTWINDOW_H
 #define GLUTWINDOW_H
 
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 
 class GLUTWindow {
 	protected:
@@ -35,8 +35,11 @@ class GLUTWindow {
 		// assuming texture has been generated, reads a bmp file and loads the data into the texture
 		void loadTexture(char *filename, GLuint texture, GLenum format);
 		
-		// draws text at a specified font, raster position and color
-		void drawText(char *text, void *font, int x, int y, float r, float g, float b, float alpha);
+		// fill the data array with the BMP header depending on the width and height of the image
+		void fillBMPHeader(unsigned char *data, int width, int height);
+		
+		// draws text using a specified font and raster position
+		void drawText(char *text, void *font, int x, int y);
 		
 	public:
 		GLUTWindow();
