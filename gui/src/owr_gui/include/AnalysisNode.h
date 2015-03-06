@@ -1,7 +1,8 @@
 /*
- * This manages input into the GUI from ROS
- * By Harry J.E Day for BlueSat OWR <Harry@dayfamilyweb.com>
- */
+	Class header for AnalysisNode
+	The node manages input into the Analysis GUI from ROS
+	By Harry J.E Day for Bluesat OWR <Harry@dayfamilyweb.com>
+*/
 
 #ifndef ANALYSISNODE_H
 #define ANALYSISNODE_H

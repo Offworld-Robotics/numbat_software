@@ -1,9 +1,10 @@
 /*
- * GPSLogger Node
- * Logs GPS input to KML
- * By Harry J.E Day for Bluesat OWR
- * Date: 31/05/2014
- */
+	Analysis Node
+	Handles updates to the Analysis GUI
+	By Harry J.E Day for Bluesat OWR
+	Date: 31/05/2014
+*/
+
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>

@@ -1,7 +1,6 @@
 /*
- * Class to control the Navigation GUI
- *
- */
+	Class header for NavigationGUI
+*/
  
 #ifndef NAVIGATIONGUI_H
 #define NAVIGATIONGUI_H
@@ -94,8 +93,8 @@ class NavigationGUI : public GLUTWindow {
         void *navigationNode;
         
         // status values
-        float owr_battery;
-        float owr_signal;
+        float battery;
+        float signal;
         float tiltX; // tilt of left-right in degrees
         float tiltY; // tilt of forward-back in degrees
         float ultrasonic;

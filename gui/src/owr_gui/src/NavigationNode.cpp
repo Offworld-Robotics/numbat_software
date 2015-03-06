@@ -1,9 +1,10 @@
 /*
- * GPSLogger Node
- * Logs GPS input to KML
- * By Harry J.E Day for Bluesat OWR
- * Date: 31/05/2014
- */
+	Navigation Node
+	Handles updates to the Navigation GUI
+	By Harry J.E Day for Bluesat OWR
+	Date: 31/05/2014
+*/
+
 #include "NavigationNode.h"
 #include <fstream>
 

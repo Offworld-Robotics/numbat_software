@@ -1,3 +1,20 @@
+/*
+	Main source for OffWorld Robotics Site Analysis GUI
+	
+	Displayed features include:
+	- Panoramic image of sites
+	- High-resolution image of sites
+	- GPS co-ordinates
+	- pH level
+	- Humidity
+	- Ultrasonic sensors
+	
+	
+	Compile using: catkin_make
+	Setup environment using: source devel/setup.bash
+	Run using: rosrun owr_gui analysis
+*/
+
 #include "GLUTWindow.h"
 #include "AnalysisGUI.h"
 #include "AnalysisNode.h"
@@ -12,7 +29,7 @@ int main(int argc, char **argv) {
 AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
 	analysisNode = new AnalysisNode(this);
 	glutInit(argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("Analysis");

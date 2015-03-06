@@ -1,19 +1,21 @@
 /*
- * Main source for OffWorld Robotics Widget Gui
- *
- * Draws a gui for ground station for BLUEsat OffWorld Robotics Groundstation
- *	Gui shows video feed controls
- *	GPS
- *	Signal strength
- *	Robot Battery level
- *
- * Contributers
- *
- */
-
-// catkin_make
-// source devel/setup.bash
-// rosrun owr_gui glutgui
+	Main source for OffWorld Robotics Navigation GUI
+	
+	Displayed features include:
+	- Video feed
+	- Video feed controls
+	- GPS co-ordinates
+	- Path history of rover
+	- Signal strength
+	- Robot Battery level
+	- Tilting
+	- Ultrasonic sensors
+	
+	
+	Compile using: catkin_make
+	Setup environment using: source devel/setup.bash
+	Run using: rosrun owr_gui navigation
+*/
 
 #include "NavigationGUI.h"
 #include "NavigationNode.h"
@@ -45,7 +47,7 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	//toggleStream(0, true);
 	navigationNode = new NavigationNode(this);
 	glutInit(argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("Navigation");
@@ -72,8 +74,8 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	glutReshapeFunc(glut_reshape);
 	glutIdleFunc(glut_idle);
 	
-	owr_battery = 0;
-	owr_signal = 0;
+	battery = 0;
+	signal = 0;
 	tiltX = 0; // tilt of left-right in degrees
 	tiltY = 0; // tilt of forward-back in degrees
 	ultrasonic = 0;
@@ -102,8 +104,8 @@ void NavigationGUI::run(void) {
 }
 
 void NavigationGUI::updateConstants(float bat, float sig,float ultrason, ListNode cur, vector2D t, unsigned char *f) {
-	owr_battery = bat;
-	owr_signal = sig;
+	battery = bat;
+	signal = sig;
 	
 	if (cur != NULL) {
 		GPSList.push_front(cur);
@@ -146,16 +148,16 @@ void NavigationGUI::idle(void) {
 	}
 	
 	// debug - animate battery and signal
-	owr_battery += 0.01;
-	owr_signal -= 0.01;
-	if (owr_battery < 0)
-		owr_battery = 10;
-	if (owr_battery > 10)
-		owr_battery = 0;
-	if (owr_signal < 0)
-		owr_signal = 10;
-	if (owr_signal > 10)
-		owr_signal = 0;
+	battery += 0.01;
+	signal -= 0.01;
+	if (battery < 0)
+		battery = 10;
+	if (battery > 10)
+		battery = 0;
+	if (signal < 0)
+		signal = 10;
+	if (signal > 10)
+		signal = 0;
 	#endif
 	
 	frameCount++;
@@ -438,14 +440,14 @@ void NavigationGUI::drawTilt() {
 void NavigationGUI::drawBattery() {
 	glPushMatrix();
 	
-	if (owr_battery < 3)
+	if (battery < 3)
 		glColor4f(1, 0, 0, ALPHA);
 	else
 		glColor4f(0, 1, 0, ALPHA);
-	if (owr_battery < 0)
-		owr_battery = 0;
-	if (owr_battery > 10)
-		owr_battery = 10;
+	if (battery < 0)
+		battery = 0;
+	if (battery > 10)
+		battery = 10;
 	
 	glTranslated(currWinW - 125, -50, 0);
 	glBegin(GL_LINE_LOOP);
@@ -457,8 +459,8 @@ void NavigationGUI::drawBattery() {
 	glBegin(GL_QUADS);
 	glVertex2i(0, 30);
 	glVertex2i(0, -30);
-	glVertex2i(owr_battery * 10, -30);
-	glVertex2i(owr_battery * 10, 30);
+	glVertex2i(battery * 10, -30);
+	glVertex2i(battery * 10, 30);
 	glEnd();
 	
 	glBegin(GL_LINE_LOOP);
@@ -480,14 +482,14 @@ void NavigationGUI::drawBattery() {
 void NavigationGUI::drawSignal() {
 	glPushMatrix();
 	
-	if (owr_signal < 3)
+	if (signal < 3)
 		glColor4f(1, 0, 0, ALPHA);
 	else
 		glColor4f(0, 1, 0, ALPHA);
-	if (owr_signal < 0)
-		owr_signal = 0;
-	if (owr_signal > 10)
-		owr_signal = 10;
+	if (signal < 0)
+		signal = 0;
+	if (signal > 10)
+		signal = 10;
 	
 	glTranslated(currWinW - 125, 100 - currWinH, 0);
 	
@@ -498,8 +500,8 @@ void NavigationGUI::drawSignal() {
 	glEnd();
 	glBegin(GL_POLYGON);
 	glVertex2i(0, 0);
-	glVertex2i(owr_signal * 10, 0);
-	glVertex2i(owr_signal * 10, 5 * owr_signal);
+	glVertex2i(signal * 10, 0);
+	glVertex2i(signal * 10, 5 * signal);
 	glEnd();
 	
 	glTranslated(0, -20, 0);

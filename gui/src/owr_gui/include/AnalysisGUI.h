@@ -1,7 +1,6 @@
 /*
- * Class to control the Analysis GUI
- *
- */
+	Class header for AnalysisGUI
+*/
  
 #ifndef ANALYSISGUI_H
 #define ANALYSISGUI_H

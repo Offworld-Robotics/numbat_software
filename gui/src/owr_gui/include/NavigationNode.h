@@ -1,7 +1,8 @@
 /*
- * This manages input into the GUI from ROS
- * By Harry J.E Day for BlueSat OWR <Harry@dayfamilyweb.com>
- */
+	Class header for NavigationNode
+	The node manages input into the Navigation GUI from ROS
+	By Harry J.E Day for Bluesat OWR <Harry@dayfamilyweb.com>
+*/
  
 #ifndef NAVIGATIONNODE_H
 #define NAVIGATIONNODE_H
