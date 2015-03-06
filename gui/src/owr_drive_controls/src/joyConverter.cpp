@@ -16,6 +16,13 @@ int main(int argc, char ** argv) {
 }
 
 JoyConverter::JoyConverter() {
+
+    //init button sates
+    cam0Button = 0;
+    cam1Button = 0;
+    cam2Button = 0;
+    cam3Button = 0;
+    
     //uses api at https://github.com/bluesat/owr_software/wiki/OWR-ROS-API
     velPublisher = nh.advertise<geometry_msgs::Twist>("owr/control/drive", 1);
     
@@ -25,6 +32,12 @@ JoyConverter::JoyConverter() {
     
 }
 
+//checks if the button state has changed and changes the feed
+void JoyConverter::switchFeed(int * storedState, int joyState, int feedNum) {
+    if((*storedState) != joyState) {
+        //TODO: switch feed
+    } 
+}
 
 void JoyConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //direction from Up-down and LR 
@@ -36,6 +49,8 @@ void JoyConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     velPublisher.publish(vel);
     
     //TODO: camera on/off
+    //check if the camera button states have changes
+    switchFeed(&cam0Button,joy->buttons[CAM_FEED_0],0);
     //TODO: camera rotation
     //TODO: take photo
     //TODO: map zoom in/out

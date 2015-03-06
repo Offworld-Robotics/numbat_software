@@ -38,15 +38,26 @@
 #define DRIVE_AXES_UD   STICK_R_UD
 #define DRIVE_AXES_LR   STICK_R_LR
 
+//a,b,x,y buttons for Camera feeds
+#define CAM_FEED_0   BUTTON_A
+#define CAM_FEED_1   BUTTON_B
+#define CAM_FEED_2   BUTTON_X
+#define CAM_FEED_3   BUTTON_Y
+
+
 class JoyConverter {
     public:
         JoyConverter();
         
     private:
         void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
+        void switchFeed(int * storedState, int joyState, int feedNum);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
         ros::Subscriber joySubscriber;
+        
+        //to keep track of button states. It is possible press could change it
+        int cam0Button, cam1Button, cam2Button, cam3Button;
 };
 
 #endif
