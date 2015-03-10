@@ -44,7 +44,11 @@ int main(int argc, char **argv) {
 }
 
 NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
-	//toggleStream(0, true);
+    ros::NodeHandle node;
+	
+	streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
+	//start on stream 0
+	toggleStream(0, true);
 	navigationNode = new NavigationNode(this);
 	glutInit(argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -94,9 +98,7 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	srand(time(NULL));
 	//generateTarget();
 	
-	ros::NodeHandle node;
 	
-	streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
 }
 
 void NavigationGUI::run(void) {
