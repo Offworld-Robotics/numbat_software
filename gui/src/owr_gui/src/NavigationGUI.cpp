@@ -94,9 +94,9 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	srand(time(NULL));
 	//generateTarget();
 	
-	//ros::NodeHandle node;
+	ros::NodeHandle node;
 	
-	//streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
+	streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
 }
 
 void NavigationGUI::run(void) {
