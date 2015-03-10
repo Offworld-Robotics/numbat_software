@@ -521,14 +521,14 @@ void NavigationGUI::toggleStream(int stream, bool active) {
 	
 	ros::spinOnce();
 	printf("%d\n",stream);
-	#define PROGRAM_PATH "/opt/ros/hydro/bin/rosrun image_view image_view image:=/camera/image_raw"
+	/*#define PROGRAM_PATH "/opt/ros/hydro/bin/rosrun image_view image_view image:=/camera/image_raw"
 	
 	FILE* proc = popen(PROGRAM_PATH,"r");
 	if (proc) {
 		printf("Failed to toggle stream\n");
 	} else {
 		printf("Toggle stream successful\n");
-	}
+	}*/
 }
 
 void NavigationGUI::keydown(unsigned char key, int x, int y) {
