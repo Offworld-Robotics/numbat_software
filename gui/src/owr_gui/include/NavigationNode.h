@@ -34,6 +34,7 @@ class NavigationNode {
 		float tiltX;
 		float tiltY;
 		float ultrasonic;
+		double altitude;
 		vector2D target;
 };
 

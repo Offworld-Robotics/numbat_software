@@ -44,7 +44,7 @@ AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 	
-	glClearColor(1, 1, 1, 0);
+	//glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
 	
 	//glEnable(GL_BLEND); // enables transparency
@@ -93,9 +93,8 @@ void AnalysisGUI::updateSiteConstants(double lat, double lon, float alt, float P
 }
 
 void AnalysisGUI::display(void) {
-	glClearColor(1, 1, 1, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+	//glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(1, 1, 1); glRecti(0, 0, 500, -500);
 	drawButtons();
 	drawImages();
 	drawTextInfo();

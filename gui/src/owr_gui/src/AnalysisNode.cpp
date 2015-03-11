@@ -5,13 +5,8 @@
 	Date: 31/05/2014
 */
 
-#include <ros/ros.h>
-#include <sensor_msgs/NavSatFix.h>
-#include <sensor_msgs/Image.h>
-#include <fstream>
-#include <cstring>
-#include <cstdio>
 #include "AnalysisNode.h"
+#include <fstream>
 
 AnalysisNode::AnalysisNode(AnalysisGUI *newgui) {
 	ROS_INFO("Starting Analysis Node");
@@ -25,7 +20,7 @@ AnalysisNode::AnalysisNode(AnalysisGUI *newgui) {
 	
 	//pass the function that is called when a message is received
 	gpsSub = n.subscribe("/gps/fix", 1000, &AnalysisNode::receiveGpsMsg, this);
-	//siteSub = n.subscribe("/gps/fix", 1000, &AnalysisNode::reciveSiteMsg, this);
+	//siteSub = n.subscribe("/gps/fix", 1000, &AnalysisNode::receiveSiteMsg, this);
 	videoSub = n.subscribe("/camera/image_raw", 1000, &AnalysisNode::receiveVideoMsg, this);
 }
 

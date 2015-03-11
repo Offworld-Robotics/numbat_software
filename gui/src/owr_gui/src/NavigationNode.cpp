@@ -19,6 +19,7 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	tiltX = 30;
 	tiltY = 30;
 	ultrasonic = 0;
+	altitude = 0;
 	
 	// pass the function that is called when a message is received
 	gpsSub = n.subscribe("/gps/fix", 1000, &NavigationNode::receiveGpsMsg, this); // GPS related data
@@ -40,7 +41,8 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	ListNode l = (ListNode)malloc(sizeof(vector2D));
 	l->y = msg->latitude;
 	l->x = msg->longitude;
-	gui->updateConstants(battery, signal, ultrasonic, l, target, NULL);
+	altitude = msg->altitude;
+	gui->updateConstants(battery, signal, ultrasonic, l, altitude, target, NULL);
 }
 
 
@@ -51,7 +53,7 @@ void NavigationNode::receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::
 	//ROS_INFO("voltage %f", msg->voltage);
 	battery = msg->voltage;
 	
-	gui->updateConstants(battery, signal, ultrasonic, NULL, target, NULL);
+	gui->updateConstants(battery, signal, ultrasonic, NULL, altitude, target, NULL);
 }
 
 void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
@@ -59,5 +61,5 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateConstants(battery, signal, ultrasonic, NULL, target, (unsigned char *)msg->data.data());
+	gui->updateConstants(battery, signal, ultrasonic, NULL, altitude, target, (unsigned char *)msg->data.data());
 }
