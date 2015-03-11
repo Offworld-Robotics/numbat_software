@@ -42,7 +42,6 @@ int main(int argc, char **argv) {
 
 NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
-	
 	navigationNode = new NavigationNode(this);
 	glutInit(argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -514,8 +513,10 @@ void NavigationGUI::toggleStream(int feed, bool active) {
 		ros::spinOnce();
 	}
 
-	/*#define PROGRAM_PATH "/opt/ros/indigo/bin/rosrun image_view image_view image:=/camera/image_raw"
-		FILE* proc = popen(PROGRAM_PATH,"r");
+	/*#define PROGRAM_PATH "/opt/ros/hydro/bin/rosrun image_view image_view image:=/camera/image_raw"
+	
+	FILE* proc = popen(PROGRAM_PATH,"r");
+	
 	if (proc) {
 		printf("Failed to toggle stream\n");
 	} else {

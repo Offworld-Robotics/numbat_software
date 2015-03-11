@@ -14,7 +14,7 @@ import re
     
     
 def talker():
-    UDP_IP = "192.168.0.102"
+    UDP_IP = "192.168.0.107"
     UDP_PORT = 9002
 
     sock = socket.socket(socket.AF_INET, # Internet
@@ -36,9 +36,9 @@ def talker():
        msg.header = Header()
        msg.latitude = float(result[1])
        msg.longitude = float(result[2])
-       rospy.loginfo(msg)
+       #rospy.loginfo(msg)
        pub.publish(msg)
-       rate.sleep()
+       #rate.sleep()
 
 if __name__ == '__main__':
     try:
