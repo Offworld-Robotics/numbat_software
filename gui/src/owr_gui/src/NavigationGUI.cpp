@@ -118,7 +118,7 @@ void NavigationGUI::updateConstants(float bat, float sig, float ultrason, ListNo
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, VIDEO_W, VIDEO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
 	}
 	
-	ROS_INFO("Updated Constants");
+	//ROS_INFO("Updated Constants");
 }
 
 void NavigationGUI::idle() {
@@ -172,7 +172,7 @@ void NavigationGUI::idle() {
 	if (frameCount > 6001)
 		frameCount -= 6000;
 	
-	cursorSpin += 1;
+	cursorSpin += 5;
 	if (cursorSpin > 360)
 		cursorSpin -= 360;
 	
@@ -279,12 +279,11 @@ void NavigationGUI::drawGPS() {
 	
 	// draw a cursor to indicate current rover position
 	glPushMatrix();
-	//glRotated(cursorSpin, 0, 1, 0);
 	glColor4f(0, 0, 1, ALPHA);
 	glBegin(GL_POLYGON);
 	glVertex2d(0, 0);
-	glVertex2d(-10, -20);
-	glVertex2d(10, -20);
+	glVertex2d(-10*cos(cursorSpin*PI/180.0), -30);
+	glVertex2d(10*cos(cursorSpin*PI/180.0), -30);
 	glEnd();
 	glPopMatrix();
 
@@ -497,21 +496,21 @@ void NavigationGUI::drawSignal() {
 }
 
 void NavigationGUI::toggleStream(int feed, bool active) {
-	if (!feedStatus[feed]) {
+	//if (!feedStatus[feed]) {
 		printf("Switching to feed %d\n", feed);
-
+		
 		if (currFeed != -1)
 			feedStatus[currFeed] = FEED_INACTIVE;
 		currFeed = feed;
-		feedStatus[feed] = FEED_ACTIVE_DISPLAY;	
-
+		feedStatus[feed] = FEED_ACTIVE_DISPLAY;
+		
 		owr_camera_control::stream msg;
 		msg.stream = feed;
 		msg.on = active;
 		streamPub.publish(msg);
-
+		
 		ros::spinOnce();
-	}
+	//}
 
 	/*#define PROGRAM_PATH "/opt/ros/hydro/bin/rosrun image_view image_view image:=/camera/image_raw"
 	
