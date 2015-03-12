@@ -9,7 +9,7 @@ def callback(data):
     print data
     if data.on:
         print "on"
-        os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! video/x-raw-rgb,framerate=30/1 ! ffmpegcolorspace"
+        os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! video/x-raw-rgb,framerate=30/1,width=640,height=480 ! ffmpegcolorspace"
         call([ "rosrun","gscam", "gscam","__name=" + str(data.stream) + "_camera","gscam_publisher:=\/cam" + str(data.stream)])
     else:
         call(["rosnode","kill","/gscam_publisher"]);
