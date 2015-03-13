@@ -59,7 +59,6 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	
 	glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
-	//glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_BLEND); // enables transparency
 	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	glutKeyboardFunc(glut_keydown);	//glutKeyboardUpFunc(glut_keyup);
@@ -88,6 +87,8 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 		feedStatus[i] = false;
 	currFeed = -1;
 	numActiveFeeds = 0;
+	videoH = videoW = 0;
+	frame = NULL;
 
 	scale = DEFAULT_SCALE;
 	srand(time(NULL));
@@ -101,7 +102,7 @@ void NavigationGUI::run(void) {
 	glutMainLoop();
 }
 
-void NavigationGUI::updateConstants(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t, unsigned char *f) {
+void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t) {
 	battery = bat;
 	signal = sig;
 
@@ -113,12 +114,23 @@ void NavigationGUI::updateConstants(float bat, float sig, float ultrason, ListNo
 	target = t;
 	ultrasonic = ultrason;
 	
-	if (f != NULL) {
+	//ROS_INFO("Updated info");
+}
+
+void NavigationGUI::updateVideo(unsigned char *newFrame, int newWidth, int newHeight) {
+	if (newFrame != NULL) {
+		/*if (newWidth != videoW || newHeight != videoH) {
+			videoH = newHeight;
+			videoW = newWidth;
+			if (frame != NULL) free(frame);
+			frame = (unsigned char *)malloc(videoH*videoW*3*sizeof(unsigned char));
+		}
+		memcpy(frame, newFrame, videoH*videoW*3*sizeof(unsigned char));*/
 		glBindTexture(GL_TEXTURE_2D, feedTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, VIDEO_W, VIDEO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
 	}
 	
-	//ROS_INFO("Updated Constants");
+	//ROS_INFO("Updated video");
 }
 
 void NavigationGUI::idle() {

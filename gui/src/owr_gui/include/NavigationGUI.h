@@ -37,9 +37,6 @@
 #define ARTIFICIAL_HORIZON_SKY_HALF_WIDTH 70
 #define ARTIFICIAL_HORIZON_SKY_MIN_HALF_WIDTH 40
 
-#define VIDEO_W 640
-#define VIDEO_H 480
-
 #define ULTRASONIC_MAX 10.0
 
 #define NUM_ARROWKEYS 4
@@ -59,7 +56,8 @@ class NavigationGUI : public GLUTWindow {
 
 	public:
 		NavigationGUI(int *argc, char **argv);
-		void updateConstants(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target, unsigned char *frame);
+		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target);
+		void updateVideo(unsigned char *newFrame, int width, int height);
 		void run();
 		
 	private:
@@ -106,12 +104,16 @@ class NavigationGUI : public GLUTWindow {
 		double longitude;
 		double latitude;
 		double altitude;
-		double pathRotation;
+		
+		double pathRotation; // angle to rotate GPS path when drawing
 		double prevRotation;
 
-		bool feedStatus[NUM_FEEDS];
+		bool feedStatus[NUM_FEEDS]; // active/inactive for each feed
 		int currFeed;
 		int numActiveFeeds;
+		int videoH; // current video height
+		int videoW; // current video width
+		unsigned char *frame; // local array for storing video frame
 
 		// GPS related variables
 		std::list<ListNode> GPSList; // path history (front is current point, back is origin point)

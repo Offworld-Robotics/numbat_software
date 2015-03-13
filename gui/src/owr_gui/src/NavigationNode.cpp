@@ -42,7 +42,7 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	l->y = msg->latitude;
 	l->x = msg->longitude;
 	altitude = msg->altitude;
-	gui->updateConstants(battery, signal, ultrasonic, l, altitude, target, NULL);
+	gui->updateInfo(battery, signal, ultrasonic, l, altitude, target);
 }
 
 
@@ -53,7 +53,7 @@ void NavigationNode::receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::
 	//ROS_INFO("voltage %f", msg->voltage);
 	battery = msg->voltage;
 	
-	gui->updateConstants(battery, signal, ultrasonic, NULL, altitude, target, NULL);
+	gui->updateInfo(battery, signal, ultrasonic, NULL, altitude, target);
 }
 
 void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
@@ -61,5 +61,5 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateConstants(battery, signal, ultrasonic, NULL, altitude, target, (unsigned char *)msg->data.data());
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
 }
