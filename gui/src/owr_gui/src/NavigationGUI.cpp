@@ -127,7 +127,7 @@ void NavigationGUI::updateVideo(unsigned char *newFrame, int newWidth, int newHe
 		}
 		memcpy(frame, newFrame, videoH*videoW*3*sizeof(unsigned char));*/
 		glBindTexture(GL_TEXTURE_2D, feedTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, newFrame);
 	}
 	
 	//ROS_INFO("Updated video");
