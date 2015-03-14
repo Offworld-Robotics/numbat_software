@@ -20,19 +20,6 @@
 
 //#define DEBUG 1
 
-#ifdef DEBUG
-// debug gps co-ords makes up the area of UNSW
-static double cords[] = {
-	-33.914867, 151.225601,
-	-33.916532, 151.236523,
-	-33.919007, 151.235980,
-	-33.918413, 151.232138,
-	-33.920139, 151.231758,
-	-33.919419, 151.226454,
-	-33.914867, 151.225601
-};
-#endif
-
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "NavigationGUI");
 	NavigationGUI gui(&argc, argv);
@@ -59,8 +46,8 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	
 	glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
-	//glEnable(GL_BLEND); // enables transparency
-	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND); // enables transparency
+	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	glutKeyboardFunc(glut_keydown);	//glutKeyboardUpFunc(glut_keyup);
 	glutSpecialFunc(glut_special_keydown);
 	glutSpecialUpFunc(glut_special_keyup);
@@ -83,9 +70,8 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	for (int i = 0;i < NUM_ARROWKEYS;i++)
 		arrowKeys[i] = false;
 
-	for (int i = 0;i < NUM_FEEDS;i++)
-		feedStatus[i] = false;
-	currFeed = -1;
+	for (int i = 0;i < TOTAL_FEEDS;i++)
+		feedStatus[i] = FEED_INACTIVE;
 	numActiveFeeds = 0;
 	videoH = videoW = 0;
 	frame = NULL;
@@ -95,6 +81,7 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	//generateTarget();
 	
 	//start on stream 0
+	usleep(150000);
 	toggleStream(0, true);
 }
 
@@ -133,6 +120,13 @@ void NavigationGUI::updateVideo(unsigned char *newFrame, int newWidth, int newHe
 	//ROS_INFO("Updated video");
 }
 
+void NavigationGUI::updateAvailableFeeds(bool *feeds) {
+	for (int i = 0;i < TOTAL_FEEDS;i++) {
+		if (!feeds[i]) feedStatus[i] = FEED_OFFLINE;
+		else if (feedStatus[i] == FEED_OFFLINE) feedStatus[i] = FEED_INACTIVE;
+	}
+}
+
 void NavigationGUI::idle() {
 	ros::spinOnce();
 
@@ -153,7 +147,7 @@ void NavigationGUI::idle() {
 	#ifdef DEBUG
 	// debug - randomly generate GPS values every second
 	if (frameCount % 60 == 0) {
-		GPSAddRandPos();
+		//GPSAddRandPos();
 		//printGPSPath(); // debug - print out the list of GPS co-ordinates
 	}
 
@@ -184,9 +178,9 @@ void NavigationGUI::idle() {
 	if (frameCount > 6001)
 		frameCount -= 6000;
 	
-	cursorSpin += 5;
-	if (cursorSpin > 360)
-		cursorSpin -= 360;
+	cursorSpin += 7*PI/180;
+	if (cursorSpin > 2*PI)
+		cursorSpin -= 2*PI;
 	
 	display();
 	usleep(15000);
@@ -281,25 +275,35 @@ void NavigationGUI::drawGPS() {
 		glColor3f(0, 0, 0);
 		
 		vector2D currentPos = *(*GPSList.begin());
-
+		
 		glBegin(GL_LINE_STRIP);
 		for (std::list<ListNode>::iterator i = GPSList.begin(); i != GPSList.end(); ++i)
 			glVertex2d((*i)->x - currentPos.x, (*i)->y - currentPos.y);
 		glEnd();
+		if (GPSList.size() > 1) {
+			glPointSize(5);
+			glBegin(GL_POINTS);
+			for (std::list<ListNode>::iterator i = ++GPSList.begin(); i != GPSList.end(); ++i)
+				glVertex2d((*i)->x - currentPos.x, (*i)->y - currentPos.y);
+			glEnd();
+			glPointSize(1);
+		}
 		glPopMatrix();
 	}
 	
 	// draw a cursor to indicate current rover position
 	glPushMatrix();
-	glColor4f(0, 0, 1, ALPHA);
+	glTranslated(0, 15, 0);
+	glColor4f(0, 0, 1, ALPHA);	
 	glBegin(GL_POLYGON);
 	glVertex2d(0, 0);
-	glVertex2d(-10*cos(cursorSpin*PI/180.0), -30);
-	glVertex2d(10*cos(cursorSpin*PI/180.0), -30);
+	glVertex2d(-10*cos(cursorSpin), -30);
+	glVertex2d(10*cos(cursorSpin), -30);
 	glEnd();
 	glPopMatrix();
 
 	// draw text for GPS co-ordinates
+	
 	char GPSLat[30];
 	char GPSLong[30];
 	char GPSAlt[30];
@@ -312,8 +316,13 @@ void NavigationGUI::drawGPS() {
 		sprintf(GPSLong, "Long: %.10f", (*GPSList.begin())->x);	
 		sprintf(GPSAlt, "Alt: %.10f", altitude);
 	}
-	glColor4f(0, 0, 0, ALPHA);
+	
 	glTranslated(-50, -currWinH/4, 0);
+	
+	glColor4f(0, 1, 0, TEXTBOX_ALPHA);
+	glRecti(-20, 30, 250, -125);
+	
+	glColor4f(1, 0, 0, ALPHA);
 	drawText(GPSLat, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	glTranslated(0, -20, 0);
 	drawText(GPSLong, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
@@ -328,29 +337,62 @@ void NavigationGUI::drawGPS() {
 	glPopMatrix();
 }
 
+// toggles between available streams
+void NavigationGUI::toggleStream(int feed, bool active) {
+	//printf("%d%d%d%d\n", feedStatus[0], feedStatus[1], feedStatus[2], feedStatus[3]);
+	printf("Switching feed %d\n", feed);
+	
+	if (feedStatus[feed] == FEED_OFFLINE) {
+		printf("Error: feed is offline\n");
+		return;
+	} else if (feedStatus[feed] == FEED_INACTIVE) {
+		feedStatus[feed] = FEED_ACTIVE;
+		for(int i = 0;i < TOTAL_FEEDS;i++) {
+			if (i != feed) feedStatus[i] = FEED_INACTIVE;
+		}
+	} else {
+		feedStatus[feed] = FEED_INACTIVE;
+	}
+	
+	owr_camera_control::stream msg;
+	msg.stream = feed;
+	if (feedStatus[feed] == FEED_ACTIVE) msg.on = true;
+	else msg.on = false;
+	streamPub.publish(msg);
+	
+	ros::spinOnce();
+	//printf("%d%d%d%d\n", feedStatus[0], feedStatus[1], feedStatus[2], feedStatus[3]);
+}
+
 // draw the ultrasonic
 void NavigationGUI::drawUltrasonic() {
 	char text[50];
 	glPushMatrix();
-	glTranslated(100, 50 - currWinH, 0);	
+	glTranslated(100, 20 - currWinH, 0);	
 
 	// draw text for ultrasonic value
-	glColor4f(1 - ultrasonic/ULTRASONIC_MAX, ultrasonic/ULTRASONIC_MAX, 0, ALPHA);
+	
 	glTranslated(-50, 50, 0);
+	glColor4f(0, 1, 0, TEXTBOX_ALPHA);
+	glRecti(-30, 30, 350, -30);
+	
 	if (ultrasonic >= ULTRASONIC_MAX)
 		sprintf(text, "Ultrasonic: No objects detected");
 	else
-		sprintf(text, "Ultrasonic: %.1f m", ultrasonic);
+		sprintf(text, "Ultrasonic: %.1fm", ultrasonic);
+	glColor4f(1, 0, 0, ALPHA);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	glPopMatrix();
 }
 
 // draw the buttons
-void NavigationGUI::drawButton(bool isActive, int feed) {
-	if (isActive)
-		glColor4ub(VID_FEED_ACTIVE_BUTTON_RED, VID_FEED_ACTIVE_BUTTON_GREEN, VID_FEED_ACTIVE_BUTTON_BLUE, ALPHA * 255);
+void NavigationGUI::drawButton(int feed) {
+	if (feedStatus[feed] == FEED_ACTIVE)
+		glColor4ub(FEED_ACTIVE_BUTTON_R, FEED_ACTIVE_BUTTON_G, FEED_ACTIVE_BUTTON_B, ALPHA*255);
+	else if (feedStatus[feed] == FEED_INACTIVE)
+		glColor4ub(FEED_INACTIVE_BUTTON_R, FEED_INACTIVE_BUTTON_G, FEED_INACTIVE_BUTTON_B, ALPHA*255);
 	else
-		glColor4ub(VID_FEED_ACTIVE_NOT_LIVE_BUTTON_RED, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_GREEN, VID_FEED_ACTIVE_NOT_LIVE_BUTTON_BLUE, ALPHA * 255);
+		glColor4ub(FEED_OFFLINE_BUTTON_R, FEED_OFFLINE_BUTTON_G, FEED_OFFLINE_BUTTON_B, ALPHA*255);
 
 	glRectd(-30, -25, 30, 25);
 	glColor4f(0, 0, 1, ALPHA);
@@ -362,8 +404,8 @@ void NavigationGUI::drawButton(bool isActive, int feed) {
 void NavigationGUI::drawFeeds() {
 	glPushMatrix();
 	glTranslated(50, -37.5, 0);
-	for(int i = 0;i < NUM_FEEDS;i++) {
-		drawButton(feedStatus[i], i);
+	for(int i = 0;i < TOTAL_FEEDS;i++) {
+		drawButton(i);
 		glTranslated(0, -75, 0);
 	}
 
@@ -374,7 +416,10 @@ void NavigationGUI::drawFeeds() {
 void NavigationGUI::drawTilt() {
 	char text[30];
 	glPushMatrix();
-	glTranslated(3*currWinW/4, -3*currWinH/4, 0);
+	glTranslated(currWinW - 150, 150 - currWinH, 0);
+	
+	glColor4f(0, 1, 0, TEXTBOX_ALPHA);
+	glRecti(-100, 100, 100, -150);
 	glPushMatrix();
 
 	// draw horizon
@@ -421,10 +466,11 @@ void NavigationGUI::drawTilt() {
 
 	// Draw Tilt-Text
 	glTranslated(-50, -100, 0);
-	sprintf(text, "Left-Right: %.2fdeg", tiltX);
+	glColor4f(1, 0, 0, ALPHA);
+	sprintf(text, "Roll: %.2fdeg", tiltX);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	glTranslated(0, -20, 0);
-	sprintf(text, "Front-Back: %.2fdeg", tiltY);
+	sprintf(text, "Pitch: %.2fdeg", tiltY);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 
 	glPopMatrix();
@@ -466,7 +512,7 @@ void NavigationGUI::drawBattery() {
 	glEnd();
 
 	glTranslated(0, -50, 0);
-	glColor4f(0, 0, 0, ALPHA);
+	glColor4f(1, 0, 0, ALPHA);
 	char text[] = "Battery";
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 15, 0);
 
@@ -487,7 +533,7 @@ void NavigationGUI::drawSignal() {
 	if (signal > 10)
 		signal = 10;
 
-	glTranslated(currWinW - 125, 100 - currWinH, 0);
+	glTranslated(currWinW - 300, -75, 0);
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(0, 0);
 	glVertex2i(100, 0);
@@ -500,39 +546,11 @@ void NavigationGUI::drawSignal() {
 	glEnd();
 
 	glTranslated(0, -20, 0);
-	glColor4f(0, 0, 0, ALPHA);
+	glColor4f(1, 0, 0, ALPHA);
 	char text[] = "Signal";
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 25, 0);
 
 	glPopMatrix();
-}
-
-void NavigationGUI::toggleStream(int feed, bool active) {
-	//if (!feedStatus[feed]) {
-		printf("Switching to feed %d\n", feed);
-		
-		if (currFeed != -1)
-			feedStatus[currFeed] = FEED_INACTIVE;
-		currFeed = feed;
-		feedStatus[feed] = FEED_ACTIVE_DISPLAY;
-		
-		owr_camera_control::stream msg;
-		msg.stream = feed;
-		msg.on = active;
-		streamPub.publish(msg);
-		
-		ros::spinOnce();
-	//}
-
-	/*#define PROGRAM_PATH "/opt/ros/hydro/bin/rosrun image_view image_view image:=/camera/image_raw"
-	
-	FILE* proc = popen(PROGRAM_PATH,"r");
-	
-	if (proc) {
-		printf("Failed to toggle stream\n");
-	} else {
-		printf("Toggle stream successful\n");
-	}*/
 }
 
 void NavigationGUI::keydown(unsigned char key, int x, int y) {
@@ -543,10 +561,9 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 	} else if (key == 'q') {
 		printGPSPath();
 	} else if(key ==  ' ') {
-		/*if (GPSList.size() < NUM_POINTS)
-			GPSList.push_front(&gpslist[GPSList.size()]);
-		else*/
-			GPSList.clear();
+		#ifdef DEBUG
+		GPSAddRandPos();
+		#endif
 	}
 }
 

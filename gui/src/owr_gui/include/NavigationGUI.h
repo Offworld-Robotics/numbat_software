@@ -18,19 +18,19 @@
 #define WINDOW_W 1920
 #define WINDOW_H 892
 
-#define NUM_FEEDS 4
+#define TOTAL_FEEDS 4
 
-#define VID_FEED_ACTIVE_BUTTON_RED 0
-#define VID_FEED_ACTIVE_BUTTON_GREEN 153
-#define VID_FEED_ACTIVE_BUTTON_BLUE 0
+#define FEED_ACTIVE_BUTTON_R 0
+#define FEED_ACTIVE_BUTTON_G 153
+#define FEED_ACTIVE_BUTTON_B 0
 
-#define VID_FEED_ACTIVE_NOT_LIVE_BUTTON_RED 235
-#define VID_FEED_ACTIVE_NOT_LIVE_BUTTON_GREEN 133
-#define VID_FEED_ACTIVE_NOT_LIVE_BUTTON_BLUE 51
+#define FEED_INACTIVE_BUTTON_R 235
+#define FEED_INACTIVE_BUTTON_G 133
+#define FEED_INACTIVE_BUTTON_B 51
 
-#define VID_FEED_INACTIVE_BUTTON_RED 230
-#define VID_FEED_INACTIVE_BUTTON_GREEN 0
-#define VID_FEED_INACTIVE_BUTTON_BLUE 0
+#define FEED_OFFLINE_BUTTON_R 230
+#define FEED_OFFLINE_BUTTON_G 0
+#define FEED_OFFLINE_BUTTON_B 0
 
 #define DEFAULT_SCALE 30000
 #define ARTIFICIAL_HORIZON_SKY_HEIGHT 50
@@ -46,11 +46,12 @@
 #define RIGHT 3
 
 // possible feed status
-#define FEED_INACTIVE       0
-#define FEED_ACTIVE_DISPLAY 1
-//#define FEED_ACTIVE_NO_DISPLAY 2
+#define FEED_OFFLINE  0 // Disconnected
+#define FEED_INACTIVE 1 // Connected but not streaming
+#define FEED_ACTIVE   2 // Connected and streaming
 
-#define ALPHA 0.3 // transparency factor
+#define ALPHA 1.0 // transparency factor
+#define TEXTBOX_ALPHA 0.001
 
 class NavigationGUI : public GLUTWindow {
 
@@ -58,6 +59,7 @@ class NavigationGUI : public GLUTWindow {
 		NavigationGUI(int *argc, char **argv);
 		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target);
 		void updateVideo(unsigned char *newFrame, int width, int height);
+		void updateAvailableFeeds(bool *feeds);
 		void run();
 		
 	private:
@@ -72,7 +74,7 @@ class NavigationGUI : public GLUTWindow {
 		void special_keyup(int keycode, int x, int y);
 		
 		//draws button
-		void drawButton(bool isActive, int feed);
+		void drawButton(int feed);
 
 		// function to insert a given co-ordinate to the front of the path list
 		void GPSAddPos(double x, double y);
@@ -108,7 +110,7 @@ class NavigationGUI : public GLUTWindow {
 		double pathRotation; // angle to rotate GPS path when drawing
 		double prevRotation;
 
-		bool feedStatus[NUM_FEEDS]; // active/inactive for each feed
+		unsigned char feedStatus[TOTAL_FEEDS]; // status for each feed
 		int currFeed;
 		int numActiveFeeds;
 		int videoH; // current video height
