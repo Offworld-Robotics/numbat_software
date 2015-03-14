@@ -12,8 +12,8 @@
 #define FULL_BACKWARD 1000
 #define RANGE FULL_FORWARD - FULL_BACKWARD
 
-#define MAX_IN 1.5
-#define MIN_IN -1.5
+#define MAX_IN 1.0
+#define MIN_IN -1.0
 
 Servo leftFront, leftMiddle, leftBack;
 Servo rightFront, rightMiddle, rightBack;
@@ -27,6 +27,13 @@ void setup() {
   rightFront.attach(RF_PIN);
   rightMiddle.attach(RM_PIN);
   rightBack.attach(RB_PIN);
+  
+  leftFront.writeMicroseconds(1500);
+  leftMiddle.writeMicroseconds(1500);
+  leftBack.writeMicroseconds(1500);
+  rightFront.writeMicroseconds(1500);
+  rightMiddle.writeMicroseconds(1500);
+  rightBack.writeMicroseconds(1500);
 }
 
 void setSide(float drive, Servo front, Servo middle, Servo back) {
