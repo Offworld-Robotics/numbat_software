@@ -63,3 +63,11 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
 }
+
+/*void NavigationNode::receiveAvailableFeedsMsg(const bluesat_owr_protobuf::& msg) {
+	assert(msg);
+	
+	//ROS_INFO("received available feeds");
+	
+	gui->updateAvailableFeeds(msg->);
+}*/
