@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 import os
-from subprocess import call
+import subprocess 
 from owr_camera_control.msg import stream
 
 #called when the message is recived
@@ -10,9 +10,9 @@ def callback(data):
     if data.on:
         print "on"
         os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! video/x-raw-rgb,framerate=30/1,width=640,height=480 ! ffmpegcolorspace"
-        call([ "rosrun","gscam", "gscam","__name=" + str(data.stream) + "_camera","gscam_publisher:=\/cam" + str(data.stream)])
+        subprocess.Popen([ "rosrun","gscam", "gscam","__name=" + str(data.stream) + "_camera","gscam_publisher:=\/cam" + str(data.stream)])
     else:
-        call(["rosnode","kill","/gscam_publisher"]);
+        subprocess.call(["rosnode","kill","/gscam_publisher"]);
         return
         
 def activateFeeds():
