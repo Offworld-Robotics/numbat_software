@@ -1,6 +1,7 @@
 #include <Servo.h>
 #define BAUD_RATE 9600
 
+
 #define LF_PIN 8
 #define LM_PIN 9
 #define LB_PIN 10
@@ -8,15 +9,17 @@
 #define RM_PIN 12
 #define RB_PIN 13
 
-#define FULL_FORWARD  2000
-#define FULL_BACKWARD 1000
-#define RANGE FULL_FORWARD - FULL_BACKWARD
 
-#define MAX_IN 1.0
-#define MIN_IN -1.0
+#define FULL_FORWARD  2000.0
+#define FULL_BACKWARD 1000.0
+#define RANGE (FULL_FORWARD - FULL_BACKWARD)
+
+#define MAX_IN 0.75
+#define MIN_IN -0.75
 
 Servo leftFront, leftMiddle, leftBack;
 Servo rightFront, rightMiddle, rightBack;
+
 
 void setup() {
   //open serial port
@@ -38,13 +41,15 @@ void setup() {
 
 void setSide(float drive, Servo front, Servo middle, Servo back) {
   //prevent going over max
-  if(drive > MAX_IN) {
+  /*if(drive > MAX_IN) {
     drive = MAX_IN;  
   } else if (drive < MIN_IN) {
     drive = MIN_IN;
-  }
-  
-  int microsecs = (int)(drive * ((float)MAX_IN/(float)(RANGE)) + (float)FULL_BACKWARD);
+  }*/
+
+  //int microsecs = (int)(((float)(drive / (float)MAX_IN)*(float)(RANGE)) + (float)1000);
+  int microsecs = (int)drive;
+  //Serial.println(microsecs);
   front.writeMicroseconds(microsecs);
   middle.writeMicroseconds(microsecs);
   back.writeMicroseconds(microsecs);
@@ -54,13 +59,12 @@ void setSide(float drive, Servo front, Servo middle, Servo back) {
 void loop() {
   float leftDrive  = 0.0;
   float rightDrive = 0.0;
-  if(Serial.available() > 0) {
-      leftDrive = Serial.parseFloat();
+      leftDrive = Serial.parseFloat();  
       rightDrive = Serial.parseFloat();
-      
+      //Serial.println(leftDrive);
+      //Serial.println(rightDrive);
       setSide(leftDrive, leftFront, leftMiddle,leftBack);
       setSide(rightDrive, rightFront, rightMiddle,rightBack);
       //Servo.refresh();
-  }
   
 }

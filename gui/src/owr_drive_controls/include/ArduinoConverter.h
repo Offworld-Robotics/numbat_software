@@ -48,11 +48,12 @@ using namespace std;
 #define CAM_FEED_3   BUTTON_Y
 
 //serial IO
-#define TTY "/dev/ttyACM0"
+#define TTY "/dev/ttyACM1"
 
 class ArduinoConverter {
     public:
         ArduinoConverter();
+        void run();
         
     private:
         void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
@@ -60,6 +61,7 @@ class ArduinoConverter {
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
         ros::Subscriber joySubscriber;
+        float leftDrive, rightDrive;
         
         //to keep track of button states. It is possible press could change it
         int cam0Button, cam1Button, cam2Button, cam3Button;

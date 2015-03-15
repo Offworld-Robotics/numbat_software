@@ -1,2 +1,2 @@
-float32 stream
+int32 stream
 bool on
