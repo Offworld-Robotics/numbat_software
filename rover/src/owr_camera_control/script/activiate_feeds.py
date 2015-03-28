@@ -2,7 +2,7 @@
 import rospy
 import os
 import subprocess 
-from owr_camera_control.msg import stream
+from owr_messages.msg import stream
 
 #called when the message is recived
 def callback(data):
@@ -17,7 +17,7 @@ def callback(data):
         
 def activateFeeds():
     rospy.init_node('activateFeeds')
-    rospy.Subscriber("control/activateFeeds", stream, callback)
+    rospy.Subscriber("owr/control/activateFeeds", stream, callback)
     print "running"
     #loops while ros is running
     rospy.spin()

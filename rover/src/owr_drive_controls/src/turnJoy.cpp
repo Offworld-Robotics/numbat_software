@@ -7,6 +7,9 @@
  #include "ArduinoConverter.h"
  #include <assert.h>
 
+#define CENTRE 1500
+#define MAX_POWER 2000
+#define MIN_POWER 1000
 
 
 int main(int argc, char ** argv) {
@@ -71,18 +74,23 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 0.5
     #define DIFF 0.25
     
-    float power = joy->axes[DRIVE_AXES_UD] ;//* 0.2;
-    float lr = (-joy->axes[STICK_L_LR]) ;//* 0.2;
+    if(joy->buttons[BUTTON_A]) {
+        
+        float power = joy->axes[DRIVE_AXES_UD] * 0.2;
+        float lr = (-joy->axes[STICK_L_LR]) * 0.2;
+        
+        //float leftDrive  = 1.0f;
+        //float rightDrive = 1.0f;
+        
+        float lDrive  =   power + lr;
+        float rDrive =   -(power - lr);
+        
+        leftDrive = ((lDrive / MAX_IN) * 500) + 1500.0  ;
+        rightDrive = ((rDrive / MAX_IN) * 500) + 1500.0  ;
     
-    //float leftDrive  = 1.0f;
-    //float rightDrive = 1.0f;
+    } else {
     
-    float lDrive  =   power + lr;
-    float rDrive =   -(power - lr);
-    
-    leftDrive = ((lDrive / MAX_IN) * 500) + 1500.0  ;
-    rightDrive = ((rDrive / MAX_IN) * 500) + 1500.0  ;
-    
+    }
     /*if (joy->axes[STICK_LT]) {
         lfDrive = leftDrive;
         lmDrive = leftDrive;

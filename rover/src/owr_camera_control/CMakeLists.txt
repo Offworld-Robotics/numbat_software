@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   gscam
   message_generation
+  owr_messages
 )
 
 ## System dependencies are found with CMake's conventions
@@ -69,6 +70,7 @@ find_package(catkin REQUIRED COMPONENTS
  generate_messages(
    DEPENDENCIES
    std_msgs
+   owr_messages
      # Or other packages containing msgs
  )
 
