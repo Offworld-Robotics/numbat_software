@@ -58,10 +58,12 @@ class ArduinoConverter {
     private:
         void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
+        void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
         ros::Subscriber joySubscriber;
         float leftDrive, rightDrive;
+        float lfDrive, lmDrive, lbDrive, rfDrive, rmDrive, rbDrive;
         
         //to keep track of button states. It is possible press could change it
         int cam0Button, cam1Button, cam2Button, cam3Button;
