@@ -38,7 +38,7 @@ void AnalysisNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 	longitude = msg->longitude;
 	altitude = msg->altitude;
 	
-	gui->updateSiteConstants(latitude, longitude, altitude, pH, ultrasonic, humidity, NULL);
+	gui->updateSiteInfo(latitude, longitude, altitude, pH, ultrasonic, humidity);
 }
 
 /*void GPSGUI::receiveSiteMsg(const bluesat_owr_protobuf::& msg) {
@@ -50,15 +50,15 @@ void AnalysisNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 	pH = msg->pH;
 	ultrasonic = pH->ultrasonic;
 	
-	updateSiteConstants(latitude, longitude, altitude, pH, ultrasonic, humidity, NULL);
+	updateSiteInfo(latitude, longitude, altitude, pH, ultrasonic, humidity, NULL);
 	
 }*/
 
 void AnalysisNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
-	assert(msg);
+		assert(msg);
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateSiteConstants(latitude, longitude, altitude, pH, ultrasonic, humidity, (unsigned char *)msg->data.data());
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
 }
 

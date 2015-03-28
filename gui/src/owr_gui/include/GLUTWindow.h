@@ -43,7 +43,7 @@ class GLUTWindow {
 		
 	public:
 		GLUTWindow();
-		
+		void run();
 		// static instance for c++ compatibility
 		static GLUTWindow *instance;	
 };

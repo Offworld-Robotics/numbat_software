@@ -15,9 +15,6 @@
 #define WINDOW_W 1920
 #define WINDOW_H 892
 
-#define VIDEO_W 1280
-#define VIDEO_H 720
-
 #define NUM_IMAGES 2
 #define PANORAMIC 0
 #define HIGH_RES 1
@@ -40,8 +37,8 @@ class AnalysisGUI : public GLUTWindow {
 
 	public:
 		AnalysisGUI(int *argc, char **argv);
-		void updateSiteConstants(double latitude, double longitude, float altitude, float pH, float ultrasonic, float humidity, unsigned char *frame);
-		void run();
+		void updateSiteInfo(double latitude, double longitude, float altitude, float pH, float ultrasonic, float humidity);
+		void updateVideo(unsigned char *frame, int width, int height);
 		
 	private:
 		// GLUT essential functions

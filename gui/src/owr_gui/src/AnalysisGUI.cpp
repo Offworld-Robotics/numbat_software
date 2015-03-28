@@ -44,7 +44,7 @@ AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 	
-	//glClearColor(1, 1, 1, 0);
+	glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
 	
 	//glEnable(GL_BLEND); // enables transparency
@@ -70,11 +70,7 @@ AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
 	arrowKeys[3] = 0;
 }
 
-void AnalysisGUI::run(void) {
-	glutMainLoop();
-}
-
-void AnalysisGUI::updateSiteConstants(double lat, double lon, float alt, float PH, float usonic, float humid, unsigned char *f) {
+void AnalysisGUI::updateSiteInfo(double lat, double lon, float alt, float PH, float usonic, float humid) {
 	latitude = lat;
 	longitude = lon;
 	altitude = alt;
@@ -82,19 +78,23 @@ void AnalysisGUI::updateSiteConstants(double lat, double lon, float alt, float P
 	ultrasonic = usonic;
 	humidity = humid;
 	
-	if (f != NULL) {
-		glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, VIDEO_W, VIDEO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
-		glBindTexture(GL_TEXTURE_2D, imgTextures[HIGH_RES]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, VIDEO_W, VIDEO_H, 0, GL_RGB, GL_UNSIGNED_BYTE, f);
-	}
-	
 	//ROS_INFO("Updated Constants");
 }
 
-void AnalysisGUI::display(void) {
-	//glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(1, 1, 1); glRecti(0, 0, 500, -500);
+void AnalysisGUI::updateVideo(unsigned char *frame, int width, int height) {
+	if (frame != NULL) {
+		glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
+		glBindTexture(GL_TEXTURE_2D, imgTextures[HIGH_RES]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
+	}
+	
+	//ROS_INFO("Updated video");
+}
+
+void AnalysisGUI::display() {
+	glClear(GL_COLOR_BUFFER_BIT);
+	
 	drawButtons();
 	drawImages();
 	drawTextInfo();
