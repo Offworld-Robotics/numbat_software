@@ -18,20 +18,20 @@ using namespace std;
 //serial IO
 #define TTY "/dev/ttyACM1"
 
-class ArduinoConverter {
+class ArmConverter {
     public:
-        ArduinoConverter();
+        ArmConverter();
         void run();
         
     private:
         void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
-        void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
+        void sendMessage(float lf, float lm);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
         ros::Subscriber joySubscriber;
-        float leftDrive, rightDrive;
-        float lfDrive, lmDrive, lbDrive, rfDrive, rmDrive, rbDrive;
+        float topDrive, bottomDrive;
+        
         
         //to keep track of button states. It is possible press could change it
         int cam0Button, cam1Button, cam2Button, cam3Button;

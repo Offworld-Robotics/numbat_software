@@ -4,19 +4,19 @@
  * Start: 7/02/15
  */
  
- #include "ArduinoConverter.h"
+ #include "armConverter.h"
  #include <assert.h>
 
 
 
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_telop");
-    ArduinoConverter arduinoConverter;
-    arduinoConverter.run();
+    ArmConverter armConverter;
+    armConverter.run();
     
 }
 
-ArduinoConverter::ArduinoConverter() {
+ArmConverter::ArmConverter() {
 
     //init button sates
     cam0Button = 0;
@@ -27,28 +27,22 @@ ArduinoConverter::ArduinoConverter() {
     assert(fd != NULL);
     //subscribe to joy stick
     //TODO: at some point we will need to handle two joysticks
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 1, &ArduinoConverter::joyCallback, this);
-    leftDrive = 1500.0;
-    rightDrive = 1500.0;
-    lfDrive = leftDrive;
-    lmDrive = leftDrive;
-    lbDrive = leftDrive;
-    rfDrive = rightDrive;
-    rmDrive = rightDrive;
-    rbDrive = rightDrive;
+    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 1, &ArmConverter::joyCallback, this);
+    topDrive = 1500.0;
+    bottomDrive = 1500.0;
         
 }
 
-void ArduinoConverter::run() {
+void ArmConverter::run() {
     while(ros::ok()) {
-        sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
+        sendMessage(topDrive,bottomDrive);
         ros::spinOnce();
     }
 }
 
-void ArduinoConverter::sendMessage(float lf, float lm, float lb, float rf, float rm, float rb) {
+void ArmConverter::sendMessage(float tm, float bm) {
     if(fd) {
-        fprintf(fd,"%f %f %f %f %f %f\n",lf,lm,lb,rf,rm,rb);
+        fprintf(fd,"%f %f\n",tm,bm);
         float buffer;
         //fscanf(fd, "%f", &buffer);
         //printf("%f", buffer);
@@ -57,32 +51,30 @@ void ArduinoConverter::sendMessage(float lf, float lm, float lb, float rf, float
     } else {
         printf("unsucesfull\n");
     }    
-    printf("%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);   
+    printf("%f %f\n",tm,bm);   
 }
 
 //checks if the button state has changed and changes the feed
-void ArduinoConverter::switchFeed(int * storedState, int joyState, int feedNum) {
+void ArmConverter::switchFeed(int * storedState, int joyState, int feedNum) {
     if((*storedState) != joyState) {
         //TODO: switch feed
     } 
 }
 
-void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
-    #define MAX_IN 0.5
+void ArmConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+    #define MAX_IN 1.5
     #define DIFF 0.25
     
-    float power = joy->axes[DRIVE_AXES_UD] ;//* 0.2;
-    float lr = (-joy->axes[STICK_L_LR]) ;//* 0.2;
+    float top = joy->axes[STICK_R_UD] ;//* 0.2;
+    float bottom = (-joy->axes[STICK_L_UD]) ;//* 0.2;
     
     //float leftDrive  = 1.0f;
     //float rightDrive = 1.0f;
     
-    float lDrive  =   power + lr;
-    float rDrive =   -(power - lr);
-    
-    leftDrive = ((lDrive / MAX_IN) * 500) + 1500.0  ;
-    rightDrive = ((rDrive / MAX_IN) * 500) + 1500.0  ;
-    
+ 
+    topDrive = ((top / MAX_IN) * 500) + 1500.0  ;
+    bottomDrive = ((bottom / MAX_IN) * 500) + 1500.0  ;
+    sendMessage(topDrive,bottomDrive);    
     /*if (joy->axes[STICK_LT]) {
         lfDrive = leftDrive;
         lmDrive = leftDrive;
@@ -98,12 +90,7 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         rmDrive = rightDrive;
         rbDrive = rightDrive;
     } else {*/
-        lfDrive = leftDrive;
-        lmDrive = leftDrive;
-        lbDrive = leftDrive;
-        rfDrive = rightDrive;
-        rmDrive = rightDrive;
-        rbDrive = rightDrive;
+  
     //}
     /*if(!fd) {
         fd = fopen(TTY, "w");
