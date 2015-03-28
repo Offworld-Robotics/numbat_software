@@ -26,9 +26,11 @@ class AnalysisNode {
 		ros::Subscriber gpsSub;
 		//ros::Subscriber statsSub;
 		ros::Subscriber videoSub;
+		ros::Subscriber pano0sub;
+		ros::Subscriber pano1sub;
 		double latitude;
 		double longitude;
-		float altitude;
+		double altitude;
 		float pH;
 		float ultrasonic;
 		float humidity;

@@ -22,6 +22,8 @@ AnalysisNode::AnalysisNode(AnalysisGUI *newgui) {
 	gpsSub = n.subscribe("/gps/fix", 1000, &AnalysisNode::receiveGpsMsg, this);
 	//siteSub = n.subscribe("/gps/fix", 1000, &AnalysisNode::receiveSiteMsg, this);
 	videoSub = n.subscribe("/camera/image_raw", 1000, &AnalysisNode::receiveVideoMsg, this);
+	//pano0sub = n.subscribe("", 1000, &, this);
+	//pano1sub = n.subscribe("", 1000, &, this);
 }
 
 void AnalysisNode::spin() {

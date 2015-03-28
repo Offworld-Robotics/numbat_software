@@ -89,7 +89,7 @@ void GLUTWindow::loadTexture(char *filename, GLuint texture, GLenum format) {
 }
 
 void GLUTWindow::fillBMPHeader(unsigned char *data, int width, int height) {
-	memset(data, 0, 36);
+	memset(data, 0, BMP_HEADER_SIZE);
 	int datasize = width*height*3;
 	data[0x00] = 'B';
 	data[0x01] = 'M';
@@ -105,4 +105,23 @@ void GLUTWindow::fillBMPHeader(unsigned char *data, int width, int height) {
 	data[0x27] = 0x16;
 	data[0x2A] = 0x25;
 	data[0x2B] = 0x16;
+}
+
+void GLUTWindow::saveBMPFile(char *filename, unsigned char *data, int width, int height) {
+	int datasize = width*height*3;
+	FILE *f = fopen(filename, "w");
+	if (f == NULL) {
+		printf("Failed to open %s for writing.\n", filename);
+		return;
+	}
+	unsigned char *bmp = (unsigned char *)malloc(datasize + BMP_HEADER_SIZE);
+	if (bmp == NULL) {
+		printf("Failed to allocate memory for BMP.\n");
+		return;
+	}
+	fillBMPHeader(bmp, width, height);
+	memcpy(&bmp[BMP_HEADER_SIZE], data, datasize);
+	fwrite(bmp, datasize + BMP_HEADER_SIZE, 1, f);
+	fclose(f);
+	free(bmp);
 }
