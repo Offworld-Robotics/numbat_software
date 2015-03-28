@@ -39,7 +39,7 @@ void setup() {
   rightBack.writeMicroseconds(1500);
 }
 
-void setSide(float drive, Servo front, Servo middle, Servo back) {
+/*void setSide(float drive, Servo front, Servo middle, Servo back) {
   //prevent going over max
   /*if(drive > MAX_IN) {
     drive = MAX_IN;  
@@ -48,24 +48,48 @@ void setSide(float drive, Servo front, Servo middle, Servo back) {
   }*/
 
   //int microsecs = (int)(((float)(drive / (float)MAX_IN)*(float)(RANGE)) + (float)1000);
-  int microsecs = (int)drive;
+/*  int microsecs = (int)drive;
   //Serial.println(microsecs);
   front.writeMicroseconds(microsecs);
   middle.writeMicroseconds(microsecs);
   back.writeMicroseconds(microsecs);
   
+}*/
+
+void setMotorSpeed(float drive, Servo motor){
+  
+  //int microsecs = (int) drive;
+  //motor.writeMicroseconds(microsecs);
+  motor.writeMicroseconds((int) drive);
+  
 }
 
 void loop() {
-  float leftDrive  = 0.0;
-  float rightDrive  = 0.0;
+  float leftFrontDrive  = 0.0;
+  float leftMiddleDrive  = 0.0;
+  float leftBackDrive  = 0.0;
 
-      leftDrive = Serial.parseFloat();  
-      rightDrive = Serial.parseFloat();
+  float rightFrontDrive = 0.0;
+  float rightMiddleDrive = 0.0;
+  float rightBackDrive = 0.0;
+
+      leftFrontDrive = Serial.parseFloat();  
+      leftMiddleDrive = Serial.parseFloat();
+      leftBackDrive = Serial.parseFloat();  
+      rightFrontDrive = Serial.parseFloat();
+      rightMiddleDrive = Serial.parseFloat();  
+      rightBackDrive = Serial.parseFloat();
       //Serial.println(leftDrive);
       //Serial.println(rightDrive);
-      setSide(leftDrive, leftFront, leftMiddle,leftBack);
-      setSide(rightDrive, rightFront, rightMiddle,rightBack);
+//      setSide(leftDrive, leftFront, leftMiddle,leftBack);
+//      setSide(rightDrive, rightFront, rightMiddle,rightBack);
       //Servo.refresh();
+      
+      setMotorSpeed(leftFrontDrive, leftFront);
+      setMotorSpeed(leftMiddleDrive, leftMiddle);
+      setMotorSpeed(leftBackDrive, leftBack);
+      setMotorSpeed(rightFrontDrive, rightFront);
+      setMotorSpeed(rightMiddleDrive, rightMiddle);
+      setMotorSpeed(rightBackDrive, rightBack);
   
 }

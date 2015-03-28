@@ -40,6 +40,10 @@ void GLUTWindow::glut_special_keyup(int keycode, int x, int y) {
 	instance->special_keyup(keycode, x, y);
 }
 
+void GLUTWindow::run() {
+	glutMainLoop();
+}
+
 void GLUTWindow::reshape(int w, int h) {
 	currWinH = h;
 	currWinW = w;

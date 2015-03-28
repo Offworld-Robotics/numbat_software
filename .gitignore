@@ -7,8 +7,13 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+*~
 
 # ROS Build directories #
 #########################
 */build
 */devel
+
+# gscam #
+#########
+rover/src/gscam

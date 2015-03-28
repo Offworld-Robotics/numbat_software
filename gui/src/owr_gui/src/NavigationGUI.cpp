@@ -73,20 +73,15 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	for (int i = 0;i < TOTAL_FEEDS;i++)
 		feedStatus[i] = FEED_INACTIVE;
 	numActiveFeeds = 0;
-	videoH = videoW = 0;
-	frame = NULL;
 
 	scale = DEFAULT_SCALE;
+	displayOverlay = true;
 	srand(time(NULL));
 	//generateTarget();
 	
 	//start on stream 0
 	usleep(150000);
 	toggleStream(0, true);
-}
-
-void NavigationGUI::run(void) {
-	glutMainLoop();
 }
 
 void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t) {
@@ -104,17 +99,10 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 	//ROS_INFO("Updated info");
 }
 
-void NavigationGUI::updateVideo(unsigned char *newFrame, int newWidth, int newHeight) {
-	if (newFrame != NULL) {
-		/*if (newWidth != videoW || newHeight != videoH) {
-			videoH = newHeight;
-			videoW = newWidth;
-			if (frame != NULL) free(frame);
-			frame = (unsigned char *)malloc(videoH*videoW*3*sizeof(unsigned char));
-		}
-		memcpy(frame, newFrame, videoH*videoW*3*sizeof(unsigned char));*/
+void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
+	if (frame != NULL) {
 		glBindTexture(GL_TEXTURE_2D, feedTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, newFrame);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
 	}
 	
 	//ROS_INFO("Updated video");
@@ -122,8 +110,11 @@ void NavigationGUI::updateVideo(unsigned char *newFrame, int newWidth, int newHe
 
 void NavigationGUI::updateAvailableFeeds(bool *feeds) {
 	for (int i = 0;i < TOTAL_FEEDS;i++) {
-		if (!feeds[i]) feedStatus[i] = FEED_OFFLINE;
-		else if (feedStatus[i] == FEED_OFFLINE) feedStatus[i] = FEED_INACTIVE;
+		if (!feeds[i]) {
+			feedStatus[i] = FEED_OFFLINE;
+		} else if (feedStatus[i] == FEED_OFFLINE) {
+			feedStatus[i] = FEED_INACTIVE;
+		}
 	}
 }
 
@@ -186,7 +177,7 @@ void NavigationGUI::idle() {
 	usleep(15000);
 }
 
-void NavigationGUI::drawBackground(void) {
+void NavigationGUI::drawVideo() {
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glColor3f(1, 1, 1);
@@ -204,17 +195,19 @@ void NavigationGUI::drawBackground(void) {
 	glPopMatrix();
 }
 
-void NavigationGUI::display(void) {
+void NavigationGUI::display() {
 	glClearColor(1, 1, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	drawBackground();
-	drawFeeds();
-	drawGPS();
-	drawTilt();
-	drawBattery();
-	drawSignal();
-	drawUltrasonic();
+	drawVideo();
+	if (displayOverlay) {
+		drawFeedStatus();
+		drawGPS();
+		drawTilt();
+		drawBattery();
+		drawSignal();
+		drawUltrasonic();
+	}
 
 	glutSwapBuffers();
 }
@@ -339,11 +332,10 @@ void NavigationGUI::drawGPS() {
 
 // toggles between available streams
 void NavigationGUI::toggleStream(int feed, bool active) {
-	//printf("%d%d%d%d\n", feedStatus[0], feedStatus[1], feedStatus[2], feedStatus[3]);
 	printf("Switching feed %d\n", feed);
 	
 	if (feedStatus[feed] == FEED_OFFLINE) {
-		printf("Error: feed is offline\n");
+		printf("Error: feed %d is offline\n", feed);
 		return;
 	} else if (feedStatus[feed] == FEED_INACTIVE) {
 		feedStatus[feed] = FEED_ACTIVE;
@@ -356,12 +348,14 @@ void NavigationGUI::toggleStream(int feed, bool active) {
 	
 	owr_messages::stream msg;
 	msg.stream = feed;
-	if (feedStatus[feed] == FEED_ACTIVE) msg.on = true;
-	else msg.on = false;
+	if (feedStatus[feed] == FEED_ACTIVE) {
+		msg.on = true;
+	} else {
+		msg.on = false;
+	}
 	streamPub.publish(msg);
 	
 	ros::spinOnce();
-	//printf("%d%d%d%d\n", feedStatus[0], feedStatus[1], feedStatus[2], feedStatus[3]);
 }
 
 // draw the ultrasonic
@@ -401,7 +395,7 @@ void NavigationGUI::drawButton(int feed) {
 }
 
 // draws feeds boxes on the left side of the window
-void NavigationGUI::drawFeeds() {
+void NavigationGUI::drawFeedStatus() {
 	glPushMatrix();
 	glTranslated(50, -37.5, 0);
 	for(int i = 0;i < TOTAL_FEEDS;i++) {
@@ -485,35 +479,31 @@ void NavigationGUI::drawBattery() {
 	else
 		glColor4f(0, 1, 0, ALPHA);
 
-	if (battery < 0)
-		battery = 0;
-	if (battery > 10)
-		battery = 10;
-
 	glTranslated(currWinW - 125, -50, 0);
 	glBegin(GL_LINE_LOOP);
-	glVertex2i(0, 30);
-	glVertex2i(0, -30);
-	glVertex2i(100, -30);
-	glVertex2i(100, 30);
+	glVertex2d(0, 30);
+	glVertex2d(0, -30);
+	glVertex2d(100, -30);
+	glVertex2d(100, 30);
 	glEnd();
 	glBegin(GL_QUADS);
-	glVertex2i(0, 30);
-	glVertex2i(0, -30);
-	glVertex2i(battery * 10, -30);
-	glVertex2i(battery * 10, 30);
+	glVertex2d(0, 30);
+	glVertex2d(0, -30);
+	glVertex2d(battery * 10, -30);
+	glVertex2d(battery * 10, 30);
 	glEnd();
 
 	glBegin(GL_LINE_LOOP);
-	glVertex2i(100, 15);
-	glVertex2i(100, -15);
-	glVertex2i(110, -15);
-	glVertex2i(110, 15);
+	glVertex2d(100, 15);
+	glVertex2d(100, -15);
+	glVertex2d(110, -15);
+	glVertex2d(110, 15);
 	glEnd();
 
 	glTranslated(0, -50, 0);
 	glColor4f(1, 0, 0, ALPHA);
-	char text[] = "Battery";
+	char text[30];
+	sprintf(text, "%.2f%%", battery*10);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 15, 0);
 
 	glPopMatrix();
@@ -528,26 +518,22 @@ void NavigationGUI::drawSignal() {
 	else
 		glColor4f(0, 1, 0, ALPHA);
 
-	if (signal < 0)
-		signal = 0;
-	if (signal > 10)
-		signal = 10;
-
 	glTranslated(currWinW - 300, -75, 0);
 	glBegin(GL_LINE_LOOP);
-	glVertex2i(0, 0);
-	glVertex2i(100, 0);
-	glVertex2i(100, 50);
+	glVertex2d(0, 0);
+	glVertex2d(100, 0);
+	glVertex2d(100, 50);
 	glEnd();
 	glBegin(GL_POLYGON);
-	glVertex2i(0, 0);
-	glVertex2i(signal * 10, 0);
-	glVertex2i(signal * 10, 5 * signal);
+	glVertex2d(0, 0);
+	glVertex2d(signal * 10, 0);
+	glVertex2d(signal * 10, 5 * signal);
 	glEnd();
 
 	glTranslated(0, -20, 0);
 	glColor4f(1, 0, 0, ALPHA);
-	char text[] = "Signal";
+	char text[30];
+	sprintf(text, "%.2f%%", battery*10);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 25, 0);
 
 	glPopMatrix();
@@ -564,6 +550,8 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 		#ifdef DEBUG
 		GPSAddRandPos();
 		#endif
+	} else if (key == '\t') {
+		displayOverlay = !displayOverlay;
 	}
 }
 

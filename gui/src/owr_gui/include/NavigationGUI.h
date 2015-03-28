@@ -58,9 +58,8 @@ class NavigationGUI : public GLUTWindow {
 	public:
 		NavigationGUI(int *argc, char **argv);
 		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target);
-		void updateVideo(unsigned char *newFrame, int width, int height);
+		void updateVideo(unsigned char *frame, int width, int height);
 		void updateAvailableFeeds(bool *feeds);
-		void run();
 		
 	private:
 		// GLUT essential functions
@@ -86,8 +85,8 @@ class NavigationGUI : public GLUTWindow {
 		void printGPSPath();
 		
 		// draw functions
-		void drawBackground();
-		void drawFeeds();
+		void drawVideo();
+		void drawFeedStatus();
 		void drawGPS();
 		void drawTilt();
 		void drawBattery();
@@ -113,9 +112,6 @@ class NavigationGUI : public GLUTWindow {
 		unsigned char feedStatus[TOTAL_FEEDS]; // status for each feed
 		int currFeed;
 		int numActiveFeeds;
-		int videoH; // current video height
-		int videoW; // current video width
-		unsigned char *frame; // local array for storing video frame
 
 		// GPS related variables
 		std::list<ListNode> GPSList; // path history (front is current point, back is origin point)
@@ -126,6 +122,7 @@ class NavigationGUI : public GLUTWindow {
 		GLuint feedTexture;
 		double scale;
 		double cursorSpin;
+		bool displayOverlay;
 
 		//ros stuff
 		ros::NodeHandle node;

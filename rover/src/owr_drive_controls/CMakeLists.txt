@@ -109,6 +109,9 @@ include_directories(
 add_executable(owr_drive_controls_node src/joyConverter.cpp)
 target_link_libraries(owr_drive_controls_node ${catkin_LIBRARIES})
 
+add_executable(owr_drive_arduino src/arduinoJoy.cpp)
+target_link_libraries(owr_drive_arduino ${catkin_LIBRARIES})
+
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(owr_drive_controls_node owr_drive_controls_generate_messages_cpp)
