@@ -27,6 +27,7 @@ int main(int argc, char **argv) {
 }
 
 AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
+	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	analysisNode = new AnalysisNode(this);
 	glutInit(argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -73,11 +74,17 @@ AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
 	requestHires = false;
 	receivedPano[PANORAMIC0] = false;
 	receivedPano[PANORAMIC1] = false;
-	pano0 = NULL;
-	pano1 = NULL;
+	panoImgs[0] = panoImgs[1] = NULL;
+	
+	usleep(150000);
+	owr_messages::stream msg;
+	msg.stream = 0;
+	msg.on = true;
+	streamPub.publish(msg);
+	ros::spinOnce();
 }
 
-void AnalysisGUI::updateSiteInfo(double lat, double lon, float alt, float PH, float usonic, float humid) {
+void AnalysisGUI::updateSiteInfo(double lat, double lon, double alt, float PH, float usonic, float humid) {
 	latitude = lat;
 	longitude = lon;
 	altitude = alt;
@@ -92,9 +99,13 @@ void AnalysisGUI::updateVideo(unsigned char *frame, int width, int height, int c
 	if (frame != NULL) {
 		glBindTexture(GL_TEXTURE_2D, imgTextures[channel]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
-		if (requestPano && !receivedPano[channel]) {
+		if (channel <= 1 && requestPano && !receivedPano[channel]) {
 			receivedPano[channel] = true;
-			
+			if (panoImgs[channel] != NULL) {
+				free(panoImgs[channel]);
+			}
+			panoImgs[channel] = (unsigned char *)malloc(width*height*3*sizeof(unsigned char));
+			memcpy(panoImgs[channel], frame, width*height*3*sizeof(unsigned char));
 		}
 	}
 	
@@ -113,6 +124,24 @@ void AnalysisGUI::display() {
 
 void AnalysisGUI::idle() {
 	ros::spinOnce();
+	
+	if (requestPano && receivedPano[0] && receivedPano[1]) {
+		requestPano = 0;
+		receivedPano[0] = 0;
+		receivedPano[1] = 0;
+		
+		// img data should be saved in panoImgs
+		
+		saveBMPFile("/home/yiweih/pano0.bmp", panoImgs[0], 640, 480);
+		saveBMPFile("/home/yiweih/pano1.bmp", panoImgs[1], 640, 480);
+		
+		owr_messages::stream msg;
+		msg.stream = 0;
+		msg.on = true;
+		streamPub.publish(msg);
+		ros::spinOnce();
+	}
+	
 	display();
 	usleep(15000);
 }
@@ -125,10 +154,10 @@ void AnalysisGUI::drawButtons() {
 	glRecti(170, -10, 320, -90);
 	glRecti(330, -10, 480, -90);
 	glColor3f(1, 1, 0);
-	sprintf(text, "SAVE");
-	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 50, -60);
-	sprintf(text, "LOAD");
-	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 210, -60);
+	sprintf(text, "GET PANO");
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 40, -60);
+	sprintf(text, "GET HRES");
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 200, -60);
 	glPopMatrix();
 }
 
@@ -187,6 +216,42 @@ void AnalysisGUI::drawTextInfo() {
 	glPopMatrix();
 }
 
+void AnalysisGUI::keydown(unsigned char key, int x, int y) {
+	if (key == 27) {
+		exit(0);
+	} else if (key == '0') {
+		if (saveState()) {
+			printf("save successful\n");
+		} else {
+			printf("save unsuccessful\n");
+		}
+	} else if (key == '1') {
+		requestPano = true;
+		// turn on second channel
+		// save images from both channels
+		// turn off second channel
+		// run stitcher (for now)
+		// TODO: write separate subscribers for multi channel handling
+		owr_messages::stream msg;
+		msg.stream = 1;
+		msg.on = true;
+		streamPub.publish(msg);
+		ros::spinOnce();
+	}
+}
+
+void AnalysisGUI::keyup(unsigned char key, int x, int y) {
+
+}
+
+void AnalysisGUI::special_keydown(int keycode, int x, int y) {
+
+}
+
+void AnalysisGUI::special_keyup(int keycode, int x, int y) {
+
+}
+
 bool AnalysisGUI::saveState() {
 	char *home = getenv("HOME");
 	if (home == NULL) {
@@ -210,48 +275,27 @@ bool AnalysisGUI::saveState() {
 	
 	if (stat(foldername, &st) == -1) {
 		mkdir(foldername, 0700);
-		char filename[100];
-		FILE *f;
-		unsigned char *bmp;
 		
+		unsigned char *data = (unsigned char *)malloc(640*480*3);
+		
+		char filename[100];
 		sprintf(filename, "%s/%s-panoramic0.bmp", foldername, timestamp);
-		f = fopen(filename, "w");
-		if (f == NULL) return false;
-		bmp = (unsigned char *)malloc((PANO_DATA_SIZE + BMP_HEADER_SIZE)*sizeof(unsigned char));
-		if (bmp == NULL) return false;
-		fillBMPHeader(bmp, PANO_W, PANO_H);
 		glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC0]);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, &bmp[BMP_HEADER_SIZE]);
-		fwrite(bmp, PANO_DATA_SIZE + BMP_HEADER_SIZE, 1, f);
-		fclose(f);
-		free(bmp);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+		saveBMPFile(filename, data, 640, 480);
 		
 		sprintf(filename, "%s/%s-panoramic1.bmp", foldername, timestamp);
-		f = fopen(filename, "w");
-		if (f == NULL) return false;
-		bmp = (unsigned char *)malloc((PANO_DATA_SIZE + BMP_HEADER_SIZE)*sizeof(unsigned char));
-		if (bmp == NULL) return false;
-		fillBMPHeader(bmp, PANO_W, PANO_H);
 		glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC1]);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, &bmp[BMP_HEADER_SIZE]);
-		fwrite(bmp, PANO_DATA_SIZE + BMP_HEADER_SIZE, 1, f);
-		fclose(f);
-		free(bmp);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+		saveBMPFile(filename, data, 640, 480);
 		
-		/*sprintf(filename, "%s/%s-hires.bmp", foldername, timestamp);
-		f = fopen(filename, "w");
-		if (f == NULL) return false;
-		bmp = (unsigned char *)malloc((HIRES_DATA_SIZE + BMP_HEADER_SIZE)*sizeof(unsigned char));
-		if (bmp == NULL) return false;
-		fillBMPHeader(bmp, HIRES_W, HIRES_H);
+		sprintf(filename, "%s/%s-panoramic1.bmp", foldername, timestamp);
 		glBindTexture(GL_TEXTURE_2D, imgTextures[HIGH_RES]);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, &bmp[BMP_HEADER_SIZE]);
-		fwrite(bmp, HIRES_DATA_SIZE + BMP_HEADER_SIZE, 1, f);
-		fclose(f);
-		free(bmp);*/
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+		saveBMPFile(filename, data, 640, 480);
 		
 		sprintf(filename, "%s/%s-analysis.txt", foldername, timestamp);
-		f = fopen(filename, "w");
+		FILE *f = fopen(filename, "w");
 		char stat[30];
 		sprintf(stat, "Latitude: %f\n", latitude);
 		fwrite(stat, strlen(stat), 1, f);
@@ -269,30 +313,4 @@ bool AnalysisGUI::saveState() {
 		return true;
 	}
 	return false;
-}
-
-void AnalysisGUI::keydown(unsigned char key, int x, int y) {
-	if (key == 27) {
-		exit(0);
-	} else if (key == '0') {
-		if (saveState()) {
-			printf("save successful\n");
-		} else {
-			printf("save unsuccessful\n");
-		}
-	} else if (key == '1') {
-		requestPano = true;
-	}
-}
-
-void AnalysisGUI::keyup(unsigned char key, int x, int y) {
-
-}
-
-void AnalysisGUI::special_keydown(int keycode, int x, int y) {
-
-}
-
-void AnalysisGUI::special_keyup(int keycode, int x, int y) {
-
 }

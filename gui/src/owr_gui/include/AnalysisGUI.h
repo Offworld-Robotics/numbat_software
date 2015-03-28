@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <GL/freeglut.h>
 #include <ros/ros.h>
+#include "owr_messages/stream.h"
 
 // default window size
 #define WINDOW_W 1920
@@ -35,7 +36,7 @@
 class AnalysisGUI : public GLUTWindow {
 	public:
 		AnalysisGUI(int *argc, char **argv);
-		void updateSiteInfo(double latitude, double longitude, float altitude, float pH, float ultrasonic, float humidity);
+		void updateSiteInfo(double latitude, double longitude, double altitude, float pH, float ultrasonic, float humidity);
 		void updateVideo(unsigned char *frame, int width, int height, int channel);
 		
 	private:
@@ -63,7 +64,7 @@ class AnalysisGUI : public GLUTWindow {
 		// site values to be displayed on the screen
 		double latitude;
 		double longitude;
-		float altitude;
+		double altitude;
 		float pH;
 		float ultrasonic;
 		float humidity;
@@ -78,8 +79,10 @@ class AnalysisGUI : public GLUTWindow {
 		bool requestPano;
 		bool requestHires;
 		bool receivedPano[2];
-		unsigned char *pano0;
-		unsigned char *pano1;
+		unsigned char *panoImgs[2];
+		
+		ros::NodeHandle node;
+		ros::Publisher streamPub;
 		
 };
 

@@ -40,6 +40,9 @@ class GLUTWindow {
 		// fill the data array with the BMP header depending on the width and height of the image
 		void fillBMPHeader(unsigned char *data, int width, int height);
 		
+		// save BMP data to a file given its dimensions and a filename
+		void saveBMPFile(char *filename, unsigned char *data, int width, int height);
+		
 		// draws text using a specified font and raster position
 		void drawText(char *text, void *font, int x, int y);
 		
