@@ -53,6 +53,7 @@ find_package(catkin REQUIRED COMPONENTS
    camera_angle.msg
    motor.msg
    status.msg
+   stream.msg
  )
 
 ## Generate services in the 'srv' folder
