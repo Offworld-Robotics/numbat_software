@@ -9,7 +9,7 @@
 #include "ListNode.h"
 #include <GL/freeglut.h>
 #include <ros/ros.h>
-#include "owr_camera_control/stream.h"
+#include "owr_messages/stream.h"
 #include <list>
 
 #define PI 3.1415926535897932384626433832795

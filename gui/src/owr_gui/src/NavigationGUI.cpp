@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 }
 
 NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
-	streamPub = node.advertise<owr_camera_control::stream>("control/activateFeeds",  1000);
+	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds",  1000);
 	navigationNode = new NavigationNode(this);
 	glutInit(argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -354,7 +354,7 @@ void NavigationGUI::toggleStream(int feed, bool active) {
 		feedStatus[feed] = FEED_INACTIVE;
 	}
 	
-	owr_camera_control::stream msg;
+	owr_messages::stream msg;
 	msg.stream = feed;
 	if (feedStatus[feed] == FEED_ACTIVE) msg.on = true;
 	else msg.on = false;
