@@ -55,10 +55,10 @@ void AnalysisNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 }*/
 
 void AnalysisNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
-		assert(msg);
+	assert(msg);
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 0);
 }
 

@@ -15,11 +15,10 @@
 #define WINDOW_W 1920
 #define WINDOW_H 892
 
-#define NUM_IMAGES 2
-#define PANORAMIC 0
-#define HIGH_RES 1
-
-#define BMP_HEADER_SIZE 0x36
+#define NUM_IMAGES 3
+#define PANORAMIC0 0
+#define PANORAMIC1 1
+#define HIGH_RES   2
 
 #define PANO_W 640
 #define PANO_H 480
@@ -28,17 +27,16 @@
 #define HIRES_H 480
 #define HIRES_DATA_SIZE HIRES_W*HIRES_H*3
 
-#define UP	0
+#define UP    0
 #define DOWN  1
 #define LEFT  2
 #define RIGHT 3
 
 class AnalysisGUI : public GLUTWindow {
-
 	public:
 		AnalysisGUI(int *argc, char **argv);
 		void updateSiteInfo(double latitude, double longitude, float altitude, float pH, float ultrasonic, float humidity);
-		void updateVideo(unsigned char *frame, int width, int height);
+		void updateVideo(unsigned char *frame, int width, int height, int channel);
 		
 	private:
 		// GLUT essential functions
@@ -72,11 +70,17 @@ class AnalysisGUI : public GLUTWindow {
 
 		// OpenGL control related variables
 		bool arrowKeys[4];
-		GLuint imgTextures[NUM_IMAGES]; // 1 panoramic image, 1 hi-res image
+		GLuint imgTextures[NUM_IMAGES]; // 2 panoramic source images, 1 hi-res image
 		
 		struct stat st; // needed for stat()
 
 		//TODO: functions to request site images
+		bool requestPano;
+		bool requestHires;
+		bool receivedPano[2];
+		unsigned char *pano0;
+		unsigned char *pano1;
+		
 };
 
 #endif

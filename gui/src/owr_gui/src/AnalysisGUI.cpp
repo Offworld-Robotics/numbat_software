@@ -68,6 +68,13 @@ AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
 	arrowKeys[1] = 0;
 	arrowKeys[2] = 0;
 	arrowKeys[3] = 0;
+	
+	requestPano = false;
+	requestHires = false;
+	receivedPano[PANORAMIC0] = false;
+	receivedPano[PANORAMIC1] = false;
+	pano0 = NULL;
+	pano1 = NULL;
 }
 
 void AnalysisGUI::updateSiteInfo(double lat, double lon, float alt, float PH, float usonic, float humid) {
@@ -81,12 +88,14 @@ void AnalysisGUI::updateSiteInfo(double lat, double lon, float alt, float PH, fl
 	//ROS_INFO("Updated Constants");
 }
 
-void AnalysisGUI::updateVideo(unsigned char *frame, int width, int height) {
+void AnalysisGUI::updateVideo(unsigned char *frame, int width, int height, int channel) {
 	if (frame != NULL) {
-		glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC]);
+		glBindTexture(GL_TEXTURE_2D, imgTextures[channel]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
-		glBindTexture(GL_TEXTURE_2D, imgTextures[HIGH_RES]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
+		if (requestPano && !receivedPano[channel]) {
+			receivedPano[channel] = true;
+			
+		}
 	}
 	
 	//ROS_INFO("Updated video");
@@ -132,21 +141,29 @@ void AnalysisGUI::drawImages() {
 	// data from frame array is flipped, texcoords were changed to compensate
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	
-	glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC]);
+	glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC0]);
 	glBegin(GL_QUADS);
 		glTexCoord2f(0, 1); glVertex2i(100, -400);  // Bottom Left
-		glTexCoord2f(1, 1); glVertex2i(1600, -400);  // Bottom Right
-		glTexCoord2f(1, 0); glVertex2i(1600, -100);  // Top Right
+		glTexCoord2f(1, 1); glVertex2i(400, -400);  // Bottom Right
+		glTexCoord2f(1, 0); glVertex2i(400, -100);  // Top Right
 		glTexCoord2f(0, 0); glVertex2i(100, -100);  // Top Left
 	glEnd();
 	
-	glBindTexture(GL_TEXTURE_2D, imgTextures[HIGH_RES]);
+	glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC0]);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 1); glVertex2i(600, -400);  // Bottom Left
+		glTexCoord2f(1, 1); glVertex2i(900, -400);  // Bottom Right
+		glTexCoord2f(1, 0); glVertex2i(900, -100);  // Top Right
+		glTexCoord2f(0, 0); glVertex2i(600, -100);  // Top Left
+	glEnd();
+	
+	/*glBindTexture(GL_TEXTURE_2D, imgTextures[HIGH_RES]);
 	glBegin(GL_QUADS);
 		glTexCoord2f(0, 1); glVertex2i(100, -800);  // Bottom Left
 		glTexCoord2f(1, 1); glVertex2i(700, -800);  // Bottom Right
 		glTexCoord2f(1, 0); glVertex2i(700, -420);  // Top Right
 		glTexCoord2f(0, 0); glVertex2i(100, -420);  // Top Left
-	glEnd();
+	glEnd();*/
 	
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -197,19 +214,31 @@ bool AnalysisGUI::saveState() {
 		FILE *f;
 		unsigned char *bmp;
 		
-		sprintf(filename, "%s/%s-panoramic.bmp", foldername, timestamp);
+		sprintf(filename, "%s/%s-panoramic0.bmp", foldername, timestamp);
 		f = fopen(filename, "w");
 		if (f == NULL) return false;
 		bmp = (unsigned char *)malloc((PANO_DATA_SIZE + BMP_HEADER_SIZE)*sizeof(unsigned char));
 		if (bmp == NULL) return false;
 		fillBMPHeader(bmp, PANO_W, PANO_H);
-		glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC]);
+		glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC0]);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, &bmp[BMP_HEADER_SIZE]);
 		fwrite(bmp, PANO_DATA_SIZE + BMP_HEADER_SIZE, 1, f);
 		fclose(f);
 		free(bmp);
 		
-		sprintf(filename, "%s/%s-hires.bmp", foldername, timestamp);
+		sprintf(filename, "%s/%s-panoramic1.bmp", foldername, timestamp);
+		f = fopen(filename, "w");
+		if (f == NULL) return false;
+		bmp = (unsigned char *)malloc((PANO_DATA_SIZE + BMP_HEADER_SIZE)*sizeof(unsigned char));
+		if (bmp == NULL) return false;
+		fillBMPHeader(bmp, PANO_W, PANO_H);
+		glBindTexture(GL_TEXTURE_2D, imgTextures[PANORAMIC1]);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, &bmp[BMP_HEADER_SIZE]);
+		fwrite(bmp, PANO_DATA_SIZE + BMP_HEADER_SIZE, 1, f);
+		fclose(f);
+		free(bmp);
+		
+		/*sprintf(filename, "%s/%s-hires.bmp", foldername, timestamp);
 		f = fopen(filename, "w");
 		if (f == NULL) return false;
 		bmp = (unsigned char *)malloc((HIRES_DATA_SIZE + BMP_HEADER_SIZE)*sizeof(unsigned char));
@@ -219,7 +248,7 @@ bool AnalysisGUI::saveState() {
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_BGR, GL_UNSIGNED_BYTE, &bmp[BMP_HEADER_SIZE]);
 		fwrite(bmp, HIRES_DATA_SIZE + BMP_HEADER_SIZE, 1, f);
 		fclose(f);
-		free(bmp);
+		free(bmp);*/
 		
 		sprintf(filename, "%s/%s-analysis.txt", foldername, timestamp);
 		f = fopen(filename, "w");
@@ -243,17 +272,16 @@ bool AnalysisGUI::saveState() {
 }
 
 void AnalysisGUI::keydown(unsigned char key, int x, int y) {
-	switch (key) {
-	case 27:
+	if (key == 27) {
 		exit(0);
-		break;
-	case '1':
+	} else if (key == '0') {
 		if (saveState()) {
 			printf("save successful\n");
 		} else {
 			printf("save unsuccessful\n");
 		}
-		break;
+	} else if (key == '1') {
+		requestPano = true;
 	}
 }
 

@@ -3,6 +3,8 @@
 
 #include <GL/freeglut.h>
 
+#define BMP_HEADER_SIZE 0x36
+
 class GLUTWindow {
 	protected:
 		// GLUT essential functions

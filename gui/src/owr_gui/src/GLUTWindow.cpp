@@ -93,8 +93,8 @@ void GLUTWindow::fillBMPHeader(unsigned char *data, int width, int height) {
 	int datasize = width*height*3;
 	data[0x00] = 'B';
 	data[0x01] = 'M';
-	*(int *)&data[0x02] = datasize+0x36;
-	*(int *)&data[0x0A] = 0x36;
+	*(int *)&data[0x02] = datasize + BMP_HEADER_SIZE;
+	*(int *)&data[0x0A] = BMP_HEADER_SIZE;
 	data[0x0E] = 0x28;
 	*(int *)&data[0x12] = width;
 	*(int *)&data[0x16] = height;
