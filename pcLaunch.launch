@@ -28,6 +28,7 @@
         name="Joystick_Node"
         pkg="joy"
         type="joy_node"
+        output="screen"
     />
 
 </launch>

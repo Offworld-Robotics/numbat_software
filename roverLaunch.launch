@@ -30,6 +30,7 @@
         name="Drive_Controller"
         pkg="owr_drive_controls" 
         type="owr_drive_arduino"
+        output="screen"
     />
         
 </launch>
