@@ -36,13 +36,14 @@ ArmConverter::ArmConverter() {
 void ArmConverter::run() {
     while(ros::ok()) {
         sendMessage(topDrive,bottomDrive);
+        
         ros::spinOnce();
     }
 }
 
-void ArmConverter::sendMessage(float tm, float bm) {
+void ArmConverter::sendMessage(int tm, int bm) {
     if(fd) {
-        fprintf(fd,"%f %f\n",tm,bm);
+        fprintf(fd,"%d %d\n %d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);
         float buffer;
         //fscanf(fd, "%f", &buffer);
         //printf("%f", buffer);
@@ -51,7 +52,7 @@ void ArmConverter::sendMessage(float tm, float bm) {
     } else {
         printf("unsucesfull\n");
     }    
-    printf("%f %f\n",tm,bm);   
+    printf("%d %d\n %d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);   
 }
 
 //checks if the button state has changed and changes the feed

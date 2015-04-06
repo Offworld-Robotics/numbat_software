@@ -14,9 +14,17 @@
 
 using namespace std; 
 
+#define TOP_ACTUATOR 0
+#define BOTTOM_ACTUATOR 1
+
+#define FULL_EXTENSION 1700
+//1700
+#define FULL_RETRACTION 1200
+
+#define DEFAULT_POS 1500
 
 //serial IO
-#define TTY "/dev/ttyACM1"
+#define TTY "/dev/ttyACM0"
 
 class ArmConverter {
     public:
@@ -26,11 +34,11 @@ class ArmConverter {
     private:
         void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
-        void sendMessage(float lf, float lm);
+        void sendMessage(int lf, int lm);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
         ros::Subscriber joySubscriber;
-        float topDrive, bottomDrive;
+        int topDrive, bottomDrive;
         
         
         //to keep track of button states. It is possible press could change it
