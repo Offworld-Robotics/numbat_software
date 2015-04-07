@@ -1,5 +1,8 @@
 #include <Servo.h>
 #define BAUD_RATE 9600
+#define MIN_BYTES_AVAILABLE_TO_READ 5
+// MIN_BYTES_AVAILABLE_TO_READ should equal the minimum expexted length of a command
+//  currently actuatorNumber (1 char == 1 byte) + space/newline (1 byte) + position (4 bytes) = 6 bytes
 #define PIN_TOP 13
 #define PIN_BOTTOM 12
 
@@ -23,7 +26,11 @@ void setup() {
 
 void loop() {
   
-  if(Serial.available() > 0){
+  /* 
+   * Serial.available() returns the number of bytes available to read from the serial connection
+   *   note 1 character is 1 byte, so could check for when a whole command is available before reading 
+  */
+  if(Serial.available() > MIN_BYTES_AVAILABLE_TO_READ){
     /*
       Command Format 
       
