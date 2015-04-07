@@ -30,7 +30,7 @@ void loop() {
    * Serial.available() returns the number of bytes available to read from the serial connection
    *   note 1 character is 1 byte, so could check for when a whole command is available before reading 
   */
-  if(Serial.available() > MIN_BYTES_AVAILABLE_TO_READ){
+  if(Serial.available() >= MIN_BYTES_AVAILABLE_TO_READ){
     /*
       Command Format 
       
