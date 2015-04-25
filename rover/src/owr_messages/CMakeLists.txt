@@ -54,6 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
    motor.msg
    status.msg
    stream.msg
+   position.msg
  )
 
 ## Generate services in the 'srv' folder
