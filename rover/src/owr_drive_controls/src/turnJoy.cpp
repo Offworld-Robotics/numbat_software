@@ -88,31 +88,36 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         leftDrive = ((lDrive / MAX_IN) * 500) + 1500.0  ;
         rightDrive = ((rDrive / MAX_IN) * 500) + 1500.0  ;
     
-    } else {
-    
     }
-    /*if (joy->axes[STICK_LT]) {
-        lfDrive = leftDrive;
-        lmDrive = leftDrive;
-        lbDrive = leftDrive;
-        rfDrive = rightDrive * DIFF;
-        rmDrive = rightDrive * DIFF;
-        rbDrive = rightDrive * DIFF;
-    } else if (joy->axes[STICK_RT]) {
-        lfDrive = leftDrive * DIFF;
-        lmDrive = leftDrive * DIFF;
-        lbDrive = leftDrive * DIFF;
-        rfDrive = rightDrive;
-        rmDrive = rightDrive;
-        rbDrive = rightDrive;
-    } else {*/
-        lfDrive = leftDrive;
-        lmDrive = leftDrive;
-        lbDrive = leftDrive;
-        rfDrive = rightDrive;
-        rmDrive = rightDrive;
-        rbDrive = rightDrive;
-    //}
+    
+    /* Checks whether a shoulder button is being pressed
+     * if so, make the rover turn in the direction of the held
+     * button (ie. LB = turn left)
+     * Otherwise, go straight
+     * Simon Ireland, 25/04/15
+     */
+	if (joy->buttons[LB]) {
+		lfDrive = leftDrive * DIFF;
+		lmDrive = leftDrive * DIFF;
+		lbDrive = leftDrive * DIFF;
+		rfDrive = rightDrive;
+		rmDrive = rightDrive;
+		rbDrive = rightDrive;
+	} else if (joy->buttons[RB]) {
+		lfDrive = leftDrive;
+		lmDrive = leftDrive;
+		lbDrive = leftDrive;
+		rfDrive = rightDrive * DIFF;
+		rmDrive = rightDrive * DIFF;
+		rbDrive = rightDrive * DIFF;
+	} else {
+		lfDrive = leftDrive;
+		lmDrive = leftDrive;
+		lbDrive = leftDrive;
+		rfDrive = rightDrive;
+		rmDrive = rightDrive;
+		rbDrive = rightDrive;
+    }
     /*if(!fd) {
         fd = fopen(TTY, "w");
         printf("reopen\n");
