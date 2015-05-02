@@ -3,20 +3,18 @@
  *
  */
 
-#include <vector>
-
-#define BUTTON
 
 class Button {
+   private:
 	double posX;
 	double posY;
-	double xLen;
-	double yLen;
+	double xHalfLen;
+	double yHalfLen;
 	float R, G, B;
 	char label[10];
 	bool isClicked;
 	
-public:
+   public:
 	void draw();
 	Button(double x, double y, double width, double height, float r, float g, float b, char *txt);
 	void changeColour(float r, float g, float b);
