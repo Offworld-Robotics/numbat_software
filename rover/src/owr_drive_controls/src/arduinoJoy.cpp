@@ -70,7 +70,10 @@ void ArduinoConverter::switchFeed(int * storedState, int joyState, int feedNum) 
 void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 1.0
     #define DIFF 0.25
+
+	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
     #define SENSITIVITY 1
+
     float power = joy->axes[DRIVE_AXES_UD];
     float lr = (-joy->axes[STICK_L_LR]);
     
@@ -80,6 +83,9 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     float lDrive  =   (power + lr)/2;
     float rDrive =   -(power - lr)/2;
     
+    // The formula in use i: output = (ax^3 + (1-a)x) * 500 + 1500
+    // Where a = SENSITIVITY
+
     leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSISTIVITY) * ldrive) * 500) + 1500.0;
     rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * ldrive) * 500) + 1500.0;
     
