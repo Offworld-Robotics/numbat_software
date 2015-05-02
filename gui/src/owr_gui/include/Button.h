@@ -1,5 +1,10 @@
 /* Text Labelled Buttons for GUIs for Off World Robotics 
  *
+ * These need to be subclassed and 
+ *    clickDownOperation()
+ *    clickUpOperation()
+ *    overridden with needed funcionality for each button
+ *       base implementation does nothing
  *
  */
 
@@ -24,4 +29,7 @@ class Button {
 	double getX();
 	double getY();
 	void setPosition(double x, double y);
+        // override these in derived classes
+        virtual void clickDownOperation();
+        virtual void clickUpOperation();
 };

@@ -60,10 +60,12 @@ bool Button::isPointInBounds(int x, int y) {
 
 void Button::click() {
 	isClicked = true;
+        clickDownOperation();
 }
 
 void Button::unclick() {
 	isClicked = false;
+        clickUpOperation();
 }
 
 double Button::getX() {
@@ -77,4 +79,12 @@ double Button::getY() {
 void Button::setPosition(double x, double y) {
 	posX = x;
 	posY = y;
+}
+
+virtual void Button::clickDownOperation() {
+   // override this in derived classes
+}
+
+virtual void Button::clickUpOperation() {
+   // override this in derived classes
 }
