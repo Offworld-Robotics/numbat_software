@@ -1,4 +1,11 @@
+/* Text Labelled Buttons for GUIs for Off World Robotics 
+ *
+ *
+ */
+
 #include <vector>
+
+#define BUTTON
 
 class Button {
 	double posX;
