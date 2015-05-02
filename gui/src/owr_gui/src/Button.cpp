@@ -51,7 +51,7 @@ void Button::changeColour(float r, float g, float b) {
 	B = b;
 }
 
-bool Button::isOnButton(int x, int y) {
+bool Button::isPointInBounds(int x, int y) {
 	return (
 		x > (posX - xHalfLen) && x < (posX + xHalfLen) &&
 		y > (posY - yHalfLen) && y < (posY + yHalfLen)

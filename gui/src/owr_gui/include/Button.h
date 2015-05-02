@@ -18,7 +18,7 @@ class Button {
 	void draw();
 	Button(double x, double y, double width, double height, float r, float g, float b, char *txt);
 	void changeColour(float r, float g, float b);
-	bool isOnButton(int x, int y);
+	bool isPointInBounds(int x, int y);
 	void click();
 	void unclick();
 	double getX();
