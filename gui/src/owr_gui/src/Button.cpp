@@ -3,6 +3,17 @@
 #include <cstring>
 #include <GL/freeglut.h>
 
+/*
+#define BUTTON_ACTIVE_COLOR_COMPONENT_RED
+#define BUTTON_ACTIVE_COLOR_COMPONENT_GREEN
+#define BUTTON_ACTIVE_COLOR_COMPONENT_BLUE
+
+#define BUTTON_INACTIVE_COLOR_COMPONENT_RED
+#define BUTTON_INACTIVE_COLOR_COMPONENT_GREEN
+#define BUTTON_INACTIVE_COLOR_COMPONENT_BLUE
+*/
+
+
 void Button::draw() {
 	glPushMatrix();
 	glTranslated(posX, posY, 0);
