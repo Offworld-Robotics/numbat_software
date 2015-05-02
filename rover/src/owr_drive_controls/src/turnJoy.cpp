@@ -11,6 +11,20 @@
 #define MAX_POWER 2000
 #define MIN_POWER 1000
 
+/*
+ * The vecotr multipliers for individual wheels
+ * MAKE SURE -1 <= value <= 1   !!!!!
+ * where -1 means it is going backwards, so if you are making it turn
+ * make sure one side has negative values
+ */
+
+#define VECTOR_LF 1
+#define VECTOR_LM 1
+#define VECTOR_LB 1
+#define VECTOR_RF 1
+#define VECTOR_RM 1
+#define VECTOR_RB 1
+
 
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_telop");
@@ -95,15 +109,18 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
      * button (ie. LB = turn left)
      * Otherwise, go straight
      * Simon Ireland, 25/04/15
+     *
+     * Added vector testers for checking individual speeds of motors
      */
-	if (joy->buttons[LB]) {
-		lfDrive = leftDrive * DIFF;
-		lmDrive = leftDrive * DIFF;
-		lbDrive = leftDrive * DIFF;
-		rfDrive = rightDrive;
-		rmDrive = rightDrive;
-		rbDrive = rightDrive;
-	} else if (joy->buttons[RB]) {
+	//if (joy->buttons[LB]) {
+		lfDrive = leftDrive * VECTOR_LF;
+		lmDrive = leftDrive * VECTOR_LM;
+		lbDrive = leftDrive * VECTOR_LB;
+		rfDrive = rightDrive * VECTOR_RF;
+		rmDrive = rightDrive * VECTOR_RM;
+		rbDrive = rightDrive * VECTOR_RB;
+	//} else if (joy->buttons[RB]) {
+	/*
 		lfDrive = leftDrive;
 		lmDrive = leftDrive;
 		lbDrive = leftDrive;
@@ -117,7 +134,7 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 		rfDrive = rightDrive;
 		rmDrive = rightDrive;
 		rbDrive = rightDrive;
-    }
+    } */
     /*if(!fd) {
         fd = fopen(TTY, "w");
         printf("reopen\n");
