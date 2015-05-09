@@ -86,8 +86,8 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     // The formula in use i: output = (ax^3 + (1-a)x) * 500 + 1500
     // Where a = SENSITIVITY
 
-    leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSISTIVITY) * ldrive) * 500) + 1500.0;
-    rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * ldrive) * 500) + 1500.0;
+    leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive) * 500) + 1500.0;
+    rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive) * 500) + 1500.0;
     
     /*if (joy->axes[STICK_LT]) {
         lfDrive = leftDrive;
