@@ -18,6 +18,7 @@
 Button::Button() {
 
 }
+
 Button::Button(double x, double y, double width, double height, float r, float g, float b, char *txt) {
 	posX = x;
 	posY = y;
@@ -81,10 +82,10 @@ void Button::setPosition(double x, double y) {
 	posY = y;
 }
 
-virtual void Button::clickDownOperation() {
+void Button::clickDownOperation() {
    // override this in derived classes
 }
 
-virtual void Button::clickUpOperation() {
+void Button::clickUpOperation() {
    // override this in derived classes
 }

@@ -5,11 +5,20 @@
 
 GLUTWindow *GLUTWindow::instance;
 
-GLUTWindow::GLUTWindow() {
+GLUTWindow::GLUTWindow(int width, int height, int *argc, char *argv[], const char *title) {
 	instance = this;
-	currWinH = 0;
-	currWinW = 0;
+	currWinH = height;
+	currWinW = width;
 	frameCount = 0;
+	
+	glutInit(argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+	glutInitWindowSize(width, height);
+	glutInitWindowPosition(0, 0);
+	glutCreateWindow(title);
+	glutIdleFunc(glut_idle);
+	glutDisplayFunc(glut_display);
+	glutReshapeFunc(glut_reshape);
 }
 
 void GLUTWindow::glut_display() {
@@ -38,6 +47,10 @@ void GLUTWindow::glut_special_keydown(int keycode, int x, int y) {
 
 void GLUTWindow::glut_special_keyup(int keycode, int x, int y) {
 	instance->special_keyup(keycode, x, y);
+}
+
+void GLUTWindow::glut_mouse(int button, int state, int x, int y) {
+	instance->mouse(button, state, x, y);
 }
 
 void GLUTWindow::run() {

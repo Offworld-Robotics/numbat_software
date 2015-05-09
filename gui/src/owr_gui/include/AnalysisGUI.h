@@ -35,7 +35,7 @@
 
 class AnalysisGUI : public GLUTWindow {
 	public:
-		AnalysisGUI(int *argc, char **argv);
+		AnalysisGUI(int width, int height, int *argc, char **argv);
 		void updateSiteInfo(double latitude, double longitude, double altitude, float pH, float ultrasonic, float humidity);
 		void updateVideo(unsigned char *frame, int width, int height, int channel);
 		

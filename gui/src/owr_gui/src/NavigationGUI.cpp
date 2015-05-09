@@ -22,19 +22,14 @@
 
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "NavigationGUI");
-	NavigationGUI gui(&argc, argv);
+	NavigationGUI gui(WINDOW_W, WINDOW_H, &argc, argv);
 	gui.run();
 	return EXIT_SUCCESS;
 }
 
-NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
+NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GLUTWindow(width, height, argc, argv, "Navigation") {
 	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	navigationNode = new NavigationNode(this);
-	glutInit(argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutInitWindowSize(WINDOW_W, WINDOW_H);
-	glutInitWindowPosition(0, 0);
-	glutCreateWindow("Navigation");
 	
 	glGenTextures(1, &feedTexture);
 	
@@ -51,9 +46,6 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	glutKeyboardFunc(glut_keydown);	//glutKeyboardUpFunc(glut_keyup);
 	glutSpecialFunc(glut_special_keydown);
 	glutSpecialUpFunc(glut_special_keyup);
-	glutDisplayFunc(glut_display);
-	glutReshapeFunc(glut_reshape);
-	glutIdleFunc(glut_idle);
 	
 	battery = 5;
 	signal = 5;

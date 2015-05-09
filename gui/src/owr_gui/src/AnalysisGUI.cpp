@@ -21,19 +21,14 @@
 
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "AnalysisGUI");
-	AnalysisGUI gui(&argc, argv);
+	AnalysisGUI gui(WINDOW_W, WINDOW_H, &argc, argv);
 	gui.run();
 	return EXIT_SUCCESS;
 }
 
-AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
+AnalysisGUI::AnalysisGUI(int width, int height, int *argc, char **argv) : GLUTWindow(width, height, argc, argv, "Analysis") {
 	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	analysisNode = new AnalysisNode(this);
-	glutInit(argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutInitWindowSize(WINDOW_W, WINDOW_H);
-	glutInitWindowPosition(0, 0);
-	glutCreateWindow("Analysis");
 	
 	glGenTextures(NUM_IMAGES, imgTextures);
 	
@@ -54,9 +49,6 @@ AnalysisGUI::AnalysisGUI(int *argc, char **argv) : GLUTWindow() {
 	//glutKeyboardUpFunc(glut_keyup);
 	glutSpecialFunc(glut_special_keydown);
 	glutSpecialUpFunc(glut_special_keyup);
-	glutDisplayFunc(glut_display);
-	glutReshapeFunc(glut_reshape);
-	glutIdleFunc(glut_idle);
 	
 	latitude = 0;
 	longitude = 0;

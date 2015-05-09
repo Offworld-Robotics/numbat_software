@@ -1,3 +1,6 @@
+#ifndef BUTTON_H
+#define BUTTON_H
+
 /* Text Labelled Buttons for GUIs for Off World Robotics 
  *
  * These need to be subclassed and 
@@ -21,6 +24,7 @@ class Button {
 	
    public:
 	void draw();
+	Button();
 	Button(double x, double y, double width, double height, float r, float g, float b, char *txt);
 	void changeColour(float r, float g, float b);
 	bool isPointInBounds(int x, int y);
@@ -33,3 +37,5 @@ class Button {
         virtual void clickDownOperation();
         virtual void clickUpOperation();
 };
+
+#endif // BUTTON_H
