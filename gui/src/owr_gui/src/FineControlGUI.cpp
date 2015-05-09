@@ -74,7 +74,7 @@ void FineControlGUI::mouse(int button, int state, int x, int y) {
 		}
 	} else {
 		for(std::vector<Button*>::iterator i = buttons.begin();i != buttons.end();++i) {
-			if ((*i)->isOnButton(x, -y))
+			if ((*i)->isPointInBounds(x, -y))
 				(*i)->click();
 		}
 	}
