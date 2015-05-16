@@ -18,8 +18,9 @@
 class Video_Feed_Frame {
 
    public:
-      Video_Feed_Frame();
+      Video_Feed_Frame(int _centreX, int _centreY, int width, int height);
       ~Video_Feed_Frame();
+
       void displayFrame();
 
 
