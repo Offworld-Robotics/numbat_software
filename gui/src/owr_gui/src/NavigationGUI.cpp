@@ -340,7 +340,13 @@ void NavigationGUI::toggleStream(int feed, bool active) {
 	} else if (feedStatus[feed] == FEED_INACTIVE) {
 		feedStatus[feed] = FEED_ACTIVE;
 		for(int i = 0;i < TOTAL_FEEDS;i++) {
-			if (i != feed) feedStatus[i] = FEED_INACTIVE;
+			if (i != feed && feedStatus[i] == FEED_ACTIVE) {
+				owr_messages::stream off;
+				feedStatus[i] = FEED_INACTIVE;
+				off.stream = i;
+				off.on = false;
+				streamPub.publish(off);
+			}
 		}
 	} else {
 		feedStatus[feed] = FEED_INACTIVE;

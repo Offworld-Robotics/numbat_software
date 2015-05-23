@@ -8,7 +8,7 @@ from owr_messages.msg import stream
 
 
 def talker():
-    pub = rospy.Publisher('owr/control/activeFeeds', activeCameras, queue_size=10)
+    pub = rospy.Publisher('owr/control/availableFeeds', activeCameras, queue_size=10)
     rospy.init_node('camera_feeds', anonymous=True)
     rate = rospy.Rate(1) # 1hz
     while not rospy.is_shutdown():
