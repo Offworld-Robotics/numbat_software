@@ -13,12 +13,14 @@
 #include <sensor_msgs/Image.h>
 #include "bluesat_owr_protobuf/battery_ros.h"
 #include "NavigationGUI.h"
+#include "owr_messages/activeCameras.h"
 
 class NavigationNode {
 
 	public:
 		NavigationNode(NavigationGUI *gui);
 		void spin();
+		void activeFeeds(const owr_messages::activeCameras::ConstPtr &msg);
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
@@ -35,6 +37,7 @@ class NavigationNode {
 		float tiltY;
 		float ultrasonic;
 		double altitude;
+		char feeds[4];
 		vector2D target;
 };
 

@@ -57,7 +57,7 @@ class NavigationGUI : public GLUTWindow {
 
 	public:
 		NavigationGUI(int *argc, char **argv);
-		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target);
+		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target, char *feeds);
 		void updateVideo(unsigned char *frame, int width, int height);
 		void updateAvailableFeeds(bool *feeds);
 		

@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 import subprocess
 import re
-
+import numpy
 import rospy
 from owr_messages.msg import activeCameras
 from owr_messages.msg import stream
 
+
+def online( t, c, v):
+    #t: list of topics, c: column, v: value to check
+    if numpy.any(t[:, c]==v): return True;
+    return False;
 
 def talker():
     pub = rospy.Publisher('owr/control/availableFeeds', activeCameras, queue_size=10)
@@ -23,11 +28,12 @@ def talker():
                 nums = re.findall(r'\d+', word)
                 
                 camNum = int(nums[0]) # Return the number of the video device
-                
+                topics = rospy.get_published_topics()
+                topics = numpy.array(topics)
                 # Fill out the information for the stream
                 s = stream()
                 s.stream = camNum
-                s.on = False
+                s.on = online( topics, 0, "/cam" + str(camNum))
                 
                 cameraList.cameras.append(s)
                 index += 1

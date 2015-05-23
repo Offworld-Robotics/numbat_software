@@ -84,9 +84,12 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	toggleStream(0, true);
 }
 
-void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t) {
+void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t, char *feeds) {
 	battery = bat;
 	signal = sig;
+	for(int i = 0; i < TOTAL_FEEDS; i++){
+        feedStatus[i] = feeds[i];
+    }
 
 	if (cur != NULL) {
 		GPSList.push_front(cur);

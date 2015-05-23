@@ -20,15 +20,31 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	tiltY = 30;
 	ultrasonic = 0;
 	altitude = 0;
-	
+	for(int i = 0; i < TOTAL_FEEDS; i++){
+    	feeds[i] = FEED_OFFLINE;
+	}
 	// pass the function that is called when a message is received
 	gpsSub = n.subscribe("/gps/fix", 1000, &NavigationNode::receiveGpsMsg, this); // GPS related data
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
-	videoSub = n.subscribe("/camera/image_raw", 1000, &NavigationNode::receiveVideoMsg, this); // Frames of video from camera
+	feedsDub = n.subscribe("owr/control/availableFeeds", &NavigationNode::activeFeeds, this);
+	videoSub = {n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this), n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this), n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this), n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this)}; // Frames of video from camera
+	
 }
 
 void NavigationNode::spin() {
 	ros::spin();
+}
+
+void activeFeeds(const owr_messags::activeCameras::ConstPtr &msg){
+    int j = 0;
+    for(int i = 0; msg->cameras[i] != NULL; i ++){
+        j = msg->cameras[i]->stream;
+        if(msg->cameras[i]->on){
+            feeds[j] = FEED_ACTIVE;
+        } else {
+            feeds[j] = FEED_INACTIVE;
+    }
+   gui->updateInfo(battery, signal, ultrasonic, NULL, altitude, target, feeds);
 }
 
 void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
@@ -42,7 +58,7 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	l->y = msg->latitude;
 	l->x = msg->longitude;
 	altitude = msg->altitude;
-	gui->updateInfo(battery, signal, ultrasonic, l, altitude, target);
+	gui->updateInfo(battery, signal, ultrasonic, l, altitude, target, feeds);
 }
 
 
@@ -53,7 +69,7 @@ void NavigationNode::receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::
 	//ROS_INFO("voltage %f", msg->voltage);
 	battery = msg->voltage;
 	
-	gui->updateInfo(battery, signal, ultrasonic, NULL, altitude, target);
+	gui->updateInfo(battery, signal, ultrasonic, NULL, altitude, target, feeds);
 }
 
 void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
@@ -61,7 +77,7 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, feeds);
 }
 
 /*void NavigationNode::receiveAvailableFeedsMsg(const bluesat_owr_protobuf::& msg) {
