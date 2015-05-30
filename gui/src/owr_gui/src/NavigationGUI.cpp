@@ -84,7 +84,7 @@ NavigationGUI::NavigationGUI(int *argc, char **argv) : GLUTWindow() {
 	toggleStream(0, true);
 }
 
-void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t, char *feeds) {
+void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t, unsigned char *feeds) {
 	battery = bat;
 	signal = sig;
 	for(int i = 0; i < TOTAL_FEEDS; i++){

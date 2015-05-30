@@ -6,7 +6,7 @@ import rospy
 from owr_messages.msg import activeCameras
 from owr_messages.msg import stream
 
-
+# Checks in the list of topics if the desired camera is streaming
 def online( t, c, v):
     #t: list of topics, c: column, v: value to check
     if numpy.any(t[:, c]==v): return True;
@@ -18,6 +18,7 @@ def talker():
     rate = rospy.Rate(1) # 1hz
     while not rospy.is_shutdown():
         cameraList = activeCameras(); # The array of stream structs
+        camerList.num = 0;
         index = 0; # Index for the array of streams, used to contiguously fill cameraList
         
         proc = subprocess.Popen(["ls", "/dev/"], stdout=subprocess.PIPE)
@@ -33,9 +34,15 @@ def talker():
                 # Fill out the information for the stream
                 s = stream()
                 s.stream = camNum
+                
+                # Check if currently streaming (involves checking current topics
                 s.on = online( topics, 0, "/cam" + str(camNum))
                 
                 cameraList.cameras.append(s)
+                
+                # Increment the num of cameras in the array
+                cameraList.num += 1
+                
                 index += 1
                 
         rospy.loginfo(cameraList)

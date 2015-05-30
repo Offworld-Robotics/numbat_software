@@ -3,6 +3,9 @@
 	Handles updates to the Navigation GUI
 	By Harry J.E Day for Bluesat OWR
 	Date: 31/05/2014
+	
+	
+	Updated 30/5/15 by Simon Ireland to detect and pass to gui the active/inactive/offline cameras
 */
 
 #include "NavigationNode.h"
@@ -14,36 +17,77 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	//a nodehandler is used to communiate with the rest of ros
 	ros::NodeHandle n("~");
 	
+	//Initialise all the information to be used in by the gui
 	battery = 5;
 	signal = 5;
 	tiltX = 30;
 	tiltY = 30;
 	ultrasonic = 0;
 	altitude = 0;
+	
+	//Initialise the feeds array
 	for(int i = 0; i < TOTAL_FEEDS; i++){
     	feeds[i] = FEED_OFFLINE;
 	}
-	// pass the function that is called when a message is received
+	
+	
+	// 
+	// Subscribe to all relevant topics for information used by the gui
+	// pass the function that is called when a message is received into the subscribe function
+	// 
+	
 	gpsSub = n.subscribe("/gps/fix", 1000, &NavigationNode::receiveGpsMsg, this); // GPS related data
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
-	feedsDub = n.subscribe("owr/control/availableFeeds", &NavigationNode::activeFeeds, this);
-	videoSub = {n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this), n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this), n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this), n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this)}; // Frames of video from camera
+	feedsSub = n.subscribe("owr/control/availableFeeds", 1000, &NavigationNode::activeFeeds, this);
+	
+	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
+	// createed yet, will wait til it has w/o doing anything
+	
+	videoSub[0] = n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this);
+	videoSub[1] = n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this);
+	videoSub[2] = n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this);
+	videoSub[3] = n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this); // Frames of video from camera
 	
 }
 
+// Spin to wait until a message is received
 void NavigationNode::spin() {
 	ros::spin();
 }
 
-void activeFeeds(const owr_messags::activeCameras::ConstPtr &msg){
+// Called when a message from availableFeeds topic appears, updates with a list of connected cameras:
+// FEED_OFFLINE means camera not conencted
+// FEED_ACTIVE means its currently streaming
+// FEED_ INACTIVE means connected but not streaming.
+// See gui/src/owr_messages/msg/activeCameras.msg and stream.msg to understand the input message
+//
+// Simon Ireland: 30/5/15
+
+void NavigationNode::activeFeeds(const owr_messages::activeCameras::ConstPtr &msg) {
+    assert(msg);
+    
     int j = 0;
-    for(int i = 0; msg->cameras[i] != NULL; i ++){
-        j = msg->cameras[i]->stream;
-        if(msg->cameras[i]->on){
+    
+    // Reset feeds array
+    for(int i = 0; i < TOTAL_FEEDS; i++){
+        feeds[i] = FEED_OFFLINE;
+    }
+    
+    // There isnt gaurenteed to be 4 streams in msg, so only update the ones that do appear
+    for(int i = 0; i < msg->num; i++){
+    
+        // Get the actual camera number from msg
+        j = msg->cameras[i].stream;
+        
+        // If on, then it is streaming, oterwise its only connected 
+        if(msg->cameras[i].on){
             feeds[j] = FEED_ACTIVE;
         } else {
             feeds[j] = FEED_INACTIVE;
+        }
     }
+    
+    // Upadate the gui
    gui->updateInfo(battery, signal, ultrasonic, NULL, altitude, target, feeds);
 }
 
@@ -77,7 +121,7 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, feeds);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
 }
 
 /*void NavigationNode::receiveAvailableFeedsMsg(const bluesat_owr_protobuf::& msg) {
