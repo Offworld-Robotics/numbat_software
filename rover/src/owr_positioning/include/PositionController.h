@@ -14,18 +14,29 @@
 class PositionController {
     
     public:
-        PositionController(std::string topic);
+        PositionController(const std::string topic);
         void spin();
     protected:
         
-        void reciveGPSMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) ;
+        void receiveGPSMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) ;
+        void sendMsg();
         ros::Publisher  publisher;   
-        ros::Subscriber subscriber;  
+        ros::Subscriber gpsSubscriber;  
     
     private:
         ros::Subscriber sub;
         ros::NodeHandle node;
         std::string topic;
+        
+        //variables we use to store calculated message data
+        //these correspond to to the message variables owr_messages/position
+        //Documented here: https://bluesat.atlassian.net/wiki/pages/viewpage.action?pageId=1770122
+        double latitude;
+        double longitude;
+        double altitude;
+        double pitch;
+        double roll;
+        double heading;
    
 };
 

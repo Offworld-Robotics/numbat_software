@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="95">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="../src" name="0">
+      <df name="bluesat_owr_protobuf">
+        <df name="build">
+        </df>
+        <df name="include">
+          <df name="bluesat_owr_protobuf">
+            <in>BatteryRelay.h</in>
+            <in>Message1Relay.h</in>
+            <in>PBuffRelay.h</in>
+            <in>SignalRelay.h</in>
+            <in>TiltRelay.h</in>
+          </df>
+        </df>
+        <df name="msg">
+        </df>
+        <df name="src">
+          <in>BatteryRelay.cpp</in>
+          <in>Message1Relay.cpp</in>
+          <in>PBuffRelay.cpp</in>
+          <in>SignalRelay.cpp</in>
+          <in>TiltRelay.cpp</in>
+          <in>pbuffToROS.cpp</in>
+          <in>pbuffToROSBattery.cpp</in>
+          <in>pbuffToROSSignal.cpp</in>
+          <in>pbuffToROSTilt.cpp</in>
+          <in>rosToPbuff.cpp</in>
+          <in>rosToPbuffBattery.cpp</in>
+          <in>rosToPbuffSignal.cpp</in>
+          <in>rosToPbuffTilt.cpp</in>
+        </df>
+      </df>
+      <df name="gps_test_app">
+        <df name="include">
+          <df name="gps_test_app">
+          </df>
+        </df>
+        <df name="src">
+        </df>
+      </df>
+      <df name="owr_camera_control">
+        <df name="include">
+          <df name="owr_camera_control">
+          </df>
+        </df>
+        <df name="msg">
+        </df>
+        <df name="script">
+        </df>
+        <df name="src">
+        </df>
+      </df>
+      <df name="owr_gui">
+        <df name="include">
+          <in>AnalysisGUI.h</in>
+          <in>AnalysisNode.h</in>
+          <in>GLUTWindow.h</in>
+          <in>ListNode.h</in>
+          <in>NavigationGUI.h</in>
+          <in>NavigationNode.h</in>
+        </df>
+        <df name="src">
+          <in>AnalysisGUI.cpp</in>
+          <in>AnalysisNode.cpp</in>
+          <in>GLUTWindow.cpp</in>
+          <in>NavigationGUI.cpp</in>
+          <in>NavigationNode.cpp</in>
+        </df>
+      </df>
+      <df name="owr_messages">
+        <df name="include">
+          <df name="owr_messages">
+          </df>
+        </df>
+        <df name="msg">
+        </df>
+        <df name="src">
+        </df>
+      </df>
+      <df name="testDataGenerator">
+        <df name="include">
+          <df name="testDataGenerator">
+          </df>
+        </df>
+        <df name="src">
+          <in>dataGen.cpp</in>
+        </df>
+      </df>
+    </df>
+  </logicalFolder>
+  <projectmakefile>../src/Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>../src</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>

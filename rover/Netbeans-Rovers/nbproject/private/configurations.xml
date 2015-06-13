@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="95">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="../src" name="0">
+      <df name="owr_camera_control">
+        <df name="include">
+          <df name="owr_camera_control">
+          </df>
+        </df>
+        <df name="msg">
+        </df>
+        <df name="script">
+        </df>
+        <df name="src">
+        </df>
+      </df>
+      <df name="owr_drive_controls">
+        <df name="include">
+          <in>ArduinoConverter.h</in>
+          <in>ArmControlIncremental.h</in>
+          <in>JoyConverter.h</in>
+          <in>armConverter.h</in>
+          <in>buttons.h</in>
+        </df>
+        <df name="src">
+          <in>arduinoJoy.cpp</in>
+          <in>armControlIncremental.cpp</in>
+          <in>clawControl.cpp</in>
+          <in>joyConverter.cpp</in>
+          <in>turnJoy.cpp</in>
+        </df>
+      </df>
+      <df name="owr_messages">
+        <df name="include">
+          <df name="owr_messages">
+          </df>
+        </df>
+        <df name="msg">
+        </df>
+        <df name="src">
+        </df>
+      </df>
+      <df name="owr_positioning">
+        <df name="include">
+          <in>PositionController.h</in>
+        </df>
+        <df name="src">
+          <in>PositionController.cpp</in>
+        </df>
+      </df>
+      <df name="shadow_base">
+        <df name="launch">
+        </df>
+        <df name="msg">
+        </df>
+        <df name="scripts">
+        </df>
+        <df name="src">
+          <in>chatter.cpp</in>
+        </df>
+      </df>
+    </df>
+  </logicalFolder>
+  <projectmakefile>../src/build/Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>../src/build</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>
