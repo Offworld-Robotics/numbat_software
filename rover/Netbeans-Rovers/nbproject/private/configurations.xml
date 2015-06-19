@@ -3,15 +3,9 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="../src" name="0">
       <df name="owr_camera_control">
-        <df name="include">
-          <df name="owr_camera_control">
-          </df>
-        </df>
         <df name="msg">
         </df>
         <df name="script">
-        </df>
-        <df name="src">
         </df>
       </df>
       <df name="owr_drive_controls">
@@ -31,13 +25,7 @@
         </df>
       </df>
       <df name="owr_messages">
-        <df name="include">
-          <df name="owr_messages">
-          </df>
-        </df>
         <df name="msg">
-        </df>
-        <df name="src">
         </df>
       </df>
       <df name="owr_positioning">

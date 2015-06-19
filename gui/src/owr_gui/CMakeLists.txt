@@ -109,12 +109,14 @@ add_executable(navigation src/NavigationGUI.cpp src/NavigationNode.cpp src/GLUTW
 add_dependencies(navigation ${catkin_EXPORTED_TARGETS})
 add_dependencies(navigation bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(navigation bluesat_owr_protobuf)
+add_dependencies(navigation owr_messages_gencpp)
 target_link_libraries(navigation ${catkin_LIBRARIES} GL GLU glut)
 
 add_executable(analysis src/AnalysisGUI.cpp src/AnalysisNode.cpp src/GLUTWindow.cpp) 
 add_dependencies(analysis ${catkin_EXPORTED_TARGETS})
 add_dependencies(analysis bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(analysis bluesat_owr_protobuf)
+add_dependencies(navigation owr_messages_gencpp)
 target_link_libraries(analysis ${catkin_LIBRARIES} GL GLU glut)
 
 ## Declare a cpp library
