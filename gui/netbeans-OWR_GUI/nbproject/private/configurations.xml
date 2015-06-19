@@ -33,23 +33,13 @@
         </df>
       </df>
       <df name="gps_test_app">
-        <df name="include">
-          <df name="gps_test_app">
-          </df>
-        </df>
         <df name="src">
         </df>
       </df>
       <df name="owr_camera_control">
-        <df name="include">
-          <df name="owr_camera_control">
-          </df>
-        </df>
         <df name="msg">
         </df>
         <df name="script">
-        </df>
-        <df name="src">
         </df>
       </df>
       <df name="owr_gui">
@@ -70,20 +60,10 @@
         </df>
       </df>
       <df name="owr_messages">
-        <df name="include">
-          <df name="owr_messages">
-          </df>
-        </df>
         <df name="msg">
-        </df>
-        <df name="src">
         </df>
       </df>
       <df name="testDataGenerator">
-        <df name="include">
-          <df name="testDataGenerator">
-          </df>
-        </df>
         <df name="src">
           <in>dataGen.cpp</in>
         </df>

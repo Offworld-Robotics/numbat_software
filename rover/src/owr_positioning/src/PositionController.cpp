@@ -61,8 +61,15 @@ void PositionController::updateHeading() {
         std::list<double>::iterator lonItr = longitudes.begin();
         double y1 = *(lonItr);
         double y2 = *(++lonItr);
-        
-        heading = tanh((y1 - y2) / (x1 - x2)) * M_PI;
+        //this formula from http://www.moveable-type.co.uk/scripts/latlong.html
+        //should calculate the bearing between two points.
+        //TODO: check that this is correct.
+        double y = sin(x2-x1) * cos(y2);
+        //I'm pretty sure this can be simplified..
+        double x = cos(y1)*sin(y2) - sin(y1)*cos(y2)*cos(y2-y1);
+        heading = atan2(y,x) * 180/M_PI;
+        //old formula using arc tan
+        //heading = atan((y1 - y2) / (x1 - x2)) * M_PI / 180;
         std::cout << "heading " << heading << "deg\n";
     }
 }
@@ -70,11 +77,11 @@ void PositionController::updateHeading() {
 void PositionController::sendMsg() {
     owr_messages::position msg;
     msg.latitude = latitude;
-    msg.longitude = latitude;
+    msg.longitude = longitude;
     msg.altitude = altitude;
     msg.pitch = pitch;
     msg.roll = roll;
-    //msg.heading = heading;
+    msg.heading = heading;
     
     publisher.publish(msg);
 }
