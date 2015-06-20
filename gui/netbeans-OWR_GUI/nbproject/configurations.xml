@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="95">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="../src" name="0">
+      <df name="bluesat_owr_protobuf">
+        <df name="src">
+          <in>BatteryRelay.cpp</in>
+          <in>Message1Relay.cpp</in>
+          <in>PBuffRelay.cpp</in>
+          <in>SignalRelay.cpp</in>
+          <in>TiltRelay.cpp</in>
+          <in>pbuffToROS.cpp</in>
+          <in>pbuffToROSBattery.cpp</in>
+          <in>pbuffToROSSignal.cpp</in>
+          <in>pbuffToROSTilt.cpp</in>
+          <in>rosToPbuff.cpp</in>
+          <in>rosToPbuffBattery.cpp</in>
+          <in>rosToPbuffSignal.cpp</in>
+          <in>rosToPbuffTilt.cpp</in>
+        </df>
+      </df>
+      <df name="owr_gui">
+        <df name="src">
+          <in>AnalysisGUI.cpp</in>
+          <in>AnalysisNode.cpp</in>
+          <in>GLUTWindow.cpp</in>
+          <in>NavigationGUI.cpp</in>
+          <in>NavigationNode.cpp</in>
+        </df>
+      </df>
+      <df name="testDataGenerator">
+        <df name="src">
+          <in>dataGen.cpp</in>
+        </df>
+      </df>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>../src/CMakeLists.txt</itemPath>
+      <itemPath>../src/Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>../src</Elem>
+  </sourceRootList>
+  <projectmakefile>../src/Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>../src</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+          <ccTool>
+            <incDir>
+              <pElem>../src/owr_gui/include:/home/ros/owr/owr_software/gui/src/bluesat_owr_protobuf/include:/opt/ros/hydro/include:/home/ros/owr/owr_software/gui/devel/include </pElem>
+            </incDir>
+          </ccTool>
+        </makeTool>
+      </makefileType>
+      <item path="../src/bluesat_owr_protobuf/src/BatteryRelay.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/Message1Relay.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/PBuffRelay.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/SignalRelay.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/TiltRelay.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/pbuffToROS.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/pbuffToROSBattery.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/pbuffToROSSignal.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/pbuffToROSTilt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/rosToPbuff.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/rosToPbuffBattery.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/rosToPbuffSignal.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/bluesat_owr_protobuf/src/rosToPbuffTilt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/owr_gui/src/AnalysisGUI.cpp" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="../src/owr_gui/src/AnalysisNode.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/owr_gui/src/GLUTWindow.cpp" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="../src/owr_gui/src/NavigationGUI.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/owr_gui/src/NavigationNode.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+      <item path="../src/testDataGenerator/src/dataGen.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

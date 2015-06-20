@@ -29,4 +29,7 @@ float64 pitch
 #0 deg is level with the horizon, Positive is left up
 float64 roll
 
+#The heading relative to the grid north. (WGS 84)
+float64 heading
+
 
