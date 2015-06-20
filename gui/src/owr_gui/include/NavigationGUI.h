@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include "owr_messages/stream.h"
 #include <list>
+#include "Video_Feed_Frame.hpp"
 
 #define PI 3.1415926535897932384626433832795
 
@@ -128,6 +129,8 @@ class NavigationGUI : public GLUTWindow {
 		ros::NodeHandle node;
 		ros::Publisher streamPub;
 		void toggleStream(int feed, bool active);
+
+                std::vector<Video_Feed_Frame*> videoFeeds;
 };
 
 

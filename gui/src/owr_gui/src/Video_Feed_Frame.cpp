@@ -6,6 +6,14 @@
 #include <Video_Feed_Frame.hpp>
 #include <GL/freeglut.h>
 
+/*
+// check if zero arugment constructor is necessary
+Video_Feed_Frame::Video_Feed_Frame(){
+   // don't initialise anything
+   // this is provided for compiler complaint only.
+}
+*/
+
 // Not providing Zero argument constructor, therefore instances must be initialised in a 
 //    constructor initialisor list in any classes that use this
 Video_Feed_Frame::Video_Feed_Frame(int _centreX, int _centreY, int width, int height){
@@ -23,9 +31,16 @@ Video_Feed_Frame::Video_Feed_Frame(int _centreX, int _centreY, int width, int he
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-/* CHECK IF REQUIRES MODIFICATION FOR COMPATIBILITY
+// TODO
+// finish implementing Constructor
+Video_Feed_Frame::~Video_Feed_Frame(){
+   /* Replace with actual cleanup
+    */
+}
+
+// CHECK IF REQUIRES MODIFICATION FOR COMPATIBILITY
 // called by ROS process to set the contents of the texture to be the next frame of the video stream
-video_Feed_Frame::setNewStreamFrame(unsigned char *frame, int width, int height) {
+void Video_Feed_Frame::setNewStreamFrame(unsigned char *frame, int width, int height) {
 	if (frame != NULL) {
 		glBindTexture(GL_TEXTURE_2D, videoTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
@@ -33,10 +48,9 @@ video_Feed_Frame::setNewStreamFrame(unsigned char *frame, int width, int height)
 	
 	//ROS_INFO("Updated video");
 }
-*/
 
 // actually draw the Video_Feed_Frame to screen
-void Video_Feed_Frame::displayFrame() {
+void Video_Feed_Frame::draw() {
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glColor3f(1, 1, 1);
@@ -56,4 +70,3 @@ void Video_Feed_Frame::displayFrame() {
 	glPopMatrix();
 }
 
-#endif

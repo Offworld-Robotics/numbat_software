@@ -119,7 +119,7 @@ add_dependencies(analysis bluesat_owr_protobuf)
 add_dependencies(navigation owr_messages_gencpp)
 target_link_libraries(analysis ${catkin_LIBRARIES} GL GLU glut)
 
-add_executable(finecontrol src/FineControlGUI.cpp src/GLUTWindow.cpp src/Button.cpp) 
+add_executable(finecontrol src/FineControlGUI.cpp src/GLUTWindow.cpp src/Button.cpp src/Video_Feed_Frame.cpp) 
 add_dependencies(finecontrol ${catkin_EXPORTED_TARGETS})
 add_dependencies(finecontrol bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(finecontrol bluesat_owr_protobuf)

@@ -170,6 +170,11 @@ void NavigationGUI::idle() {
 }
 
 void NavigationGUI::drawVideo() {
+
+      /* Original Manual video drawing
+       *
+       */
+
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glColor3f(1, 1, 1);
@@ -185,6 +190,8 @@ void NavigationGUI::drawVideo() {
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
+     /*
+     */
 }
 
 void NavigationGUI::display() {

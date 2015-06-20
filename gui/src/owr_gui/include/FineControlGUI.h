@@ -13,4 +13,5 @@ class FineControlGUI : public GLUTWindow {
 		bool arrows[4];
 		std::vector<Button*> buttons;
 		GLuint vidTex[2];
+                std::vector<Video_Feed_Frame*> videoFeeds;
 };

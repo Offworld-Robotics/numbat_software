@@ -1,5 +1,6 @@
 #include "GLUTWindow.h"
 #include "Button.h"
+#include "Video_Feed_Frame.hpp"
 #include <cstdio>
 #include <unistd.h>
 #include <cstring>
@@ -56,6 +57,12 @@ void FineControlGUI::display() {
 	char txt[] = "GUI info placeholder";
 	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	glPopMatrix();
+
+        //Draw Video Feeds to Screen
+        for(std::vector<Video_Feed_Frame*>::iterator feed=videoFeeds.begin(); feed != videoFeeds.end(); ++feed) {
+		(*feed)->draw();
+	}
+
 	glutSwapBuffers();
 }
 
@@ -87,6 +94,10 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 	glutMouseFunc(glut_mouse);
 	
 	glGenTextures(2, vidTex);
+
+        videoFeeds.push_back(new Video_Feed_Frame(width*3/4, height*3/4, width/2, height/2) );
+
+
 	
 	for(int i = 0;i < 2;i++) {
 		glBindTexture(GL_TEXTURE_2D, vidTex[i]);
@@ -98,6 +109,7 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 	
 	// PLACEHOLDER TEXTURE GENERATION
 	GLubyte checkImage[64][64][3];
+
 	for (int i = 0; i < 64; i++) {
 		for (int j = 0; j < 64; j++) {
 			int c = ((((i&0x8)==0)^((j&0x8))==0))*255;
@@ -107,9 +119,11 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 		}
 	}
 	
+
 	glBindTexture(GL_TEXTURE_2D, vidTex[0]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, checkImage);
-	
+
+         // setup placeholder Texture 2 ie BLUE check
 	for (int i = 0; i < 64; i++) {
 		for (int j = 0; j < 64; j++) {
 			int c = ((((i&0x8)==0)^((j&0x8))==0))*255;
@@ -118,10 +132,19 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 			checkImage[i][j][2] = (GLubyte) c;
 		}
 	}
-	
+        // Bind placeholder Texture 2 Blue to VideoFeedFrame
+        videoFeeds[0]->setNewStreamFrame((unsigned char*)checkImage, 64,64);
+
+        /*
+        // actually draw placeholder Texture 2 to screen
 	glBindTexture(GL_TEXTURE_2D, vidTex[1]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, checkImage);
 	
+        */
+
+
+
+        // setup Zoom Buttons
 	for (int i = 0;i < 4;i++) {
 		arrows[i] = false;
 	}
