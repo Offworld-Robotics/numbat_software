@@ -17,6 +17,7 @@
 
 #include "NavigationGUI.h"
 #include "NavigationNode.h"
+#include "Video_Feed_Frame.hpp"
 
 //#define DEBUG 1
 
@@ -66,6 +67,9 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 		feedStatus[i] = FEED_INACTIVE;
 	numActiveFeeds = 0;
 
+        // create videoFeed object
+        videoFeeds.push_back(new Video_Feed_Frame(width*1/2, height*1/2, width, height) );
+
 	scale = DEFAULT_SCALE;
 	displayOverlay = true;
 	srand(time(NULL));
@@ -92,12 +96,19 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 }
 
 void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
-	if (frame != NULL) {
-		glBindTexture(GL_TEXTURE_2D, feedTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
-	}
-	
-	//ROS_INFO("Updated video");
+    /*
+    // use the Video_Feed_Frame object method
+    videoFeeds[0]->setNewStreamFrame(frame, width, height);
+    */
+
+    // /*
+    if (frame != NULL) {
+            glBindTexture(GL_TEXTURE_2D, feedTexture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
+    }
+    
+    //ROS_INFO("Updated video");
+    // */
 }
 
 void NavigationGUI::updateAvailableFeeds(bool *feeds) {
@@ -198,6 +209,12 @@ void NavigationGUI::display() {
 	glClearColor(1, 1, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        /*
+        //Draw Video Feeds to Screen
+        for(std::vector<Video_Feed_Frame*>::iterator feed=videoFeeds.begin(); feed != videoFeeds.end(); ++feed) {
+		(*feed)->draw();
+	}
+        */
 	drawVideo();
 	if (displayOverlay) {
 		drawFeedStatus();

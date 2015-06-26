@@ -42,8 +42,8 @@ Video_Feed_Frame::~Video_Feed_Frame(){
 // called by ROS process to set the contents of the texture to be the next frame of the video stream
 void Video_Feed_Frame::setNewStreamFrame(unsigned char *frame, int width, int height) {
 	if (frame != NULL) {
-		glBindTexture(GL_TEXTURE_2D, videoTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
+             glBindTexture(GL_TEXTURE_2D, videoTexture);
+             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
 	}
 	
 	//ROS_INFO("Updated video");
