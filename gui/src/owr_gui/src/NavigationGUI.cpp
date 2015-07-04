@@ -32,13 +32,13 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	navigationNode = new NavigationNode(this);
 	
-	glGenTextures(1, &feedTexture);
+	/*glGenTextures(1, &feedTexture);
 	
 	glBindTexture(GL_TEXTURE_2D, feedTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 	
 	glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
@@ -67,8 +67,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 		feedStatus[i] = FEED_INACTIVE;
 	numActiveFeeds = 0;
 
-        // create videoFeed object
-        videoFeeds.push_back(new Video_Feed_Frame(width*1/2, height*1/2, width, height) );
+	// create videoFeed object
+	videoFeeds.push_back(new Video_Feed_Frame(width/2, -height/2, width, height));
 
 	scale = DEFAULT_SCALE;
 	displayOverlay = true;
@@ -83,7 +83,7 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t, unsigned char *feeds) {
 	battery = bat;
 	signal = sig;
-	for(int i = 0; i < TOTAL_FEEDS; i++){
+	for (int i = 0; i < TOTAL_FEEDS; i++) {
         feedStatus[i] = feeds[i];
     }
 
@@ -99,19 +99,10 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 }
 
 void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
-    /*
     // use the Video_Feed_Frame object method
-    videoFeeds[0]->setNewStreamFrame(frame, width, height);
-    */
-
-    // /*
-    if (frame != NULL) {
-            glBindTexture(GL_TEXTURE_2D, feedTexture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
-    }
+	videoFeeds[0]->setNewStreamFrame(frame, width, height);
     
     //ROS_INFO("Updated video");
-    // */
 }
 
 void NavigationGUI::updateAvailableFeeds(bool *feeds) {
@@ -184,40 +175,16 @@ void NavigationGUI::idle() {
 }
 
 void NavigationGUI::drawVideo() {
-
-      /* Original Manual video drawing
-       *
-       */
-
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glColor3f(1, 1, 1);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	glBindTexture(GL_TEXTURE_2D, feedTexture);
-
-	// data from frame array is flipped, texcoords were changed to compensate
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 1); glVertex2i(0, -currWinH); // Bottom Left
-		glTexCoord2f(1, 1); glVertex2i(currWinW, -currWinH); // Bottom Right
-		glTexCoord2f(1, 0); glVertex2i(currWinW, 0); // Top Right
-		glTexCoord2f(0, 0); glVertex2i(0, 0); // Top Left
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
-     /*
-     */
+	//Draw Video Feeds to Screen
+	for(std::vector<Video_Feed_Frame*>::iterator feed=videoFeeds.begin(); feed != videoFeeds.end(); ++feed) {
+		(*feed)->draw();
+	}
 }
 
 void NavigationGUI::display() {
 	glClearColor(1, 1, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        /*
-        //Draw Video Feeds to Screen
-        for(std::vector<Video_Feed_Frame*>::iterator feed=videoFeeds.begin(); feed != videoFeeds.end(); ++feed) {
-		(*feed)->draw();
-	}
-        */
 	drawVideo();
 	if (displayOverlay) {
 		drawFeedStatus();

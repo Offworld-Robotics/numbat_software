@@ -29,6 +29,19 @@ Video_Feed_Frame::Video_Feed_Frame(int _centreX, int _centreY, int width, int he
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// PLACEHOLDER TEXTURE GENERATION
+	GLubyte checkImage[64][64][3];
+	
+	for (int i = 0; i < 64; i++) {
+		for (int j = 0; j < 64; j++) {
+			int c = ((((i&0x8)==0)^((j&0x8))==0))*255;
+			checkImage[i][j][0] = (GLubyte) 0;
+			checkImage[i][j][1] = (GLubyte) c;
+			checkImage[i][j][2] = (GLubyte) 0;
+		}
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, checkImage);
 }
 
 // TODO
@@ -52,6 +65,8 @@ void Video_Feed_Frame::setNewStreamFrame(unsigned char *frame, int width, int he
 // actually draw the Video_Feed_Frame to screen
 void Video_Feed_Frame::draw() {
 	glPushMatrix();
+	glLoadIdentity();
+	glTranslated(centreX, centreY, 0);
 	glEnable(GL_TEXTURE_2D);
 	glColor3f(1, 1, 1);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -59,10 +74,10 @@ void Video_Feed_Frame::draw() {
 
 	// data from frame array is flipped, texcoords were changed to compensate
 	glBegin(GL_QUADS);
-		glTexCoord2f(0, 1); glVertex2i(centreX-halfWidth, centreY-halfHeight); // Bottom Left
-		glTexCoord2f(1, 1); glVertex2i(centreX+halfWidth, centreY-halfHeight); // Bottom Right
-		glTexCoord2f(1, 0); glVertex2i(centreX+halfWidth, centreY+halfHeight); // Top Right
-		glTexCoord2f(0, 0); glVertex2i(centreX-halfWidth, centreY+halfHeight); // Top Left
+		glTexCoord2f(0, 1); glVertex2i(-halfWidth, -halfHeight); // Bottom Left
+		glTexCoord2f(1, 1); glVertex2i(halfWidth, -halfHeight); // Bottom Right
+		glTexCoord2f(1, 0); glVertex2i(halfWidth, halfHeight); // Top Right
+		glTexCoord2f(0, 0); glVertex2i(-halfWidth, halfHeight); // Top Left
 	glEnd();
         
         // must disable texturing when done or graphical glitches occur

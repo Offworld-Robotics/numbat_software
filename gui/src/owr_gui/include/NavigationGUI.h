@@ -129,8 +129,8 @@ class NavigationGUI : public GLUTWindow {
 		ros::NodeHandle node;
 		ros::Publisher streamPub;
 		void toggleStream(int feed, bool active);
-
-                std::vector<Video_Feed_Frame*> videoFeeds;
+		
+        std::vector<Video_Feed_Frame*> videoFeeds;
 };
 
 
