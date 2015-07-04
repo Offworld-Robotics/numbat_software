@@ -43,7 +43,7 @@ void ArmConverter::run() {
 
 void ArmConverter::sendMessage(int tm, int bm) {
     if(fd) {
-        fprintf(fd,"%d %d\n %d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);
+        fprintf(fd,"%d %d\n%d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);
         float buffer;
         //fscanf(fd, "%f", &buffer);
         //printf("%f", buffer);
@@ -52,7 +52,7 @@ void ArmConverter::sendMessage(int tm, int bm) {
     } else {
         printf("unsucesfull\n");
     }    
-    printf("%d %d\n %d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);   
+    printf("%d %d\n%d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);   
 }
 
 //checks if the button state has changed and changes the feed
