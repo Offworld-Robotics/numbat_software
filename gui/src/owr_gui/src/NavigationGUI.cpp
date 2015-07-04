@@ -32,14 +32,6 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	navigationNode = new NavigationNode(this);
 	
-	/*glGenTextures(1, &feedTexture);
-	
-	glBindTexture(GL_TEXTURE_2D, feedTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
-	
 	glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
 	glEnable(GL_BLEND); // enables transparency
@@ -64,8 +56,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 		arrowKeys[i] = false;
 
 	for (int i = 0;i < TOTAL_FEEDS;i++)
-		feedStatus[i] = FEED_INACTIVE;
-	numActiveFeeds = 0;
+		feedStatus[i] = FEED_OFFLINE;
+	onlineFeeds = 0;
 
 	// create videoFeed object
 	videoFeeds.push_back(new Video_Feed_Frame(width/2, -height/2, width, height));
@@ -77,19 +69,14 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	
 	//start on stream 0
 	usleep(150000);
-	toggleStream(0, true);
+	toggleStream(0);
 }
 
-void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t, unsigned char *feeds) {
+void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t) {
 	battery = bat;
 	signal = sig;
-	for (int i = 0; i < TOTAL_FEEDS; i++) {
-        feedStatus[i] = feeds[i];
-    }
-
-	if (cur != NULL) {
-		GPSList.push_front(cur);
-	}
+	
+	if (cur != NULL) GPSList.push_front(cur);
 	
 	altitude = alt;
 	target = t;
@@ -99,20 +86,16 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 }
 
 void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
-    // use the Video_Feed_Frame object method
+	// use the Video_Feed_Frame object method
 	videoFeeds[0]->setNewStreamFrame(frame, width, height);
-    
-    //ROS_INFO("Updated video");
+	
+	//ROS_INFO("Updated video");
 }
 
-void NavigationGUI::updateAvailableFeeds(bool *feeds) {
-	for (int i = 0;i < TOTAL_FEEDS;i++) {
-		if (!feeds[i]) {
-			feedStatus[i] = FEED_OFFLINE;
-		} else if (feedStatus[i] == FEED_OFFLINE) {
-			feedStatus[i] = FEED_INACTIVE;
-		}
-	}
+void NavigationGUI::updateFeedsStatus(unsigned char *feeds, int numOnline) {
+	memcpy(feedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
+	onlineFeeds = numOnline;
+	ROS_INFO("updating online feeds: [%d,%d,%d,%d]", feeds[0], feeds[1], feeds[2], feeds[3]);
 }
 
 void NavigationGUI::idle() {
@@ -176,9 +159,8 @@ void NavigationGUI::idle() {
 
 void NavigationGUI::drawVideo() {
 	//Draw Video Feeds to Screen
-	for(std::vector<Video_Feed_Frame*>::iterator feed = videoFeeds.begin(); feed != videoFeeds.end(); ++feed) {
+	for(std::vector<Video_Feed_Frame*>::iterator feed = videoFeeds.begin(); feed != videoFeeds.end(); ++feed)
 		(*feed)->draw();
-	}
 }
 
 void NavigationGUI::display() {
@@ -317,7 +299,7 @@ void NavigationGUI::drawGPS() {
 }
 
 // toggles between available streams
-void NavigationGUI::toggleStream(int feed, bool active) {
+void NavigationGUI::toggleStream(int feed) {
 	printf("Switching feed %d\n", feed);
 	
 	if (feedStatus[feed] == FEED_OFFLINE) {
@@ -380,7 +362,7 @@ void NavigationGUI::drawButton(int feed) {
 	else
 		glColor4ub(FEED_OFFLINE_BUTTON_R, FEED_OFFLINE_BUTTON_G, FEED_OFFLINE_BUTTON_B, ALPHA*255);
 
-	glRectd(-30, -25, 30, 25);
+	glRecti(-30, -25, 30, 25);
 	glColor4f(0, 0, 1, ALPHA);
 	glRasterPos2i(-5, -6);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, feed + '0');
@@ -535,7 +517,7 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 	if (key == 27) {
 		exit(0);
 	} else if (key >= '0' && key <= '3') {
-		toggleStream(key - '0', true);
+		toggleStream(key - '0');
 	} else if (key == 'q') {
 		printGPSPath();
 	} else if(key ==  ' ') {

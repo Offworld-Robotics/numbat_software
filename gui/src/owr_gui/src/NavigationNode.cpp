@@ -26,10 +26,8 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	altitude = 0;
 	
 	//Initialise the feeds array
-	for(int i = 0; i < TOTAL_FEEDS; i++){
-    	feeds[i] = FEED_OFFLINE;
-	}
-	
+	for(int i = 0; i < TOTAL_FEEDS; i++)
+		feeds[i] = FEED_OFFLINE;
 	
 	// 
 	// Subscribe to all relevant topics for information used by the gui
@@ -38,7 +36,7 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	
 	gpsSub = n.subscribe("/gps/fix", 1000, &NavigationNode::receiveGpsMsg, this); // GPS related data
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
-	feedsSub = n.subscribe("owr/control/availableFeeds", 1000, &NavigationNode::activeFeeds, this);
+	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// createed yet, will wait til it has w/o doing anything
@@ -58,37 +56,34 @@ void NavigationNode::spin() {
 // Called when a message from availableFeeds topic appears, updates with a list of connected cameras:
 // FEED_OFFLINE means camera not conencted
 // FEED_ACTIVE means its currently streaming
-// FEED_ INACTIVE means connected but not streaming.
+// FEED_INACTIVE means connected but not streaming.
 // See gui/src/owr_messages/msg/activeCameras.msg and stream.msg to understand the input message
 //
 // Simon Ireland: 30/5/15
 
-void NavigationNode::activeFeeds(const owr_messages::activeCameras::ConstPtr &msg) {
-    assert(msg);
-    
-    int j = 0;
-    
-    // Reset feeds array
-    for(int i = 0; i < TOTAL_FEEDS; i++){
-        feeds[i] = FEED_OFFLINE;
-    }
-    
-    // There isnt gaurenteed to be 4 streams in msg, so only update the ones that do appear
-    for(int i = 0; i < msg->num; i++){
-    
-        // Get the actual camera number from msg
-        j = msg->cameras[i].stream;
-        
-        // If on, then it is streaming, oterwise its only connected 
-        if(msg->cameras[i].on){
-            feeds[j] = FEED_ACTIVE;
-        } else {
-            feeds[j] = FEED_INACTIVE;
-        }
-    }
-    
-    // Upadate the gui
-   gui->updateInfo(battery, signal, ultrasonic, NULL, altitude, target, feeds);
+void NavigationNode::receiveFeedsStatus(const owr_messages::activeCameras::ConstPtr &msg) {
+	assert(msg);
+	
+	ROS_INFO("finding active feeds");
+	
+	// Reset feeds array
+	for(int i = 0; i < TOTAL_FEEDS; i++)
+		feeds[i] = FEED_OFFLINE;
+	
+	// There isnt gaurenteed to be 4 streams in msg, so only update the ones that do appear
+	for(int i = 0; i < msg->num; i++) {
+		// Get the actual camera number from msg
+		int feed = msg->cameras[i].stream;
+		
+		// If on, then it is streaming, oterwise its only connected 
+		if(msg->cameras[i].on)
+			feeds[feed] = FEED_ACTIVE;
+		else
+			feeds[feed] = FEED_INACTIVE;
+	}
+	
+	// Update the gui
+	gui->updateFeedsStatus(feeds, msg->num);
 }
 
 void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
@@ -102,7 +97,7 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	l->y = msg->latitude;
 	l->x = msg->longitude;
 	altitude = msg->altitude;
-	gui->updateInfo(battery, signal, ultrasonic, l, altitude, target, feeds);
+	gui->updateInfo(battery, signal, ultrasonic, l, altitude, target);
 }
 
 
@@ -113,7 +108,7 @@ void NavigationNode::receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::
 	//ROS_INFO("voltage %f", msg->voltage);
 	battery = msg->voltage;
 	
-	gui->updateInfo(battery, signal, ultrasonic, NULL, altitude, target, feeds);
+	gui->updateInfo(battery, signal, ultrasonic, NULL, altitude, target);
 }
 
 void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
@@ -123,11 +118,3 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
 }
-
-/*void NavigationNode::receiveAvailableFeedsMsg(const bluesat_owr_protobuf::& msg) {
-	assert(msg);
-	
-	//ROS_INFO("received available feeds");
-	
-	gui->updateAvailableFeeds(msg->);
-}*/

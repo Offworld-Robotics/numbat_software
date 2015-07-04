@@ -23,7 +23,7 @@ class NavigationNode {
 	public:
 		NavigationNode(NavigationGUI *gui);
 		void spin();
-		void activeFeeds(const owr_messages::activeCameras::ConstPtr &msg);
+		void receiveFeedsStatus(const owr_messages::activeCameras::ConstPtr &msg);
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
