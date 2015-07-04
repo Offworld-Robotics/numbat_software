@@ -176,7 +176,7 @@ void NavigationGUI::idle() {
 
 void NavigationGUI::drawVideo() {
 	//Draw Video Feeds to Screen
-	for(std::vector<Video_Feed_Frame*>::iterator feed=videoFeeds.begin(); feed != videoFeeds.end(); ++feed) {
+	for(std::vector<Video_Feed_Frame*>::iterator feed = videoFeeds.begin(); feed != videoFeeds.end(); ++feed) {
 		(*feed)->draw();
 	}
 }
