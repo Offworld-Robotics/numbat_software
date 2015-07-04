@@ -14,11 +14,16 @@
 #include "bluesat_owr_protobuf/battery_ros.h"
 #include "NavigationGUI.h"
 
+// The message structs needed for availableFeeds
+#include "owr_messages/activeCameras.h"
+#include "owr_messages/stream.h"
+
 class NavigationNode {
 
 	public:
 		NavigationNode(NavigationGUI *gui);
 		void spin();
+		void activeFeeds(const owr_messages::activeCameras::ConstPtr &msg);
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
@@ -27,7 +32,8 @@ class NavigationNode {
 		NavigationGUI *gui;
 		ros::Subscriber gpsSub;
 		ros::Subscriber batterySub;
-		ros::Subscriber videoSub;
+		ros::Subscriber videoSub[4];
+		ros::Subscriber feedsSub;
 		
 		float battery;
 		float signal;
@@ -35,6 +41,7 @@ class NavigationNode {
 		float tiltY;
 		float ultrasonic;
 		double altitude;
+		unsigned char feeds[TOTAL_FEEDS];
 		vector2D target;
 };
 

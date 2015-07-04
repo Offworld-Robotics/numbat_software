@@ -67,12 +67,12 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   std_msgs
-   owr_messages
+ #generate_messages(
+ #  DEPENDENCIES
+ #  std_msgs
+ #  owr_messages
      # Or other packages containing msgs
- )
+# )
 
 ###################################
 ## catkin specific configuration ##
