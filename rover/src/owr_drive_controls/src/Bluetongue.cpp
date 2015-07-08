@@ -1,6 +1,7 @@
-#include "Bluetongue.h"
+#include <errno.h>
 #include <unistd.h>
 #include <termios.h>
+#include <stdio.h>
 #include <iostream>
 #include <fcntl.h>
 #include <string.h>
@@ -9,6 +10,7 @@
 #include <sys/select.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "Bluetongue.h"
 
 using namespace std;
 

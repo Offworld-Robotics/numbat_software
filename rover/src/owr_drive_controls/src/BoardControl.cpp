@@ -5,9 +5,12 @@
  */
  
  #include "BoardControl.h"
+ #include "Bluetongue.h"
  #include <assert.h>
 
-
+static void printStatus(struct status *s) {
+	cout << "Battery voltage: " << s->batteryVoltage << endl;
+}
 
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_telop");
@@ -32,10 +35,20 @@ BoardControl::BoardControl() {
 }
 
 void BoardControl::run() {
+    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
+
     while(ros::ok()) {
+        struct status s = steve->update((leftDrive-1500.0)/1000, (rightDrive-1500.0)/1000);
+        //if (s.roverOk == false) {
+        //    delete steve;
+        //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
+        //}
+	    printStatus(&s);
+	    usleep(100000);
         //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
         ros::spinOnce();
     }
+    delete steve;
 }
 
 
