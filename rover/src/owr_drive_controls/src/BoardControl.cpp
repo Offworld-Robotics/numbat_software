@@ -26,7 +26,7 @@ BoardControl::BoardControl() {
     cam1Button = 0;
     cam2Button = 0;
     cam3Button = 0;
-    fd = fopen(TTY, "w");
+    //fd = fopen(TTY, "w");
     assert(fd != NULL);
     //subscribe to xbox controller
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this);
