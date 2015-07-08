@@ -112,6 +112,9 @@ target_link_libraries(owr_drive_controls_node ${catkin_LIBRARIES})
 add_executable(owr_drive_arduino src/arduinoJoy.cpp)
 target_link_libraries(owr_drive_arduino ${catkin_LIBRARIES})
 
+add_executable(owr_drive_board src/BoardControl.cpp)
+target_link_libraries(owr_drive_board ${catkin_LIBRARIES})
+
 add_executable(owr_drive_arm_pos src/clawControl.cpp)
 target_link_libraries(owr_drive_arm_pos ${catkin_LIBRARIES})
 

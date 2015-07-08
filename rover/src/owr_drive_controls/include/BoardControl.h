@@ -1,10 +1,10 @@
 /*
  * Converts joystick comands to velocity, etc
  * Author: Harry J.E Day for BlueSat OWR
- * Start: 7/02/15
+ * Start: 8/07/15
  */
-#ifndef JOY_CONVERTER_H
-#define JOY_CONVERTER_H
+#ifndef BOARD_CONTROL_H
+#define BOARD_CONTROL_H
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/Twist.h>
@@ -18,9 +18,9 @@ using namespace std;
 //serial IO
 #define TTY "/dev/ttyACM1"
 
-class ArduinoConverter {
+class BoardControl {
     public:
-        ArduinoConverter();
+        BoardControl();
         void run();
         
     private:
@@ -31,7 +31,7 @@ class ArduinoConverter {
         ros::Publisher  velPublisher;
         ros::Subscriber joySubscriber;
         float leftDrive, rightDrive;
-        float lfDrive, lmDrive, lbDrive, rfDrive, rmDrive, rbDrive;
+
         
         //to keep track of button states. It is possible press could change it
         int cam0Button, cam1Button, cam2Button, cam3Button;

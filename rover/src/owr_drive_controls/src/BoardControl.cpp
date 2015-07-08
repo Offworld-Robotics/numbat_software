@@ -4,19 +4,19 @@
  * Start: 7/02/15
  */
  
- #include "ArduinoConverter.h"
+ #include "BoardControl.h"
  #include <assert.h>
 
 
 
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_telop");
-    ArduinoConverter arduinoConverter;
-    arduinoConverter.run();
+    BoardControl BoardControl;
+    BoardControl.run();
     
 }
 
-ArduinoConverter::ArduinoConverter() {
+BoardControl::BoardControl() {
 
     //init button sates
     cam0Button = 0;
@@ -26,12 +26,12 @@ ArduinoConverter::ArduinoConverter() {
     fd = fopen(TTY, "w");
     assert(fd != NULL);
     //subscribe to xbox controller
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &ArduinoConverter::joyCallback, this);
+    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this);
     leftDrive = 1500.0;
     rightDrive = 1500.0;       
 }
 
-void ArduinoConverter::run() {
+void BoardControl::run() {
     while(ros::ok()) {
         //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
         ros::spinOnce();
@@ -40,13 +40,13 @@ void ArduinoConverter::run() {
 
 
 //checks if the button state has changed and changes the feed
-void ArduinoConverter::switchFeed(int * storedState, int joyState, int feedNum) {
+void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
     if((*storedState) != joyState) {
         //TODO: switch feed
     } 
 }
 
-void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 1.0
     #define DIFF 0.25
 
