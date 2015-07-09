@@ -7,6 +7,8 @@
  #include "BoardControl.h"
  #include "Bluetongue.h"
  #include <assert.h>
+ 
+ #define MOTOR_MID 1500
 
 static void printStatus(struct status *s) {
 	cout << "Battery voltage: " << s->batteryVoltage << endl;
@@ -30,15 +32,19 @@ BoardControl::BoardControl() {
     assert(fd != NULL);
     //subscribe to xbox controller
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this);
-    leftDrive = 1500.0;
-    rightDrive = 1500.0;       
+    leftDrive = MOTOR_MID;
+    rightDrive = MOTOR_MID; 
+    armTop = MOTOR_MID;
+    armBottom = MOTOR_MID;
+    armRotate = MOTOR_MID;
+          
 }
 
 void BoardControl::run() {
     Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
 
     while(ros::ok()) {
-        struct status s = steve->update((leftDrive-1500.0)/1000, (rightDrive-1500.0)/1000);
+        struct status s = steve->update((leftDrive-MOTOR_MID.0)/1000, (rightDrive-MOTOR_MID.0)/1000);
         //if (s.roverOk == false) {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
@@ -75,11 +81,11 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     float lDrive  =   (power + lr)/2;
     float rDrive =   -(power - lr)/2;
     
-    // The formula in use i: output = (ax^3 + (1-a)x) * 500 + 1500
+    // The formula in use i: output = (ax^3 + (1-a)x) * 500 + MOTOR_MID
     // Where a = SENSITIVITY
 
-    leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive) * 500) + 1500.0;
-    rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive) * 500) + 1500.0;
+    leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive) * 500) + MOTOR_MID.0;
+    rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive) * 500) + MOTOR_MID.0;
     
 }
 
