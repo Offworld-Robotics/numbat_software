@@ -21,7 +21,9 @@ struct toControlMsg {
     uint16_t magic;
     int16_t lSpeed;
     int16_t rSpeed;
-    uint16_t padding;
+    int16_t armRotate;
+    int16_t armTop;
+    int16_t armBottom;
 } __attribute__((packed));
 
 struct toNUCMsg {
@@ -116,12 +118,16 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
 	cout << "Read packet" << endl;
 }
 
-struct status Bluetongue::update(double leftMotor, double rightMotor) {
+struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
+    int armBottom, double armRotate) {
 	struct toControlMsg mesg;
 	struct toNUCMsg resp;
 	mesg.magic = MESSAGE_MAGIC;
 	mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
 	mesg.rSpeed = (rightMotor * 500) + 1500;
+    mesg.armRotate = (armRotate * 500) + 1500;
+    mesg.armTop = armTop;
+    mesg.armBottom = armBottom;
     cout << "Speeds " << mesg.lSpeed << " " << mesg.rSpeed << endl;
 	cout << "Writing " << sizeof(struct toControlMsg) << "bytes." << endl;
 	comm(false, &mesg, sizeof(struct toControlMsg), &resp, 

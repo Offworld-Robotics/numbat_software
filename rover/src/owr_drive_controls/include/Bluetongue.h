@@ -1,6 +1,4 @@
-//#include <cstdint>
 #include <string>
-//#include <cstdint>
 #include <vector>
 
 struct status {
@@ -19,6 +17,7 @@ class Bluetongue {
 	public:
 		Bluetongue(const char* port);
 		~Bluetongue();
-		struct status update(double leftMotor, double rightMotor);
+		struct status update(double leftMotor, double rightMotor, int armTop,
+                int armBottom, double armRotate);
 };
 
