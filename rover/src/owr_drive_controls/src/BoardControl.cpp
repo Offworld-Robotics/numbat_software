@@ -32,6 +32,7 @@ BoardControl::BoardControl() {
     assert(fd != NULL);
     //subscribe to xbox controller
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this);
+    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 10, &BoardControl::armCallback, this);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
@@ -44,7 +45,7 @@ void BoardControl::run() {
     Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
 
     while(ros::ok()) {
-        struct status s = steve->update((leftDrive-MOTOR_MID.0)/1000, (rightDrive-MOTOR_MID.0)/1000);
+        struct status s = steve->update((leftDrive-MOTOR_MID)/1000, (rightDrive-MOTOR_MID)/1000);
         //if (s.roverOk == false) {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
@@ -75,6 +76,8 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     float power = joy->axes[DRIVE_AXES_UD];
     float lr = (-joy->axes[STICK_L_LR]);
     
+    armRotate = joy->axes[STICK_CH_LR];
+    
     //float leftDrive  = 1.0f;
     //float rightDrive = 1.0f;
     
@@ -84,9 +87,22 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     // The formula in use i: output = (ax^3 + (1-a)x) * 500 + MOTOR_MID
     // Where a = SENSITIVITY
 
-    leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive) * 500) + MOTOR_MID.0;
-    rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive) * 500) + MOTOR_MID.0;
+    leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive) * 500) + MOTOR_MID;
+    rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive) * 500) + MOTOR_MID;
     
 }
 
-
+void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+    #define MAX_IN 1.5
+    #define DIFF 0.25
+    
+    float top = joy->axes[STICK_R_UD] ;//* 0.2;
+    float bottom = (-joy->axes[STICK_L_UD]) ;//* 0.2;
+    
+    //float leftDrive  = 1.0f;
+    //float rightDrive = 1.0f;
+    
+ 
+    armTop = ((top / MAX_IN) * 500) + 1500  ;
+    armBottom = ((bottom / MAX_IN) * 500) + 1500  ;
+}
