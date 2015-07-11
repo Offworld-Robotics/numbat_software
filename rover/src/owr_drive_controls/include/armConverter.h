@@ -24,7 +24,7 @@ using namespace std;
 #define DEFAULT_POS 1500
 
 //serial IO
-#define TTY "/dev/ttyUSB0"
+#define TTY "/dev/ttyACM0"
 
 class ArmConverter {
     public:
