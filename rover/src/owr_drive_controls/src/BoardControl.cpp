@@ -88,8 +88,8 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     // The formula in use i: output = (ax^3 + (1-a)x) * 500 + MOTOR_MID
     // Where a = SENSITIVITY
 
-    leftDrive = (SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive;
-    rightDrive = (SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive;
+    leftDrive = SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive;
+    rightDrive = SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive;
     
 }
 
@@ -104,6 +104,6 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //float rightDrive = 1.0f;
     
  
-    armTop = (top / MAX_IN) * 500) + 1500  ;
+    armTop = (top / MAX_IN) * 500 + 1500  ;
     armBottom = (bottom / MAX_IN) * 500 + 1500  ;
 }
