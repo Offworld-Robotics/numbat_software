@@ -22,6 +22,15 @@
         </df>
       </df>
     </df>
+    <df root="../src" name="1">
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>../src/CMakeLists.txt</itemPath>
+      <itemPath>../src/build/Makefile</itemPath>
+    </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false"
@@ -32,6 +41,7 @@
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
+    <Elem>../src</Elem>
     <Elem>../src</Elem>
   </sourceRootList>
   <projectmakefile>../src/build/Makefile</projectmakefile>
