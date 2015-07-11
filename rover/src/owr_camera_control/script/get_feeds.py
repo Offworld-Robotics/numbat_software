@@ -18,7 +18,7 @@ def talker():
     rate = rospy.Rate(1) # 1hz
     while not rospy.is_shutdown():
         cameraList = activeCameras(); # The array of stream structs
-        camerList.num = 0;
+        cameraList.num = 0;
         index = 0; # Index for the array of streams, used to contiguously fill cameraList
         
         proc = subprocess.Popen(["ls", "/dev/"], stdout=subprocess.PIPE)

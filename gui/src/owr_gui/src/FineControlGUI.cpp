@@ -17,6 +17,7 @@ void FineControlGUI::idle() {
 
 void FineControlGUI::updateVideo0(unsigned char *frame, int width, int height) {
 	videoFeeds[0]->setNewStreamFrame(frame, width, height);
+	videoFeeds[1]->setNewStreamFrame(frame, width, height);
 }
 
 void FineControlGUI::updateVideo1(unsigned char *frame, int width, int height) {

@@ -62,7 +62,7 @@ void FineControlNode::receiveFeedsStatus(const owr_messages::activeCameras::Cons
 	for(int i = 0; i < TOTAL_FEEDS; i++)
 		feeds[i] = FEED_OFFLINE;
 	
-	// There isnt gaurenteed to be 4 streams in msg, so only update the ones that do appear
+	// There isn't guaranteed to be 4 streams in msg, so only update the ones that do appear
 	for(int i = 0; i < msg->num; i++) {
 		// Get the actual camera number from msg
 		int feed = msg->cameras[i].stream;
