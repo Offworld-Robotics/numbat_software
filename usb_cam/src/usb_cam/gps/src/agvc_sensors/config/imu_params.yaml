@@ -1,6 +1,0 @@
-
-# Parameters for Microstrain IMU.
-
-#port: /dev/ttyACM0
-frame_id: imu
-max_drift_rate: 0.005
