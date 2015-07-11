@@ -105,5 +105,5 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
  
     armTop = (top / MAX_IN) * 500) + 1500  ;
-    armBottom = (bottom / MAX_IN) * 500) + 1500  ;
+    armBottom = (bottom / MAX_IN) * 500 + 1500  ;
 }
