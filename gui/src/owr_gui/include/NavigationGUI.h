@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include "owr_messages/stream.h"
 #include <list>
+#include "Video_Feed_Frame.hpp"
 
 #define PI 3.1415926535897932384626433832795
 
@@ -56,10 +57,10 @@
 class NavigationGUI : public GLUTWindow {
 
 	public:
-		NavigationGUI(int *argc, char **argv);
+		NavigationGUI(int width, int height, int *argc, char **argv);
 		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target);
 		void updateVideo(unsigned char *frame, int width, int height);
-		void updateAvailableFeeds(bool *feeds);
+		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 		
 	private:
 		// GLUT essential functions
@@ -111,7 +112,7 @@ class NavigationGUI : public GLUTWindow {
 
 		unsigned char feedStatus[TOTAL_FEEDS]; // status for each feed
 		int currFeed;
-		int numActiveFeeds;
+		int onlineFeeds;
 
 		// GPS related variables
 		std::list<ListNode> GPSList; // path history (front is current point, back is origin point)
@@ -127,7 +128,9 @@ class NavigationGUI : public GLUTWindow {
 		//ros stuff
 		ros::NodeHandle node;
 		ros::Publisher streamPub;
-		void toggleStream(int feed, bool active);
+		void toggleStream(int feed);
+		
+		std::vector<Video_Feed_Frame*> videoFeeds;
 };
 
 

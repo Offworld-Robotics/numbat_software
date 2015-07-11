@@ -1,6 +1,11 @@
 #ifndef GLUTWINDOW_H
 #define GLUTWINDOW_H
 
+/*
+	GLUTWindow abstract class header
+	Must derive from this class to create something useful
+*/
+
 #include <GL/freeglut.h>
 
 #define BMP_HEADER_SIZE 0x36
@@ -8,17 +13,22 @@
 class GLUTWindow {
 	protected:
 		// GLUT essential functions
-		void reshape(int w, int h); // not virtual because function is common for all GLUT apps
+		
+		// Callback for resizing the window (not virtual because function is common for all GLUT apps)
+		void reshape(int w, int h);
+		// Function for computations when the CPU is idle
 		virtual void idle() = 0;
+		// Function to draw the screen
 		virtual void display() = 0;
 		
-		// GLUT keyboard functions
-		virtual void keydown(unsigned char key, int x, int y) = 0;
-		virtual void keyup(unsigned char key, int x, int y) = 0;
-		virtual void special_keydown(int keycode, int x, int y) = 0;
-		virtual void special_keyup(int keycode, int x, int y) = 0;
+		// GLUT keyboard/mouse callback functions
+		virtual void keydown(unsigned char key, int x, int y) {}
+		virtual void keyup(unsigned char key, int x, int y) {}
+		virtual void special_keydown(int keycode, int x, int y) {}
+		virtual void special_keyup(int keycode, int x, int y) {}
+		virtual void mouse(int button, int state, int x, int y) {}
 		
-		// wrapper functions needed for GLUT because it is not compatible with c++ classes
+		// Wrapper functions needed for GLUT because it is not compatible with c++ classes
 		static void glut_reshape(int w, int h);
 		static void glut_idle();
 		static void glut_display();
@@ -26,30 +36,36 @@ class GLUTWindow {
 		static void glut_keyup(unsigned char key, int x, int y);
 		static void glut_special_keydown(int keycode, int x, int y);
 		static void glut_special_keyup(int keycode, int x, int y);
+		static void glut_mouse(int button, int state, int x, int y);
 		
-		// window control variables
+		// Window control variables
 		int currWinH;
 		int currWinW;
 		int frameCount;
 		
-		// some commonly used functions
+		// Some commonly used functions
 		
-		// assuming texture has been generated, reads a bmp file and loads the data into the texture
+		// Assuming texture has been generated, reads a bmp file and loads the data into the texture
+		// Parameter format is either GL_RGB or GL_BGR, usually GL_BGR for bmp files
 		void loadTexture(char *filename, GLuint texture, GLenum format);
 		
-		// fill the data array with the BMP header depending on the width and height of the image
+		// Fill the data array with the BMP header given the width and height of the image
 		void fillBMPHeader(unsigned char *data, int width, int height);
 		
-		// save BMP data to a file given its dimensions and a filename
+		// Save BMP data to a file given its dimensions and a filename
 		void saveBMPFile(char *filename, unsigned char *data, int width, int height);
 		
-		// draws text using a specified font and raster position
+		// Draws text using a specified font and raster position
 		void drawText(char *text, void *font, int x, int y);
 		
 	public:
-		GLUTWindow();
+		// Instantiates the class given the initial window size, command line arguments, and a title string
+		GLUTWindow(int width, int height, int *argc, char *argv[], const char *title);
+		
+		// Loop of no return
 		void run();
-		// static instance for c++ compatibility
+		
+		// Static instance for c++ compatibility
 		static GLUTWindow *instance;	
 };
 
