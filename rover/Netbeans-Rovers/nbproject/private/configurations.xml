@@ -25,6 +25,7 @@
         </df>
       </df>
       <df name="owr_messages">
+<<<<<<< HEAD
         <df name="msg">
         </df>
       </df>
@@ -72,9 +73,9 @@
           <df name="owr_messages">
           </df>
         </df>
+=======
+>>>>>>> aa1974dca9850d330f00546e616188d948ee7ca7
         <df name="msg">
-        </df>
-        <df name="src">
         </df>
       </df>
       <df name="owr_positioning">
