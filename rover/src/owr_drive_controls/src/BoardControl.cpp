@@ -45,7 +45,8 @@ void BoardControl::run() {
     Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
 
     while(ros::ok()) {
-        struct status s = steve->update((leftDrive-MOTOR_MID)/1000, (rightDrive-MOTOR_MID)/1000);
+        struct status s = steve->update((leftDrive-MOTOR_MID)/1000, (rightDrive-MOTOR_MID)/1000,
+            armTop, armBottom, armRotate);
         //if (s.roverOk == false) {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
