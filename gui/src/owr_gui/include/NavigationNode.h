@@ -32,7 +32,7 @@ class NavigationNode {
 		NavigationGUI *gui;
 		ros::Subscriber gpsSub;
 		ros::Subscriber batterySub;
-		ros::Subscriber videoSub[4];
+		ros::Subscriber videoSub[TOTAL_FEEDS];
 		ros::Subscriber feedsSub;
 		
 		float battery;

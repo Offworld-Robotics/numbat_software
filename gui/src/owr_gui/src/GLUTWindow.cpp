@@ -65,6 +65,7 @@ void GLUTWindow::reshape(int w, int h) {
 	glLoadIdentity();
 	gluOrtho2D(0, (GLdouble)w, -(GLdouble)h, 0); // (0,0) is top left corner of window, use cartesian co-ordinates
 	glMatrixMode(GL_MODELVIEW);
+	//printf("%d, %d\n", w, h);
 }
 
 void GLUTWindow::drawText(char *text, void *font, int x, int y) {
