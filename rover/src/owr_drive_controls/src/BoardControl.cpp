@@ -104,6 +104,6 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //float rightDrive = 1.0f;
     
  
-    armTop = ((top / MAX_IN) * 500) + 1500  ;
-    armBottom = ((bottom / MAX_IN) * 500) + 1500  ;
+    armTop = (top / MAX_IN) * 500) + 1500  ;
+    armBottom = (bottom / MAX_IN) * 500) + 1500  ;
 }
