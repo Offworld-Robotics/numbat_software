@@ -25,40 +25,19 @@ ArduinoConverter::ArduinoConverter() {
     cam3Button = 0;
     fd = fopen(TTY, "w");
     assert(fd != NULL);
-    //subscribe to joy stick
-    //TODO: at some point we will need to handle two joysticks
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 1, &ArduinoConverter::joyCallback, this);
+    //subscribe to xbox controller
+    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &ArduinoConverter::joyCallback, this);
     leftDrive = 1500.0;
-    rightDrive = 1500.0;
-    lfDrive = leftDrive;
-    lmDrive = leftDrive;
-    lbDrive = leftDrive;
-    rfDrive = rightDrive;
-    rmDrive = rightDrive;
-    rbDrive = rightDrive;
-        
+    rightDrive = 1500.0;       
 }
 
 void ArduinoConverter::run() {
     while(ros::ok()) {
-        sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
+        //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
         ros::spinOnce();
     }
 }
 
-void ArduinoConverter::sendMessage(float lf, float lm, float lb, float rf, float rm, float rb) {
-    if(fd) {
-        fprintf(fd,"%f %f %f %f %f %f\n",lf,lm,lb,rf,rm,rb);
-        float buffer;
-        //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
-        //fsync((int)fd);
-        //fflush(fd);
-    } else {
-        printf("unsucesfull\n");
-    }    
-    printf("%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);   
-}
 
 //checks if the button state has changed and changes the feed
 void ArduinoConverter::switchFeed(int * storedState, int joyState, int feedNum) {
@@ -89,52 +68,6 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive) * 500) + 1500.0;
     rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive) * 500) + 1500.0;
     
-    /*if (joy->axes[STICK_LT]) {
-        lfDrive = leftDrive;
-        lmDrive = leftDrive;
-        lbDrive = leftDrive;
-        rfDrive = rightDrive * DIFF;
-        rmDrive = rightDrive * DIFF;
-        rbDrive = rightDrive * DIFF;
-    } else if (joy->axes[STICK_RT]) {
-        lfDrive = leftDrive * DIFF;
-        lmDrive = leftDrive * DIFF;
-        lbDrive = leftDrive * DIFF;
-        rfDrive = rightDrive;
-        rmDrive = rightDrive;
-        rbDrive = rightDrive;
-    } else {*/
-        lfDrive = leftDrive;
-        lmDrive = leftDrive;
-        lbDrive = leftDrive;
-        rfDrive = rightDrive;
-        rmDrive = rightDrive;
-        rbDrive = rightDrive;
-    //}
-    /*if(!fd) {
-        fd = fopen(TTY, "w");
-        printf("reopen\n");
-    }*/
-    /*if(fd) {
-        fprintf(fd,"%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);
-        float buffer;
-        //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
-        //fsync((int)fd);
-        //fflush(fd);
-    } else {
-        printf("unsucesfull\n");
-    }*/
-    
-
-   
-   
-    //TODO: camera on/off
-    //check if the camera button states have changes
-    switchFeed(&cam0Button,joy->buttons[CAM_FEED_0],0);
-    //TODO: camera rotation
-    //TODO: take photo
-    //TODO: map zoom in/out
 }
 
 

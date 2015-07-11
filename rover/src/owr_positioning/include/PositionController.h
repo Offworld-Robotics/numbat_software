@@ -24,6 +24,9 @@ class PositionController {
         ros::Subscriber gpsSubscriber;  
     
     private:
+        //used to calcualte the heading
+        void updateHeading();
+        
         ros::Subscriber sub;
         ros::NodeHandle node;
         std::string topic;
@@ -37,6 +40,9 @@ class PositionController {
         double pitch;
         double roll;
         double heading;
+        std::list<double> latitudes;
+        std::list<double> longitudes;
+        
    
 };
 

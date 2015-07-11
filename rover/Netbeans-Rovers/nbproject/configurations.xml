@@ -63,7 +63,7 @@
           <ccTool>
             <incDir>
               <pElem>../src/owr_drive_controls/include:/opt/ros/hydro/include:/home/ros/owr/owr_software/rover/devel/include</pElem>
-              <pElem>../src/owr_messages/include</pElem>
+              <pElem>../src/owr_messages/include:/home/ros/owr/gscam_workspace/src/gscam/include:/opt/ros/hydro/include:/usr/include/gstreamer-0.10:/usr/include/glib-2.0:/usr/lib/i386-linux-gnu/glib-2.0/include:/usr/include/libxml2:/home/ros/owr/owr_software/rover/devel/include:/home/ros/owr/owr_software/rover/src/owr_drive_controls/include</pElem>
             </incDir>
           </ccTool>
         </makeTool>

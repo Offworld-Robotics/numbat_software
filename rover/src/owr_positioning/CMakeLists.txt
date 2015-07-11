@@ -111,6 +111,7 @@ add_executable(owr_positioning_node src/PositionController.cpp)
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 add_dependencies(owr_positioning_node owr_messages)
+add_dependencies(owr_positioning_node owr_messages_gencpp)
 target_link_libraries(owr_positioning_node ${catkin_LIBRARIES})
 
 ## Specify libraries to link a library or executable target against
