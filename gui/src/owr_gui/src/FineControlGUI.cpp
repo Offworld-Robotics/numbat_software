@@ -8,6 +8,7 @@
 #include <ros/ros.h>
 #include "FineControlGUI.h"
 #include "FineControlNode.h"
+#include "ListNode.h"
 
 void FineControlGUI::idle() {
 	ros::spinOnce();
@@ -30,12 +31,26 @@ void FineControlGUI::updateFeedsStatus(unsigned char *feeds, int numOnline) {
 	//ROS_INFO("updating online feeds: [%d,%d,%d,%d]", feeds[0], feeds[1], feeds[2], feeds[3]);
 }
 
+void FineControlGUI::updateInfo(float volt, float ultrason, float ph, float humid, ArmState *arm, float head, float tx, float ty, ListNode cur) {
+	voltage = volt;
+	ultrasonic = ultrason;
+	pH = ph;
+	humidity = humid;
+	armState = *arm;
+	heading = head;
+	tiltX = tx;
+	tiltY = ty;
+	currentPos = *cur;
+	
+	//ROS_INFO("Updated info");
+}
+
 void FineControlGUI::display() {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(0,0,0);
 	
 	// draw dividing lines
 	glPushMatrix();
+	glColor3f(0, 0, 0);
 	glTranslated(currWinW/2, -currWinH/2, 0);
 	glBegin(GL_LINES);
 	glVertex2d(0, currWinH);
@@ -48,17 +63,12 @@ void FineControlGUI::display() {
 	/*for(std::vector<Button*>::iterator i = buttons.begin();i != buttons.end();++i) {
 		(*i)->draw();
 	}*/
-	glPushMatrix();
-	glTranslated(currWinW/2, -7*currWinH/8, 0);
-	glColor3f(0,0,0);
-	char txt[] = "GUI info placeholder";
-	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
-	glPopMatrix();
 
         //Draw Video Feeds to Screen
         for(std::vector<Video_Feed_Frame*>::iterator feed = videoFeeds.begin(); feed != videoFeeds.end(); ++feed)
 		(*feed)->draw();
-
+	
+	displayInfo();
 	glutSwapBuffers();
 }
 
@@ -96,7 +106,6 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
         videoFeeds.push_back(new Video_Feed_Frame(width*1/4, -height*3/8, width/2, height*3/4));
         videoFeeds.push_back(new Video_Feed_Frame(width*3/4, -height*3/8, width/2, height*3/4));
 
-        // setup Zoom Buttons
 	for (int i = 0;i < 4;i++)
 		arrows[i] = false;
 	
@@ -104,9 +113,12 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 		feedStatus[i] = FEED_OFFLINE;
 	onlineFeeds = 0;
 	
-	//start on stream 0
-	usleep(150000);
-	toggleStream(0);
+	voltage = 0;
+	memset(&armState, 0, sizeof(armState));
+	pH = humidity = 0;
+	memset(&currentPos, 0, sizeof(currentPos));
+	heading = tiltX = tiltY = 0;
+	ultrasonic = 0;
 	
 	/*char txt[2] = {'+', '\0'};
 	buttons.push_back(new Button(currWinW/2 - 100, -currWinH/2, 50, 50, 0, 0.5, 0.5, txt));
@@ -146,6 +158,77 @@ void FineControlGUI::toggleStream(int feed) {
 	streamPub.publish(msg);
 	
 	ros::spinOnce();
+}
+
+void FineControlGUI::displayInfo() {
+	char txt[50] = {0};
+	glColor3f(0, 0, 0);
+	glPushMatrix();
+	glTranslated(0, -5*currWinH/6, 0);
+	
+	// left info column: voltage, heading, and tilts
+	glPushMatrix();
+	
+	sprintf(txt, "Voltage: %.2f", voltage);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Heading: %.2f", heading);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "TiltX: %.2f", tiltX);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "TiltY: %.2f", tiltY);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glPopMatrix();
+	
+	// middle info column: arm position
+	glTranslated(2*currWinW/5, 0, 0);
+	glPushMatrix();
+	
+	sprintf(txt, "Top Actuator: %d", armState.topActPos);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Bot Actuator: %d", armState.botActPos);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Arm Rotation: %.2f", armState.rotation);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glPopMatrix();
+	
+	// right info column: environmentals, GPS
+	glTranslated(2*currWinW/5, 0, 0);
+	glPushMatrix();
+	
+	sprintf(txt, "pH: %.2f", pH);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Humidity: %.2f", humidity);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Lat: %.2f", currentPos.lat);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Lon: %.2f", currentPos.lon);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Altitude: %.2f", currentPos.alt);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glPopMatrix();
+	
+	glPopMatrix();
 }
 
 int main(int argc, char *argv[]) {

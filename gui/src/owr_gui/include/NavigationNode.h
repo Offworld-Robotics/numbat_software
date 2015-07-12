@@ -42,7 +42,7 @@ class NavigationNode {
 		float ultrasonic;
 		double altitude;
 		unsigned char feeds[TOTAL_FEEDS];
-		vector2D target;
+		vector3D target;
 };
 
 #endif

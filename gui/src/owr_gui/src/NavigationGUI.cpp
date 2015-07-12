@@ -72,13 +72,12 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	toggleStream(0);
 }
 
-void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t) {
+void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, vector3D t) {
 	battery = bat;
 	signal = sig;
 	
 	if (cur != NULL) GPSList.push_front(cur);
 	
-	altitude = alt;
 	target = t;
 	ultrasonic = ultrason;
 	
@@ -142,7 +141,7 @@ void NavigationGUI::idle() {
 	if (GPSList.size() >= 2) {
 		ListNode first = *GPSList.begin();
 		ListNode second = *(++GPSList.begin());
-		pathRotation = -atan2(second->y - first->y, second->x - first->x) * 180.0 / PI - 90;
+		pathRotation = -atan2(second->lat - first->lat, second->lon - first->lon) * 180.0 / PI - 90;
 	}
 	
 	frameCount++;
@@ -182,42 +181,45 @@ void NavigationGUI::display() {
 
 void NavigationGUI::GPSAddRandPos() {
 	printf("Generated random position\n");
-	double randx, randy;
-	ListNode n = (ListNode) malloc(sizeof(vector2D));
-	randx = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
-	randy = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	double randlon, randlat;
+	ListNode n = (ListNode) malloc(sizeof(vector3D));
+	randlon = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	randlat = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
 	if (GPSList.size() == 0) {
-		n->x = randx + 151.139;	
-	n->y = randy - 33.718;
+		n->lon = randlon + 151.139;	
+		n->lat = randlat - 33.718;
 	} else {
-		randx -= 1.0/1000.0/2.0;
-		n->x = (*GPSList.begin())->x + randx;
-		randy -= 1.0/1000.0/2.0;
-		n->y = (*GPSList.begin())->y + randy;
+		randlon -= 1.0/1000.0/2.0;
+		n->lon = (*GPSList.begin())->lon + randlon;
+		randlat -= 1.0/1000.0/2.0;
+		n->lat = (*GPSList.begin())->lat + randlat;
 	}
+	n->alt = 0;
 	GPSList.push_front(n);
 }
 
-void NavigationGUI::GPSAddPos(double x, double y) {
+void NavigationGUI::GPSAddPos(double lon, double lat) {
 	printf("GPSAddPos\n");
-	ListNode n = (ListNode) malloc(sizeof(vector2D));
-	n->x = x;
-	n->y = y;
+	ListNode n = (ListNode) malloc(sizeof(vector3D));
+	n->lon = lon;
+	n->lat = lat;
+	n->alt = 0;
 	GPSList.push_front(n);
 }
 
 void NavigationGUI::generateTarget() {
 	double randn;
 	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
-	target.x = randn + 151.139;
+	target.lon = randn + 151.139;
 	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
-	target.y = randn - 33.718;
+	target.lat = randn - 33.718;
+	target.alt = 0;
 }
 
 void NavigationGUI::printGPSPath() {
 	printf("Begin\n");
 	for(std::list<ListNode>::iterator i = GPSList.begin();i != GPSList.end(); ++i) {
-		printf("%.15f, %.15f\n", (*i)->y, (*i)->x);
+		printf("%.15f, %.15f\n", (*i)->lat, (*i)->lon);
 	}
 	printf("End\n");
 }
@@ -235,17 +237,17 @@ void NavigationGUI::drawGPS() {
 		glScaled(scale, scale, 1);
 		glColor3f(0, 0, 0);
 		
-		vector2D currentPos = *(*GPSList.begin());
+		vector3D currentPos = *(*GPSList.begin());
 		
 		glBegin(GL_LINE_STRIP);
 		for (std::list<ListNode>::iterator i = GPSList.begin(); i != GPSList.end(); ++i)
-			glVertex2d((*i)->x - currentPos.x, (*i)->y - currentPos.y);
+			glVertex2d((*i)->lon - currentPos.lon, (*i)->lat - currentPos.lat);
 		glEnd();
 		if (GPSList.size() > 1) {
 			glPointSize(5);
 			glBegin(GL_POINTS);
 			for (std::list<ListNode>::iterator i = ++GPSList.begin(); i != GPSList.end(); ++i)
-				glVertex2d((*i)->x - currentPos.x, (*i)->y - currentPos.y);
+				glVertex2d((*i)->lon - currentPos.lon, (*i)->lat - currentPos.lat);
 			glEnd();
 			glPointSize(1);
 		}
@@ -273,9 +275,9 @@ void NavigationGUI::drawGPS() {
 		sprintf(GPSLong, "Long: Unknown");
 		sprintf(GPSAlt, "Alt: Unknown");
 	} else {
-		sprintf(GPSLat, "Lat: %.10f", (*GPSList.begin())->y);
-		sprintf(GPSLong, "Long: %.10f", (*GPSList.begin())->x);	
-		sprintf(GPSAlt, "Alt: %.10f", altitude);
+		sprintf(GPSLat, "Lat: %.10f", (*GPSList.begin())->lat);
+		sprintf(GPSLong, "Long: %.10f", (*GPSList.begin())->lon);	
+		sprintf(GPSAlt, "Alt: %.10f", (*GPSList.begin())->alt);
 	}
 	
 	glTranslated(-50, -currWinH/4, 0);

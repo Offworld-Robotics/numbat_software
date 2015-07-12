@@ -7,6 +7,8 @@
 
 #include "Button.h"
 #include "GLUTWindow.h"
+#include "ListNode.h"
+#include "ArmState.h"
 #include <vector>
 #include <ros/ros.h>
 #include "owr_messages/stream.h"
@@ -38,7 +40,8 @@
 class FineControlGUI : public GLUTWindow {
 	public:
 		FineControlGUI(int width, int height, int *argc, char *argv[]);
-		//void updateInfo(float voltage, float heading, int topActuatorPos, int botActuatorPos, float pH, float humidity, double altitude, double latitude, double longitude, float tiltX, float tiltY, float ultrason);
+		//void updateInfo(float voltage, float heading, int topActuatorPos, int botActuatorPos, float pH, float humidity, ListNode cur, float tiltX, float tiltY, float ultrason);
+		void updateInfo(float voltage, float ultrasonic, float pH, float humidity, ArmState *armState, float heading, float tiltX, float tiltY, ListNode cur);
 		void updateVideo0(unsigned char *frame, int width, int height);
 		void updateVideo1(unsigned char *frame, int width, int height);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
@@ -49,15 +52,14 @@ class FineControlGUI : public GLUTWindow {
 		void keydown(unsigned char key, int x, int y);
 		void mouse(int button, int state, int x, int y);
 		
+		void displayInfo();
+		
 		float voltage;
-		float heading;
-		int topActuatorPos;
-		int botActuatorPos;
+		ArmState armState;
 		float pH;
 		float humidity;
-		double altitude;
-		double latitude;
-		double longitude;
+		vector3D currentPos;
+		float heading;
 		float tiltX;
 		float tiltY;
 		float ultrasonic;

@@ -58,7 +58,7 @@ class NavigationGUI : public GLUTWindow {
 
 	public:
 		NavigationGUI(int width, int height, int *argc, char **argv);
-		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target);
+		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, vector3D target);
 		void updateVideo(unsigned char *frame, int width, int height);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 		
@@ -116,7 +116,7 @@ class NavigationGUI : public GLUTWindow {
 
 		// GPS related variables
 		std::list<ListNode> GPSList; // path history (front is current point, back is origin point)
-		vector2D target;
+		vector3D target;
 
 		// OpenGL control related variables
 		bool arrowKeys[4];

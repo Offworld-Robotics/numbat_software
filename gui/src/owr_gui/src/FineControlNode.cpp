@@ -10,6 +10,7 @@
 
 #include "FineControlNode.h"
 #include "FineControlGUI.h"
+#include "ListNode.h"
 #include <fstream>
 
 FineControlNode::FineControlNode(FineControlGUI *newgui) {
@@ -22,12 +23,19 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	for(int i = 0; i < TOTAL_FEEDS; i++)
 		feeds[i] = FEED_OFFLINE;
 	
+	voltage = 0;
+	memset(&armState, 0, sizeof(armState));
+	pH = humidity = 0;
+	memset(&currentPos, 0, sizeof(currentPos));
+	heading = tiltX = tiltY = 0;
+	ultrasonic = 0;
+	
 	// 
 	// Subscribe to all relevant topics for information used by the gui
 	// pass the function that is called when a message is received into the subscribe function
 	// 
 	
-	//gpsSub = n.subscribe("/gps/fix", 1000, &FineControlNode::receiveGpsMsg, this); // GPS related data
+	gpsSub = n.subscribe("/gps/fix", 1000, &FineControlNode::receiveGpsMsg, this); // GPS related data
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &FineControlNode::receiveFeedsStatus, this);
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
@@ -78,19 +86,19 @@ void FineControlNode::receiveFeedsStatus(const owr_messages::activeCameras::Cons
 	gui->updateFeedsStatus(feeds, msg->num);
 }
 
-/*void FineControlNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
+void FineControlNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received a message");
 	//ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
 		
 	//create a new node
-	ListNode l = (ListNode)malloc(sizeof(vector2D));
-	l->y = msg->latitude;
-	l->x = msg->longitude;
-	altitude = msg->altitude;
-	//gui->updateInfo(battery, signal, ultrasonic, l, altitude, target);
-}*/
+	ListNode l = (ListNode)malloc(sizeof(vector3D));
+	l->lat = msg->latitude;
+	l->lon = msg->longitude;
+	l->alt = msg->altitude;
+	gui->updateInfo(voltage, ultrasonic, pH, humidity, NULL, heading, tiltX, tiltY, l);
+}
 
 void FineControlNode::receiveVideoMsg0(const sensor_msgs::Image::ConstPtr& msg) {
 	assert(msg);
