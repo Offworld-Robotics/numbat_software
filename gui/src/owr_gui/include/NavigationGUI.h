@@ -16,8 +16,8 @@
 #define PI 3.1415926535897932384626433832795
 
 // default window size
-#define WINDOW_W 1920
-#define WINDOW_H 892
+#define WINDOW_W 1855
+#define WINDOW_H 917
 
 #define TOTAL_FEEDS 4
 
@@ -103,9 +103,7 @@ class NavigationGUI : public GLUTWindow {
 		float tiltX; // tilt of left-right in degrees
 		float tiltY; // tilt of forward-back in degrees
 		float ultrasonic;
-		double longitude;
-		double latitude;
-		double altitude;
+		vector3D currentPos;
 		
 		double pathRotation; // angle to rotate GPS path when drawing
 		double prevRotation;
@@ -126,7 +124,6 @@ class NavigationGUI : public GLUTWindow {
 		bool displayOverlay;
 
 		//ros stuff
-		ros::NodeHandle node;
 		ros::Publisher streamPub;
 		void toggleStream(int feed);
 		

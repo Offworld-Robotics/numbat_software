@@ -27,7 +27,9 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	memset(&armState, 0, sizeof(armState));
 	pH = humidity = 0;
 	memset(&currentPos, 0, sizeof(currentPos));
-	heading = tiltX = tiltY = 0;
+	heading = 0;
+	tiltX = 0;
+	tiltY = 0;
 	ultrasonic = 0;
 	
 	// 
@@ -92,12 +94,11 @@ void FineControlNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg)
 	//ROS_INFO("received a message");
 	//ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
 		
-	//create a new node
-	ListNode l = (ListNode)malloc(sizeof(vector3D));
-	l->lat = msg->latitude;
-	l->lon = msg->longitude;
-	l->alt = msg->altitude;
-	gui->updateInfo(voltage, ultrasonic, pH, humidity, NULL, heading, tiltX, tiltY, l);
+	vector3D l;
+	l.lat = msg->latitude;
+	l.lon = msg->longitude;
+	l.alt = msg->altitude;
+	gui->updateInfo(voltage, ultrasonic, pH, humidity, NULL, heading, tiltX, tiltY, &l);
 }
 
 void FineControlNode::receiveVideoMsg0(const sensor_msgs::Image::ConstPtr& msg) {

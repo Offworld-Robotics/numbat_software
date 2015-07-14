@@ -90,7 +90,7 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	
 	//ROS_INFO("received a message");
 	//ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
-		
+	
 	//create a new node
 	ListNode l = (ListNode)malloc(sizeof(vector3D));
 	l->lat = msg->latitude;

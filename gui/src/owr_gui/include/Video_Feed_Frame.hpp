@@ -3,7 +3,7 @@
  *
  * Frame to display a video feed in an OpenGL GUI Screen
  *
- * for use with
+ * for use with NavigationGUI and FineControlGUI
  *
  */
 
@@ -15,8 +15,7 @@
 class Video_Feed_Frame {
 
    public:
-      //Video_Feed_Frame();
-      Video_Feed_Frame(int _centreX, int _centreY, int width, int height);
+      Video_Feed_Frame(double _centreX, double _centreY, double width, double height);
       ~Video_Feed_Frame();
 
       void draw();
@@ -24,8 +23,8 @@ class Video_Feed_Frame {
 
    private:
       GLuint videoTexture;
-      int centreX, centreY; 
-      int halfWidth, halfHeight;
+      double centreX, centreY; 
+      double halfWidth, halfHeight;
 };
 
 #endif

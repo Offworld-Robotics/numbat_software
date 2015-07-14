@@ -36,29 +36,17 @@ void FineControlGUI::updateInfo(float volt, float ultrason, float ph, float humi
 	ultrasonic = ultrason;
 	pH = ph;
 	humidity = humid;
-	armState = *arm;
+	if(arm != NULL) armState = *arm;
 	heading = head;
 	tiltX = tx;
 	tiltY = ty;
-	currentPos = *cur;
+	if(cur != NULL) currentPos = *cur;
 	
 	//ROS_INFO("Updated info");
 }
 
 void FineControlGUI::display() {
 	glClear(GL_COLOR_BUFFER_BIT);
-	
-	// draw dividing lines
-	glPushMatrix();
-	glColor3f(0, 0, 0);
-	glTranslated(currWinW/2, -currWinH/2, 0);
-	glBegin(GL_LINES);
-	glVertex2d(0, currWinH);
-	glVertex2d(0, -currWinH/4);
-	glVertex2d(-currWinW, -currWinH/4);
-	glVertex2d(currWinW, -currWinH/4);
-	glEnd();
-	glPopMatrix();
 	
 	/*for(std::vector<Button*>::iterator i = buttons.begin();i != buttons.end();++i) {
 		(*i)->draw();
@@ -103,8 +91,8 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 	glutMouseFunc(glut_mouse);
 	
 	// push the two feeds
-        videoFeeds.push_back(new Video_Feed_Frame(width*1/4, -height*3/8, width/2, height*3/4));
-        videoFeeds.push_back(new Video_Feed_Frame(width*3/4, -height*3/8, width/2, height*3/4));
+        videoFeeds.push_back(new Video_Feed_Frame(width*1.0/4.0, -height*3.0/8.0, width/2.0, height*3.0/4.0));
+        videoFeeds.push_back(new Video_Feed_Frame(width*3.0/4.0, -height*3.0/8.0, width/2.0, height*3.0/4.0));
 
 	for (int i = 0;i < 4;i++)
 		arrows[i] = false;
@@ -128,10 +116,10 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 
 // toggles between available streams
 void FineControlGUI::toggleStream(int feed) {
-	printf("Switching feed %d\n", feed);
+	ROS_INFO("FineControl: Switching feed %d", feed);
 	
 	if (feedStatus[feed] == FEED_OFFLINE) {
-		printf("Error: feed %d is offline\n", feed);
+		ROS_INFO("FineControl: Error: Feed %d is offline", feed);
 		return;
 	} else if (feedStatus[feed] == FEED_INACTIVE) {
 		feedStatus[feed] = FEED_ACTIVE;
