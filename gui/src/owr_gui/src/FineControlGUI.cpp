@@ -56,6 +56,7 @@ void FineControlGUI::display() {
         for(std::vector<Video_Feed_Frame*>::iterator feed = videoFeeds.begin(); feed != videoFeeds.end(); ++feed)
 		(*feed)->draw();
 	
+	drawFeedStatus();
 	displayInfo();
 	glutSwapBuffers();
 }
@@ -79,6 +80,40 @@ void FineControlGUI::mouse(int button, int state, int x, int y) {
 				(*i)->click();
 		}
 	}*/
+}
+
+// draw the buttons
+void FineControlGUI::drawFeedBox(int feed) {
+	if (feedStatus[feed] == FEED_ACTIVE)
+		glColor3ub(FEED_ACTIVE_BUTTON_R, FEED_ACTIVE_BUTTON_G, FEED_ACTIVE_BUTTON_B);
+	else if (feedStatus[feed] == FEED_INACTIVE)
+		glColor3ub(FEED_INACTIVE_BUTTON_R, FEED_INACTIVE_BUTTON_G, FEED_INACTIVE_BUTTON_B);
+	else
+		glColor3ub(FEED_OFFLINE_BUTTON_R, FEED_OFFLINE_BUTTON_G, FEED_OFFLINE_BUTTON_B);
+
+	glRecti(-30, -25, 30, 25);
+	glColor3f(0, 0, 1);
+	glRasterPos2i(-5, -6);
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, feed + '0');
+}
+
+// draws feeds boxes for each of the feeds
+void FineControlGUI::drawFeedStatus() {
+	glPushMatrix();
+	glTranslated(currWinW*0.05, -currWinH*0.7, 0);
+	for(int i = 0;i < TOTAL_FEEDS;i++) {
+		drawFeedBox(i);
+		glTranslated(75, 0, 0);
+	}
+	glPopMatrix();
+	
+	glPushMatrix();
+	glTranslated(currWinW*0.55, -currWinH*0.7, 0);
+	for(int i = 0;i < TOTAL_FEEDS;i++) {
+		drawFeedBox(i);
+		glTranslated(75, 0, 0);
+	}
+	glPopMatrix();
 }
 
 FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) : GLUTWindow(width, height, argc, argv, "Fine Control") {

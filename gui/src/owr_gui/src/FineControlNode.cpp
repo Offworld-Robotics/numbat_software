@@ -41,13 +41,12 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &FineControlNode::receiveFeedsStatus, this);
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
-	// createed yet, will wait til it has w/o doing anything
+	// created yet, will wait til it has w/o doing anything
 	
 	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this);
 	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg0, this);
 	videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg0, this); // Frames of video from camera
-	
+	videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg0, this);
 }
 
 // Spin to wait until a message is received
@@ -77,7 +76,7 @@ void FineControlNode::receiveFeedsStatus(const owr_messages::activeCameras::Cons
 		// Get the actual camera number from msg
 		int feed = msg->cameras[i].stream;
 		
-		// If on, then it is streaming, oterwise its only connected 
+		// If on, then it is streaming, otherwise its only connected 
 		if(msg->cameras[i].on)
 			feeds[feed] = FEED_ACTIVE;
 		else

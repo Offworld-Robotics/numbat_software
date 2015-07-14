@@ -51,6 +51,8 @@ class FineControlGUI : public GLUTWindow {
 		void keydown(unsigned char key, int x, int y);
 		void mouse(int button, int state, int x, int y);
 		
+		void drawFeedBox(int feed);
+		void drawFeedStatus();
 		void displayInfo();
 		
 		float voltage;
