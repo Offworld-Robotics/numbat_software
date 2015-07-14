@@ -46,6 +46,7 @@ class FineControlGUI : public GLUTWindow {
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 	
 	private:
+		void reshape(int w, int h);
 		void idle();
 		void display();
 		void keydown(unsigned char key, int x, int y);

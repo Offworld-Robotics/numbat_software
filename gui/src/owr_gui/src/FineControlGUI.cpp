@@ -10,6 +10,12 @@
 #include "FineControlNode.h"
 #include "ListNode.h"
 
+void FineControlGUI::reshape(int w, int h) {
+	GLUTWindow::reshape(w, h);
+	for(std::vector<Video_Feed_Frame*>::iterator i = videoFeeds.begin(); i != videoFeeds.end(); ++i)
+		(*i)->setNewWindowSize(w, h);
+}
+
 void FineControlGUI::idle() {
 	ros::spinOnce();
 	display();
@@ -126,8 +132,8 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 	glutMouseFunc(glut_mouse);
 	
 	// push the two feeds
-        videoFeeds.push_back(new Video_Feed_Frame(width*1.0/4.0, -height*3.0/8.0, width/2.0, height*3.0/4.0));
-        videoFeeds.push_back(new Video_Feed_Frame(width*3.0/4.0, -height*3.0/8.0, width/2.0, height*3.0/4.0));
+        videoFeeds.push_back(new Video_Feed_Frame(width, height, 1.0/4.0, -3.0/8.0, 1.0/2.0, 3.0/4.0));
+        videoFeeds.push_back(new Video_Feed_Frame(width, height, 3.0/4.0, -3.0/8.0, 1.0/2.0, 3.0/4.0));
 
 	for (int i = 0;i < 4;i++)
 		arrows[i] = false;

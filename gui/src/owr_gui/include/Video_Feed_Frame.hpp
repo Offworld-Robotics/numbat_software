@@ -15,16 +15,19 @@
 class Video_Feed_Frame {
 
    public:
-      Video_Feed_Frame(double _centreX, double _centreY, double width, double height);
-      ~Video_Feed_Frame();
+	 Video_Feed_Frame(int winW, int winH, double _cenXRatio, double _cenYRatio, double _wRatio, double _hRatio);
+	 ~Video_Feed_Frame();
 
-      void draw();
-      void setNewStreamFrame(unsigned char *frame, int width, int height);
+	 void draw();
+	 void setNewStreamFrame(unsigned char *frame, int width, int height);
+	 void setNewWindowSize(int winW, int winH);
 
    private:
-      GLuint videoTexture;
-      double centreX, centreY; 
-      double halfWidth, halfHeight;
+	 GLuint videoTexture;
+	 double cenXRatio, cenYRatio;
+	 double wRatio, hRatio;
+	 double centreX, centreY;
+	 double halfWidth, halfHeight;
 };
 
 #endif

@@ -6,21 +6,14 @@
 #include <Video_Feed_Frame.hpp>
 #include <GL/freeglut.h>
 
-/*
-// check if zero arugment constructor is necessary
-Video_Feed_Frame::Video_Feed_Frame(){
-	// don't initialise anything
-	// this is provided for compiler complaint only.
-}
-*/
-
 // Not providing Zero argument constructor, therefore instances must be initialised in a 
 //	 constructor initialisor list in any classes that use this
-Video_Feed_Frame::Video_Feed_Frame(double _centreX, double _centreY, double width, double height) {
-	centreX = _centreX;
-	centreY = _centreY;
-	halfWidth = width/2.0;
-	halfHeight = height/2.0;
+Video_Feed_Frame::Video_Feed_Frame(int winW, int winH, double _cenXRatio, double _cenYRatio, double _wRatio, double _hRatio) {
+	cenXRatio = _cenXRatio;
+	cenYRatio = _cenYRatio;
+	wRatio = _wRatio;
+	hRatio = _hRatio;
+	setNewWindowSize(winW, winH);
 	
 	// Setup the texture to store frames of the video feed into
 	glGenTextures(1, &videoTexture);
@@ -49,6 +42,13 @@ Video_Feed_Frame::Video_Feed_Frame(double _centreX, double _centreY, double widt
 Video_Feed_Frame::~Video_Feed_Frame(){
 	/* Replace with actual cleanup
 	 */
+}
+
+void Video_Feed_Frame::setNewWindowSize(int winW, int winH) {
+	centreX = winW*cenXRatio;
+	centreY = winH*cenYRatio;
+	halfWidth = winW*wRatio/2.0;
+	halfHeight = winH*hRatio/2.0;
 }
 
 // CHECK IF REQUIRES MODIFICATION FOR COMPATIBILITY
