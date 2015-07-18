@@ -132,8 +132,8 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 	glutMouseFunc(glut_mouse);
 	
 	// push the two feeds
-        videoFeeds.push_back(new Video_Feed_Frame(width, height, 1.0/4.0, -3.0/8.0, 1.0/2.0, 3.0/4.0));
-        videoFeeds.push_back(new Video_Feed_Frame(width, height, 3.0/4.0, -3.0/8.0, 1.0/2.0, 3.0/4.0));
+        videoFeeds.push_back(new Video_Feed_Frame(width, height, 0.25, -0.375, 0.5, 0.75));
+        videoFeeds.push_back(new Video_Feed_Frame(width, height, 0.75, -0.375, 0.5, 0.75));
 
 	for (int i = 0;i < 4;i++)
 		arrows[i] = false;

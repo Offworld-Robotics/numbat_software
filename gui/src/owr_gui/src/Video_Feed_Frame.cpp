@@ -58,8 +58,6 @@ void Video_Feed_Frame::setNewStreamFrame(unsigned char *frame, int width, int he
 		glBindTexture(GL_TEXTURE_2D, videoTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, frame);
 	}
-	
-	//ROS_INFO("Updated video");
 }
 
 // actually draw the Video_Feed_Frame to screen

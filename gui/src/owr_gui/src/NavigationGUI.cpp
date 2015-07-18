@@ -37,7 +37,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	glShadeModel(GL_FLAT);
 	glEnable(GL_BLEND); // enables transparency
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glutKeyboardFunc(glut_keydown);	//glutKeyboardUpFunc(glut_keyup);
+	glutKeyboardFunc(glut_keydown);
+	//glutKeyboardUpFunc(glut_keyup);
 	glutSpecialFunc(glut_special_keydown);
 	glutSpecialUpFunc(glut_special_keyup);
 	
@@ -59,7 +60,7 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	onlineFeeds = 0;
 
 	// create videoFeed object
-	videoFeeds.push_back(new Video_Feed_Frame(width, height, 1.0/2.0, -1.0/2.0, 1.0, 1.0));
+	videoFeeds.push_back(new Video_Feed_Frame(width, height, 0.5, -0.5, 1, 1));
 
 	scale = DEFAULT_SCALE;
 	displayOverlay = true;
