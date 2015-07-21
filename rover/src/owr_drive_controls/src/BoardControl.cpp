@@ -71,8 +71,10 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 1.0
     #define DIFF 0.25
 
-	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
-    #define SENSITIVITY 1.0
+	// Set sensitivity between 0 and 1: 0 makes it output = input, 1 makes output = input ^3
+	// Since input values are only betwen 0 and 1, this is purely to change how sensitive the
+	// rover is to joytick input.
+    #define SENSITIVITY 0
 
     float power = joy->axes[DRIVE_AXES_UD];
     float lr = (-joy->axes[STICK_L_LR]);
