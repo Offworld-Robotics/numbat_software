@@ -130,6 +130,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.armBottom = armBottom;
     cout << "Speeds " << mesg.lSpeed << " " << mesg.rSpeed << endl;
 	cout << "Writing " << sizeof(struct toControlMsg) << "bytes." << endl;
+    cout << "Arm top" << mesg.armTop << " bottom" << mesg.armBottom << " rotate " << mesg.armRotate;  
 	comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
     struct status stat;

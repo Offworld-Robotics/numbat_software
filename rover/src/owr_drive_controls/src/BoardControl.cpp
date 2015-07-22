@@ -42,7 +42,7 @@ BoardControl::BoardControl() {
 }
 
 void BoardControl::run() {
-    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
+    Bluetongue* steve = new Bluetongue(TTY);
 
     while(ros::ok()) {
         struct status s = steve->update(leftDrive, rightDrive,
