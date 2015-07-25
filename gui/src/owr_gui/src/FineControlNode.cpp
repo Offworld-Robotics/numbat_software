@@ -44,9 +44,9 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	// created yet, will wait til it has w/o doing anything
 	
 	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg0, this);
+	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg1, this);
+	//videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this);
+	//videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg3, this);
 }
 
 // Spin to wait until a message is received
@@ -105,7 +105,7 @@ void FineControlNode::receiveVideoMsg0(const sensor_msgs::Image::ConstPtr& msg) 
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo0((unsigned char *)msg->data.data(), msg->width, msg->height);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 0);
 }
 
 void FineControlNode::receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg) {
@@ -113,5 +113,5 @@ void FineControlNode::receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg) 
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo1((unsigned char *)msg->data.data(), msg->width, msg->height);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 1);
 }

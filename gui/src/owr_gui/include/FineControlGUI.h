@@ -41,8 +41,7 @@ class FineControlGUI : public GLUTWindow {
 	public:
 		FineControlGUI(int width, int height, int *argc, char *argv[]);
 		void updateInfo(float voltage, float ultrasonic, float pH, float humidity, ArmState *armState, float heading, float tiltX, float tiltY, ListNode cur);
-		void updateVideo0(unsigned char *frame, int width, int height);
-		void updateVideo1(unsigned char *frame, int width, int height);
+		void updateVideo(unsigned char *frame, int width, int height, int camera);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 	
 	private:
@@ -51,7 +50,8 @@ class FineControlGUI : public GLUTWindow {
 		void keydown(unsigned char key, int x, int y);
 		void mouse(int button, int state, int x, int y);
 		
-		void drawFeedBox(int feed);
+		void drawLFeedBox(int feed);
+		void drawRFeedBox(int feed);
 		void drawFeedStatus();
 		void displayInfo();
 		
@@ -69,15 +69,17 @@ class FineControlGUI : public GLUTWindow {
 		void *fineControlNode;
 		
 		//ros stuff
-		ros::NodeHandle node;
 		ros::Publisher streamPub;
-		void toggleStream(int feed);
+		void toggleStream(int feed, bool left);
+		void sendStreamMsg(int stream, bool on);
 		
 		bool arrows[4];
 		//std::vector<Button*> buttons;
-		unsigned char feedStatus[TOTAL_FEEDS]; // status for each feed
+		unsigned char LFeedStatus[TOTAL_FEEDS]; // status for each feed
+		unsigned char RFeedStatus[TOTAL_FEEDS];
 		int onlineFeeds;
-                std::vector<Video_Feed_Frame*> videoFeeds;
+                std::vector<Video_Feed_Frame*> videoScreens;
+                int LScreenCam, RScreenCam;
 };
 
 #endif // FINECONTROLGUI_H
