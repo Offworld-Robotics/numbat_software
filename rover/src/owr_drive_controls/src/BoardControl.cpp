@@ -43,10 +43,10 @@ BoardControl::BoardControl() {
 }
 
 void BoardControl::run() {
-    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
+    Bluetongue* steve = new Bluetongue(TTY);
 
     while(ros::ok()) {
-        struct status s = steve->update((leftDrive-MOTOR_MID)/1000, (rightDrive-MOTOR_MID)/1000,
+        struct status s = steve->update(leftDrive, rightDrive,
             armTop, armBottom, armRotate);
         //if (s.roverOk == false) {
         //    delete steve;
@@ -74,7 +74,9 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
 	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
     #define SENSITIVITY 1.0
-
+    leftDrive = (joy->axes[STICK_L_UD]);
+    rightDrive = -joy->axes[DRIVE_AXES_UD];
+	/*
     float power = joy->axes[DRIVE_AXES_UD];
     float lr = (-joy->axes[STICK_L_LR]);
     
@@ -89,9 +91,9 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     // The formula in use i: output = (ax^3 + (1-a)x) * 500 + MOTOR_MID
     // Where a = SENSITIVITY
 
-    leftDrive = SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive;
-    rightDrive = SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive;
-    
+    //leftDrive = SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive;
+    //rightDrive = SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive;
+    */
 }
 
 void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
