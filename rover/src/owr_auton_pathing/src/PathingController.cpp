@@ -56,7 +56,8 @@ void PathingController::sendMsg() {
     // TODO: calculate the correct twist message to send to the drive controls
     geometry_msgs::Twist vel;
     
-    //TODO: Calculate desired heading
+    //TODO: Calculate desired heading. Requires calculating metres from lat/long
+    // values, then working a bearing, considering possible quadrants of the angles.
     double latDist = destLatitide - currLatitude;
     double longDist = destLongitude - currLongitude;
     double destHeading = atan2(longDist, latDist);
