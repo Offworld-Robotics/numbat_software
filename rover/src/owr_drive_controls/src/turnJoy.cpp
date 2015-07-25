@@ -6,6 +6,7 @@
  
  #include "ArduinoConverter.h"
  #include <assert.h>
+ #include <ros/ros.h>
 
 #define CENTRE 1500
 #define MAX_POWER 2000
@@ -54,13 +55,13 @@ void ArduinoConverter::sendMessage(float lf, float lm, float lb, float rf, float
         fprintf(fd,"%f %f %f %f %f %f\n",lf,lm,lb,rf,rm,rb);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
+        //ros::ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        printf("unsucesfull\n");
+        ros::ROS_INFO("unsuccesful");
     }    
-    printf("%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);   
+    ros::ROS_INFO("%f %f %f %f %f %f",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);   
 }
 
 //checks if the button state has changed and changes the feed
@@ -120,17 +121,17 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     }
     /*if(!fd) {
         fd = fopen(TTY, "w");
-        printf("reopen\n");
+        ros::ROS_INFO("reopen");
     }*/
     /*if(fd) {
         fprintf(fd,"%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
+        //ros::ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        printf("unsucesfull\n");
+        ros::ROS_INFO("unsuccesful");
     }*/
     
 

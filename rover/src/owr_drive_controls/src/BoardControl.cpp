@@ -7,11 +7,12 @@
  #include "BoardControl.h"
  #include "Bluetongue.h"
  #include <assert.h>
+ #include <ros/ros.h>
  
  #define MOTOR_MID 1500
 
 static void printStatus(struct status *s) {
-	cout << "Battery voltage: " << s->batteryVoltage << endl;
+	ros::ROS_INFO("Battery voltage: %f", s->batteryVoltage);
 }
 
 int main(int argc, char ** argv) {

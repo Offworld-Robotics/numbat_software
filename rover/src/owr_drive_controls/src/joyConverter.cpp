@@ -5,6 +5,7 @@
  */
  
  #include "JoyConverter.h"
+ #include <ros/ros.h>
 
 
 
@@ -45,7 +46,7 @@ void JoyConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //TODO: check length to avoid segfaults
     vel.angular.z = joy->axes[DRIVE_AXES_UD];
     vel.linear.x = joy->axes[DRIVE_AXES_LR];
-    ROS_INFO("%f", vel.angular.x);
+    ros::ROS_INFO("%f", vel.angular.x);
     velPublisher.publish(vel);
     
     //TODO: camera on/off
