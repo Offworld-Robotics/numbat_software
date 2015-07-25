@@ -1,6 +1,7 @@
 /*
  * PathingController is the node for reading in (subscribing to) position and destination information
  * and adjusting (publishing) twist velocities to the arduino controller
+ * 
  * Author: Simon Ireland for Bluesat OWR
  * Date: 11/07/2015
  */
@@ -28,6 +29,12 @@ class PathingController {
     private:
         ros::NodeHandle node;
         std::string topic;
+        
+        double currLatitude;
+        double currLongitude;
+        double currHeading
+        double destLatitude;
+        double destLongitude;
 };
 
 

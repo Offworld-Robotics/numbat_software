@@ -1,7 +1,0 @@
-- git: { local-name: clearpath_base, uri: 'https://github.com/clearpathrobotics/clearpath_base.git', version: hydro-devel } 
-- git: { local-name: husky_base, uri: 'https://github.com/husky/husky_base.git', version: hydro-devel } 
-- git: { local-name: husky_bringup, uri: 'https://github.com/husky/husky_bringup.git', version: hydro-devel }
-- git: { local-name: husky_description, uri: 'https://github.com/husky/husky_description.git', version: hydro-devel }
-- git: { local-name: husky_teleop, uri: 'https://github.com/husky/husky_teleop.git', version: hydro-devel }
-- git: { local-name: robot_upstart, uri: 'https://github.com/clearpathrobotics/robot_upstart.git', version: hydro-devel }
-- git: {local-name: src/um6, uri: 'https://github.com/ros-drivers/um6.git', version: hydro-devel}

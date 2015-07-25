@@ -9,7 +9,7 @@
 #include "PathingController.h" 
 #include <iostream>
 
-#define TOPIC "/owr/pathing"
+#define TOPIC "/owr/auto_pathing"
  
 int main(int argc, char ** argv) {
     
@@ -23,42 +23,48 @@ int main(int argc, char ** argv) {
 }
 
 PathingController::PathingController(const std::string topic) {
-    altitude = 0;
-    latitude = 0;
-    longitude = 0;
-    pitch = 0;
-    roll = 0;
-    heading = 0;
+    
+    destLatitude = 0;
+    destLongitude = 0;
+    currLatitude = 0;
+    currLongitude = 0;
+    currHeading = 0;
+    
+    
     twistPublisher =  node.advertise<geometry_msgs::Twist>(topic,1000,true);
-    positionSubscriber = node.subscribe("/gps/fix", 1000, &PathingController::receivePosMsg, this); // Position related data
+    positionSubscriber = node.subscribe("/owr/position", 1000, &PathingController::receivePosMsg, this); // Position related data
     destinationSubscriber = node.subscriber("", 100, &PathingController::receiveDestMsg, this);
 }
 
 //TODO: Get the msg types for Destination and Position.
-/* void PathingController::receivePosMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) {
-   // altitude  = msg->altitude;
-   // latitude  = msg->latitude;
-   // longitude = msg->longitude;
-   // sendMsg();
+/* void PathingController::receivePosMsg(const owr_messages::position & msg) {
+   currLatitude = msg->latitude;
+   currLongitude = msg->longitude;
+   currHeading = msg->heading;
+   sendMsg();
 }
 
  
 void PathingController::receiveDestMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) {
-   // altitude  = msg->altitude;
-   // latitude  = msg->latitude;
-   // longitude = msg->longitude;
-   // sendMsg();
+   destLatitude = msg->latitude;
+   destLongitude = msg->longitude;
 }
 */
 
 void PathingController::sendMsg() {
-    //owr_messages::position msg;
-    //msg.latitude = latitude;
-    //msg.longitude = latitude;
-    //msg.altitude = altitude;
-    //msg.pitch = pitch;
-    //msg.roll = roll;
-    //msg.heading = heading;
+    
+    // TODO: calculate the correct twist message to send to the drive controls
+    geometry_msgs::Twist vel;
+    
+    //TODO: Calculate desired heading
+    double latDist = destLatitide - currLatitude;
+    double longDist = destLongitude - currLongitude;
+    double destHeading = atan2(longDist, latDist);
+    
+    //TODO: Calculate whether we should be turning
+    
+    
+    //TODO: Move forward if correct heading
     
     twistPublisher.publish(msg);
 }
