@@ -36,10 +36,10 @@ Bluetongue::Bluetongue(const char* port) {
 	// Open serial port
 	port_fd = open(port, O_RDWR | O_NOCTTY);
 	if (port_fd == -1) {
-		ros::ROS_INFO("Error in open uart port");
+		ROS_INFO("Error in open uart port");
         abort();
 	} else {
-		ros::ROS_INFO("Opened uart port");
+		ROS_INFO("Opened uart port");
 	}
     // Set up stuff for select so we can timeout on reads
     FD_ZERO(&uart_set); /* clear the set */
@@ -53,9 +53,9 @@ Bluetongue::Bluetongue(const char* port) {
 
 	// Error Handling 
 	if (tcgetattr(Bluetongue::port_fd, &tty) != 0) {
-		ros::ROS_INFO("Error %d from tcgetattr: %s", errno, strerror(errno));
+		ROS_INFO("Error %d from tcgetattr: %s", errno, strerror(errno));
 	}
-	ros::ROS_INFO("Setting up uart");
+	ROS_INFO("Setting up uart");
 
 	// Set Baud Rate 
 	cfsetospeed(&tty, (speed_t)B19200);
@@ -71,7 +71,7 @@ Bluetongue::Bluetongue(const char* port) {
 	tty.c_cc[VMIN] = 1; // read doesn't block
 	tty.c_cc[VTIME] = 5; // 0.5 seconds read timeout
 	tty.c_cflag |= CREAD | CLOCAL; // turn on READ & ignore ctrl lines
-	ros::ROS_INFO("About to make raw");
+	ROS_INFO("About to make raw");
 
 	// Make raw 
 	cfmakeraw(&tty);
@@ -79,10 +79,10 @@ Bluetongue::Bluetongue(const char* port) {
 	// Flush Port, then applies attributes
 	tcflush(port_fd, TCIFLUSH);
 	if (tcsetattr(port_fd, TCSANOW, &tty) != 0) {
-		ros::ROS_INFO("Error %d from tcsetattr: %s" ,errno, strerror(errno));
+		ROS_INFO("Error %d from tcsetattr: %s" ,errno, strerror(errno));
         abort();
 	}
-		ros::ROS_INFO("Finished initalizing bluetongue");
+		ROS_INFO("Finished initalizing bluetongue");
 }
 
 Bluetongue::~Bluetongue(void) {
@@ -91,15 +91,15 @@ Bluetongue::~Bluetongue(void) {
 
 void Bluetongue::comm(bool forBattery, void *message, int message_len, 
     void *resp, int resp_len) {
-	ros::ROS_INFO("Writing message: ");
+	ROS_INFO("Writing message: ");
 	for (int i = 0; i < message_len; i++) {
-		ros::ROS_INFO("%d: %02x\n", i, *((char *) message + i));
+		ROS_INFO("%d: %02x\n", i, *((char *) message + i));
 	}
 	int written = 0;
 	do {
 		written += write(port_fd, message + written, message_len - written);
 	} while (written < message_len);
-	ros::ROS_INFO("Written packet, expecting to read %d", resp_len);
+	ROS_INFO("Written packet, expecting to read %d", resp_len);
 	tcflush(port_fd, TCIOFLUSH); 
 	int readCount = 0;
     timeout.tv_sec = 0;
@@ -107,16 +107,16 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
 	do {
         int rv = select(port_fd + 1, &uart_set, NULL, NULL, &timeout);
         if(rv == -1) {
-            ros::ROS_ERROR("select"); /* an error accured */
+            ROS_ERROR("select"); /* an error accured */
         } else if(rv == 0) {
-            ros::ROS_INFO("timeout"); /* a timeout occured */
+            ROS_INFO("timeout"); /* a timeout occured */
             break;
         } else {
 		  readCount += read(port_fd, resp + readCount, resp_len - readCount);
 		}
-        ros::ROS_INFO("reading... %d", readCount);
+        ROS_INFO("reading... %d", readCount);
 	} while (readCount < resp_len);
-	ros::ROS_INFO("Read packet");
+	ROS_INFO("Read packet");
 }
 
 struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
@@ -129,14 +129,14 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.armRotate = (armRotate * 500) + 1500;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
-    ros::ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
-	ros::ROS_INFO("Writing %d bytes.", sizeof(struct toControlMsg));
-    cout << "Arm top" << mesg.armTop << " bottom" << mesg.armBottom << " rotate " << mesg.armRotate;  
+	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
+	ROS_INFO("Writing %d bytes.", sizeof(struct toControlMsg));
+	ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);
 	comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
     struct status stat;
 	if (resp.magic != MESSAGE_MAGIC) {
-		 ros::ROS_INFO("Update Bluetongue had a error");
+		 ROS_INFO("Update Bluetongue had a error");
         stat.roverOk = false;    
 	} else {
         stat.roverOk = true;

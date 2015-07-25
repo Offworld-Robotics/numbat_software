@@ -8,7 +8,6 @@
  #include <ros/ros.h>
 
 
-
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_telop");
     JoyConverter joyConverter;
@@ -46,7 +45,7 @@ void JoyConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //TODO: check length to avoid segfaults
     vel.angular.z = joy->axes[DRIVE_AXES_UD];
     vel.linear.x = joy->axes[DRIVE_AXES_LR];
-    ros::ROS_INFO("%f", vel.angular.x);
+    ROS_INFO("%f", vel.angular.x);
     velPublisher.publish(vel);
     
     //TODO: camera on/off

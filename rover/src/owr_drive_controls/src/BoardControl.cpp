@@ -12,7 +12,7 @@
  #define MOTOR_MID 1500
 
 static void printStatus(struct status *s) {
-	ros::ROS_INFO("Battery voltage: %f", s->batteryVoltage);
+	ROS_INFO("Battery voltage: %f", s->batteryVoltage);
 }
 
 int main(int argc, char ** argv) {

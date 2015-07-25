@@ -55,13 +55,13 @@ void ArduinoConverter::sendMessage(float lf, float lm, float lb, float rf, float
         fprintf(fd,"%f %f %f %f %f %f\n",lf,lm,lb,rf,rm,rb);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //ros::ROS_INFO("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        ros::ROS_INFO("unsuccesful");
+        ROS_INFO("unsuccesful");
     }    
-    ros::ROS_INFO("%f %f %f %f %f %f",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);   
+    ROS_INFO("%f %f %f %f %f %f",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);   
 }
 
 //checks if the button state has changed and changes the feed
@@ -121,17 +121,17 @@ void ArduinoConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     }
     /*if(!fd) {
         fd = fopen(TTY, "w");
-        ros::ROS_INFO("reopen");
+        ROS_INFO("reopen");
     }*/
     /*if(fd) {
         fprintf(fd,"%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //ros::ROS_INFO("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        ros::ROS_INFO("unsuccesful");
+        ROS_INFO("unsuccesful");
     }*/
     
 

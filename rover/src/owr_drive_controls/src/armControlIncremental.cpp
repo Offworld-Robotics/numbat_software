@@ -9,7 +9,6 @@
  #include <ros/ros.h>
 
 
-
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_telop");
     ArmConverter armConverter;
@@ -49,14 +48,14 @@ void ArmConverter::sendMessage(int tm, int bm) {
         fprintf(fd,"%d %d\n %d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //ros::ROS_INFO("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        ros::ROS_INFO("unsuccesful");
+        ROS_INFO("unsuccesful");
     }    
-    ros::ROS_INFO("%d %d", TOP_ACTUATOR,tm);
-    ros::ROS_INFO("%d %d", BOTTOM_ACTUATOR,bm);   
+    ROS_INFO("%d %d", TOP_ACTUATOR,tm);
+    ROS_INFO("%d %d", BOTTOM_ACTUATOR,bm);   
 }
 
 //checks if the button state has changed and changes the feed
@@ -116,17 +115,17 @@ void ArmConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //}
     /*if(!fd) {
         fd = fopen(TTY, "w");
-        ros::ROS_INFO("reopen");
+        ROS_INFO("reopen");
     }*/
     /*if(fd) {
         fprintf(fd,"%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //ros::ROS_INFO("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        ros::ROS_INFO("unsuccesful");
+        ROS_INFO("unsuccesful");
     }*/
     
 

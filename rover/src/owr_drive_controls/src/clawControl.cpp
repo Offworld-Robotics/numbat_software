@@ -47,13 +47,13 @@ void ClawControl::sendMessage() {
         fprintf(fd,"%d\n",clawState);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        ros::ROS_INFO("unsucesfull");
+        ROS_INFO("unsucesfull");
     }    
-    printf("%d\n",clawState);
+    ROS_INFO("%d",clawState);
 }
 
 void ClawControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
