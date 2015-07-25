@@ -180,6 +180,7 @@ void FineControlGUI::sendStreamMsg(int stream, bool on) {
 	s.stream = stream;
 	s.on = on;
 	streamPub.publish(s);
+	ros::spinOnce();
 }
 
 // toggles between available streams for the leftside screen
@@ -193,14 +194,13 @@ void FineControlGUI::toggleStream(int feed, bool left) {
 		if(left) LScreenCam = feed;
 		else RScreenCam = feed;
 		sendStreamMsg(feed, true);
-		for(int i = 0;i < TOTAL_FEEDS;i++) {
+		/*for(int i = 0;i < TOTAL_FEEDS;i++) {
 			if(i != LScreenCam && i != RScreenCam) {
 				sendStreamMsg(i, false);
 			}
-		}
+		}*/
 	}
-	
-	ros::spinOnce();
+	//ros::spinOnce();
 }
 
 void FineControlGUI::displayInfo() {
