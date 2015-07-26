@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="owr_camera_control" type="activiate_feeds.py" name="activiate_feeds.py" output="screen">
+	</node>
+</launch>
+
