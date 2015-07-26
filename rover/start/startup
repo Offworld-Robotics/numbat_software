@@ -8,7 +8,7 @@ PS1=" "
 export PS1
 
 source ~/.bashrc
-#source ~/UGV/agvc-2014/devel/setup.bash
+source ~/owr_software/rover/devel/setup.bash
 
 cd `dirname $0`
 

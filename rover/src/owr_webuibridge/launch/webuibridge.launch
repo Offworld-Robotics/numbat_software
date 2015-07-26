@@ -1,0 +1,15 @@
+<launch>
+  <node pkg="owr_webuibridge" type="serverbridge" name="webuibridge" respawn="true" output="screen">
+    <rosparam param="topic_list">
+      - /rosout
+      - /waypoint
+      - /controller/battery
+      - /controller/estop
+      - /controller/cmd_vel
+    </rosparam>
+    <param name="battery_topic" value="/controller/battery" />
+    <param name="estop_topic" value="/controller/estop" />
+    <param name="cmdvel_topic" value="/controller/cmd_vel" />
+    <param name="waypoint_topic" value="/waypoint" />
+  </node>
+</launch>
