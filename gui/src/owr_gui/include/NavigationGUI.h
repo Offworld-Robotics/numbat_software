@@ -66,6 +66,7 @@ class NavigationGUI : public GLUTWindow {
 		// GLUT essential functions
 		void idle();
 		void display();
+		void reshape(int w, int h);
 
 		// GLUT keyboard functions
 		void keydown(unsigned char key, int x, int y);

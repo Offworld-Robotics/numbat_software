@@ -37,7 +37,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	glShadeModel(GL_FLAT);
 	glEnable(GL_BLEND); // enables transparency
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glutKeyboardFunc(glut_keydown);	//glutKeyboardUpFunc(glut_keyup);
+	glutKeyboardFunc(glut_keydown);
+	//glutKeyboardUpFunc(glut_keyup);
 	glutSpecialFunc(glut_special_keydown);
 	glutSpecialUpFunc(glut_special_keyup);
 	
@@ -59,12 +60,18 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	onlineFeeds = 0;
 
 	// create videoFeed object
-	videoFeeds.push_back(new Video_Feed_Frame(width/2.0, -height/2.0, width, height));
+	videoFeeds.push_back(new Video_Feed_Frame(width, height, 0.5, -0.5, 1, 1));
 
 	scale = DEFAULT_SCALE;
 	displayOverlay = true;
 	srand(time(NULL));
 	//generateTarget();
+}
+
+void NavigationGUI::reshape(int w, int h) {
+	GLUTWindow::reshape(w, h);
+	for(std::vector<Video_Feed_Frame*>::iterator i = videoFeeds.begin(); i != videoFeeds.end(); ++i)
+		(*i)->setNewWindowSize(w, h);
 }
 
 void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, vector3D t) {
@@ -89,7 +96,7 @@ void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 void NavigationGUI::updateFeedsStatus(unsigned char *feeds, int numOnline) {
 	memcpy(feedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
 	onlineFeeds = numOnline;
-	ROS_INFO("updating online feeds: [%d,%d,%d,%d]", feeds[0], feeds[1], feeds[2], feeds[3]);
+	ROS_INFO("Navigation: Updating feeds: [%d,%d,%d,%d]", feeds[0], feeds[1], feeds[2], feeds[3]);
 }
 
 void NavigationGUI::idle() {

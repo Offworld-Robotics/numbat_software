@@ -14,8 +14,8 @@ class GLUTWindow {
 	protected:
 		// GLUT essential functions
 		
-		// Callback for resizing the window (not virtual because function is common for all GLUT apps)
-		void reshape(int w, int h);
+		// Callback for resizing the window (has default)
+		virtual void reshape(int w, int h);
 		// Function for computations when the CPU is idle
 		virtual void idle() = 0;
 		// Function to draw the screen
