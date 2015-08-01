@@ -10,7 +10,7 @@
 
 
 int main(int argc, char ** argv) {
-    ros::init(argc, argv, "owr_telop");
+    ros::init(argc, argv, "owr_telop1");
     ClawControl ClawControl;
     ClawControl.run();
     

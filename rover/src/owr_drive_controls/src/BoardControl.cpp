@@ -37,7 +37,7 @@ BoardControl::BoardControl() {
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
     armBottom = MOTOR_MID;
-    armRotate = MOTOR_MID;
+    armRotate = 0.5;
           
 }
 
@@ -100,11 +100,11 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define DIFF 0.25
     
     float top = joy->axes[STICK_R_UD] ;//* 0.2;
-    float bottom = (-joy->axes[STICK_L_UD]) ;//* 0.2;
+    float bottom = (joy->axes[STICK_L_UD]) ;//* 0.2;
     
     //float leftDrive  = 1.0f;
     //float rightDrive = 1.0f;
-    
+    armRotate = joy->axes[STICK_CH_LR];
  
     armTop = (top / MAX_IN) * 500 + 1500  ;
     armBottom = (bottom / MAX_IN) * 500 + 1500  ;
