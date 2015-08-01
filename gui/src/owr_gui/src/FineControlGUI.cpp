@@ -12,7 +12,7 @@
 
 void FineControlGUI::reshape(int w, int h) {
 	GLUTWindow::reshape(w, h);
-	for(std::vector<Video_Feed_Frame*>::iterator i = videoFeeds.begin(); i != videoFeeds.end(); ++i)
+	for(std::vector<Video_Feed_Frame*>::iterator i = videoScreens.begin(); i != videoScreens.end(); ++i)
 		(*i)->setNewWindowSize(w, h);
 }
 
@@ -152,8 +152,8 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 	glutMouseFunc(glut_mouse);
 	
 	// push the two feeds
-        videoFeeds.push_back(new Video_Feed_Frame(width, height, 0.25, -0.375, 0.5, 0.75));
-        videoFeeds.push_back(new Video_Feed_Frame(width, height, 0.75, -0.375, 0.5, 0.75));
+        videoScreens.push_back(new Video_Feed_Frame(width, height, 0.25, -0.375, 0.5, 0.75));
+        videoScreens.push_back(new Video_Feed_Frame(width, height, 0.75, -0.375, 0.5, 0.75));
 
 	for (int i = 0;i < 4;i++)
 		arrows[i] = false;
