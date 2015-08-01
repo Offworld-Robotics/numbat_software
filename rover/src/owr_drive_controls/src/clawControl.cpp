@@ -6,6 +6,7 @@
  
  #include "armConverter.h"
  #include <assert.h>
+ #include <ros/ros.h>
 
 
 
@@ -46,13 +47,13 @@ void ClawControl::sendMessage() {
         fprintf(fd,"%d\n",clawState);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        printf("unsucesfull\n");
+        ROS_INFO("unsucesfull");
     }    
-    printf("%d\n",clawState);
+    ROS_INFO("%d",clawState);
 }
 
 void ClawControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
@@ -78,6 +79,7 @@ void ClawControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //bottomDrive = ((bottom / MAX_IN) * 500) + 1500.0  ;
     //sendMessage(topDrive,bottomDrive);    
     
+
    
    
     //TODO: camera on/off

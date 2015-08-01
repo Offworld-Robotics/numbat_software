@@ -6,7 +6,7 @@
  
  #include "ArmControlIncremental.h"
  #include <assert.h>
-
+ #include <ros/ros.h>
 
 
 int main(int argc, char ** argv) {
@@ -48,13 +48,14 @@ void ArmConverter::sendMessage(int tm, int bm) {
         fprintf(fd,"%d %d\n %d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        printf("unsucesfull\n");
+        ROS_INFO("unsuccesful");
     }    
-    printf("%d %d\n %d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);   
+    ROS_INFO("%d %d", TOP_ACTUATOR,tm);
+    ROS_INFO("%d %d", BOTTOM_ACTUATOR,bm);   
 }
 
 //checks if the button state has changed and changes the feed
@@ -114,17 +115,17 @@ void ArmConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //}
     /*if(!fd) {
         fd = fopen(TTY, "w");
-        printf("reopen\n");
+        ROS_INFO("reopen");
     }*/
     /*if(fd) {
         fprintf(fd,"%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        printf("unsucesfull\n");
+        ROS_INFO("unsuccesful");
     }*/
     
 
