@@ -36,6 +36,7 @@ class BoardControl {
         //arm top, bottom
         int armTop, armBottom;
         float armRotate;
+        int armIncRate;
         
         //to keep track of button states. It is possible press could change it
         int cam0Button, cam1Button, cam2Button, cam3Button;

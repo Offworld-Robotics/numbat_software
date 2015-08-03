@@ -4,12 +4,16 @@
  * Start: 7/02/15
  */
  
- #include "BoardControl.h"
- #include "Bluetongue.h"
- #include <assert.h>
- #include <ros/ros.h>
+#include "BoardControl.h"
+#include "Bluetongue.h"
+#include <assert.h>
+#include <ros/ros.h>
+
+#define MOTOR_MID 1500
+#define MOTOR_MAX 1900
+#define MOTOR_MIN 1100
+#define ROTATION_MID 0.5
  
- #define MOTOR_MID 1500
 
 static void printStatus(struct status *s) {
 	ROS_INFO("Battery voltage: %f", s->batteryVoltage);
@@ -38,7 +42,8 @@ BoardControl::BoardControl() {
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
     armBottom = MOTOR_MID;
-    armRotate = 0.5;
+    armRotate = ROTATION_MID;
+    armIncRate = 0;
           
 }
 
@@ -46,6 +51,12 @@ void BoardControl::run() {
     Bluetongue* steve = new Bluetongue(TTY);
 
     while(ros::ok()) {
+        armTop += armIncRate;
+        if (armTop > MOTOR_MAX) {
+            armTop = MOTOR_MAX;
+        } else if (armTop < MOTOR_MIN) {
+            armTop = MOTOR_MIN;
+        }
         struct status s = steve->update(leftDrive, rightDrive,
             armTop, armBottom, armRotate);
         //if (s.roverOk == false) {
@@ -98,6 +109,7 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
 void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 1.5
+    #define MID_IN 0
     #define DIFF 0.25
     
     float top = joy->axes[STICK_R_UD] ;//* 0.2;
@@ -107,6 +119,8 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //float rightDrive = 1.0f;
     armRotate = joy->axes[STICK_CH_LR];
  
-    armTop = (top / MAX_IN) * 500 + 1500  ;
-    armBottom = (bottom / MAX_IN) * 500 + 1500  ;
+    //armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
+    armIncRate = top * 50;
+    //TODO: check these actually match up
+    armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
 }
