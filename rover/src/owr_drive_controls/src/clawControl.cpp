@@ -60,9 +60,9 @@ void ClawControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 1.5
     #define DIFF 0.25
     
-    if(joy->buttons[BUTTON_A]) {
+    if(joy->buttons[BUTTON_LB]) {
         clawState = OPEN;
-    } else if (joy->buttons[BUTTON_B]) {
+    } else if (joy->buttons[BUTTON_RB]) {
         clawState = CLOSE;
     } else {
         clawState = STOP;
