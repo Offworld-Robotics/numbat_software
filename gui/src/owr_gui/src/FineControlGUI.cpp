@@ -30,11 +30,9 @@ void FineControlGUI::updateVideo(unsigned char *frame, int width, int height, in
 }
 
 void FineControlGUI::updateFeedsStatus(unsigned char *feeds, int numOnline) {
-	memcpy(LFeedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
-	memcpy(RFeedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
+	memcpy(FeedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
 	if(LScreenCam >= 0 && RScreenCam >= 0 && LScreenCam != RScreenCam) {
-		LFeedStatus[RScreenCam] = FEED_INACTIVE;
-		RFeedStatus[LScreenCam] = FEED_INACTIVE;
+		FeedStatus[RScreenCam] = FEED_INACTIVE;
 	}
 	onlineFeeds = numOnline;
 	//ROS_INFO("updating online feeds: [%d,%d,%d,%d]", feeds[0], feeds[1], feeds[2], feeds[3]);
@@ -95,9 +93,9 @@ void FineControlGUI::mouse(int button, int state, int x, int y) {
 
 // draw the buttons
 void FineControlGUI::drawLFeedBox(int feed) {
-	if (LFeedStatus[feed] == FEED_ACTIVE)
+	if (FeedStatus[feed] == FEED_ACTIVE)
 		glColor3ub(FEED_ACTIVE_BUTTON_R, FEED_ACTIVE_BUTTON_G, FEED_ACTIVE_BUTTON_B);
-	else if (LFeedStatus[feed] == FEED_INACTIVE)
+	else if (FeedStatus[feed] == FEED_INACTIVE)
 		glColor3ub(FEED_INACTIVE_BUTTON_R, FEED_INACTIVE_BUTTON_G, FEED_INACTIVE_BUTTON_B);
 	else
 		glColor3ub(FEED_OFFLINE_BUTTON_R, FEED_OFFLINE_BUTTON_G, FEED_OFFLINE_BUTTON_B);
@@ -109,9 +107,9 @@ void FineControlGUI::drawLFeedBox(int feed) {
 }
 
 void FineControlGUI::drawRFeedBox(int feed) {
-	if (RFeedStatus[feed] == FEED_ACTIVE)
+	if (FeedStatus[feed] == FEED_ACTIVE)
 		glColor3ub(FEED_ACTIVE_BUTTON_R, FEED_ACTIVE_BUTTON_G, FEED_ACTIVE_BUTTON_B);
-	else if (RFeedStatus[feed] == FEED_INACTIVE)
+	else if (FeedStatus[feed] == FEED_INACTIVE)
 		glColor3ub(FEED_INACTIVE_BUTTON_R, FEED_INACTIVE_BUTTON_G, FEED_INACTIVE_BUTTON_B);
 	else
 		glColor3ub(FEED_OFFLINE_BUTTON_R, FEED_OFFLINE_BUTTON_G, FEED_OFFLINE_BUTTON_B);
@@ -159,8 +157,7 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 		arrows[i] = false;
 	
 	for (int i = 0;i < TOTAL_FEEDS;i++) {
-		LFeedStatus[i] = FEED_OFFLINE;
-		RFeedStatus[i] = FEED_OFFLINE;
+		FeedStatus[i] = FEED_OFFLINE;
 		sendStreamMsg(i, false);
 	}
 	onlineFeeds = 0;
@@ -193,18 +190,18 @@ void FineControlGUI::sendStreamMsg(int stream, bool on) {
 void FineControlGUI::toggleStream(int feed, bool left) {
 	ROS_INFO("FineControl: Switching feed %d", feed);
 	
-	if (LFeedStatus[feed] == FEED_OFFLINE) {
+	if (FeedStatus[feed] == FEED_OFFLINE) {
 		ROS_INFO("FineControl: Error: Feed %d is offline", feed);
 		return;
 	} else {
 		if(left) LScreenCam = feed;
 		else RScreenCam = feed;
 		sendStreamMsg(feed, true);
-		/*for(int i = 0;i < TOTAL_FEEDS;i++) {
+		for(int i = 0;i < TOTAL_FEEDS;i++) {
 			if(i != LScreenCam && i != RScreenCam) {
 				sendStreamMsg(i, false);
 			}
-		}*/
+		}
 	}
 	//ros::spinOnce();
 }
