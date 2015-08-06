@@ -16,7 +16,7 @@ using namespace std;
 
 
 //serial IO
-#define TTY "/dev/ttyACM1"
+#define TTY "/dev/ttyACM0"
 
 class BoardControl {
     public:
