@@ -1,48 +1,48 @@
 /*
-	Class header for NavigationNode
-	The node manages input into the Navigation GUI from ROS
+	Class header for FineControlNode
+	The node manages input into the FineControl GUI from ROS
 	By Harry J.E Day for Bluesat OWR <Harry@dayfamilyweb.com>
 */
  
-#ifndef NAVIGATIONNODE_H
-#define NAVIGATIONNODE_H
+#ifndef FINECONTROLNODE_H
+#define FINECONTROLNODE_H
 
-#include "ListNode.h"
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>
-#include "bluesat_owr_protobuf/battery_ros.h"
-#include "NavigationGUI.h"
+#include "FineControlGUI.h"
 
 // The message structs needed for availableFeeds
 #include "owr_messages/activeCameras.h"
 #include "owr_messages/stream.h"
 
-class NavigationNode {
+class FineControlNode {
 
 	public:
-		NavigationNode(NavigationGUI *gui);
+		FineControlNode(FineControlGUI *gui);
 		void spin();
 		void receiveFeedsStatus(const owr_messages::activeCameras::ConstPtr &msg);
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
-		void receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg);
-		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
+		void receiveVideoMsg0(const sensor_msgs::Image::ConstPtr& msg);
+		void receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg);
+		void receiveVideoMsg2(const sensor_msgs::Image::ConstPtr& msg);
 		
 	private:
-		NavigationGUI *gui;
+		FineControlGUI *gui;
 		ros::Subscriber gpsSub;
-		ros::Subscriber batterySub;
 		ros::Subscriber videoSub[TOTAL_FEEDS];
 		ros::Subscriber feedsSub;
 		
-		float battery;
-		float signal;
+		float voltage;
+		ArmState armState;
+		float pH;
+		float humidity;
+		vector3D currentPos;
+		float heading;
 		float tiltX;
 		float tiltY;
 		float ultrasonic;
-		double altitude;
 		unsigned char feeds[TOTAL_FEEDS];
-		vector3D target;
 };
 
 #endif

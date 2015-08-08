@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "Bluetongue.h"
+#include <ros/ros.h>
 
 using namespace std;
 
@@ -35,10 +36,10 @@ Bluetongue::Bluetongue(const char* port) {
 	// Open serial port
 	port_fd = open(port, O_RDWR | O_NOCTTY);
 	if (port_fd == -1) {
-		cout << "Error in open uart port" << endl;
+		ROS_INFO("Error in open uart port");
         abort();
 	} else {
-		cout << "Opened uart port" << endl;
+		ROS_INFO("Opened uart port");
 	}
     // Set up stuff for select so we can timeout on reads
     FD_ZERO(&uart_set); /* clear the set */
@@ -52,9 +53,9 @@ Bluetongue::Bluetongue(const char* port) {
 
 	// Error Handling 
 	if (tcgetattr(Bluetongue::port_fd, &tty) != 0) {
-		cout << "Error " << errno << " from tcgetattr: " << strerror(errno) << endl;
+		ROS_INFO("Error %d from tcgetattr: %s", errno, strerror(errno));
 	}
-	cout << "Setting up uart" << endl;
+	ROS_INFO("Setting up uart");
 
 	// Set Baud Rate 
 	cfsetospeed(&tty, (speed_t)B19200);
@@ -70,7 +71,7 @@ Bluetongue::Bluetongue(const char* port) {
 	tty.c_cc[VMIN] = 1; // read doesn't block
 	tty.c_cc[VTIME] = 5; // 0.5 seconds read timeout
 	tty.c_cflag |= CREAD | CLOCAL; // turn on READ & ignore ctrl lines
-	cout << "About to make raw" << endl;
+	ROS_INFO("About to make raw");
 
 	// Make raw 
 	cfmakeraw(&tty);
@@ -78,10 +79,10 @@ Bluetongue::Bluetongue(const char* port) {
 	// Flush Port, then applies attributes
 	tcflush(port_fd, TCIFLUSH);
 	if (tcsetattr(port_fd, TCSANOW, &tty) != 0) {
-		cout << "Error " << errno << " from tcsetattr: " << strerror(errno) << endl;
+		ROS_INFO("Error %d from tcsetattr: %s" ,errno, strerror(errno));
         abort();
 	}
-		cout << "Finished initalizing bluetongue" << endl;	
+		ROS_INFO("Finished initalizing bluetongue");
 }
 
 Bluetongue::~Bluetongue(void) {
@@ -90,15 +91,15 @@ Bluetongue::~Bluetongue(void) {
 
 void Bluetongue::comm(bool forBattery, void *message, int message_len, 
     void *resp, int resp_len) {
-	cout << "Writing message: " << endl;
+	ROS_INFO("Writing message: ");
 	for (int i = 0; i < message_len; i++) {
-		printf("%d: %02x\n", i, *((char *) message + i));
+		ROS_INFO("%d: %02x\n", i, *((char *) message + i));
 	}
 	int written = 0;
 	do {
 		written += write(port_fd, message + written, message_len - written);
 	} while (written < message_len);
-	cout << "Written packet, expecting to read " << resp_len << endl;
+	ROS_INFO("Written packet, expecting to read %d", resp_len);
 	tcflush(port_fd, TCIOFLUSH); 
 	int readCount = 0;
     timeout.tv_sec = 0;
@@ -106,16 +107,16 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
 	do {
         int rv = select(port_fd + 1, &uart_set, NULL, NULL, &timeout);
         if(rv == -1) {
-            perror("select"); /* an error accured */
+            ROS_ERROR("select"); /* an error accured */
         } else if(rv == 0) {
-            printf("timeout"); /* a timeout occured */
+            ROS_INFO("timeout"); /* a timeout occured */
             break;
         } else {
 		  readCount += read(port_fd, resp + readCount, resp_len - readCount);
 		}
-        cout << "reading... " << readCount<< endl;
+        ROS_INFO("reading... %d", readCount);
 	} while (readCount < resp_len);
-	cout << "Read packet" << endl;
+	ROS_INFO("Read packet");
 }
 
 struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
@@ -128,13 +129,14 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.armRotate = (armRotate * 500) + 1500;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
-    cout << "Speeds " << mesg.lSpeed << " " << mesg.rSpeed << endl;
-	cout << "Writing " << sizeof(struct toControlMsg) << "bytes." << endl;
+	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
+	ROS_INFO("Writing %d bytes.", sizeof(struct toControlMsg));
+	ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);
 	comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
     struct status stat;
 	if (resp.magic != MESSAGE_MAGIC) {
-		 cout << "Update Bluetongue had a error" << endl;
+		 ROS_INFO("Update Bluetongue had a error");
         stat.roverOk = false;    
 	} else {
         stat.roverOk = true;

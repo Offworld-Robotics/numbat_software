@@ -4,14 +4,19 @@
  * Start: 7/02/15
  */
  
- #include "BoardControl.h"
- #include "Bluetongue.h"
- #include <assert.h>
+#include "BoardControl.h"
+#include "Bluetongue.h"
+#include <assert.h>
+#include <ros/ros.h>
+
+#define MOTOR_MID 1500
+#define MOTOR_MAX 1900
+#define MOTOR_MIN 1100
+#define ROTATION_MID 0.5
  
- #define MOTOR_MID 1500
 
 static void printStatus(struct status *s) {
-	cout << "Battery voltage: " << s->batteryVoltage << endl;
+	ROS_INFO("Battery voltage: %f", s->batteryVoltage);
 }
 
 int main(int argc, char ** argv) {
@@ -31,21 +36,29 @@ BoardControl::BoardControl() {
     //fd = fopen(TTY, "w");
     assert(fd != NULL);
     //subscribe to xbox controller
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this);
-    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 10, &BoardControl::armCallback, this);
+    ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this, transportHints);
+    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 10, &BoardControl::armCallback, this,transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
     armBottom = MOTOR_MID;
-    armRotate = MOTOR_MID;
+    armRotate = ROTATION_MID;
+    armIncRate = 0;
           
 }
 
 void BoardControl::run() {
-    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
+    Bluetongue* steve = new Bluetongue(TTY);
 
     while(ros::ok()) {
-        struct status s = steve->update((leftDrive-MOTOR_MID)/1000, (rightDrive-MOTOR_MID)/1000,
+        armTop += armIncRate;
+        if (armTop > MOTOR_MAX) {
+            armTop = MOTOR_MAX;
+        } else if (armTop < MOTOR_MIN) {
+            armTop = MOTOR_MIN;
+        }
+        struct status s = steve->update(leftDrive, rightDrive,
             armTop, armBottom, armRotate);
         //if (s.roverOk == false) {
         //    delete steve;
@@ -72,8 +85,10 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define DIFF 0.25
 
 	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
-    #define SENSITIVITY 1
-
+    #define SENSITIVITY 1.0
+    leftDrive = (joy->axes[STICK_L_UD]);
+    rightDrive = -joy->axes[DRIVE_AXES_UD];
+	/*
     float power = joy->axes[DRIVE_AXES_UD];
     float lr = (-joy->axes[STICK_L_LR]);
     
@@ -82,28 +97,31 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //float leftDrive  = 1.0f;
     //float rightDrive = 1.0f;
     
-    float lDrive  =   (power + lr)/2;
-    float rDrive =   -(power - lr)/2;
+    float lDrive  =   ((power + lr)/2)*500 + MOTOR_MID;
+    float rDrive =   (-(power - lr)/2)*500 + MOTOR_MID;
     
     // The formula in use i: output = (ax^3 + (1-a)x) * 500 + MOTOR_MID
     // Where a = SENSITIVITY
 
-    leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive) * 500) + MOTOR_MID;
-    rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive) * 500) + MOTOR_MID;
-    
+    //leftDrive = SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive;
+    //rightDrive = SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive;
+    */
 }
 
 void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 1.5
+    #define MID_IN 0
     #define DIFF 0.25
     
     float top = joy->axes[STICK_R_UD] ;//* 0.2;
-    float bottom = (-joy->axes[STICK_L_UD]) ;//* 0.2;
+    float bottom = (joy->axes[STICK_L_UD]) ;//* 0.2;
     
     //float leftDrive  = 1.0f;
     //float rightDrive = 1.0f;
-    
+    armRotate = joy->axes[STICK_CH_LR];
  
-    armTop = ((top / MAX_IN) * 500) + 1500  ;
-    armBottom = ((bottom / MAX_IN) * 500) + 1500  ;
+    //armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
+    armIncRate = top * 50;
+    //TODO: check these actually match up
+    armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
 }

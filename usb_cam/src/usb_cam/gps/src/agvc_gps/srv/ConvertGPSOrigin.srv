@@ -1,5 +1,0 @@
-
-nav_msgs/Odometry gps_global
----
-nav_msgs/Odometry gps_local
-

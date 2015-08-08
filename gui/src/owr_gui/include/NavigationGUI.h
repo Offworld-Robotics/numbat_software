@@ -11,12 +11,13 @@
 #include <ros/ros.h>
 #include "owr_messages/stream.h"
 #include <list>
+#include "Video_Feed_Frame.hpp"
 
 #define PI 3.1415926535897932384626433832795
 
 // default window size
-#define WINDOW_W 1920
-#define WINDOW_H 892
+#define WINDOW_W 1855
+#define WINDOW_H 917
 
 #define TOTAL_FEEDS 4
 
@@ -56,15 +57,16 @@
 class NavigationGUI : public GLUTWindow {
 
 	public:
-		NavigationGUI(int *argc, char **argv);
-		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target);
+		NavigationGUI(int width, int height, int *argc, char **argv);
+		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, vector3D target);
 		void updateVideo(unsigned char *frame, int width, int height);
-		void updateAvailableFeeds(bool *feeds);
+		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 		
 	private:
 		// GLUT essential functions
 		void idle();
 		void display();
+		void reshape(int w, int h);
 
 		// GLUT keyboard functions
 		void keydown(unsigned char key, int x, int y);
@@ -102,20 +104,18 @@ class NavigationGUI : public GLUTWindow {
 		float tiltX; // tilt of left-right in degrees
 		float tiltY; // tilt of forward-back in degrees
 		float ultrasonic;
-		double longitude;
-		double latitude;
-		double altitude;
+		vector3D currentPos;
 		
 		double pathRotation; // angle to rotate GPS path when drawing
 		double prevRotation;
 
 		unsigned char feedStatus[TOTAL_FEEDS]; // status for each feed
 		int currFeed;
-		int numActiveFeeds;
+		int onlineFeeds;
 
 		// GPS related variables
 		std::list<ListNode> GPSList; // path history (front is current point, back is origin point)
-		vector2D target;
+		vector3D target;
 
 		// OpenGL control related variables
 		bool arrowKeys[4];
@@ -125,9 +125,10 @@ class NavigationGUI : public GLUTWindow {
 		bool displayOverlay;
 
 		//ros stuff
-		ros::NodeHandle node;
 		ros::Publisher streamPub;
-		void toggleStream(int feed, bool active);
+		void toggleStream(int feed);
+		
+		Video_Feed_Frame *videoScreen;
 };
 
 
