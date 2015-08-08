@@ -16,7 +16,7 @@ class AutoGUI : public GLUTWindow {
 		AutoGUI(int width, int height, int *argc, char *argv[], double destPos[3][2]);
 		void updateInfo(ListNode cur);
 	private:
-		void drawFullMap();
+		void drawFullMap(double refLat, double refLon);
 		void idle();
 		void display();
 		void keydown(unsigned char key, int x, int y);

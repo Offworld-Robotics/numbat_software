@@ -10,19 +10,20 @@
 
 void AutoGUI::updateInfo(ListNode cur) {
 	if (cur != NULL) path.push_front(cur);
+	memcpy(&currentPos, cur, sizeof(vector3D));
 }
 
-void AutoGUI::drawFullMap() {
+void AutoGUI::drawFullMap(double refLat, double refLon) {
 	glPushMatrix();
 	glPointSize(5);
 	
 	glBegin(GL_POINTS);
 	glColor3f(1, 0, 0);
-	glVertex2d(dests[0][1] - mapCentre[1], dests[0][0] - mapCentre[0]);
+	glVertex2d(dests[0][1] - refLon, dests[0][0] - refLat);
 	glColor3f(0, 0, 1);
-	glVertex2d(dests[1][1] - mapCentre[1], dests[1][0] - mapCentre[0]);
+	glVertex2d(dests[1][1] - refLon, dests[1][0] - refLat);
 	glColor3f(0, 1, 0);
-	glVertex2d(dests[2][1] - mapCentre[1], dests[2][0] - mapCentre[0]);
+	glVertex2d(dests[2][1] - refLon, dests[2][0] - refLat);
 	glEnd();
 	
 	// THIS ANIMATES
@@ -31,12 +32,27 @@ void AutoGUI::drawFullMap() {
 	glEnable(GL_LINE_STIPPLE);
 	glBegin(GL_LINE_STRIP);
 	for (int i = 2;i >= 0;i--)
-		glVertex2d(dests[i][1] - mapCentre[1], dests[i][0] - mapCentre[0]);
+		glVertex2d(dests[i][1] - refLon, dests[i][0] - refLat);
 	glEnd();
 	
 	glDisable(GL_LINE_STIPPLE);
 	
 	glPointSize(1);
+	
+	if(path.size()) {
+		glColor3f(0,0,1);
+		glBegin(GL_LINE_STRIP);
+		for (std::list<ListNode>::iterator i = path.begin(); i != path.end(); ++i)
+			glVertex2d((*i)->lon - refLon, (*i)->lat - refLat);
+		glEnd();
+		
+		glPointSize(5);
+		glBegin(GL_POINTS);
+		for (std::list<ListNode>::iterator i = path.begin(); i != path.end(); ++i)
+			glVertex2d((*i)->lon - refLon, (*i)->lat - refLat);
+		glEnd();
+		glPointSize(1);
+	}
 	glPopMatrix();
 }
 
@@ -50,9 +66,9 @@ void AutoGUI::drawOverviewMap() {
 	
 	glTranslated(currWinW/6.0, -currWinH/2.0, 0);
 	
-	glScaled(SCALE, SCALE, 0);
+	glScaled(SCALE, SCALE, 1);
 	
-	drawFullMap();
+	drawFullMap(mapCentre[0], mapCentre[1]);
 	glPopMatrix();
 }
 
@@ -61,9 +77,10 @@ void AutoGUI::drawTrackingMap() {
 	
 	glTranslated(currWinW - currWinW/3.0, -currWinH/2.0, 0);
 	
-	glScaled(1.5*SCALE, 1.5*SCALE, 0);
+	glScaled(1.5*SCALE, 1.5*SCALE, 1);
 	
-	drawFullMap();
+	drawFullMap(currentPos.lat, currentPos.lon);
+	
 	glPopMatrix();
 }
 
@@ -110,6 +127,19 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[], double destPos[
 	ListNode init = (ListNode)malloc(sizeof(vector3D));
 	init->lat = -33.9178303;
 	init->lon = 151.2318155;
+	init->alt = 0;
+	path.push_front(init);
+	memcpy(&currentPos, init, sizeof(vector3D));
+	
+	init = (ListNode)malloc(sizeof(vector3D));
+	init->lat = -33.9188303;
+	init->lon = 151.2328155;
+	init->alt = 0;
+	path.push_front(init);
+	
+	init = (ListNode)malloc(sizeof(vector3D));
+	init->lat = -33.914873;
+	init->lon = 151.225468;
 	init->alt = 0;
 	path.push_front(init);
 }
