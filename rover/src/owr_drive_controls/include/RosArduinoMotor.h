@@ -21,7 +21,7 @@ using namespace std;
 
 class RosArduinoMotor {
     public:
-		RosArduinoMotor();
+		RosArduinoMotor( void);
         void run();
 
     private:

@@ -1,4 +1,16 @@
- <cmath>
+/*
+ * PathingController is the node for reading in (subscribing to) position and destination information
+ * and adjusting (publishing) twist velocities to the arduino controller
+ * Author: Simon Ireland for Bluesat OWR
+ * Date: 11/07/2015
+ *
+ * NODE NAME: 'owr_auton_pathing'
+ * topics used: see definitions
+ */
+ 
+#include "PathingController.h" 
+#include <iostream>
+#include <cmath>
 #include <math.h>
 
 #define PUBLISH_TOPIC "/owr/auto_pathing"
@@ -89,4 +101,3 @@ void PathingController::spin() {
         ros::spinOnce();
     }
 }
-

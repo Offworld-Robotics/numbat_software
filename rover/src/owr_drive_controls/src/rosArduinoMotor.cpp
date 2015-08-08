@@ -15,7 +15,7 @@ int main(int argc, char ** argv) {
     rosArduinoMotor.run();
 }
 
-RosArduinoMotor::RosArduinoMotor() {
+RosArduinoMotor::RosArduinoMotor( void) {
 
     // Init file
     fd = fopen(TTY, "w");
@@ -47,16 +47,11 @@ void RosArduinoMotor::run() {
 // Send a message to the arduino so it can run the motors
 void RosArduinoMotor::sendMessage(float lf, float lm, float lb, float rf, float rm, float rb) {
     if(fd) {
-        fprintf(fd,"%f %f %f %f %f %f\n",lf,lm,lb,rf,rm,rb);
-        float buffer;
-        //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
-        //fsync((int)fd);
-        //fflush(fd);
+        //
     } else {
         printf("unsucesfull\n");
     }
-    printf("%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);
+    //printf("%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);
 }
 
 // Convert subscribed Twist input to motor vectors for arduino output
@@ -66,22 +61,33 @@ void RosArduinoMotor::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
     #define DIFF 0.25
 
 	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
-    #define SENSITIVITY 1
+    #define SENSITIVITY 0
 
     float power = vel->linear.x;
-    float lr = vel->angular.x;
+    float lr = vel->linear.y;
 
-    //float leftDrive  = 1.0f;
-    //float rightDrive = 1.0f;
+    float lDrive;
+    float rDrive;
 
-    float lDrive  =   (power + lr)/2;
-    float rDrive =   -(power - lr)/2;
+    if(lr < 0){
+    	lDrive = power + (2 * lr * power);
+    	rDrive = power;
+    } else if (lr > 0){
+    	lDrive = power;
+    	rDrive = power - (2 * lr * power);
+    } else {
+    	lDrive = power;
+    	rDrive = power;
+    }
+
+    lDrive = (lDrive * 500) + 1500.0;
+    rDrive = (rDrive * 500) +1500.0;
 
     // The formula in use i: output = (ax^3 + (1-a)x) * 500 + 1500
     // Where a = SENSITIVITY
 
-    leftDrive = ((SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive) * 500) + 1500.0;
-    rightDrive = ((SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive) * 500) + 1500.0;
+    leftDrive = (SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive);
+    rightDrive = (SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive);
 
     lfDrive = leftDrive;
     lmDrive = leftDrive;
