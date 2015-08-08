@@ -76,8 +76,7 @@ class FineControlGUI : public GLUTWindow {
 		
 		bool arrows[4];
 		//std::vector<Button*> buttons;
-		unsigned char LFeedStatus[TOTAL_FEEDS]; // status for each feed
-		unsigned char RFeedStatus[TOTAL_FEEDS];
+		unsigned char FeedStatus[TOTAL_FEEDS]; // status for each feed
 		int onlineFeeds;
                 std::vector<Video_Feed_Frame*> videoScreens;
                 int LScreenCam, RScreenCam;
