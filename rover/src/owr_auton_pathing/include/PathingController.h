@@ -16,11 +16,11 @@
 class PathingController {
     
     public:
-        PathingController(const std::string topic);
+        PathingController(void);
         void spin();
     protected:
-        //void receivePosMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) ;
-        //void receiveDestMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) ;
+        void receivePosMsg(const owr_messages::position &msg) ;
+        void receiveDestMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) ;
         void sendMsg();
         ros::Publisher  twistPublisher;   
         ros::Subscriber positionSubscriber;
@@ -30,11 +30,12 @@ class PathingController {
         ros::NodeHandle node;
         std::string topic;
         
-        double currLatitude;
-        double currLongitude;
-        double currHeading
-        double destLatitude;
-        double destLongitude;
+        double currLat;
+        double currLong;
+        double currHeading;
+        double destHeading;
+        double destLat;
+        double destLong;
 };
 
 
