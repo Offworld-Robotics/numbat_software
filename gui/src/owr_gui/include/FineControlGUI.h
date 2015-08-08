@@ -7,6 +7,8 @@
 
 #include "Button.h"
 #include "GLUTWindow.h"
+#include "ListNode.h"
+#include "ArmState.h"
 #include <vector>
 #include <ros/ros.h>
 #include "owr_messages/stream.h"
@@ -38,26 +40,28 @@
 class FineControlGUI : public GLUTWindow {
 	public:
 		FineControlGUI(int width, int height, int *argc, char *argv[]);
-		//void updateInfo(float voltage, float heading, int topActuatorPos, int botActuatorPos, float pH, float humidity, double altitude, double latitude, double longitude, float tiltX, float tiltY, float ultrason);
-		void updateVideo0(unsigned char *frame, int width, int height);
-		void updateVideo1(unsigned char *frame, int width, int height);
+		void updateInfo(float voltage, float ultrasonic, float pH, float humidity, ArmState *armState, float heading, float tiltX, float tiltY, ListNode cur);
+		void updateVideo(unsigned char *frame, int width, int height, int camera);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 	
 	private:
+		void reshape(int w, int h);
 		void idle();
 		void display();
 		void keydown(unsigned char key, int x, int y);
 		void mouse(int button, int state, int x, int y);
 		
+		void drawLFeedBox(int feed);
+		void drawRFeedBox(int feed);
+		void drawFeedStatus();
+		void displayInfo();
+		
 		float voltage;
-		float heading;
-		int topActuatorPos;
-		int botActuatorPos;
+		ArmState armState;
 		float pH;
 		float humidity;
-		double altitude;
-		double latitude;
-		double longitude;
+		vector3D currentPos;
+		float heading;
 		float tiltX;
 		float tiltY;
 		float ultrasonic;
@@ -66,15 +70,16 @@ class FineControlGUI : public GLUTWindow {
 		void *fineControlNode;
 		
 		//ros stuff
-		ros::NodeHandle node;
 		ros::Publisher streamPub;
-		void toggleStream(int feed);
+		void toggleStream(int feed, bool left);
+		void sendStreamMsg(int stream, bool on);
 		
 		bool arrows[4];
 		//std::vector<Button*> buttons;
-		unsigned char feedStatus[TOTAL_FEEDS]; // status for each feed
+		unsigned char FeedStatus[TOTAL_FEEDS]; // status for each feed
 		int onlineFeeds;
-                std::vector<Video_Feed_Frame*> videoFeeds;
+                std::vector<Video_Feed_Frame*> videoScreens;
+                int LScreenCam, RScreenCam;
 };
 
 #endif // FINECONTROLGUI_H
