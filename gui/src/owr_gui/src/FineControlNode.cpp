@@ -115,3 +115,13 @@ void FineControlNode::receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg) 
 	
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 1);
 }
+
+void FineControlNode::receiveVideoMsg2(const sensor_msgs::Image::ConstPtr& msg) {
+	assert(msg);
+	
+	//ROS_INFO("received video frame");
+	
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 2);
+}
+
+

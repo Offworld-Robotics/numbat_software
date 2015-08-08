@@ -30,8 +30,12 @@ void FineControlGUI::updateVideo(unsigned char *frame, int width, int height, in
 }
 
 void FineControlGUI::updateFeedsStatus(unsigned char *feeds, int numOnline) {
+        // get the status, FEED_ACTIVE for streaming feeds and 
+        //                 FEED_INACTIVE for connected cameras that aren't shown
 	memcpy(LFeedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
 	memcpy(RFeedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
+        // now we have the same status in left and right array,
+        //  but we want to show a feed as FEED_INACTIVE on the screen that it is not displayed on
 	if(LScreenCam >= 0 && RScreenCam >= 0 && LScreenCam != RScreenCam) {
 		LFeedStatus[RScreenCam] = FEED_INACTIVE;
 		RFeedStatus[LScreenCam] = FEED_INACTIVE;
@@ -208,11 +212,13 @@ void FineControlGUI::toggleStream(int feed, bool left) {
 		if(left) LScreenCam = feed;
 		else RScreenCam = feed;
 		sendStreamMsg(feed, true);
-		/*for(int i = 0;i < TOTAL_FEEDS;i++) {
+                /*
+		for(int i = 0;i < TOTAL_FEEDS;i++) {
 			if(i != LScreenCam && i != RScreenCam) {
 				sendStreamMsg(i, false);
 			}
-		}*/
+		}
+                */
 	}
 	//ros::spinOnce();
 }
