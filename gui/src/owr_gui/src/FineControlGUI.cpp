@@ -8,6 +8,13 @@
 #include <ros/ros.h>
 #include "FineControlGUI.h"
 #include "FineControlNode.h"
+#include "ListNode.h"
+
+void FineControlGUI::reshape(int w, int h) {
+	GLUTWindow::reshape(w, h);
+	for(std::vector<Video_Feed_Frame*>::iterator i = videoScreens.begin(); i != videoScreens.end(); ++i)
+		(*i)->setNewWindowSize(w, h);
+}
 
 void FineControlGUI::idle() {
 	ros::spinOnce();
@@ -15,50 +22,51 @@ void FineControlGUI::idle() {
 	usleep(15000);
 }
 
-void FineControlGUI::updateVideo0(unsigned char *frame, int width, int height) {
-	videoFeeds[0]->setNewStreamFrame(frame, width, height);
-	videoFeeds[1]->setNewStreamFrame(frame, width, height);
-}
-
-void FineControlGUI::updateVideo1(unsigned char *frame, int width, int height) {
-	videoFeeds[1]->setNewStreamFrame(frame, width, height);
+void FineControlGUI::updateVideo(unsigned char *frame, int width, int height, int cam) {
+	if(cam == LScreenCam)
+		videoScreens[0]->setNewStreamFrame(frame, width, height);
+	else if(cam == RScreenCam)
+		videoScreens[1]->setNewStreamFrame(frame, width, height);
 }
 
 void FineControlGUI::updateFeedsStatus(unsigned char *feeds, int numOnline) {
-	memcpy(feedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
+	memcpy(LFeedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
+	memcpy(RFeedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
+	if(LScreenCam >= 0 && RScreenCam >= 0 && LScreenCam != RScreenCam) {
+		LFeedStatus[RScreenCam] = FEED_INACTIVE;
+		RFeedStatus[LScreenCam] = FEED_INACTIVE;
+	}
 	onlineFeeds = numOnline;
 	//ROS_INFO("updating online feeds: [%d,%d,%d,%d]", feeds[0], feeds[1], feeds[2], feeds[3]);
 }
 
+void FineControlGUI::updateInfo(float volt, float ultrason, float ph, float humid, ArmState *arm, float head, float tx, float ty, ListNode cur) {
+	voltage = volt;
+	ultrasonic = ultrason;
+	pH = ph;
+	humidity = humid;
+	if(arm != NULL) armState = *arm;
+	heading = head;
+	tiltX = tx;
+	tiltY = ty;
+	if(cur != NULL) currentPos = *cur;
+	
+	//ROS_INFO("Updated info");
+}
+
 void FineControlGUI::display() {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(0,0,0);
-	
-	// draw dividing lines
-	glPushMatrix();
-	glTranslated(currWinW/2, -currWinH/2, 0);
-	glBegin(GL_LINES);
-	glVertex2d(0, currWinH);
-	glVertex2d(0, -currWinH/4);
-	glVertex2d(-currWinW, -currWinH/4);
-	glVertex2d(currWinW, -currWinH/4);
-	glEnd();
-	glPopMatrix();
 	
 	/*for(std::vector<Button*>::iterator i = buttons.begin();i != buttons.end();++i) {
 		(*i)->draw();
 	}*/
-	glPushMatrix();
-	glTranslated(currWinW/2, -7*currWinH/8, 0);
-	glColor3f(0,0,0);
-	char txt[] = "GUI info placeholder";
-	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
-	glPopMatrix();
 
         //Draw Video Feeds to Screen
-        for(std::vector<Video_Feed_Frame*>::iterator feed = videoFeeds.begin(); feed != videoFeeds.end(); ++feed)
+        for(std::vector<Video_Feed_Frame*>::iterator feed = videoScreens.begin(); feed != videoScreens.end(); ++feed)
 		(*feed)->draw();
-
+	
+	drawFeedStatus();
+	displayInfo();
 	glutSwapBuffers();
 }
 
@@ -66,7 +74,17 @@ void FineControlGUI::keydown(unsigned char key, int x, int y) {
 	if (key == 27) {
 		exit(0);
 	} else if (key >= '0' && key <= '3') {
-		toggleStream(key - '0');
+		toggleStream(key - '0', true);
+	} else if (key >= '4' && key <= '7') {
+		toggleStream(key - '4', false);
+	} else if (key == 'q') {
+		videoScreens[0]->zoom(ZOOM_IN);
+	} else if (key == 'a') {
+		videoScreens[0]->zoom(ZOOM_OUT);
+	} else if (key == 'e') {
+		videoScreens[1]->zoom(ZOOM_IN);
+	} else if (key == 'd') {
+		videoScreens[1]->zoom(ZOOM_OUT);
 	}
 }
 
@@ -83,7 +101,56 @@ void FineControlGUI::mouse(int button, int state, int x, int y) {
 	}*/
 }
 
+// draw the buttons
+void FineControlGUI::drawLFeedBox(int feed) {
+	if (LFeedStatus[feed] == FEED_ACTIVE)
+		glColor3ub(FEED_ACTIVE_BUTTON_R, FEED_ACTIVE_BUTTON_G, FEED_ACTIVE_BUTTON_B);
+	else if (LFeedStatus[feed] == FEED_INACTIVE)
+		glColor3ub(FEED_INACTIVE_BUTTON_R, FEED_INACTIVE_BUTTON_G, FEED_INACTIVE_BUTTON_B);
+	else
+		glColor3ub(FEED_OFFLINE_BUTTON_R, FEED_OFFLINE_BUTTON_G, FEED_OFFLINE_BUTTON_B);
+
+	glRecti(-30, -25, 30, 25);
+	glColor3f(0, 0, 1);
+	glRasterPos2i(-5, -6);
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, feed + '0');
+}
+
+void FineControlGUI::drawRFeedBox(int feed) {
+	if (RFeedStatus[feed] == FEED_ACTIVE)
+		glColor3ub(FEED_ACTIVE_BUTTON_R, FEED_ACTIVE_BUTTON_G, FEED_ACTIVE_BUTTON_B);
+	else if (RFeedStatus[feed] == FEED_INACTIVE)
+		glColor3ub(FEED_INACTIVE_BUTTON_R, FEED_INACTIVE_BUTTON_G, FEED_INACTIVE_BUTTON_B);
+	else
+		glColor3ub(FEED_OFFLINE_BUTTON_R, FEED_OFFLINE_BUTTON_G, FEED_OFFLINE_BUTTON_B);
+
+	glRecti(-30, -25, 30, 25);
+	glColor3f(0, 0, 1);
+	glRasterPos2i(-5, -6);
+	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, feed + '0');
+}
+
+// draws feeds boxes for each of the feeds
+void FineControlGUI::drawFeedStatus() {
+	glPushMatrix();
+	glTranslated(currWinW*0.05, -currWinH*0.7, 0);
+	for(int i = 0;i < TOTAL_FEEDS;i++) {
+		drawLFeedBox(i);
+		glTranslated(75, 0, 0);
+	}
+	glPopMatrix();
+	
+	glPushMatrix();
+	glTranslated(currWinW*0.55, -currWinH*0.7, 0);
+	for(int i = 0;i < TOTAL_FEEDS;i++) {
+		drawRFeedBox(i);
+		glTranslated(75, 0, 0);
+	}
+	glPopMatrix();
+}
+
 FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) : GLUTWindow(width, height, argc, argv, "Fine Control") {
+	ros::NodeHandle node;
 	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	fineControlNode = new FineControlNode(this);
 	
@@ -93,20 +160,28 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 	glutMouseFunc(glut_mouse);
 	
 	// push the two feeds
-        videoFeeds.push_back(new Video_Feed_Frame(width*1/4, -height*3/8, width/2, height*3/4));
-        videoFeeds.push_back(new Video_Feed_Frame(width*3/4, -height*3/8, width/2, height*3/4));
+        videoScreens.push_back(new Video_Feed_Frame(width, height, 0.25, -0.375, 0.5, 0.75));
+        videoScreens.push_back(new Video_Feed_Frame(width, height, 0.75, -0.375, 0.5, 0.75));
 
-        // setup Zoom Buttons
 	for (int i = 0;i < 4;i++)
 		arrows[i] = false;
 	
-	for (int i = 0;i < TOTAL_FEEDS;i++)
-		feedStatus[i] = FEED_OFFLINE;
+	for (int i = 0;i < TOTAL_FEEDS;i++) {
+		LFeedStatus[i] = FEED_OFFLINE;
+		RFeedStatus[i] = FEED_OFFLINE;
+		sendStreamMsg(i, false);
+	}
 	onlineFeeds = 0;
 	
-	//start on stream 0
-	usleep(150000);
-	toggleStream(0);
+	// setting both screens to unmapped to any cam
+	LScreenCam = RScreenCam = -1;
+	
+	voltage = 0;
+	memset(&armState, 0, sizeof(armState));
+	pH = humidity = 0;
+	memset(&currentPos, 0, sizeof(currentPos));
+	heading = tiltX = tiltY = 0;
+	ultrasonic = 0;
 	
 	/*char txt[2] = {'+', '\0'};
 	buttons.push_back(new Button(currWinW/2 - 100, -currWinH/2, 50, 50, 0, 0.5, 0.5, txt));
@@ -114,38 +189,103 @@ FineControlGUI::FineControlGUI(int width, int height, int *argc, char *argv[]) :
 	buttons.push_back(new Button(currWinW/2 + 100, -currWinH/2, 50, 50, 0, 0.5, 0.5, txt));*/
 }
 
-// toggles between available streams
-void FineControlGUI::toggleStream(int feed) {
-	printf("Switching feed %d\n", feed);
-	
-	if (feedStatus[feed] == FEED_OFFLINE) {
-		printf("Error: feed %d is offline\n", feed);
-		return;
-	} else if (feedStatus[feed] == FEED_INACTIVE) {
-		feedStatus[feed] = FEED_ACTIVE;
-		for(int i = 0;i < TOTAL_FEEDS;i++) {
-			if (i != feed && feedStatus[i] == FEED_ACTIVE) {
-				owr_messages::stream off;
-				feedStatus[i] = FEED_INACTIVE;
-				off.stream = i;
-				off.on = false;
-				streamPub.publish(off);
-			}
-		}
-	} else {
-		feedStatus[feed] = FEED_INACTIVE;
-	}
-	
-	owr_messages::stream msg;
-	msg.stream = feed;
-	if (feedStatus[feed] == FEED_ACTIVE) {
-		msg.on = true;
-	} else {
-		msg.on = false;
-	}
-	streamPub.publish(msg);
-	
+void FineControlGUI::sendStreamMsg(int stream, bool on) {
+	owr_messages::stream s;
+	s.stream = stream;
+	s.on = on;
+	streamPub.publish(s);
 	ros::spinOnce();
+}
+
+// toggles between available streams for the leftside screen
+void FineControlGUI::toggleStream(int feed, bool left) {
+	ROS_INFO("FineControl: Switching feed %d", feed);
+	
+	if (LFeedStatus[feed] == FEED_OFFLINE) {
+		ROS_INFO("FineControl: Error: Feed %d is offline", feed);
+		return;
+	} else {
+		if(left) LScreenCam = feed;
+		else RScreenCam = feed;
+		sendStreamMsg(feed, true);
+		/*for(int i = 0;i < TOTAL_FEEDS;i++) {
+			if(i != LScreenCam && i != RScreenCam) {
+				sendStreamMsg(i, false);
+			}
+		}*/
+	}
+	//ros::spinOnce();
+}
+
+void FineControlGUI::displayInfo() {
+	char txt[50] = {0};
+	glColor3f(0, 0, 0);
+	glPushMatrix();
+	glTranslated(0, -5*currWinH/6, 0);
+	
+	// left info column: voltage, heading, and tilts
+	glPushMatrix();
+	
+	sprintf(txt, "Voltage: %.2f", voltage);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Heading: %.2f", heading);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "TiltX: %.2f", tiltX);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "TiltY: %.2f", tiltY);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glPopMatrix();
+	
+	// middle info column: arm position
+	glTranslated(2*currWinW/5, 0, 0);
+	glPushMatrix();
+	
+	sprintf(txt, "Top Actuator: %d", armState.topActPos);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Bot Actuator: %d", armState.botActPos);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Arm Rotation: %.2f", armState.rotation);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glPopMatrix();
+	
+	// right info column: environmentals, GPS
+	glTranslated(2*currWinW/5, 0, 0);
+	glPushMatrix();
+	
+	sprintf(txt, "pH: %.2f", pH);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Humidity: %.2f", humidity);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Lat: %.2f", currentPos.lat);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Lon: %.2f", currentPos.lon);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	sprintf(txt, "Altitude: %.2f", currentPos.alt);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glPopMatrix();
+	
+	glPopMatrix();
 }
 
 int main(int argc, char *argv[]) {

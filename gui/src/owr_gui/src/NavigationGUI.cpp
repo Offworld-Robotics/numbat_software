@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
 }
 
 NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GLUTWindow(width, height, argc, argv, "Navigation") {
+	ros::NodeHandle node;
 	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	navigationNode = new NavigationNode(this);
 	
@@ -36,7 +37,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	glShadeModel(GL_FLAT);
 	glEnable(GL_BLEND); // enables transparency
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glutKeyboardFunc(glut_keydown);	//glutKeyboardUpFunc(glut_keyup);
+	glutKeyboardFunc(glut_keydown);
+	//glutKeyboardUpFunc(glut_keyup);
 	glutSpecialFunc(glut_special_keydown);
 	glutSpecialUpFunc(glut_special_keyup);
 	
@@ -45,9 +47,7 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	tiltX = 0; // tilt of left-right in degrees
 	tiltY = 0; // tilt of forward-back in degrees
 	ultrasonic = 10;
-	longitude = 0;
-	latitude = 0;
-	altitude = 0;
+	memset(&currentPos, 0, sizeof(currentPos));
 	pathRotation = 90;
 	prevRotation = 90;
 	cursorSpin = 0;
@@ -59,26 +59,26 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 		feedStatus[i] = FEED_OFFLINE;
 	onlineFeeds = 0;
 
-	// create videoFeed object
-	videoFeeds.push_back(new Video_Feed_Frame(width/2, -height/2, width, height));
+	// create videoScreen object
+	videoScreen = new Video_Feed_Frame(width, height, 0.5, -0.5, 1, 1);
 
 	scale = DEFAULT_SCALE;
 	displayOverlay = true;
 	srand(time(NULL));
 	//generateTarget();
-	
-	//start on stream 0
-	usleep(150000);
-	toggleStream(0);
 }
 
-void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, double alt, vector2D t) {
+void NavigationGUI::reshape(int w, int h) {
+	GLUTWindow::reshape(w, h);
+	videoScreen->setNewWindowSize(w, h);
+}
+
+void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, vector3D t) {
 	battery = bat;
 	signal = sig;
 	
 	if (cur != NULL) GPSList.push_front(cur);
 	
-	altitude = alt;
 	target = t;
 	ultrasonic = ultrason;
 	
@@ -87,7 +87,7 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 
 void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 	// use the Video_Feed_Frame object method
-	videoFeeds[0]->setNewStreamFrame(frame, width, height);
+	videoScreen->setNewStreamFrame(frame, width, height);
 	
 	//ROS_INFO("Updated video");
 }
@@ -95,7 +95,7 @@ void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 void NavigationGUI::updateFeedsStatus(unsigned char *feeds, int numOnline) {
 	memcpy(feedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
 	onlineFeeds = numOnline;
-	ROS_INFO("updating online feeds: [%d,%d,%d,%d]", feeds[0], feeds[1], feeds[2], feeds[3]);
+	ROS_INFO("Navigation: Updating feeds: [%d,%d,%d,%d]", feeds[0], feeds[1], feeds[2], feeds[3]);
 }
 
 void NavigationGUI::idle() {
@@ -142,7 +142,7 @@ void NavigationGUI::idle() {
 	if (GPSList.size() >= 2) {
 		ListNode first = *GPSList.begin();
 		ListNode second = *(++GPSList.begin());
-		pathRotation = -atan2(second->y - first->y, second->x - first->x) * 180.0 / PI - 90;
+		pathRotation = -atan2(second->lat - first->lat, second->lon - first->lon) * 180.0 / PI - 90;
 	}
 	
 	frameCount++;
@@ -158,9 +158,8 @@ void NavigationGUI::idle() {
 }
 
 void NavigationGUI::drawVideo() {
-	//Draw Video Feeds to Screen
-	for(std::vector<Video_Feed_Frame*>::iterator feed = videoFeeds.begin(); feed != videoFeeds.end(); ++feed)
-		(*feed)->draw();
+	//Draw Video Feed to Screen
+	videoScreen->draw();
 }
 
 void NavigationGUI::display() {
@@ -181,51 +180,53 @@ void NavigationGUI::display() {
 }
 
 void NavigationGUI::GPSAddRandPos() {
-	printf("Generated random position\n");
-	double randx, randy;
-	ListNode n = (ListNode) malloc(sizeof(vector2D));
-	randx = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
-	randy = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	double randlon, randlat;
+	ListNode n = (ListNode) malloc(sizeof(vector3D));
+	randlon = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
+	randlat = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
 	if (GPSList.size() == 0) {
-		n->x = randx + 151.139;	
-	n->y = randy - 33.718;
+		n->lon = randlon + 151.139;
+		n->lat = randlat - 33.718;
 	} else {
-		randx -= 1.0/1000.0/2.0;
-		n->x = (*GPSList.begin())->x + randx;
-		randy -= 1.0/1000.0/2.0;
-		n->y = (*GPSList.begin())->y + randy;
+		randlon -= 1.0/1000.0/2.0;
+		n->lon = (*GPSList.begin())->lon + randlon;
+		randlat -= 1.0/1000.0/2.0;
+		n->lat = (*GPSList.begin())->lat + randlat;
 	}
+	n->alt = 0;
 	GPSList.push_front(n);
+	//ROS_INFO("Generated random position: %lf, %lf, %lf\n", n->lat, n->lon, n->alt);
 }
 
-void NavigationGUI::GPSAddPos(double x, double y) {
-	printf("GPSAddPos\n");
-	ListNode n = (ListNode) malloc(sizeof(vector2D));
-	n->x = x;
-	n->y = y;
+void NavigationGUI::GPSAddPos(double lon, double lat) {
+	ListNode n = (ListNode) malloc(sizeof(vector3D));
+	n->lon = lon;
+	n->lat = lat;
+	n->alt = 0;
 	GPSList.push_front(n);
 }
 
 void NavigationGUI::generateTarget() {
 	double randn;
 	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
-	target.x = randn + 151.139;
+	target.lon = randn + 151.139;
 	randn = static_cast <double> (rand()) / static_cast <double> (RAND_MAX) / 1000.0;
-	target.y = randn - 33.718;
+	target.lat = randn - 33.718;
+	target.alt = 0;
 }
 
 void NavigationGUI::printGPSPath() {
-	printf("Begin\n");
+	ROS_INFO("Begin");
 	for(std::list<ListNode>::iterator i = GPSList.begin();i != GPSList.end(); ++i) {
-		printf("%.15f, %.15f\n", (*i)->y, (*i)->x);
+		ROS_INFO("%.15f, %.15f", (*i)->lat, (*i)->lon);
 	}
-	printf("End\n");
+	ROS_INFO("End");
 }
 
 // draws GPS path and co-ordinates near the centre of the window
 void NavigationGUI::drawGPS() {
 	glPushMatrix();
-	glTranslated(currWinW/2, -3*currWinH/5, 0);
+	glTranslated(currWinW/2.0, -currWinH*3.0/5.0, 0);
 
 	if (GPSList.size() > 0) {
 		// draws out the path so that the forward direction of the rover always faces up on the screen
@@ -235,17 +236,17 @@ void NavigationGUI::drawGPS() {
 		glScaled(scale, scale, 1);
 		glColor3f(0, 0, 0);
 		
-		vector2D currentPos = *(*GPSList.begin());
+		vector3D currentPos = *(*GPSList.begin());
 		
 		glBegin(GL_LINE_STRIP);
 		for (std::list<ListNode>::iterator i = GPSList.begin(); i != GPSList.end(); ++i)
-			glVertex2d((*i)->x - currentPos.x, (*i)->y - currentPos.y);
+			glVertex2d((*i)->lon - currentPos.lon, (*i)->lat - currentPos.lat);
 		glEnd();
 		if (GPSList.size() > 1) {
 			glPointSize(5);
 			glBegin(GL_POINTS);
 			for (std::list<ListNode>::iterator i = ++GPSList.begin(); i != GPSList.end(); ++i)
-				glVertex2d((*i)->x - currentPos.x, (*i)->y - currentPos.y);
+				glVertex2d((*i)->lon - currentPos.lon, (*i)->lat - currentPos.lat);
 			glEnd();
 			glPointSize(1);
 		}
@@ -273,12 +274,12 @@ void NavigationGUI::drawGPS() {
 		sprintf(GPSLong, "Long: Unknown");
 		sprintf(GPSAlt, "Alt: Unknown");
 	} else {
-		sprintf(GPSLat, "Lat: %.10f", (*GPSList.begin())->y);
-		sprintf(GPSLong, "Long: %.10f", (*GPSList.begin())->x);	
-		sprintf(GPSAlt, "Alt: %.10f", altitude);
+		sprintf(GPSLat, "Lat: %.10f", (*GPSList.begin())->lat);
+		sprintf(GPSLong, "Long: %.10f", (*GPSList.begin())->lon);	
+		sprintf(GPSAlt, "Alt: %.10f", (*GPSList.begin())->alt);
 	}
 	
-	glTranslated(-50, -currWinH/4, 0);
+	glTranslated(-50, -currWinH/4.0, 0);
 	
 	glColor4f(0, 1, 0, TEXTBOX_ALPHA);
 	glRecti(-20, 30, 250, -125);
@@ -300,10 +301,10 @@ void NavigationGUI::drawGPS() {
 
 // toggles between available streams
 void NavigationGUI::toggleStream(int feed) {
-	printf("Switching feed %d\n", feed);
+	ROS_INFO("Navigation: Switching feed %d", feed);
 	
 	if (feedStatus[feed] == FEED_OFFLINE) {
-		printf("Error: feed %d is offline\n", feed);
+		ROS_INFO("Navigation: Error: Feed %d is offline", feed);
 		return;
 	} else if (feedStatus[feed] == FEED_INACTIVE) {
 		feedStatus[feed] = FEED_ACTIVE;
@@ -518,14 +519,18 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 		exit(0);
 	} else if (key >= '0' && key <= '3') {
 		toggleStream(key - '0');
-	} else if (key == 'q') {
+	} /*else if (key == 'q') {
 		printGPSPath();
 	} else if(key ==  ' ') {
 		#ifdef DEBUG
 		GPSAddRandPos();
 		#endif
-	} else if (key == '\t') {
+	}*/ else if (key == '\t') {
 		displayOverlay = !displayOverlay;
+	} else if (key == 'w') {
+		videoScreen->zoom(ZOOM_IN);
+	} else if (key == 's') {
+		videoScreen->zoom(ZOOM_OUT);
 	}
 }
 

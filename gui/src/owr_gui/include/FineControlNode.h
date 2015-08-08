@@ -22,7 +22,7 @@ class FineControlNode {
 		FineControlNode(FineControlGUI *gui);
 		void spin();
 		void receiveFeedsStatus(const owr_messages::activeCameras::ConstPtr &msg);
-		//void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
+		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveVideoMsg0(const sensor_msgs::Image::ConstPtr& msg);
 		void receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg);
 		
@@ -33,14 +33,11 @@ class FineControlNode {
 		ros::Subscriber feedsSub;
 		
 		float voltage;
-		float heading;
-		int topActuatorPos;
-		int botActuatorPos;
+		ArmState armState;
 		float pH;
 		float humidity;
-		double altitude;
-		double latitude;
-		double longitude;
+		vector3D currentPos;
+		float heading;
 		float tiltX;
 		float tiltY;
 		float ultrasonic;
