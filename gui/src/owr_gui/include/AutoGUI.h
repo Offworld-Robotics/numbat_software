@@ -16,10 +16,12 @@ class AutoGUI : public GLUTWindow {
 		AutoGUI(int width, int height, int *argc, char *argv[], double destPos[3][2]);
 		void updateInfo(ListNode cur);
 	private:
-		void drawFullMap(double refLat, double refLon);
 		void idle();
 		void display();
 		void keydown(unsigned char key, int x, int y);
+		
+		void drawFullMap(double refLat, double refLon);
+		void drawGPSPos();
 		
 		bool arrows[4];
 		double dests[3][2];

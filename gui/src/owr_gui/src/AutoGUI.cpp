@@ -84,6 +84,34 @@ void AutoGUI::drawTrackingMap() {
 	glPopMatrix();
 }
 
+void AutoGUI::drawGPSPos() {
+	glPushMatrix();
+	
+	glTranslated(0.75*currWinW, -0.85*currWinH, 0);
+	
+	char GPSLat[30];
+	char GPSLong[30];
+	char GPSAlt[30];
+	if (path.size() == 0) {
+		sprintf(GPSLat, "Lat: Unknown");
+		sprintf(GPSLong, "Long: Unknown");
+		sprintf(GPSAlt, "Alt: Unknown");
+	} else {
+		sprintf(GPSLat, "Lat: %.10f", (*path.begin())->lat);
+		sprintf(GPSLong, "Long: %.10f", (*path.begin())->lon);	
+		sprintf(GPSAlt, "Alt: %.10f", (*path.begin())->alt);
+	}
+	
+	glColor3f(1, 1, 1);
+	drawText(GPSLat, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	glTranslated(0, -20, 0);
+	drawText(GPSLong, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	glTranslated(0, -20, 0);
+	drawText(GPSAlt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glPopMatrix();
+}
+
 void AutoGUI::display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	
@@ -98,6 +126,7 @@ void AutoGUI::display() {
 	
 	drawOverviewMap();
 	drawTrackingMap();
+	drawGPSPos();
 	
 	glutSwapBuffers();
 }
