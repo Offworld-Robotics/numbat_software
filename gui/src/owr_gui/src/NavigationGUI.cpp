@@ -59,8 +59,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 		feedStatus[i] = FEED_OFFLINE;
 	onlineFeeds = 0;
 
-	// create videoFeed object
-	videoFeeds.push_back(new Video_Feed_Frame(width, height, 0.5, -0.5, 1, 1));
+	// create videoScreen object
+	videoScreen = new Video_Feed_Frame(width, height, 0.5, -0.5, 1, 1);
 
 	scale = DEFAULT_SCALE;
 	displayOverlay = true;
@@ -70,8 +70,7 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 
 void NavigationGUI::reshape(int w, int h) {
 	GLUTWindow::reshape(w, h);
-	for(std::vector<Video_Feed_Frame*>::iterator i = videoFeeds.begin(); i != videoFeeds.end(); ++i)
-		(*i)->setNewWindowSize(w, h);
+	videoScreen->setNewWindowSize(w, h);
 }
 
 void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, vector3D t) {
@@ -88,7 +87,7 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 
 void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 	// use the Video_Feed_Frame object method
-	videoFeeds[0]->setNewStreamFrame(frame, width, height);
+	videoScreen->setNewStreamFrame(frame, width, height);
 	
 	//ROS_INFO("Updated video");
 }
@@ -159,9 +158,8 @@ void NavigationGUI::idle() {
 }
 
 void NavigationGUI::drawVideo() {
-	//Draw Video Feeds to Screen
-	for(std::vector<Video_Feed_Frame*>::iterator feed = videoFeeds.begin(); feed != videoFeeds.end(); ++feed)
-		(*feed)->draw();
+	//Draw Video Feed to Screen
+	videoScreen->draw();
 }
 
 void NavigationGUI::display() {
@@ -530,9 +528,9 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 	}*/ else if (key == '\t') {
 		displayOverlay = !displayOverlay;
 	} else if (key == 'w') {
-		videoFeeds[0]->zoom(ZOOM_IN);
+		videoScreen->zoom(ZOOM_IN);
 	} else if (key == 's') {
-		videoFeeds[0]->zoom(ZOOM_OUT);
+		videoScreen->zoom(ZOOM_OUT);
 	}
 }
 
