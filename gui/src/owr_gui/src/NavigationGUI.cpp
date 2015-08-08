@@ -521,14 +521,18 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 		exit(0);
 	} else if (key >= '0' && key <= '3') {
 		toggleStream(key - '0');
-	} else if (key == 'q') {
+	} /*else if (key == 'q') {
 		printGPSPath();
 	} else if(key ==  ' ') {
 		#ifdef DEBUG
 		GPSAddRandPos();
 		#endif
-	} else if (key == '\t') {
+	}*/ else if (key == '\t') {
 		displayOverlay = !displayOverlay;
+	} else if (key == 'w') {
+		videoFeeds[0]->zoom(ZOOM_IN);
+	} else if (key == 's') {
+		videoFeeds[0]->zoom(ZOOM_OUT);
 	}
 }
 

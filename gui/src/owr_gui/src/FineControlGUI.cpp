@@ -77,6 +77,14 @@ void FineControlGUI::keydown(unsigned char key, int x, int y) {
 		toggleStream(key - '0', true);
 	} else if (key >= '4' && key <= '7') {
 		toggleStream(key - '4', false);
+	} else if (key == 'q') {
+		videoScreens[0]->zoom(ZOOM_IN);
+	} else if (key == 'a') {
+		videoScreens[0]->zoom(ZOOM_OUT);
+	} else if (key == 'e') {
+		videoScreens[1]->zoom(ZOOM_IN);
+	} else if (key == 'd') {
+		videoScreens[1]->zoom(ZOOM_OUT);
 	}
 }
 

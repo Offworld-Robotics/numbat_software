@@ -14,6 +14,8 @@ Video_Feed_Frame::Video_Feed_Frame(int winW, int winH, double _cenXRatio, double
 	wRatio = _wRatio;
 	hRatio = _hRatio;
 	setNewWindowSize(winW, winH);
+	zoomLevel = 0;
+	texCutoff = 0;
 	
 	// Setup the texture to store frames of the video feed into
 	glGenTextures(1, &videoTexture);
@@ -72,10 +74,10 @@ void Video_Feed_Frame::draw() {
 	
 	// data from frame array is flipped, texcoords were changed to compensate
 	glBegin(GL_QUADS);
-		glTexCoord2f(0, 1); glVertex2d(-halfWidth, -halfHeight); // Bottom Left
-		glTexCoord2f(1, 1); glVertex2d(halfWidth, -halfHeight); // Bottom Right
-		glTexCoord2f(1, 0); glVertex2d(halfWidth, halfHeight); // Top Right
-		glTexCoord2f(0, 0); glVertex2d(-halfWidth, halfHeight); // Top Left
+		glTexCoord2d(texCutoff, 1 - texCutoff); glVertex2d(-halfWidth, -halfHeight); // Bottom Left
+		glTexCoord2d(1 - texCutoff, 1 - texCutoff); glVertex2d(halfWidth, -halfHeight); // Bottom Right
+		glTexCoord2d(1 - texCutoff, texCutoff); glVertex2d(halfWidth, halfHeight); // Top Right
+		glTexCoord2d(texCutoff, texCutoff); glVertex2d(-halfWidth, halfHeight); // Top Left
 	glEnd();
 	
 	// must disable texturing when done or graphical glitches occur
@@ -83,3 +85,16 @@ void Video_Feed_Frame::draw() {
 	glPopMatrix();
 }
 
+void Video_Feed_Frame::zoom(bool dir) {
+	if(dir == ZOOM_IN) zoomLevel++;
+	else if(dir == ZOOM_OUT && zoomLevel) zoomLevel--;
+	
+	texCutoff = 0;
+	double curCut = 0.25;
+	int zl = zoomLevel;
+	while(zl > 0) {
+		texCutoff += curCut;
+		curCut /= 2;
+		zl--;
+	}
+}
