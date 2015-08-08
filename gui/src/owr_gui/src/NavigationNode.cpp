@@ -40,11 +40,11 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// createed yet, will wait til it has w/o doing anything
-	
-	videoSub[0] = n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this);
-	videoSub[1] = n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this);
-	videoSub[2] = n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this);
-	videoSub[3] = n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this); // Frames of video from camera
+	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+	videoSub[0] = n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
+	videoSub[1] = n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
+	videoSub[2] = n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
+	videoSub[3] = n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this, transportHints); // Frames of video from camera
 	
 }
 

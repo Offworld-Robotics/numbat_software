@@ -32,11 +32,12 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// createed yet, will wait til it has w/o doing anything
-	
-	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg0, this); // Frames of video from camera
+	//ros::TransportHints transportHints = ros::TransportHints().udp().tcpNoDelay();
+	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this, transportHints);
+	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg0, this, transportHints);
+	videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg0, this, transportHints);
+	videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg0, this, transportHints); // Frames of video from camera
 	
 }
 
