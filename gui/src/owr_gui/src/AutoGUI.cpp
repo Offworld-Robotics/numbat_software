@@ -6,6 +6,7 @@
 #include <list>
 #include "AutoGUI.h"
 #include "AutoNode.h"
+#include <ros/ros.h>
 
 void AutoGUI::updateInfo(ListNode cur) {
 	if (cur != NULL) path.push_front(cur);
@@ -105,6 +106,12 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[], double destPos[
 	mapCentre[1] = (dests[0][1]+dests[1][1]+dests[2][1])/3.0;
 	
 	memset(&currentPos, 0, sizeof(currentPos));
+	
+	ListNode init = (ListNode)malloc(sizeof(vector3D));
+	init->lat = -33.9178303;
+	init->lon = 151.2318155;
+	init->alt = 0;
+	path.push_front(init);
 }
 
 int main(int argc, char *argv[]) {
@@ -118,6 +125,7 @@ int main(int argc, char *argv[]) {
 			scanf("%lf", &dest[i][j]);
 		}
 	}*/
+	ros::init(argc, argv, "AutoGUI");
 	AutoGUI gui(1855, 1056, &argc, argv, dest);
 	gui.run();
 	return 0;

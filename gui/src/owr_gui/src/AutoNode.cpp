@@ -3,9 +3,6 @@
 	Handles updates to the Auto GUI
 	By Harry J.E Day for Bluesat OWR
 	Date: 31/05/2014
-	
-	
-	Updated 30/5/15 by Simon Ireland to detect and pass to gui the active/inactive/offline cameras
 */
 
 #include "AutoNode.h"
