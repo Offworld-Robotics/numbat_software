@@ -25,6 +25,7 @@
         </df>
       </df>
       <df name="owr_messages">
+<<<<<<< HEAD
         <df name="msg">
         </df>
       </df>
@@ -45,6 +46,52 @@
         </df>
         <df name="src">
           <in>chatter.cpp</in>
+        </df>
+      </df>
+    </df>
+    <df root="../src" name="1">
+      <df name="owr_camera_control">
+        <df name="include">
+          <df name="owr_camera_control">
+          </df>
+        </df>
+        <df name="msg">
+        </df>
+        <df name="script">
+        </df>
+        <df name="src">
+        </df>
+      </df>
+      <df name="owr_drive_controls">
+        <df name="include">
+        </df>
+        <df name="src">
+        </df>
+      </df>
+      <df name="owr_messages">
+        <df name="include">
+          <df name="owr_messages">
+          </df>
+        </df>
+=======
+>>>>>>> aa1974dca9850d330f00546e616188d948ee7ca7
+        <df name="msg">
+        </df>
+      </df>
+      <df name="owr_positioning">
+        <df name="include">
+        </df>
+        <df name="src">
+        </df>
+      </df>
+      <df name="shadow_base">
+        <df name="launch">
+        </df>
+        <df name="msg">
+        </df>
+        <df name="scripts">
+        </df>
+        <df name="src">
         </df>
       </df>
     </df>

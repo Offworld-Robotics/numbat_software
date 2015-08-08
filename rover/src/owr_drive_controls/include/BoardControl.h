@@ -16,7 +16,7 @@ using namespace std;
 
 
 //serial IO
-#define TTY "/dev/ttyACM1"
+#define TTY "/dev/ttyACM0"
 
 class BoardControl {
     public:
@@ -28,8 +28,6 @@ class BoardControl {
         void armCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
-        void sendTwist(void);
-        
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
         ros::Subscriber joySubscriber;
@@ -38,7 +36,7 @@ class BoardControl {
         //arm top, bottom
         int armTop, armBottom;
         float armRotate;
-        geometry_msgs::Twist vel;
+        int armIncRate;
         
         //to keep track of button states. It is possible press could change it
         int cam0Button, cam1Button, cam2Button, cam3Button;
