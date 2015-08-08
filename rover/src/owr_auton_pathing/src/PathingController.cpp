@@ -13,7 +13,7 @@
 #include <cmath>
 #include <math.h>
 
-#define PUBLISH_TOPIC "/owr/auto_pathing"
+#define PUBLISH_TOPIC "owr/control/drive"
 #define POS_TOPIC "/owr/position"
 #define DEST_TOPIC "/owr/dest"
  
