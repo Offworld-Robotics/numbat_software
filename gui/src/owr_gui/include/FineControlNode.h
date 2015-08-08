@@ -25,6 +25,7 @@ class FineControlNode {
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveVideoMsg0(const sensor_msgs::Image::ConstPtr& msg);
 		void receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg);
+		void receiveVideoMsg2(const sensor_msgs::Image::ConstPtr& msg);
 		
 	private:
 		FineControlGUI *gui;
