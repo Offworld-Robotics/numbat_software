@@ -93,7 +93,7 @@
   </link>
   <joint
     name="AAxle"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="-0.45037 0.17736 -0.44798"
       rpy="-3.1416 6.123E-17 1.5708" />
@@ -102,7 +102,7 @@
     <child
       link="AWheel" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 1" />
   </joint>
   <link
     name="BWheel">
@@ -146,7 +146,7 @@
   </link>
   <joint
     name="BAxle"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="0.04963 0.17736 -0.44798"
       rpy="-3.1416 6.123E-17 1.5708" />
@@ -155,7 +155,7 @@
     <child
       link="BWheel" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 1" />
   </joint>
   <link
     name="CWheel">
@@ -199,7 +199,7 @@
   </link>
   <joint
     name="CAxle"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="0.55021 0.17736 -0.44798"
       rpy="3.1416 6.123E-17 1.5708" />
@@ -208,6 +208,6 @@
     <child
       link="CWheel" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 1" />
   </joint>
 </robot>
