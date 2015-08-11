@@ -23,7 +23,6 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	tiltX = 30;
 	tiltY = 30;
 	ultrasonic = 0;
-	altitude = 0;
 	
 	//Initialise the feeds array
 	for(int i = 0; i < TOTAL_FEEDS; i++)
@@ -40,11 +39,11 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// createed yet, will wait til it has w/o doing anything
-	
-	videoSub[0] = n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this);
-	videoSub[1] = n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this);
-	videoSub[2] = n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this);
-	videoSub[3] = n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this); // Frames of video from camera
+	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+	videoSub[0] = n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
+	videoSub[1] = n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
+	videoSub[2] = n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
+	videoSub[3] = n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this, transportHints); // Frames of video from camera
 	
 }
 
@@ -91,13 +90,13 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	
 	//ROS_INFO("received a message");
 	//ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
-		
+	
 	//create a new node
-	ListNode l = (ListNode)malloc(sizeof(vector2D));
-	l->y = msg->latitude;
-	l->x = msg->longitude;
-	altitude = msg->altitude;
-	gui->updateInfo(battery, signal, ultrasonic, l, altitude, target);
+	ListNode l = (ListNode)malloc(sizeof(vector3D));
+	l->lat = msg->latitude;
+	l->lon = msg->longitude;
+	l->alt = msg->altitude;
+	gui->updateInfo(battery, signal, ultrasonic, l, target);
 }
 
 
@@ -108,7 +107,7 @@ void NavigationNode::receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::
 	//ROS_INFO("voltage %f", msg->voltage);
 	battery = msg->voltage;
 	
-	gui->updateInfo(battery, signal, ultrasonic, NULL, altitude, target);
+	gui->updateInfo(battery, signal, ultrasonic, NULL, target);
 }
 
 void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {

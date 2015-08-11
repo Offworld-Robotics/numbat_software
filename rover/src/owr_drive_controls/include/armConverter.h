@@ -28,7 +28,7 @@ using namespace std;
 #define CLOSE 2
 
 //serial IO
-#define TTY "/dev/ttyACM0"
+#define TTY "/dev/ttyACM1"
 
 class ClawControl {
     public:

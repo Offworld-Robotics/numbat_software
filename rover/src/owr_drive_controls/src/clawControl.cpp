@@ -6,11 +6,12 @@
  
  #include "armConverter.h"
  #include <assert.h>
+ #include <ros/ros.h>
 
 
 
 int main(int argc, char ** argv) {
-    ros::init(argc, argv, "owr_telop");
+    ros::init(argc, argv, "owr_telop1");
     ClawControl ClawControl;
     ClawControl.run();
     
@@ -46,22 +47,22 @@ void ClawControl::sendMessage() {
         fprintf(fd,"%d\n",clawState);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        printf("unsucesfull\n");
+        ROS_INFO("unsucesfull");
     }    
-    printf("%d\n",clawState);
+    ROS_INFO("%d",clawState);
 }
 
 void ClawControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 1.5
     #define DIFF 0.25
     
-    if(joy->buttons[BUTTON_A]) {
+    if(joy->buttons[BUTTON_LB]) {
         clawState = OPEN;
-    } else if (joy->buttons[BUTTON_B]) {
+    } else if (joy->buttons[BUTTON_RB]) {
         clawState = CLOSE;
     } else {
         clawState = STOP;
@@ -78,6 +79,7 @@ void ClawControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //bottomDrive = ((bottom / MAX_IN) * 500) + 1500.0  ;
     //sendMessage(topDrive,bottomDrive);    
     
+
    
    
     //TODO: camera on/off

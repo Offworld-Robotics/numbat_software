@@ -10,6 +10,7 @@
 
 #include "FineControlNode.h"
 #include "FineControlGUI.h"
+#include "ListNode.h"
 #include <fstream>
 
 FineControlNode::FineControlNode(FineControlGUI *newgui) {
@@ -22,6 +23,15 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	for(int i = 0; i < TOTAL_FEEDS; i++)
 		feeds[i] = FEED_OFFLINE;
 	
+	voltage = 0;
+	memset(&armState, 0, sizeof(armState));
+	pH = humidity = 0;
+	memset(&currentPos, 0, sizeof(currentPos));
+	heading = 0;
+	tiltX = 0;
+	tiltY = 0;
+	ultrasonic = 0;
+	
 	// 
 	// Subscribe to all relevant topics for information used by the gui
 	// pass the function that is called when a message is received into the subscribe function
@@ -32,11 +42,12 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// createed yet, will wait til it has w/o doing anything
-	
-	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg0, this); // Frames of video from camera
+	//ros::TransportHints transportHints = ros::TransportHints().udp().tcpNoDelay();
+	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this, transportHints);
+	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg1, this, transportHints);
+	videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this, transportHints);
+	videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg3, this, transportHints); // Frames of video from camera
 	
 }
 

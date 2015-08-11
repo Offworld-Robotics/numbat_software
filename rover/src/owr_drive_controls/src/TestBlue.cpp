@@ -1,11 +1,12 @@
 #include "Bluetongue.h"
 #include <iostream>
 #include <unistd.h>
+#include <ros/ros.h>
 
 using namespace std;
 
 static void printStatus(struct status *s) {
-	cout << "Battery voltage: " << s->batteryVoltage << endl;
+	ROS_INFO("Battery voltage: %f", s->batteryVoltage);
 }
 
 int main() {

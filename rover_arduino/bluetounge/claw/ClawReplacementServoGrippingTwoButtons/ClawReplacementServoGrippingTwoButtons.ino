@@ -14,16 +14,16 @@ void setup()
 { 
   myservo.attach(9);
   Serial.begin(9600);
-  myservo.write(92);
+  myservo.write(1500);
 }
 void loop() { 
   int armState = Serial.parseInt();
   if(armState == OPEN){
-    myservo.write(87);
+    myservo.write(2000);
   } else if(armState == CLOSE){
-    myservo.write(97);
+    myservo.write(1500);
   } else {
-    myservo.write(92);
+    myservo.write(1000);
   }
 }
     
