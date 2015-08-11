@@ -1,0 +1,55 @@
+<robot
+  name="Bogey">
+  <link name="base_link">
+        <visual>
+          <geometry>
+            <box size=" .4   .6 .12"/>
+          </geometry>
+        </visual>
+    </link>
+     <joint name="base_to_right_leg" type="fixed">
+        <parent link="base_link"/>
+        <child link="Bogey"/>
+    </joint>
+  <link
+    name="Bogey">
+    
+    <inertial>
+      <origin
+        xyz="-0.234241553626799 0.177831123348543 -0.0667373603191976"
+        rpy="0 0 0" />
+      <mass
+        value="2.3410771686329" />
+      <inertia
+        ixx="0.0270924352882268"
+        ixy="-0.0071489301852542"
+        ixz="-0.000125089538061626"
+        iyy="0.187628876498878"
+        iyz="-0.000193196871273209"
+        izz="0.211224177676753" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Bogey/meshes/Bogey.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0.949019607843137 0.909803921568627 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Bogey/meshes/Bogey.STL" />
+      </geometry>
+    </collision>
+  </link>
+</robot>
