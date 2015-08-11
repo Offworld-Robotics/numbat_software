@@ -34,7 +34,7 @@ BoardControl::BoardControl() {
     cam2Button = 0;
     cam3Button = 0;
     //fd = fopen(TTY, "w");
-    assert(fd != NULL);
+    //assert(fd != NULL);
     //subscribe to xbox controller
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this, transportHints);
@@ -45,11 +45,15 @@ BoardControl::BoardControl() {
     armBottom = MOTOR_MID;
     armRotate = ROTATION_MID;
     armIncRate = 0;
+    
           
 }
 
 void BoardControl::run() {
-    Bluetongue* steve = new Bluetongue(TTY);
+    std::string board;
+    nh.param<std::string>("board_tty", board, TTY);
+    ROS_INFO("connecting to board on %s", board.c_str());
+    Bluetongue* steve = new Bluetongue(board.c_str());
 
     while(ros::ok()) {
         armTop += armIncRate;
