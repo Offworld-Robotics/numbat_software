@@ -1,9 +1,22 @@
 #include <string>
+#include <cstdint>
 #include <vector>
+
+struct gpsData {
+    uint16_t time;
+    int32_t latitude; // lat * 10000 - to avoid floats
+    int32_t longitude; // lon * 10000 - to avoid floats
+    uint16_t numSatelites;
+    int16_t altitude;
+    uint16_t fixValid;
+} __attribute__((packed));
+typedef struct gpsData GPSData;
+
 
 struct status {
     bool roverOk;
     double batteryVoltage;
+    GPSData gpsData;
 };
 	
 class Bluetongue {

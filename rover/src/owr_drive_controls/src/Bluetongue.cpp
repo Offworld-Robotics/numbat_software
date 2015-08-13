@@ -30,6 +30,7 @@ struct toControlMsg {
 struct toNUCMsg {
     uint16_t magic;
     uint16_t vbat;
+    GPSData gpsData;
 } __attribute__((packed));
 
 Bluetongue::Bluetongue(const char* port) {
@@ -142,5 +143,6 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
         stat.roverOk = true;
     }
     stat.batteryVoltage = resp.vbat;// / (1 << 15);
+    stat.gpsData = resp.gpsData;
     return stat;
 }
