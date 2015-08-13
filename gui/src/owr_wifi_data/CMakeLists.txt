@@ -81,10 +81,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES owr_wifi_data
-#  CATKIN_DEPENDS owr_messages roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES owr_wifi_data
+  CATKIN_DEPENDS owr_messages roscpp rospy std_msgs
+  DEPENDS system_lib
 )
 
 ###########
