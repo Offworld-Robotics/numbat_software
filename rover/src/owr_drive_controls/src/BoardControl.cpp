@@ -8,6 +8,7 @@
 #include "Bluetongue.h"
 #include <assert.h>
 #include <ros/ros.h>
+#include <sensor_msgs/NavSatFix.h>
 
 #define MOTOR_MID 1500
 #define MOTOR_MAX 1900
@@ -39,13 +40,14 @@ BoardControl::BoardControl() {
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this, transportHints);
     armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 10, &BoardControl::armCallback, this,transportHints);
+    gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  1000);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
     armBottom = MOTOR_MID;
     armRotate = ROTATION_MID;
     armIncRate = 0;
-    
+    gpsSequenceNum = 0;
           
 }
 
@@ -64,6 +66,8 @@ void BoardControl::run() {
         }
         struct status s = steve->update(leftDrive, rightDrive,
             armTop, armBottom, armRotate);
+            
+        publishGPS(s.gpsData);
         //if (s.roverOk == false) {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
@@ -74,6 +78,25 @@ void BoardControl::run() {
         ros::spinOnce();
     }
     delete steve;
+}
+
+void BoardControl::publishGPS(GPSData gps) {
+    sensor_msgs::NavSatFix msg;
+	msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
+	msg.latitude = ((float)gps.latitude)/GPS_FLOAT_OFFSET;
+	msg.altitude = gps.altitude;
+	
+	if (gps.fixValid) {
+	    msg.status.status = msg.status.STATUS_FIX;
+    } else {
+        msg.status.status = msg.status.STATUS_NO_FIX;
+    }
+    msg.status.service = msg.status.SERVICE_GPS; //NOt sure this is right
+    msg.header.seq = gpsSequenceNum;
+    msg.header.frame_id = 1; // global frame
+    gpsPublisher.publish(msg);
+    
+	
 }
 
 
