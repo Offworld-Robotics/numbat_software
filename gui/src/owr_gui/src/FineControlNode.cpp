@@ -46,8 +46,8 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
 	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this, transportHints);
 	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg1, this, transportHints);
-	videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this, transportHints);
-	videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg3, this, transportHints); // Frames of video from camera
+	//videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this, transportHints);
+	//videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg3, this, transportHints); // Frames of video from camera
 	
 }
 
@@ -108,7 +108,7 @@ void FineControlNode::receiveVideoMsg0(const sensor_msgs::Image::ConstPtr& msg) 
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo0((unsigned char *)msg->data.data(), msg->width, msg->height);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height,0);
 }
 
 void FineControlNode::receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg) {
@@ -116,5 +116,5 @@ void FineControlNode::receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg) 
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo1((unsigned char *)msg->data.data(), msg->width, msg->height);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height,0);
 }
