@@ -17,6 +17,7 @@
 #define POS_TOPIC "/owr/position"
 #define DEST_TOPIC "/owr/dest"
 #define EARTH_RADIUS 6,371
+#define CHECKPOINT_DISTANCE 0.005
  
 
 
@@ -80,11 +81,11 @@ void PathingController::sendMsg() {
     // Check distance between currPosition and destination to check whether we are at destination
     double diffLat = lat2 − lat1;
     double diffLong = long2 − long1;
-    double a = pow(sin(diffLat/2), 2) + cos(lat1)*cos(lat2)*pow(sin(diffLong/2), 2);
-    double c = 2*atan2(sqrt(a), sqrt(1−a));
+    double a = pow(sin(diffLat/2), 2) + cos(lat1)*cos(lat2)*pow(sin(diffLong/2), 2.0);
+    double c = 2*atan2(sqrt(a), sqrt(1.0 − a));
     double distance = EARTH_RADIUS * c;
 
-	if (distance < 0.01){
+	if (distance < CHECKPOINT_DISTANCE){
 		// Within 10m of destination... if needed, can set up a counter in here to increment until we a point where we call for next destination.
 	    ROS_INFO("At destination! You are awesome! \n");
 	} else {
