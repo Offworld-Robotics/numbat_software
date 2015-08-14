@@ -90,13 +90,16 @@ void PathingController::sendMsg() {
     	//Go straight, decrement lr
         currPower += INCREMENT;
         if(currLR){
-        	currLR -= 0.1 * (currLR / abs(currLR));
+        	currLR -= 0.1 * (currLR / fabs(currLR));
         }
     } else if (fmod((currHeading + 180.0), 360.0) == destHeading){
     	//Go backwards, decrement lr
         currPower -= INCREMENT;
         if(currLR){
-                	currLR -= 0.1 * (currLR / abs(currLR));
+            ROS_INFO("PRE BACK pwr: %f, lr: %f \n", currPower, currLR);
+            currLR -= 0.1 * (currLR / fabs(currLR));
+            ROS_INFO("POST BACK pwr: %f, lr: %f \n", currPower, currLR);
+
         }
     } else {
     	angle = destHeading - currHeading;
@@ -117,12 +120,16 @@ void PathingController::sendMsg() {
     	currPower = 1;
     } else if(currPower < -1){
     	currPower = -1;
+    } else if (currPower < INCREMENT && currPower > -INCREMENT){
+    	currPower = 0; //at least in soft testing, have found that the LR and pwr dont return back to 0 very well (end up 0.099...)
     }
 
     if(currLR > 1){
     	currLR = 1;
     } else if(currLR < -1){
     	currLR = -1;
+    } else if (currLR < INCREMENT && currLR > -INCREMENT){
+    	currLR = 0; //at least in soft testing, have found that the LR and pwr dont return back to 0 very well (end up 0.099...)
     }
 
     ROS_INFO("pwr: %f, lr: %f \n", currPower, currLR);
