@@ -13,7 +13,7 @@
 #include <cmath>
 #include <math.h>
 
-#define PUBLISH_TOPIC "owr/control/drive"
+#define PUBLISH_TOPIC "owr/auton_twist"
 #define POS_TOPIC "/owr/position"
 #define DEST_TOPIC "/owr/dest"
  
@@ -52,9 +52,9 @@ PathingController::PathingController( void) {
 
 //TODO: Get the msg types for Destination and Position.
 void PathingController::receivePosMsg(const owr_messages::position &msg) {
-   currLat = msg->latitude;
-   currLong = msg->longitude;
-   currHeading = msg->heading;
+   currLat = msg.latitude;
+   currLong = msg.longitude;
+   currHeading = msg.heading;
    sendMsg();
 }
 
@@ -74,30 +74,41 @@ void PathingController::sendMsg() {
     double long1 = currLong * (M_PI / 180);
     double long2 = destLong * (M_PI / 180);
     
+    ROS_INFO("currhead: L%f Lo%f, dest: L%f Lo%f\n", lat1, long1, lat2, long2);
+
     // Find the bearing from the lat and long values of position and destination: 'http://www.ig.utexas.edu/outreach/googleearth/latlong.html'
-    double angle = atan2( cos(destLat) * sin(destLong - currLong), sin(destLat) * cos(currLat) - sin(currLat) * cos(destLat) * cos(destLong - currLong));
-    destHeading = ( (angle * 180 / M_PI) + 360) % 360;
+    double angle = atan2( (cos(lat2) * sin(long2 - long1)), ((sin(lat2) * cos(lat1)) - (sin(lat1) * cos(lat2) * cos(long2 - long1))));
+
+    ROS_INFO("angle: %f \n", angle);
+
+    destHeading = fmod((angle * 180.0 / M_PI) + 360.0, 360.0);
+
+    ROS_INFO("currhead: %f, dest: %f \n", currHeading, destHeading);
 
     // Work out the desired action to be taken
     if (currHeading == destHeading){
     	//Go straight, decrement lr
         currPower += INCREMENT;
-        currLR -= 0.1*(currLR / abs(currLR));
-
-    } else if (( (currHeading +180) % 360) == destHeading){
+        if(currLR){
+        	currLR -= 0.1 * (currLR / abs(currLR));
+        }
+    } else if (fmod((currHeading + 180.0), 360.0) == destHeading){
     	//Go backwards, decrement lr
         currPower -= INCREMENT;
-        currLR -= INCREMENT * (currLR / abs(currLR));
-
+        if(currLR){
+                	currLR -= 0.1 * (currLR / abs(currLR));
+        }
     } else {
     	angle = destHeading - currHeading;
 
-    	if(angle > 0 && angle > (currHeading - 360)){
+    	if(angle > 180 && angle < 360){
     		//turn left
+            currPower += INCREMENT;
             currLR -= INCREMENT;
 
     	} else {
     		//turn right
+            currPower += INCREMENT;
             currLR += INCREMENT;
     	}
     }
@@ -113,6 +124,8 @@ void PathingController::sendMsg() {
     } else if(currLR < -1){
     	currLR = -1;
     }
+
+    ROS_INFO("pwr: %f, lr: %f \n", currPower, currLR);
 
     //Send twist message
     vel.linear.x = currPower;
