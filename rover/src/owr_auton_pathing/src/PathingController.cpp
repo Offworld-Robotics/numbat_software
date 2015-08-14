@@ -17,6 +17,9 @@
 #define POS_TOPIC "/owr/position"
 #define DEST_TOPIC "/owr/dest"
  
+// Defines how fast the rover accelerates or starts turning, the range of output is -1 to 1, so currently 1/10th of range
+#define INCREMENT 0.1
+
 int main(int argc, char ** argv) {
     
     //init ros
@@ -36,6 +39,10 @@ PathingController::PathingController( void) {
     currLong = 0;
     destHeading = 0;
     currHeading = 0;
+    currPower = 0;
+    currLR = 0;
+	vel.linear.x = 0;
+	vel.linear.y = 0;
     
     twistPublisher =  node.advertise<geometry_msgs::Twist>(PUBLISH_TOPIC,1000,true);
 
@@ -59,9 +66,7 @@ void PathingController::receiveDestMsg(const boost::shared_ptr<sensor_msgs::NavS
 
 
 void PathingController::sendMsg() {
-    
-    geometry_msgs::Twist vel;
-    
+
     //Calculate desired heading, first convert lat/longs into radians
 
     double lat1 = currLat * (M_PI / 180);
@@ -75,24 +80,44 @@ void PathingController::sendMsg() {
 
     // Work out the desired action to be taken
     if (currHeading == destHeading){
-    	//Go straight
+    	//Go straight, decrement lr
+        currPower += INCREMENT;
+        currLR -= 0.1*(currLR / abs(currLR));
 
     } else if (( (currHeading +180) % 360) == destHeading){
-    	//Go backwards
+    	//Go backwards, decrement lr
+        currPower -= INCREMENT;
+        currLR -= INCREMENT * (currLR / abs(currLR));
 
     } else {
     	angle = destHeading - currHeading;
 
     	if(angle > 0 && angle > (currHeading - 360)){
     		//turn left
+            currLR -= INCREMENT;
 
     	} else {
     		//turn right
-
+            currLR += INCREMENT;
     	}
     }
 
-    twistPublisher.publish(vel);
+    if(currPower > 1){
+    	currPower = 1;
+    } else if(currPower < -1){
+    	currPower = -1;
+    }
+
+    if(currLR > 1){
+    	currLR = 1;
+    } else if(currLR < -1){
+    	currLR = -1;
+    }
+
+    //Send twist message
+    vel.linear.x = currPower;
+	vel.linear.y = currLR;
+	twistPublisher.publish(vel);
 }
 
 //main loop

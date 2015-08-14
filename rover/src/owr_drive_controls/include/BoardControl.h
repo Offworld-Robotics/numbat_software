@@ -26,13 +26,20 @@ class BoardControl {
     private:
         void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void armCallback(const sensor_msgs::Joy::ConstPtr& joy);
+        void velCallback(const geometry_msgs::Twist::ConstPtr& vel); //Subscriber for auton_pathing
+
         void switchFeed(int * storedState, int joyState, int feedNum);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
+
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
+
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
+        ros::Subscriber velSubscriber;
+
         float leftDrive, rightDrive;
+
         //arm top, bottom
         int armTop, armBottom;
         float armRotate;

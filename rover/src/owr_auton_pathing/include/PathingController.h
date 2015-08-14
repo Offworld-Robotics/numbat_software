@@ -11,6 +11,7 @@
 
 #include <ros/ros.h>
 #include "owr_messages/position.h"
+
 #include <sensor_msgs/NavSatFix.h>
 
 class PathingController {
@@ -30,6 +31,10 @@ class PathingController {
         ros::NodeHandle node;
         std::string topic;
         
+        float currPower;
+        float currLR;
+        geometry_msgs::Twist vel;
+
         double currLat;
         double currLong;
         double currHeading;

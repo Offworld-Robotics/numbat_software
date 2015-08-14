@@ -9,11 +9,16 @@
 #include <assert.h>
 #include <ros/ros.h>
 
-#define MOTOR_MID 1500
-#define MOTOR_MAX 1900
-#define MOTOR_MIN 1100
+#define MOTOR_MID 1500.0
+#define MOTOR_MAX 1900.0
+#define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
- 
+
+#define MAX_IN 1.0
+#define DIFF 0.25
+
+// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
+#define SENSITIVITY 1
 
 static void printStatus(struct status *s) {
 	ROS_INFO("Battery voltage: %f", s->batteryVoltage);
@@ -35,9 +40,12 @@ BoardControl::BoardControl() {
     cam3Button = 0;
     //fd = fopen(TTY, "w");
     assert(fd != NULL);
-    //subscribe to xbox controller
+
+    //subscribe to xbox controller and auton_pathing topics
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this);
     armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 10, &BoardControl::armCallback, this);
+    velSubscriber = nh.subscribe<geometry_msgs::Twist>("owr/control/drive", 10, &BoardControl::velCallback, this);
+
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
@@ -80,11 +88,8 @@ void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
 }
 
 void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
-    #define MAX_IN 1.0
-    #define DIFF 0.25
 
 	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
-    #define SENSITIVITY 1.0
     leftDrive = (joy->axes[STICK_L_UD]);
     rightDrive = -joy->axes[DRIVE_AXES_UD];
 	/*
@@ -108,9 +113,8 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 }
 
 void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
-    #define MAX_IN 1.5
+
     #define MID_IN 0
-    #define DIFF 0.25
     
     float top = joy->axes[STICK_R_UD] ;//* 0.2;
     float bottom = (joy->axes[STICK_L_UD]) ;//* 0.2;
@@ -123,4 +127,36 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armIncRate = top * 50;
     //TODO: check these actually match up
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
+}
+
+// Convert subscribed Twist input to motor vectors for arduino output
+void BoardControl::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
+
+    float power = vel->linear.x;
+    float lr = vel->linear.y;
+
+    float lDrive;
+    float rDrive;
+
+    // This set of equations ensure the correct proportional powering of the wheels at varying levels of power and lr
+
+    if(lr < 0){
+    	lDrive = power + (2 * lr * power);
+    	rDrive = power;
+    } else if (lr > 0){
+    	lDrive = power;
+    	rDrive = power - (2 * lr * power);
+    } else {
+    	lDrive = power;
+    	rDrive = power;
+    }
+
+    lDrive = (lDrive * 500) + MOTOR_MID;
+    rDrive = (rDrive * 500) + MOTOR_MID;
+
+    // The formula in use i: output = (ax^3 + (1-a)x) * 500 + 1500
+    // Where a = SENSITIVITY
+
+    leftDrive = (SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive);
+    rightDrive = (SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive);
 }
