@@ -16,7 +16,10 @@
 #define PUBLISH_TOPIC "owr/auton_twist"
 #define POS_TOPIC "/owr/position"
 #define DEST_TOPIC "/owr/dest"
+#define EARTH_RADIUS 6,371
  
+
+
 // Defines how fast the rover accelerates or starts turning, the range of output is -1 to 1, so currently 1/10th of range
 #define INCREMENT 0.1
 
@@ -74,16 +77,21 @@ void PathingController::sendMsg() {
     double long1 = currLong * (M_PI / 180);
     double long2 = destLong * (M_PI / 180);
     
-    ROS_INFO("currhead: L%f Lo%f, dest: L%f Lo%f\n", lat1, long1, lat2, long2);
+    // Check distance between currPosition and destination to check whether we are at destination
+    double diffLat = lat2 − lat1;
+    double diffLong = long2 − long1;
+    double a = pow(sin(diffLat/2), 2) + cos(lat1)*cos(lat2)*pow(sin(diffLong/2), 2);
+    double c = 2*atan2(sqrt(a), sqrt(1−a));
+    double distance = EARTH_RADIUS * c;
+
+	if (distance < 0.01){
+		// Within 10m of destination... if needed, can set up a counter in here to increment until we a point where we call for next destination.
+	    ROS_INFO("At destination! You are awesome! \n");
+	} else {
 
     // Find the bearing from the lat and long values of position and destination: 'http://www.ig.utexas.edu/outreach/googleearth/latlong.html'
     double angle = atan2( (cos(lat2) * sin(long2 - long1)), ((sin(lat2) * cos(lat1)) - (sin(lat1) * cos(lat2) * cos(long2 - long1))));
-
-    ROS_INFO("angle: %f \n", angle);
-
     destHeading = fmod((angle * 180.0 / M_PI) + 360.0, 360.0);
-
-    ROS_INFO("currhead: %f, dest: %f \n", currHeading, destHeading);
 
     // Work out the desired action to be taken
     if (currHeading == destHeading){
@@ -96,10 +104,7 @@ void PathingController::sendMsg() {
     	//Go backwards, decrement lr
         currPower -= INCREMENT;
         if(currLR){
-            ROS_INFO("PRE BACK pwr: %f, lr: %f \n", currPower, currLR);
             currLR -= 0.1 * (currLR / fabs(currLR));
-            ROS_INFO("POST BACK pwr: %f, lr: %f \n", currPower, currLR);
-
         }
     } else {
     	angle = destHeading - currHeading;
@@ -138,6 +143,7 @@ void PathingController::sendMsg() {
     vel.linear.x = currPower;
 	vel.linear.y = currLR;
 	twistPublisher.publish(vel);
+	}
 }
 
 //main loop
