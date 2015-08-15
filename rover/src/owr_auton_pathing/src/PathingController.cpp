@@ -13,16 +13,16 @@
 #include <cmath>
 #include <math.h>
 
-#define PUBLISH_TOPIC "owr/auton_twist"
+#define PUBLISH_TOPIC "/owr/auton_twist"
 #define POS_TOPIC "/owr/position"
 #define DEST_TOPIC "/owr/dest"
-#define EARTH_RADIUS 6,371
-#define CHECKPOINT_DISTANCE 0.005
+#define EARTH_RADIUS 6371
+#define CHECKPOINT_DISTANCE 0.000001
  
 
 
 // Defines how fast the rover accelerates or starts turning, the range of output is -1 to 1, so currently 1/10th of range
-#define INCREMENT 0.1
+#define INCREMENT 1
 
 int main(int argc, char ** argv) {
     
@@ -79,10 +79,10 @@ void PathingController::sendMsg() {
     double long2 = destLong * (M_PI / 180);
     
     // Check distance between currPosition and destination to check whether we are at destination
-    double diffLat = lat2 − lat1;
-    double diffLong = long2 − long1;
+    double diffLat = lat2 - lat1;
+    double diffLong = long2 - long1;
     double a = pow(sin(diffLat/2), 2) + cos(lat1)*cos(lat2)*pow(sin(diffLong/2), 2.0);
-    double c = 2*atan2(sqrt(a), sqrt(1.0 − a));
+    double c = 2*atan2(sqrt(a), sqrt(1.0 - a));
     double distance = EARTH_RADIUS * c;
 
 	if (distance < CHECKPOINT_DISTANCE){
@@ -153,3 +153,4 @@ void PathingController::spin() {
         ros::spinOnce();
     }
 }
+
