@@ -8,6 +8,7 @@
 #include "Bluetongue.h"
 #include <assert.h>
 #include <ros/ros.h>
+#include <sensor_msgs/NavSatFix.h>
 
 #define MOTOR_MID 1500.0
 #define MOTOR_MAX 1900.0
@@ -21,7 +22,7 @@
 #define SENSITIVITY 1
 
 static void printStatus(struct status *s) {
-	ROS_INFO("Battery voltage: %f", s->batteryVoltage);
+    ROS_INFO("Battery voltage: %f", s->batteryVoltage);
 }
 
 int main(int argc, char ** argv) {
@@ -39,24 +40,28 @@ BoardControl::BoardControl() {
     cam2Button = 0;
     cam3Button = 0;
     //fd = fopen(TTY, "w");
-    assert(fd != NULL);
-
-    //subscribe to xbox controller and auton_pathing topics
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 10, &BoardControl::joyCallback, this);
-    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 10, &BoardControl::armCallback, this);
-    velSubscriber = nh.subscribe<geometry_msgs::Twist>("owr/control/drive", 10, &BoardControl::velCallback, this);
-
+    //assert(fd != NULL);
+    //subscribe to xbox controller
+    ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy",2, &BoardControl::joyCallback, this, transportHints);
+    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
+    gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
+    velSubscriber = nh.subscribe<geometry_msgs::Twist>("owr/control/drive", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
     armBottom = MOTOR_MID;
     armRotate = ROTATION_MID;
     armIncRate = 0;
+    gpsSequenceNum = 0;
           
 }
 
 void BoardControl::run() {
-    Bluetongue* steve = new Bluetongue(TTY);
+    std::string board;
+    nh.param<std::string>("board_tty", board, TTY);
+    ROS_INFO("connecting to board on %s", board.c_str());
+    Bluetongue* steve = new Bluetongue(board.c_str());
 
     while(ros::ok()) {
         armTop += armIncRate;
@@ -67,16 +72,37 @@ void BoardControl::run() {
         }
         struct status s = steve->update(leftDrive, rightDrive,
             armTop, armBottom, armRotate);
+            
+        publishGPS(s.gpsData);
         //if (s.roverOk == false) {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
         //}
-	    printStatus(&s);
-	    usleep(100000);
+        printStatus(&s);
+        usleep(100000);
         //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
         ros::spinOnce();
     }
     delete steve;
+}
+
+void BoardControl::publishGPS(GPSData gps) {
+    sensor_msgs::NavSatFix msg;
+    msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
+    msg.latitude = ((float)gps.latitude)/GPS_FLOAT_OFFSET;
+    msg.altitude = gps.altitude;
+    
+    if (gps.fixValid) {
+        msg.status.status = msg.status.STATUS_FIX;
+    } else {
+        msg.status.status = msg.status.STATUS_NO_FIX;
+    }
+    msg.status.service = msg.status.SERVICE_GPS; //NOt sure this is right
+    msg.header.seq = gpsSequenceNum;
+    msg.header.frame_id = 1; // global frame
+    gpsPublisher.publish(msg);
+    
+    
 }
 
 
@@ -88,11 +114,12 @@ void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
 }
 
 void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+    
 
 	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
     leftDrive = (joy->axes[STICK_L_UD]);
     rightDrive = -joy->axes[DRIVE_AXES_UD];
-	/*
+    /*
     float power = joy->axes[DRIVE_AXES_UD];
     float lr = (-joy->axes[STICK_L_LR]);
     
@@ -115,6 +142,7 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
     #define MID_IN 0
+    #define DIFF 0.25
     
     float top = joy->axes[STICK_R_UD] ;//* 0.2;
     float bottom = (joy->axes[STICK_L_UD]) ;//* 0.2;

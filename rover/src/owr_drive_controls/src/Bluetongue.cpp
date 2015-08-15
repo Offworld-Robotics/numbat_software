@@ -30,6 +30,7 @@ struct toControlMsg {
 struct toNUCMsg {
     uint16_t magic;
     uint16_t vbat;
+    GPSData gpsData;
 } __attribute__((packed));
 
 Bluetongue::Bluetongue(const char* port) {
@@ -130,7 +131,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
-	ROS_INFO("Writing %d bytes.", sizeof(struct toControlMsg));
+	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
 	ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);
 	comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
@@ -142,5 +143,6 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
         stat.roverOk = true;
     }
     stat.batteryVoltage = resp.vbat;// / (1 << 15);
+    stat.gpsData = resp.gpsData;
     return stat;
 }

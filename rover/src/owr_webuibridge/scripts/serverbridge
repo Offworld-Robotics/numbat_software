@@ -1,0 +1,330 @@
+#!/usr/bin/python
+
+import rospy
+import rostopic
+import socket
+import json
+import rosgraph.masterapi
+import select
+import math
+
+import tf
+from tf import TransformListener
+from geometry_msgs.msg import Twist
+from sensor_msgs.msg import NavSatFix
+from sensor_msgs.msg import LaserScan
+from sensor_msgs.msg import Imu
+from rosgraph_msgs.msg import Log
+from nav_msgs.msg import Path
+from nav_msgs.msg import Odometry
+from visualization_msgs.msg import Marker
+from std_msgs.msg import Bool
+from std_msgs.msg import Float32
+from std_msgs.msg import Float64
+
+class ROSLink:
+
+    def __init__(self):
+
+        rospy.init_node('webui_node')
+        self.pub = rospy.Publisher(rospy.get_param('~drive_topic', '/webui/cmd_vel'), Twist, queue_size=1)
+        self.waypoint_pub = rospy.Publisher(rospy.get_param('~waypoint_topic', '/waypoint'), Odometry, queue_size=1)
+
+        self.topics_available = rospy.get_param('~topic_list', [])
+
+        self.gps_topic = rospy.get_param('~gps_topic', '/fix_16')
+        self.imu_topic = rospy.get_param('~imu_topic', '/imu')
+        self.battery_topic = rospy.get_param('~battery_topic', '/buttercup/battery')
+        self.path_topic = rospy.get_param('~path_topic', '/navigation/path')
+        self.origin_fix_topic = rospy.get_param('~origin_fix_topic', '/map/origin_fix')
+        self.waypoint_topic = rospy.get_param('~waypoint_topic', '/waypoint')
+        self.laserscan_topic = rospy.get_param('~laserscan_topic', '/scan')
+        self.map_frame = rospy.get_param('~map_frame', '/map')
+        self.barrels_topic = rospy.get_param('~barrels_topic', '/barrels')
+        self.lines_topic = rospy.get_param('~lines_topic', '/lines')
+
+        self.battery_topic = rospy.get_param('~battery_topic', '/buttercup/battery')
+        self.estop_topic = rospy.get_param('~estop_topic', '/buttercup/estop')
+        self.cmdvel_topic = rospy.get_param('~cmdvel_topic', '/buttercup/cmd_vel')
+
+        self.barrels = []
+        self.lines = []
+
+        self.startup_timer = rospy.Timer(rospy.Duration(1), self.TimerPoll)
+
+    def TimerPoll(self, event):
+        if UDPLink.client_ping == None:
+            return
+        elif rospy.get_time() - UDPLink.client_ping > 60:
+            print 'No clients connected.'
+            rospy.signal_shutdown('No clients connected, going to sleep.')
+            return
+
+        # startup sequence
+        if self.startup_timer is not None:
+            print 'Client connected.  Subscribing to topics and tfs...'
+            self.startup_timer.shutdown()
+            self.startup_timer = None
+            rospy.Timer(rospy.Duration(5), self.TimerPoll)
+
+            self.tf = TransformListener()
+            rospy.Timer(rospy.Duration(1), self.TFPoll)
+
+
+        master = rosgraph.masterapi.Master('/rostopic')
+        try:
+            # search for new topics
+            state = master.getSystemState()
+            pubs, subs, _ = state
+    
+            topics = list(set([t for t,_ in pubs] + [t for t,_ in subs]))      
+            topics.sort()
+            for t in topics:
+                if t in self.topics_available:
+                    msg_class, real_topic, msg_eval = rostopic.get_topic_class(t)
+                    print 'Found: ', t, msg_class
+
+
+                    if msg_class == NavSatFix:
+                         rospy.Subscriber(t, msg_class, self.NavSatFixCB, t, 1)
+                    elif msg_class == Log:
+                         rospy.Subscriber(t, msg_class, self.LogCB, t, 1)
+                    elif msg_class == Path:
+                         rospy.Subscriber(t, msg_class, self.PathCB, t, 1)
+                    elif msg_class == Odometry:
+                         rospy.Subscriber(t, msg_class, self.OdometryCB, t, 1)
+                    elif msg_class == LaserScan:
+                         rospy.Subscriber(t, msg_class, self.LaserScanCB, t, 1)
+                    elif msg_class == Marker:
+                         rospy.Subscriber(t, msg_class, self.MarkerCB, t, 1)
+                    elif msg_class == Float32:
+                         rospy.Subscriber(t, msg_class, self.Float32CB, t, 1)
+                    elif msg_class == Float64:
+                         rospy.Subscriber(t, msg_class, self.Float32CB, t, 1)
+                    elif msg_class == Bool:
+                         rospy.Subscriber(t, msg_class, self.BoolCB, t, 1)
+                    elif msg_class == Twist:
+                         rospy.Subscriber(t, msg_class, self.TwistCB, t, 1)
+                    elif msg_class == Imu:
+                         rospy.Subscriber(t, msg_class, self.ImuCB, t, 1)
+
+
+                    self.topics_available.remove(t)
+
+        except socket.error:
+            print 'Link to master lost.'
+            rospy.signal_shutdown('Unable to communicate with master.')
+            raise rostopic.ROSTopicIOException("Unable to communicate with master!")
+
+    def TFPoll(self, event):
+        # get vehicle transform
+        try:
+            #if self.tf.frameExists("/base_link") and self.tf.frameExists("/map"):
+            position, quaternion = self.tf.lookupTransform(self.map_frame, "/base_link", rospy.Time(0))
+            #print position, quaternion
+            (r, p, y) = tf.transformations.euler_from_quaternion(quaternion)
+            data = {'pos': position, 'rpy' : [r, p, y]}
+            udplink.send('mappos', data, 'mappos')
+
+
+        except tf.Exception:
+            0
+
+
+    def NavSatFixCB(self, msg, t):
+        global udplink
+        #print msg, t
+        data = {'lat': msg.latitude, 'lng': msg.longitude}
+
+        ident = None
+        if t == self.gps_topic:
+            ident = 'gps'
+        elif t == self.origin_fix_topic:
+            ident = 'origin_fix'
+
+        udplink.send(t, data, ident)
+
+    def LogCB(self, msg, t):
+        global udplink
+
+        data = {'msg': msg.msg, 'lvl': msg.level, 'name': msg.name, 'time': rospy.get_time()}
+        udplink.send(t, data)
+
+    def PathCB(self, msg, t):
+        global udplink
+
+        #print msg, t
+        x = []
+        y = []
+        for p in msg.poses:
+            x.append(p.pose.position.x)
+            y.append(p.pose.position.y)
+
+        data = {'x': x, 'y': y}
+
+        ident = None
+        if t == self.path_topic:
+            ident = 'path'
+
+        udplink.send(t, data, ident)
+
+
+    def OdometryCB(self, msg, t):
+        global udplink
+
+        data = {'x': msg.pose.pose.position.x, 'y': msg.pose.pose.position.y}
+        ident = None
+        if t == self.waypoint_topic:
+            ident = 'waypoint'
+
+        udplink.send(t, data, ident)
+
+
+    def LaserScanCB(self, msg, t):
+        global udplink
+
+        ident = None
+        if t == self.laserscan_topic:
+            ident = 'laserscan'
+            self.barrels = []
+            self.lines = []
+
+        ranges = []
+        i = 0
+        for r in msg.ranges:
+            if i % 4 == 0:
+                ranges.append(0 if math.isnan(r) else r)
+            i = i+1
+
+        data = {'min': msg.angle_min, 'inc': msg.angle_increment*4, 'ranges': ranges}
+
+        udplink.send(t, data, ident)
+        #data = {'x': msg.pose.pose.position.x, 'y': msg.pose.pose.position.y}
+        #udplink.send(t, data)
+
+    def MarkerCB(self, msg, t):
+        global udplink
+
+        ident = None
+        if t == self.barrels_topic:
+            ident = 'barrels'
+            points = []
+            for p in msg.points:
+              points.append([p.x, p.y, p.z])
+
+            #self.barrels += points
+            self.barrels = points
+            data = {'pts': self.barrels}
+
+        elif t == self.lines_topic:
+            ident = 'lines'
+            points = []
+            for p in msg.points:
+              points.append([p.x, p.y])
+
+            #self.lines += points
+            self.lines = points
+            data = {'pts': self.lines}
+
+        if ident is not None:
+            udplink.send(t, data, ident)
+
+    def Float32CB(self, msg, t):
+        global udplink
+
+        ident = None
+        if t == self.battery_topic:
+            ident = 'battery'
+
+        data = {'val': msg.data}
+        udplink.send(t, data, ident)
+
+    def BoolCB(self, msg, t):
+        global udplink
+
+        ident = None
+        if t == self.estop_topic:
+            ident = 'estop'
+
+        data = {'val': msg.data}
+        udplink.send(t, data, ident)
+
+    def TwistCB(self, msg, t):
+        global udplink
+
+        ident = None
+        if t == self.cmdvel_topic:
+            ident = 'cmdvel'
+
+        data = {'lin': msg.linear.x, 'ang': msg.angular.z}
+        udplink.send(t, data, ident)
+
+    def ImuCB(self, msg, t):
+        global udplink
+
+        ident = None
+        if t == self.imu_topic:
+            ident = 'imu'
+
+        data = {'yawrate': msg.angular_velocity.z}
+        udplink.send(t, data, ident)
+
+class UDPLink:
+    client_ping = None
+
+    def __init__(self):
+        global roslink
+
+        UDP_IP = "127.0.0.1"
+        UDP_PORT = 8750
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+        self.sock.bind((UDP_IP, UDP_PORT))
+        self.sock.setblocking(0)
+
+        self.topics_lastsync = {}
+
+    def send(self, t, data, ident = None):
+        time = rospy.get_time()
+        
+        if t not in self.topics_lastsync or time - self.topics_lastsync[t] > .5:
+            msg = {'t': t, 'data' : data}
+            if ident is not None:
+                msg['id'] = ident
+
+            msg_encoded = json.dumps(msg)
+            udplink.sock.sendto(msg_encoded, ('127.0.0.1', 8751))
+
+            self.topics_lastsync[t] = time
+
+
+    def run(self):
+        while not rospy.is_shutdown():
+            ready = select.select([self.sock], [], [], 3.0)
+            if ready[0]:
+                data, addr = self.sock.recvfrom(1024) # buffer size is 1024 bytes
+                obj = json.loads(data)
+                if 'r' in obj:
+                    if obj['r'] == 'ping':
+                        UDPLink.client_ping = rospy.get_time()
+                    else:
+                        print "<", data
+                        if obj['r'] == 'drive':
+                            twist = Twist()
+                            twist.linear.x = obj['cmd']['lin']
+                            twist.angular.z = obj['cmd']['ang']
+
+                            roslink.pub.publish(twist)
+                        elif obj['r'] == 'waypoint':
+                            wp = Odometry()
+                            wp.header.frame_id = roslink.map_frame;
+                            wp.pose.pose.position.x = obj['dest']['x']
+                            wp.pose.pose.position.y = obj['dest']['y']
+                            wp.pose.pose.orientation.w = 1
+                            roslink.waypoint_pub.publish(wp)
+
+roslink = ROSLink()
+udplink = UDPLink()
+
+udplink.run()
+rospy.signal_shutdown('UDPLink down.')
+
