@@ -5,7 +5,7 @@
 //#include <cstdint>
 #include <vector>
 
-#define GPS_FLOAT_OFFSET 10000
+#define GPS_FLOAT_OFFSET 1000000
 
 struct gpsData {
     uint16_t time;

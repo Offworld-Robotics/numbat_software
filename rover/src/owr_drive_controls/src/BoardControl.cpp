@@ -17,7 +17,7 @@
  
 
 static void printStatus(struct status *s) {
-	ROS_INFO("Battery voltage: %f", s->batteryVoltage);
+    ROS_INFO("Battery voltage: %f", s->batteryVoltage);
 }
 
 int main(int argc, char ** argv) {
@@ -72,8 +72,8 @@ void BoardControl::run() {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
         //}
-	    printStatus(&s);
-	    usleep(100000);
+        printStatus(&s);
+        usleep(100000);
         //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
         ros::spinOnce();
     }
@@ -82,12 +82,12 @@ void BoardControl::run() {
 
 void BoardControl::publishGPS(GPSData gps) {
     sensor_msgs::NavSatFix msg;
-	msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
-	msg.latitude = ((float)gps.latitude)/GPS_FLOAT_OFFSET;
-	msg.altitude = gps.altitude;
-	
-	if (gps.fixValid) {
-	    msg.status.status = msg.status.STATUS_FIX;
+    msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
+    msg.latitude = ((float)gps.latitude)/GPS_FLOAT_OFFSET;
+    msg.altitude = gps.altitude;
+    
+    if (gps.fixValid) {
+        msg.status.status = msg.status.STATUS_FIX;
     } else {
         msg.status.status = msg.status.STATUS_NO_FIX;
     }
@@ -96,7 +96,7 @@ void BoardControl::publishGPS(GPSData gps) {
     msg.header.frame_id = 1; // global frame
     gpsPublisher.publish(msg);
     
-	
+    
 }
 
 
@@ -111,11 +111,11 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 1.0
     #define DIFF 0.25
 
-	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
+    // Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
     #define SENSITIVITY 1.0
     leftDrive = (joy->axes[STICK_L_UD]);
     rightDrive = -joy->axes[DRIVE_AXES_UD];
-	/*
+    /*
     float power = joy->axes[DRIVE_AXES_UD];
     float lr = (-joy->axes[STICK_L_LR]);
     
