@@ -11,6 +11,11 @@
 
 #define SCALE 40000
 
+#define INPUT_BUFFER_SIZE 30
+#define INPUT_DISABLED 0
+#define INPUT_LAT 1
+#define INPUT_LON 2
+
 class AutoGUI : public GLUTWindow {
 	public:
 		AutoGUI(int width, int height, int *argc, char *argv[], double destPos[3][2]);
@@ -19,6 +24,14 @@ class AutoGUI : public GLUTWindow {
 		void idle();
 		void display();
 		void keydown(unsigned char key, int x, int y);
+		
+		unsigned char inputMode;
+		char inputBuffer[INPUT_BUFFER_SIZE];
+		int inputBufferIndex;
+		double targetLat;
+		double targetLon;
+		bool haveTargetLat;
+		bool haveTargetLon;
 		
 		void drawFullMap(double refLat, double refLon);
 		void drawGPSPos();

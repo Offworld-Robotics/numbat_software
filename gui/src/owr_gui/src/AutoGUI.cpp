@@ -128,19 +128,65 @@ void AutoGUI::display() {
 	drawTrackingMap();
 	drawGPSPos();
 	
+	glPushMatrix();
+	
+	glTranslated(50, -100, 0);
+	glColor3f(1,1,1);
+	char txt[50];
+	if(haveTargetLat) {
+		sprintf(txt, "Target Lat: %.10f", targetLat);
+		drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	}
+	glTranslated(0, -30, 0);
+	if(haveTargetLon) {
+		sprintf(txt, "Target Lon: %.10f", targetLon);
+		drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	}
+	
+	glPopMatrix();
+	
 	glutSwapBuffers();
 }
 
 void AutoGUI::keydown(unsigned char key, int x, int y) {
-	switch (key) {
-		case 27:
-			exit(0);
-			break;
+	printf("key pressed: %d '%c'\n", key, key);
+	if(key == 27) {
+		exit(0);
+	} else if (key == 'i') {
+		if(inputMode == INPUT_DISABLED) {
+			inputMode = INPUT_LAT;
+			printf("Input enabled, entering latitude\n");
+		} else {
+			inputMode = INPUT_DISABLED;
+			inputBufferIndex = 0;
+			printf("Input mode disabled\n");
+		}
+	} else if ((key >= '0' && key <= '9') || key == '.' || key == '-' || key == 13) {
+		if(inputMode != INPUT_DISABLED && inputBufferIndex < INPUT_BUFFER_SIZE - 1) {
+			if(key == 13) {
+				double completed = strtold(inputBuffer, NULL);
+				if(inputMode == INPUT_LAT) {
+					targetLat = completed;
+					haveTargetLat = true;
+					inputMode = INPUT_LON;
+					printf("entering longitude\n");
+				} else {
+					targetLon = completed;
+					haveTargetLon = true;
+					inputMode = INPUT_DISABLED;
+				}
+				inputBufferIndex = 0;
+				inputBuffer[0] = '\0';
+			} else {
+				inputBuffer[inputBufferIndex++] = key;
+				inputBuffer[inputBufferIndex] = '\0';
+			}
+		}
 	}
 }
 
 AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[], double destPos[3][2]) : GLUTWindow(width, height, argc, argv, "AutoGUI") {
-	autoNode = new AutoNode(this);	
+	autoNode = new AutoNode(this);
 	
 	glClearColor(0, 0, 0, 0);
 	glShadeModel(GL_FLAT);
@@ -152,6 +198,12 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[], double destPos[
 	mapCentre[1] = (dests[0][1]+dests[1][1]+dests[2][1])/3.0;
 	
 	memset(&currentPos, 0, sizeof(currentPos));
+	
+	inputMode = false;
+	memset(inputBuffer, 0, INPUT_BUFFER_SIZE*sizeof(char));
+	inputBuffer[0] = '\0';
+	inputBufferIndex = 0;
+	haveTargetLat = haveTargetLon = false;
 	
 	ListNode init = (ListNode)malloc(sizeof(vector3D));
 	init->lat = -33.9178303;
