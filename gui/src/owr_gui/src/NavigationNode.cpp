@@ -23,6 +23,7 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	tiltX = 30;
 	tiltY = 30;
 	ultrasonic = 0;
+	altitude = 0;
 	
 	//Initialise the feeds array
 	for(int i = 0; i < TOTAL_FEEDS; i++)
@@ -117,3 +118,11 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
 }
+
+/*void NavigationNode::receiveAvailableFeedsMsg(const bluesat_owr_protobuf::& msg) {
+	assert(msg);
+	
+	//ROS_INFO("received available feeds");
+	
+	gui->updateAvailableFeeds(msg->);
+}*/

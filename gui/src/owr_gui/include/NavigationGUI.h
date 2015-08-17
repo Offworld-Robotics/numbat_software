@@ -125,6 +125,7 @@ class NavigationGUI : public GLUTWindow {
 		bool displayOverlay;
 
 		//ros stuff
+		ros::NodeHandle node;
 		ros::Publisher streamPub;
 		void toggleStream(int feed);
 		
