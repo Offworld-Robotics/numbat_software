@@ -272,14 +272,14 @@
     type="fixed">
     <!-- 0.0254710786476053 -0.0201166854458847  0.000315728425903225 -->
     <origin
-      xyz="-0.02 .16 0.000315728425903225"
+      xyz="0 0.02 0.02"
       rpy="1.5707963267949 0 0" />
     <parent
       link="right_back_bogey" />
     <child
       link="WheelRM" />
     <axis
-      xyz="0 0 0" />
+      xyz="1 0 0" />
   </joint>
   <link
     name="WheelRB">
@@ -328,13 +328,13 @@
     type="fixed">
     <!-- 0.0254710786476053 -0.0201166854458847  0.000315728425903225 -->
     <origin
-      xyz="-0.02 .16 0.000315728425903225"
+      xyz="0 0.5 0.02"
       rpy="1.5707963267949 0 0" />
     <parent
       link="right_back_bogey" />
     <child
       link="WheelRB" />
     <axis
-      xyz="0 0 0" />
+      xyz="1 0 0" />
   </joint>
 </robot>
