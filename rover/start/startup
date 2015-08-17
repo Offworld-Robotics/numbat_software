@@ -1,0 +1,24 @@
+#!/bin/bash
+if [ ! -f /tmp/procmon.log ]; then
+  rm ~/.ros/*.pid &> /dev/null
+  touch /tmp/procmon.log
+fi
+
+PS1=" "
+export PS1
+
+#source ~/.bashrc
+source ~/owr_software/rover/devel/setup.bash
+
+cd `dirname $0`
+
+echo Server Process Monitor launched `date` >> /tmp/procmon.log
+
+nohup env ./serverprocmon.py &
+
+if [ -z "$SSH_CLIENT" ]; then
+#  env gnome-terminal --window --full-screen -e './serverprocmon.py' 
+else
+#  ./tmuxprocmon procmon.conf
+fi
+

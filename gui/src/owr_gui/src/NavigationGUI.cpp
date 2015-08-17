@@ -32,6 +32,19 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	ros::NodeHandle node;
 	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	navigationNode = new NavigationNode(this);
+	glutInit(argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitWindowSize(WINDOW_W, WINDOW_H);
+	glutInitWindowPosition(0, 0);
+	glutCreateWindow("Navigation");
+	
+	glGenTextures(1, &feedTexture);
+	
+	glBindTexture(GL_TEXTURE_2D, feedTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	
 	glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
@@ -41,6 +54,9 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	//glutKeyboardUpFunc(glut_keyup);
 	glutSpecialFunc(glut_special_keydown);
 	glutSpecialUpFunc(glut_special_keyup);
+	glutDisplayFunc(glut_display);
+	glutReshapeFunc(glut_reshape);
+	glutIdleFunc(glut_idle);
 	
 	battery = 5;
 	signal = 5;
@@ -66,6 +82,10 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	displayOverlay = true;
 	srand(time(NULL));
 	//generateTarget();
+	
+	//start on stream 0
+	usleep(150000);
+	toggleStream(0, true);
 }
 
 void NavigationGUI::reshape(int w, int h) {
@@ -76,6 +96,10 @@ void NavigationGUI::reshape(int w, int h) {
 void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, vector3D t) {
 	battery = bat;
 	signal = sig;
+
+	if (cur != NULL) {
+		GPSList.push_front(cur);
+	}
 	
 	if (cur != NULL) GPSList.push_front(cur);
 	

@@ -6,17 +6,18 @@
  
  #include "armConverter.h"
  #include <assert.h>
+ #include <ros/ros.h>
 
 
 
 int main(int argc, char ** argv) {
-    ros::init(argc, argv, "owr_telop");
-    ArmConverter armConverter;
-    armConverter.run();
+    ros::init(argc, argv, "owr_telop1");
+    ClawControl ClawControl;
+    ClawControl.run();
     
 }
 
-ArmConverter::ArmConverter() {
+ClawControl::ClawControl() {
 
     //init button sates
     cam0Button = 0;
@@ -27,93 +28,63 @@ ArmConverter::ArmConverter() {
     assert(fd != NULL);
     //subscribe to joy stick
     //TODO: at some point we will need to handle two joysticks
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy", 1, &ArmConverter::joyCallback, this);
-    topDrive = 1500.0;
-    bottomDrive = 1500.0;
+    joySubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 1, &ClawControl::joyCallback, this);
+    clawState = STOP;
         
 }
 
-void ArmConverter::run() {
+void ClawControl::run() {
+    ros::Rate r(1000);
     while(ros::ok()) {
-        sendMessage(topDrive,bottomDrive);
-        
+        sendMessage();
         ros::spinOnce();
+        r.sleep();
     }
 }
 
-void ArmConverter::sendMessage(int tm, int bm) {
+void ClawControl::sendMessage() {
     if(fd) {
-        fprintf(fd,"%d %d\n %d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);
+        fprintf(fd,"%d\n",clawState);
         float buffer;
         //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
+        //ROS_INFO("%f", buffer);
         //fsync((int)fd);
         //fflush(fd);
     } else {
-        printf("unsucesfull\n");
+        ROS_INFO("unsucesfull");
     }    
-    printf("%d %d\n %d %d\n",TOP_ACTUATOR,tm,BOTTOM_ACTUATOR,bm);   
+    ROS_INFO("%d",clawState);
 }
 
-//checks if the button state has changed and changes the feed
-void ArmConverter::switchFeed(int * storedState, int joyState, int feedNum) {
-    if((*storedState) != joyState) {
-        //TODO: switch feed
-    } 
-}
-
-void ArmConverter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+void ClawControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MAX_IN 1.5
     #define DIFF 0.25
     
-    float top = joy->axes[STICK_R_UD] ;//* 0.2;
-    float bottom = (-joy->axes[STICK_L_UD]) ;//* 0.2;
+    if(joy->buttons[BUTTON_LB]) {
+        clawState = OPEN;
+    } else if (joy->buttons[BUTTON_RB]) {
+        clawState = CLOSE;
+    } else {
+        clawState = STOP;
+    }
+    
+    //float top = joy->axes[STICK_R_UD] ;//* 0.2;
+    //float bottom = (-joy->axes[STICK_L_UD]) ;//* 0.2;
     
     //float leftDrive  = 1.0f;
     //float rightDrive = 1.0f;
     
  
-    topDrive = ((top / MAX_IN) * 500) + 1500.0  ;
-    bottomDrive = ((bottom / MAX_IN) * 500) + 1500.0  ;
-    sendMessage(topDrive,bottomDrive);    
-    /*if (joy->axes[STICK_LT]) {
-        lfDrive = leftDrive;
-        lmDrive = leftDrive;
-        lbDrive = leftDrive;
-        rfDrive = rightDrive * DIFF;
-        rmDrive = rightDrive * DIFF;
-        rbDrive = rightDrive * DIFF;
-    } else if (joy->axes[STICK_RT]) {
-        lfDrive = leftDrive * DIFF;
-        lmDrive = leftDrive * DIFF;
-        lbDrive = leftDrive * DIFF;
-        rfDrive = rightDrive;
-        rmDrive = rightDrive;
-        rbDrive = rightDrive;
-    } else {*/
-  
-    //}
-    /*if(!fd) {
-        fd = fopen(TTY, "w");
-        printf("reopen\n");
-    }*/
-    /*if(fd) {
-        fprintf(fd,"%f %f %f %f %f %f\n",leftDrive,leftDrive,leftDrive,rightDrive,rightDrive,rightDrive);
-        float buffer;
-        //fscanf(fd, "%f", &buffer);
-        //printf("%f", buffer);
-        //fsync((int)fd);
-        //fflush(fd);
-    } else {
-        printf("unsucesfull\n");
-    }*/
+    //topDrive = ((top / MAX_IN) * 500) + 1500.0  ;
+    //bottomDrive = ((bottom / MAX_IN) * 500) + 1500.0  ;
+    //sendMessage(topDrive,bottomDrive);    
     
 
    
    
     //TODO: camera on/off
     //check if the camera button states have changes
-    switchFeed(&cam0Button,joy->buttons[CAM_FEED_0],0);
+    //switchFeed(&cam0Button,joy->buttons[CAM_FEED_0],0);
     //TODO: camera rotation
     //TODO: take photo
     //TODO: map zoom in/out

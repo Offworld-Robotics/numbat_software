@@ -23,23 +23,27 @@ using namespace std;
 
 #define DEFAULT_POS 1500
 
-//serial IO
-#define TTY "/dev/ttyACM0"
+#define OPEN  0
+#define STOP  1
+#define CLOSE 2
 
-class ArmConverter {
+//serial IO
+#define TTY "/dev/ttyACM1"
+
+class ClawControl {
     public:
-        ArmConverter();
+        ClawControl();
         void run();
         
     private:
         void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
-        void sendMessage(int lf, int lm);
+        void sendMessage();
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
         ros::Subscriber joySubscriber;
         int topDrive, bottomDrive;
-        
+        int clawState;  
         
         //to keep track of button states. It is possible press could change it
         int cam0Button, cam1Button, cam2Button, cam3Button;

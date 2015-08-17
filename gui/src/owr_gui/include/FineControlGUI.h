@@ -40,8 +40,9 @@
 class FineControlGUI : public GLUTWindow {
 	public:
 		FineControlGUI(int width, int height, int *argc, char *argv[]);
-		void updateInfo(float voltage, float ultrasonic, float pH, float humidity, ArmState *armState, float heading, float tiltX, float tiltY, ListNode cur);
-		void updateVideo(unsigned char *frame, int width, int height, int camera);
+		//void updateInfo(float voltage, float heading, int topActuatorPos, int botActuatorPos, float pH, float humidity, double altitude, double latitude, double longitude, float tiltX, float tiltY, float ultrason);
+		void updateVideo0(unsigned char *frame, int width, int height);
+		void updateVideo1(unsigned char *frame, int width, int height);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 	
 	private:
@@ -76,8 +77,7 @@ class FineControlGUI : public GLUTWindow {
 		
 		bool arrows[4];
 		//std::vector<Button*> buttons;
-		unsigned char LFeedStatus[TOTAL_FEEDS]; // status for each feed
-		unsigned char RFeedStatus[TOTAL_FEEDS];
+		unsigned char FeedStatus[TOTAL_FEEDS]; // status for each feed
 		int onlineFeeds;
                 std::vector<Video_Feed_Frame*> videoScreens;
                 int LScreenCam, RScreenCam;
