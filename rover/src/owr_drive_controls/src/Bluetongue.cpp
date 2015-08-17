@@ -25,6 +25,8 @@ struct toControlMsg {
     int16_t armRotate;
     int16_t armTop;
     int16_t armBottom;
+    int16_t clawRotate;
+    int16_t clawGrip;
 } __attribute__((packed));
 
 struct toNUCMsg {
@@ -122,7 +124,7 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
 }
 
 struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
-    int armBottom, double armRotate) {
+    int armBottom, double armRotate, int clawRotate, int clawGrip) {
 	struct toControlMsg mesg;
 	struct toNUCMsg resp;
 	mesg.magic = MESSAGE_MAGIC;
@@ -131,6 +133,9 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.armRotate = (armRotate * 500) + 1500;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
+    mesg.clawRotate = clawRotate;
+    mesg.clawGrip = clawGrip;
+    ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
 	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
 	ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);

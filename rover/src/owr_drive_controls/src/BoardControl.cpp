@@ -16,6 +16,10 @@
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
 
+#define CLAW_ROTATION_MID 45
+#define CLAW_ROTATION_MAX 90
+#define CLAW_ROTATION_MIN 0
+
 #define MAX_IN 1.0
 #define DIFF 0.25
 
@@ -54,8 +58,12 @@ BoardControl::BoardControl() {
     armTop = MOTOR_MID;
     armBottom = MOTOR_MID;
     armRotate = ROTATION_MID;
+    clawRotate = CLAW_ROTATION_MID;
+    clawGrip = CLAW_ROTATION_MID;
     armIncRate = 0;
     gpsSequenceNum = 0;
+    rotState = STOP;
+    clawState = STOP;
           
 }
 
@@ -72,8 +80,36 @@ void BoardControl::run() {
         } else if (armTop < MOTOR_MIN) {
             armTop = MOTOR_MIN;
         }
+        
+        
+        if (clawState == OPEN) {
+            clawRotate += 5;
+        } else if (clawState == CLOSE) {
+            clawRotate-= 5;
+        }
+        
+        
+        if (clawRotate > CLAW_ROTATION_MAX) {
+            clawRotate = CLAW_ROTATION_MAX;
+        } else if (clawRotate < CLAW_ROTATION_MIN) {
+            clawRotate = CLAW_ROTATION_MIN;
+        }
+        
+        
+        if (clawGrip == OPEN) {
+            clawGrip += 5;
+        } else if (clawGrip == CLOSE) {
+            clawGrip -=  5;
+        }
+        
+        if (clawGrip > CLAW_ROTATION_MAX) {
+            clawGrip = CLAW_ROTATION_MAX;
+        } else if (clawGrip < CLAW_ROTATION_MIN) {
+            clawGrip = CLAW_ROTATION_MIN;
+        }
+        
         struct status s = steve->update(leftDrive, rightDrive,
-            armTop, armBottom, armRotate);
+            armTop, armBottom, armRotate, ((float)clawRotate/(float)CLAW_ROTATION_MAX)*1000.0+1000, ((float)clawGrip/(float)CLAW_ROTATION_MAX)*1000.0+1000);
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
@@ -164,6 +200,22 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armIncRate = top * 50;
     //TODO: check these actually match up
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
+    
+    if(joy->buttons[BUTTON_LB]) {
+        clawState = OPEN;
+    } else if (joy->buttons[BUTTON_RB]) {
+        clawState = CLOSE;
+    } else {
+        clawState = STOP;
+    }
+
+    if(joy->buttons[BUTTON_A]) {
+        rotState = OPEN;
+    } else if (joy->buttons[BUTTON_B]) {
+        rotState = CLOSE;
+    } else {
+        rotState = STOP;
+    }
 }
 
 // Convert subscribed Twist input to motor vectors for arduino output
