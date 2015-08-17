@@ -31,12 +31,14 @@ class BoardControl {
 	void velCallback(const geometry_msgs::Twist::ConstPtr& vel);
 
         void publishGPS(GPSData gps);
+        void publishMag(MagData mag);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
 
-	ros::Subscriber velSubscriber;
+	    ros::Subscriber velSubscriber;
         ros::Publisher gpsPublisher;
+        ros::Publisher magPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
         float leftDrive, rightDrive;
