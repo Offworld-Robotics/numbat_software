@@ -16,13 +16,15 @@
 #define PUBLISH_TOPIC "/owr/auton_twist"
 #define POS_TOPIC "/owr/position"
 #define DEST_TOPIC "/owr/dest"
-#define EARTH_RADIUS 6371
-#define CHECKPOINT_DISTANCE 0.000001
+//#define EARTH_RADIUS 6371009
+#define EQUATORIAL_RADIUS 63781370
+#define POLAR_RADIUS 63567523
+#define CHECKPOINT_DISTANCE 5
  
 
 
 // Defines how fast the rover accelerates or starts turning, the range of output is -1 to 1, so currently 1/10th of range
-#define INCREMENT 1
+#define INCREMENT 0.05
 
 int main(int argc, char ** argv) {
     
@@ -47,14 +49,16 @@ PathingController::PathingController( void) {
     currLR = 0;
 	vel.linear.x = 0;
 	vel.linear.y = 0;
-    
+    earthRadius = 6371009; // mean in meters, initial value but will be calculated throughout
+
+
     twistPublisher =  node.advertise<geometry_msgs::Twist>(PUBLISH_TOPIC,1000,true);
 
     positionSubscriber = node.subscribe(POS_TOPIC, 1000, &PathingController::receivePosMsg, this);
     destinationSubscriber = node.subscribe(DEST_TOPIC, 100, &PathingController::receiveDestMsg, this);
 }
 
-//TODO: Get the msg types for Destination and Position.
+// Get the msg types for Destination and Position.
 void PathingController::receivePosMsg(const owr_messages::position &msg) {
    currLat = msg.latitude;
    currLong = msg.longitude;
@@ -78,55 +82,67 @@ void PathingController::sendMsg() {
     double long1 = currLong * (M_PI / 180);
     double long2 = destLong * (M_PI / 180);
     
+    //Calculate Radius
+    earthRadius = sqrt( ( pow((pow(EQUATORIAL_RADIUS, 2) * cos(lat1)), 2) + pow(pow(POLAR_RADIUS, 2) * sin(lat1), 2) ) / ( pow(EQUATORIAL_RADIUS * cos(lat1), 2) + pow(POLAR_RADIUS * sin(lat1), 2) ));
+
+
     // Check distance between currPosition and destination to check whether we are at destination
     double diffLat = lat2 - lat1;
     double diffLong = long2 - long1;
     double a = pow(sin(diffLat/2), 2) + cos(lat1)*cos(lat2)*pow(sin(diffLong/2), 2.0);
     double c = 2*atan2(sqrt(a), sqrt(1.0 - a));
-    double distance = EARTH_RADIUS * c;
+    double distance = earthRadius * c;
+
+	ROS_INFO("distance %f earthRadius: %f \n", distance, earthRadius);
 
 	if (distance < CHECKPOINT_DISTANCE){
 		// Within 10m of destination... if needed, can set up a counter in here to increment until we a point where we call for next destination.
-	    ROS_INFO("At destination! You are awesome! \n");
+		if(currPower){
+			currPower -= INCREMENT * (currPower / fabs(currPower));
+		}
+        if(currLR){
+        	currLR -= INCREMENT * (currLR / fabs(currLR));
+        }
+		ROS_INFO("At destination! You are awesome!\n");
 	} else {
 
-    // Find the bearing from the lat and long values of position and destination: 'http://www.ig.utexas.edu/outreach/googleearth/latlong.html'
-    double angle = atan2( (cos(lat2) * sin(long2 - long1)), ((sin(lat2) * cos(lat1)) - (sin(lat1) * cos(lat2) * cos(long2 - long1))));
-    destHeading = fmod((angle * 180.0 / M_PI) + 360.0, 360.0);
+		// Find the bearing from the lat and long values of position and destination: 'http://www.ig.utexas.edu/outreach/googleearth/latlong.html'
+		double angle = atan2( (cos(lat2) * sin(long2 - long1)), ((sin(lat2) * cos(lat1)) - (sin(lat1) * cos(lat2) * cos(long2 - long1))));
+		destHeading = fmod((angle * 180.0 / M_PI) + 360.0, 360.0);
 
-    // Work out the desired action to be taken
-    if (currHeading == destHeading){
-    	//Go straight, decrement lr
-        currPower += INCREMENT;
-        if(currLR){
-        	currLR -= 0.1 * (currLR / fabs(currLR));
-        }
-    } else if (fmod((currHeading + 180.0), 360.0) == destHeading){
-    	//Go backwards, decrement lr
-        currPower -= INCREMENT;
-        if(currLR){
-            currLR -= 0.1 * (currLR / fabs(currLR));
-        }
-    } else {
-    	angle = destHeading - currHeading;
+		// Work out the desired action to be taken
+		if (currHeading == destHeading){
+			//Go straight, decrement lr
+			currPower += INCREMENT;
+			if(currLR){
+				currLR -= INCREMENT * (currLR / fabs(currLR));
+			}
+		} else if (fmod((currHeading + 180.0), 360.0) == destHeading){
+			//Go backwards, decrement lr
+			currPower -= INCREMENT;
+			if(currLR){
+				currLR -= INCREMENT * (currLR / fabs(currLR));
+			}
+		} else {
+			angle = destHeading - currHeading;
 
-    	if(angle > 180 && angle < 360){
-    		//turn left
-            currPower += INCREMENT;
-            currLR -= INCREMENT;
+			if(angle > 180 && angle < 360){
+				//turn left
+				currPower += INCREMENT;
+				currLR -= INCREMENT;
 
-    	} else {
-    		//turn right
-            currPower += INCREMENT;
-            currLR += INCREMENT;
-    	}
-    }
-
+			} else {
+				//turn right
+				currPower += INCREMENT;
+				currLR += INCREMENT;
+			}
+		}
+	}
     if(currPower > 1){
     	currPower = 1;
     } else if(currPower < -1){
     	currPower = -1;
-    } else if (currPower < INCREMENT && currPower > -INCREMENT){
+    } else if (currPower < (0.9 * INCREMENT) && currPower > -(0.9 * INCREMENT)){
     	currPower = 0; //at least in soft testing, have found that the LR and pwr dont return back to 0 very well (end up 0.099...)
     }
 
@@ -134,7 +150,7 @@ void PathingController::sendMsg() {
     	currLR = 1;
     } else if(currLR < -1){
     	currLR = -1;
-    } else if (currLR < INCREMENT && currLR > -INCREMENT){
+    } else if (currLR < (0.9 * INCREMENT) && currLR > -(0.9 * INCREMENT)){
     	currLR = 0; //at least in soft testing, have found that the LR and pwr dont return back to 0 very well (end up 0.099...)
     }
 
@@ -144,7 +160,7 @@ void PathingController::sendMsg() {
     vel.linear.x = currPower;
 	vel.linear.y = currLR;
 	twistPublisher.publish(vel);
-	}
+
 }
 
 //main loop

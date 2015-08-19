@@ -42,6 +42,7 @@ class PathingController {
         double destHeading;
         double destLat;
         double destLong;
+        double earthRadius;
 };
 
 
