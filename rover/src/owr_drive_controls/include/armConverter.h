@@ -16,6 +16,8 @@ using namespace std;
 
 #define TOP_ACTUATOR 0
 #define BOTTOM_ACTUATOR 1
+#define ROT_SERVO 2
+#define CLAW_SERVO 3
 
 #define FULL_EXTENSION 1700
 //1700
@@ -43,7 +45,7 @@ class ClawControl {
         ros::Publisher  velPublisher;
         ros::Subscriber joySubscriber;
         int topDrive, bottomDrive;
-        int clawState;  
+        int clawState, rotState;  
         
         //to keep track of button states. It is possible press could change it
         int cam0Button, cam1Button, cam2Button, cam3Button;

@@ -25,12 +25,15 @@ struct toControlMsg {
     int16_t armRotate;
     int16_t armTop;
     int16_t armBottom;
+    int16_t clawRotate;
+    int16_t clawGrip;
 } __attribute__((packed));
 
 struct toNUCMsg {
     uint16_t magic;
     uint16_t vbat;
     GPSData gpsData;
+    MagData magData;
 } __attribute__((packed));
 
 Bluetongue::Bluetongue(const char* port) {
@@ -98,7 +101,7 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
 	}
 	int written = 0;
 	do {
-		written += write(port_fd, message + written, message_len - written);
+		written += write(port_fd, (int8_t*)message + written, message_len - written);
 	} while (written < message_len);
 	ROS_INFO("Written packet, expecting to read %d", resp_len);
 	tcflush(port_fd, TCIOFLUSH); 
@@ -113,7 +116,7 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
             ROS_INFO("timeout"); /* a timeout occured */
             break;
         } else {
-		  readCount += read(port_fd, resp + readCount, resp_len - readCount);
+		  readCount += read(port_fd, (int8_t*)resp + readCount, resp_len - readCount);
 		}
         ROS_INFO("reading... %d", readCount);
 	} while (readCount < resp_len);
@@ -121,7 +124,7 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
 }
 
 struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
-    int armBottom, double armRotate) {
+    int armBottom, double armRotate, int clawRotate, int clawGrip) {
 	struct toControlMsg mesg;
 	struct toNUCMsg resp;
 	mesg.magic = MESSAGE_MAGIC;
@@ -130,6 +133,9 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.armRotate = (armRotate * 500) + 1500;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
+    mesg.clawRotate = clawRotate;
+    mesg.clawGrip = clawGrip;
+    ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
 	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
 	ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);
@@ -144,5 +150,6 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     }
     stat.batteryVoltage = resp.vbat;// / (1 << 15);
     stat.gpsData = resp.gpsData;
+    stat.magData = resp.magData;
     return stat;
 }

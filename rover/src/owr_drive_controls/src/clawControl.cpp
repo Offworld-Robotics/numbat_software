@@ -44,7 +44,8 @@ void ClawControl::run() {
 
 void ClawControl::sendMessage() {
     if(fd) {
-        fprintf(fd,"%d\n",clawState);
+        fprintf(fd,"%d %d\n", CLAW_SERVO,clawState);
+        fprintf(fd,"%d %d\n", ROT_SERVO, rotState);
         float buffer;
         //fscanf(fd, "%f", &buffer);
         //ROS_INFO("%f", buffer);
@@ -53,7 +54,7 @@ void ClawControl::sendMessage() {
     } else {
         ROS_INFO("unsucesfull");
     }    
-    ROS_INFO("%d",clawState);
+    ROS_INFO("Claw:%d\tRot:%d",clawState, rotState);
 }
 
 void ClawControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
@@ -66,6 +67,14 @@ void ClawControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         clawState = CLOSE;
     } else {
         clawState = STOP;
+    }
+
+    if(joy->buttons[BUTTON_A]) {
+        rotState = OPEN;
+    } else if (joy->buttons[BUTTON_B]) {
+        rotState = CLOSE;
+    } else {
+        rotState = STOP;
     }
     
     //float top = joy->axes[STICK_R_UD] ;//* 0.2;

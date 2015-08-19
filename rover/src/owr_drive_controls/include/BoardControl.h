@@ -19,6 +19,10 @@ using namespace std;
 //serial IO
 #define TTY "/dev/ttyACM0"
 
+#define OPEN  0
+#define STOP  1
+#define CLOSE 2
+
 class BoardControl {
     public:
         BoardControl();
@@ -28,15 +32,17 @@ class BoardControl {
         void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void armCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
-	void velCallback(const geometry_msgs::Twist::ConstPtr& vel);
+        void velCallback(const geometry_msgs::Twist::ConstPtr& vel);
 
         void publishGPS(GPSData gps);
+        void publishMag(MagData mag);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
 
-	ros::Subscriber velSubscriber;
+	    ros::Subscriber velSubscriber;
         ros::Publisher gpsPublisher;
+        ros::Publisher magPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
         float leftDrive, rightDrive;
@@ -46,6 +52,14 @@ class BoardControl {
         int armIncRate;
         //gps sequence number
         int gpsSequenceNum;
+        
+        //claw stuff
+        int clawState;
+        int rotateState;
+        int clawRotate;
+        int clawGrip;
+        int rotState;
+        //int clawState;
         
         //to keep track of button states. It is possible press could change it
         int cam0Button, cam1Button, cam2Button, cam3Button;

@@ -9,11 +9,16 @@
 #include <assert.h>
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
+#include <geometry_msgs/Vector3.h>
 
 #define MOTOR_MID 1500.0
 #define MOTOR_MAX 1900.0
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
+
+#define CLAW_ROTATION_MID 45
+#define CLAW_ROTATION_MAX 90
+#define CLAW_ROTATION_MIN 0
 
 #define MAX_IN 1.0
 #define DIFF 0.25
@@ -46,14 +51,19 @@ BoardControl::BoardControl() {
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy",2, &BoardControl::joyCallback, this, transportHints);
     armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
+    magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
     velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
     armBottom = MOTOR_MID;
     armRotate = ROTATION_MID;
+    clawRotate = CLAW_ROTATION_MID;
+    clawGrip = CLAW_ROTATION_MID;
     armIncRate = 0;
     gpsSequenceNum = 0;
+    rotState = STOP;
+    clawState = STOP;
           
 }
 
@@ -70,10 +80,39 @@ void BoardControl::run() {
         } else if (armTop < MOTOR_MIN) {
             armTop = MOTOR_MIN;
         }
+        
+        
+        if (clawState == OPEN) {
+            clawRotate += 5;
+        } else if (clawState == CLOSE) {
+            clawRotate-= 5;
+        }
+        
+        
+        if (clawRotate > CLAW_ROTATION_MAX) {
+            clawRotate = CLAW_ROTATION_MAX;
+        } else if (clawRotate < CLAW_ROTATION_MIN) {
+            clawRotate = CLAW_ROTATION_MIN;
+        }
+        
+        
+        if (clawGrip == OPEN) {
+            clawGrip += 5;
+        } else if (clawGrip == CLOSE) {
+            clawGrip -=  5;
+        }
+        
+        if (clawGrip > CLAW_ROTATION_MAX) {
+            clawGrip = CLAW_ROTATION_MAX;
+        } else if (clawGrip < CLAW_ROTATION_MIN) {
+            clawGrip = CLAW_ROTATION_MIN;
+        }
+        
         struct status s = steve->update(leftDrive, rightDrive,
-            armTop, armBottom, armRotate);
+            armTop, armBottom, armRotate, ((float)clawRotate/(float)CLAW_ROTATION_MAX)*1000.0+1000, ((float)clawGrip/(float)CLAW_ROTATION_MAX)*1000.0+1000);
 
         publishGPS(s.gpsData);
+        publishMag(s.magData);
         //if (s.roverOk == false) {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
@@ -101,10 +140,16 @@ void BoardControl::publishGPS(GPSData gps) {
     msg.header.seq = gpsSequenceNum;
     msg.header.frame_id = 1; // global frame
     gpsPublisher.publish(msg);
-    
-    
 }
 
+void BoardControl::publishMag(MagData mag) {
+    geometry_msgs::Vector3 msg;
+    msg.x = mag.x;
+    msg.y = mag.y;
+    msg.z = mag.z;
+    // Header just has dummy values
+    magPublisher.publish(msg);
+}
 
 //checks if the button state has changed and changes the feed
 void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
@@ -155,6 +200,22 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armIncRate = top * 50;
     //TODO: check these actually match up
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
+    
+    if(joy->buttons[BUTTON_LB]) {
+        clawState = OPEN;
+    } else if (joy->buttons[BUTTON_RB]) {
+        clawState = CLOSE;
+    } else {
+        clawState = STOP;
+    }
+
+    if(joy->buttons[BUTTON_A]) {
+        rotState = OPEN;
+    } else if (joy->buttons[BUTTON_B]) {
+        rotState = CLOSE;
+    } else {
+        rotState = STOP;
+    }
 }
 
 // Convert subscribed Twist input to motor vectors for arduino output

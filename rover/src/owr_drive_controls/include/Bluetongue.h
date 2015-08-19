@@ -17,11 +17,17 @@ struct gpsData {
 } __attribute__((packed));
 typedef struct gpsData GPSData;
 
+struct magData {
+    int16_t x, y, z;
+    int16_t padding;
+} __attribute__((packed));
+typedef struct magData MagData;
 
 struct status {
     bool roverOk;
     double batteryVoltage;
     GPSData gpsData;
+    MagData magData;
 };
 	
 class Bluetongue {
@@ -36,6 +42,6 @@ class Bluetongue {
 		Bluetongue(const char* port);
 		~Bluetongue();
 		struct status update(double leftMotor, double rightMotor, int armTop,
-                int armBottom, double armRotate);
+                int armBottom, double armRotate, int clawRotate, int clawGrip);
 };
 #endif
