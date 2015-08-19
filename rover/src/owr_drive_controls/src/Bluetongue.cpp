@@ -34,13 +34,14 @@ struct toNUCMsg {
 
 Bluetongue::Bluetongue(const char* port) {
 	// Open serial port
-	port_fd = open(port, O_RDWR | O_NOCTTY);
-	if (port_fd == -1) {
-		ROS_INFO("Error in open uart port");
-        abort();
-	} else {
-		ROS_INFO("Opened uart port");
-	}
+	port_fd = -1;
+	do {
+	    port_fd = open(port, O_RDWR | O_NOCTTY);    
+	    if (port_fd == -1) {
+		    ROS_ERROR("Error in open uart port");
+	    }
+	} while (port_fd == -1);
+	ROS_INFO("Opened uart port");
     // Set up stuff for select so we can timeout on reads
     FD_ZERO(&uart_set); /* clear the set */
     FD_SET(port_fd, &uart_set); /* add our file descriptor to the set */
@@ -53,7 +54,7 @@ Bluetongue::Bluetongue(const char* port) {
 
 	// Error Handling 
 	if (tcgetattr(Bluetongue::port_fd, &tty) != 0) {
-		ROS_INFO("Error %d from tcgetattr: %s", errno, strerror(errno));
+		ROS_ERROR("Error %d from tcgetattr: %s", errno, strerror(errno));
 	}
 	ROS_INFO("Setting up uart");
 
