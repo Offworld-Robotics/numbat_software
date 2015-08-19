@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
+#include <geometry_msgs/Vector3.h>
 
 #define MOTOR_MID 1500.0
 #define MOTOR_MAX 1900.0
@@ -46,6 +47,7 @@ BoardControl::BoardControl() {
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy",2, &BoardControl::joyCallback, this, transportHints);
     armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
+    magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
     velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
@@ -74,6 +76,7 @@ void BoardControl::run() {
             armTop, armBottom, armRotate);
 
         publishGPS(s.gpsData);
+        publishMag(s.magData);
         //if (s.roverOk == false) {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
@@ -101,10 +104,16 @@ void BoardControl::publishGPS(GPSData gps) {
     msg.header.seq = gpsSequenceNum;
     msg.header.frame_id = 1; // global frame
     gpsPublisher.publish(msg);
-    
-    
 }
 
+void BoardControl::publishMag(MagData mag) {
+    geometry_msgs::Vector3 msg;
+    msg.x = mag.x;
+    msg.y = mag.y;
+    msg.z = mag.z;
+    // Header just has dummy values
+    magPublisher.publish(msg);
+}
 
 //checks if the button state has changed and changes the feed
 void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
