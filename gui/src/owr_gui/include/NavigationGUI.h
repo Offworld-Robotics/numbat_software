@@ -16,8 +16,8 @@
 #define PI 3.1415926535897932384626433832795
 
 // default window size
-#define WINDOW_W 1920
-#define WINDOW_H 892
+#define WINDOW_W 1855
+#define WINDOW_H 917
 
 #define TOTAL_FEEDS 4
 
@@ -58,7 +58,7 @@ class NavigationGUI : public GLUTWindow {
 
 	public:
 		NavigationGUI(int width, int height, int *argc, char **argv);
-		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, double altitude, vector2D target);
+		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, vector3D target);
 		void updateVideo(unsigned char *frame, int width, int height);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 		
@@ -66,6 +66,7 @@ class NavigationGUI : public GLUTWindow {
 		// GLUT essential functions
 		void idle();
 		void display();
+		void reshape(int w, int h);
 
 		// GLUT keyboard functions
 		void keydown(unsigned char key, int x, int y);
@@ -103,9 +104,7 @@ class NavigationGUI : public GLUTWindow {
 		float tiltX; // tilt of left-right in degrees
 		float tiltY; // tilt of forward-back in degrees
 		float ultrasonic;
-		double longitude;
-		double latitude;
-		double altitude;
+		vector3D currentPos;
 		
 		double pathRotation; // angle to rotate GPS path when drawing
 		double prevRotation;
@@ -116,7 +115,7 @@ class NavigationGUI : public GLUTWindow {
 
 		// GPS related variables
 		std::list<ListNode> GPSList; // path history (front is current point, back is origin point)
-		vector2D target;
+		vector3D target;
 
 		// OpenGL control related variables
 		bool arrowKeys[4];
@@ -130,7 +129,7 @@ class NavigationGUI : public GLUTWindow {
 		ros::Publisher streamPub;
 		void toggleStream(int feed);
 		
-		std::vector<Video_Feed_Frame*> videoFeeds;
+		Video_Feed_Frame *videoScreen;
 };
 
 

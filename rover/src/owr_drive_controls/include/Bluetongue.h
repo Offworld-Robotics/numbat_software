@@ -1,9 +1,27 @@
+#ifndef BLUETONGUE_H
+#define BLUETONGUE_H
+
 #include <string>
+//#include <cstdint>
 #include <vector>
+
+#define GPS_FLOAT_OFFSET 1000000
+
+struct gpsData {
+    uint16_t time;
+    int32_t latitude; // lat * 10000 - to avoid floats
+    int32_t longitude; // lon * 10000 - to avoid floats
+    uint16_t numSatelites;
+    int16_t altitude;
+    uint16_t fixValid; //bool
+} __attribute__((packed));
+typedef struct gpsData GPSData;
+
 
 struct status {
     bool roverOk;
     double batteryVoltage;
+    GPSData gpsData;
 };
 	
 class Bluetongue {
@@ -20,4 +38,4 @@ class Bluetongue {
 		struct status update(double leftMotor, double rightMotor, int armTop,
                 int armBottom, double armRotate);
 };
-
+#endif

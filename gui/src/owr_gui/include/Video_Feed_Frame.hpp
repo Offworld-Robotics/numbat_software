@@ -3,7 +3,7 @@
  *
  * Frame to display a video feed in an OpenGL GUI Screen
  *
- * for use with
+ * for use with NavigationGUI and FineControlGUI
  *
  */
 
@@ -12,20 +12,29 @@
 
 #include <GL/freeglut.h>
 
+#define ZOOM_IN 1
+#define ZOOM_OUT 0
+
 class Video_Feed_Frame {
 
-   public:
-      //Video_Feed_Frame();
-      Video_Feed_Frame(int _centreX, int _centreY, int width, int height);
-      ~Video_Feed_Frame();
+	public:
+	Video_Feed_Frame(int winW, int winH, double _cenXRatio, double _cenYRatio, double _wRatio, double _hRatio);
+	~Video_Feed_Frame();
 
-      void draw();
-      void setNewStreamFrame(unsigned char *frame, int width, int height);
+	void draw();
+	void setNewStreamFrame(unsigned char *frame, int width, int height);
+	void setNewWindowSize(int winW, int winH);
+	void zoom(bool dir);
 
-   private:
-      GLuint videoTexture;
-      int centreX, centreY; 
-      int halfWidth, halfHeight;
+	private:
+	GLuint videoTexture;
+	double cenXRatio, cenYRatio;
+	double wRatio, hRatio;
+	double centreX, centreY;
+	double halfWidth, halfHeight;
+	
+	int zoomLevel;
+	double texCutoff;
 };
 
 #endif
