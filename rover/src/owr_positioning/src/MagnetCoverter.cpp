@@ -34,7 +34,12 @@ MagnetConverter::MagnetConverter(const std::string topic) {
 }
 
 void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 const> & msg) {
-    //TODO: do stuff
+    //Normalized vector
+    float norm = sqrt(pow(msg->x,2) + pow(msg->y,2) + pow(msg->z,2))
+    float norm_x = msg->x/norm;
+    float norm_y = msg->y/norm;
+    float norm_z = msg->z/norm;
+
     sensor_msgs::Imu imu;
     //We need orientation set
     //TODO: set valuews
