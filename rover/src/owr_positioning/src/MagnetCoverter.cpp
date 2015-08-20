@@ -33,14 +33,28 @@ MagnetConverter::MagnetConverter(const std::string topic) {
     publisher =  nh.advertise<sensor_msgs::Imu>("/owr/nav/mag_imu", 10);
 }
 
+geometry_msgs::Vector3 hamiltonProduct(geometry_msgs::Quarternion q1, geometry_msgs::Quarternion q2) {
+    geometry_msgs::Vector3 ret;
+    ret->w = (q1->w * q2->w) - (q1->x * q2->x) - (q1->y * q2->y) - (q1->z * q2->z);
+    ret->x = (q1->w * q2->x) + (q1->x * q2->w) + (q1->y * q2->z) - (q1->z * q2->y);
+    ret->y = (q1->w * q2->y) - (q1->x * q2->z) + (q1->y * q2->w) + (q1->z * q2->x);
+    ret->z = (q1->w * q2->z) + (q1->x * q2->y) + (q1->y * q2->x) - (q1->z * q2->w);
+    return ret;
+}
+
 void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 const> & msg) {
     //Normalized vector
     float norm = sqrt(pow(msg->x,2) + pow(msg->y,2) + pow(msg->z,2))
-    float norm_x = msg->x/norm;
-    float norm_y = msg->y/norm;
-    float norm_z = msg->z/norm;
+    geometry_msgs::Quarternion magQuart;
+    magQuart->x = msg->x/norm;
+    magQuart->y = msg->w/norm;
+    magQuart->z = msg->z/norm;
+    magQuart->w = 0;
 
     sensor_msgs::Imu imu;
+    geometry_msgs::Vector3 absDir = hamiltonProduct(magQuart,imu->orientation);
+    double heading = atan2(1,0) - atan2(absDir->y,absDir->x);
+
     //We need orientation set
     //TODO: set valuews
     publisher.publish(imu);
