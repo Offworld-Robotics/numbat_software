@@ -152,5 +152,6 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     stat.batteryVoltage = resp.vbat;// / (1 << 15);
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
+    stat.imuData = resp.imuData;
     return stat;
 }

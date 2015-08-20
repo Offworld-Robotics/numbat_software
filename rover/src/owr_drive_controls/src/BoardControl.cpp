@@ -34,7 +34,6 @@ int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_telop");
     BoardControl BoardControl;
     BoardControl.run();
-    
 }
 
 BoardControl::BoardControl() {
@@ -52,6 +51,8 @@ BoardControl::BoardControl() {
     armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
     magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
+    gyroPublisher = nh.advertise<geometry_msgs::Vector3>("gyro", 10);
+    accPublisher = nh.advertise<geometry_msgs::Vector3>("acc", 10);
     velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
@@ -64,7 +65,6 @@ BoardControl::BoardControl() {
     gpsSequenceNum = 0;
     rotState = STOP;
     clawState = STOP;
-          
 }
 
 void BoardControl::run() {
@@ -113,6 +113,7 @@ void BoardControl::run() {
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
+        publishIMU(s.imuData);
         //if (s.roverOk == false) {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
@@ -151,6 +152,20 @@ void BoardControl::publishMag(MagData mag) {
     magPublisher.publish(msg);
 }
 
+void BoardControl::publishIMU(IMUData imu) {
+    geometry_msgs::Vector3 gyro_msg;
+    geometry_msgs::Vector3 acc_msg;
+    gyro_msg.x = imu.gx;
+    gyro_msg.y = imu.gy;
+    gyro_msg.z = imu.gz;
+    acc_msg.x = imu.ax;
+    acc_msg.y = imu.ay;
+    acc_msg.z = imu.az;
+
+    // Header just has dummy values
+    gyroPublisher.publish(gyro_msg);
+    accPublisher.publish(acc_msg);
+}
 //checks if the button state has changed and changes the feed
 void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
     if((*storedState) != joyState) {
