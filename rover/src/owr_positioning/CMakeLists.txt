@@ -114,6 +114,9 @@ add_dependencies(owr_positioning_node owr_messages)
 add_dependencies(owr_positioning_node owr_messages_gencpp)
 target_link_libraries(owr_positioning_node ${catkin_LIBRARIES})
 
+
+add_executable(owr_object_avoidance src/ObjectAvoidance.cpp)
+target_link_libraries(owr_object_avoidance ${catkin_LIBRARIES})
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(owr_positioning_node
 #   ${catkin_LIBRARIES}
