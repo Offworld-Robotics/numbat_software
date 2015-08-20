@@ -32,6 +32,7 @@ struct toNUCMsg {
     uint16_t vbat;
     GPSData gpsData;
     MagData magData;
+    IMUData imuData;
 } __attribute__((packed));
 
 Bluetongue::Bluetongue(const char* port) {

@@ -23,11 +23,18 @@ struct magData {
 } __attribute__((packed));
 typedef struct magData MagData;
 
+struct imuData {
+        int16_t gx, gy, gz;
+        int16_t ax, ay, az;
+} __attribute__((packed)); 
+typedef struct imuData IMUData;
+
 struct status {
     bool roverOk;
     double batteryVoltage;
     GPSData gpsData;
     MagData magData;
+    IMUData imuData;
 };
 	
 class Bluetongue {
