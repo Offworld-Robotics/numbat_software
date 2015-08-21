@@ -36,6 +36,7 @@ class BoardControl {
 
         void publishGPS(GPSData gps);
         void publishMag(MagData mag);
+        void publishIMU(IMUData imu);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
@@ -43,6 +44,8 @@ class BoardControl {
 	    ros::Subscriber velSubscriber;
         ros::Publisher gpsPublisher;
         ros::Publisher magPublisher;
+        ros::Publisher gyroPublisher;
+        ros::Publisher accPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
         float leftDrive, rightDrive;
