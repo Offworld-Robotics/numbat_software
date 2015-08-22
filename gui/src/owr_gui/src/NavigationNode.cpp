@@ -11,6 +11,10 @@
 #include "NavigationNode.h"
 #include <fstream>
 
+// Include for the image_trasport pkg which will allow us to use compressed
+// images through magic ros stuff :)
+#include <image_transport/image_transport.h>
+
 NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	ROS_INFO("Starting Navigation Node");
 	gui = newgui;
@@ -37,14 +41,17 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
 	
+	
+	
+	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// createed yet, will wait til it has w/o doing anything
-	
+	/*
 	videoSub[0] = n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this);
 	videoSub[1] = n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this);
 	videoSub[2] = n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this);
 	videoSub[3] = n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this); // Frames of video from camera
-	
+	*/
 }
 
 // Spin to wait until a message is received
