@@ -95,7 +95,7 @@ void PathingController::sendMsg() {
 
 	ROS_INFO("distance %f earthRadius: %f \n", distance, earthRadius);
 
-	if (distance < CHECKPOINT_DISTANCE){
+	if (distance < CHECKPOINT_DISTANCE || destLat == 0){
 		// Within 10m of destination... if needed, can set up a counter in here to increment until we a point where we call for next destination.
 		if(currPower){
 			currPower -= INCREMENT * (currPower / fabs(currPower));

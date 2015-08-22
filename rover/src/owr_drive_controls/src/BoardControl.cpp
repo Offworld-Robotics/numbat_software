@@ -27,7 +27,7 @@
 #define SENSITIVITY 1
 
 static void printStatus(struct status *s) {
-	ROS_INFO("Battery voltage: %f", s->batteryVoltage);
+    ROS_INFO("Battery voltage: %f", s->batteryVoltage);
 }
 
 int main(int argc, char ** argv) {
@@ -45,13 +45,15 @@ BoardControl::BoardControl() {
     cam2Button = 0;
     cam3Button = 0;
     //fd = fopen(TTY, "w");
-    assert(fd != NULL);
+    //assert(fd != NULL);
     //subscribe to xbox controller
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy",2, &BoardControl::joyCallback, this, transportHints);
     armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
-    magPublisher = nh.advertise<geometry_msgs::Vector3>("/owr/sensors/mag", 10);
+    magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
+    gyroPublisher = nh.advertise<geometry_msgs::Vector3>("gyro", 10);
+    accPublisher = nh.advertise<geometry_msgs::Vector3>("acc", 10);
     velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
@@ -113,12 +115,13 @@ void BoardControl::run() {
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
+        publishIMU(s.imuData);
         //if (s.roverOk == false) {
         //    delete steve;
         //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
         //}
-	    printStatus(&s);
-	    usleep(100000);
+        printStatus(&s);
+        usleep(100000);
         //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
         ros::spinOnce();
     }
@@ -128,7 +131,7 @@ void BoardControl::run() {
 void BoardControl::publishGPS(GPSData gps) {
     sensor_msgs::NavSatFix msg;
     msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
-    msg.latitude = ((float)gps.latitude)/GPS_FLOAT_OFFSET;
+    msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) * -1.0; // fix issue with -ve longitude
     msg.altitude = gps.altitude;
     
     if (gps.fixValid) {
@@ -151,6 +154,20 @@ void BoardControl::publishMag(MagData mag) {
     magPublisher.publish(msg);
 }
 
+void BoardControl::publishIMU(IMUData imu) {
+    geometry_msgs::Vector3 gyro_msg;
+    geometry_msgs::Vector3 acc_msg;
+    gyro_msg.x = imu.gx;
+    gyro_msg.y = imu.gy;
+    gyro_msg.z = imu.gz;
+    acc_msg.x = imu.ax;
+    acc_msg.y = imu.ay;
+    acc_msg.z = imu.az;
+
+    // Header just has dummy values
+    gyroPublisher.publish(gyro_msg);
+    accPublisher.publish(acc_msg);
+}
 //checks if the button state has changed and changes the feed
 void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
     if((*storedState) != joyState) {
@@ -162,10 +179,9 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
 
 	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
-    #define SENSITIVITY 1.0
     leftDrive = (joy->axes[STICK_L_UD]);
     rightDrive = -joy->axes[DRIVE_AXES_UD];
-	/*
+    /*
     float power = joy->axes[DRIVE_AXES_UD];
     float lr = (-joy->axes[STICK_L_LR]);
     
