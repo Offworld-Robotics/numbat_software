@@ -13,12 +13,15 @@
 
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_avoidance");
+    ROS_INFO("object avoidance starting");
     ObjectAvoidance ObjectAvoidance;
+    ROS_INFO("initialising...run");
     ObjectAvoidance.run();
 }
 
-ObjectAvoidance::ObjectAvoidance() : sub(nh, "laser_scan", 1),
+ObjectAvoidance::ObjectAvoidance() : nh(), sub(nh, "laser_scan", 1),
     laserNotifierL(sub,listener, "left_front_wheel_hub", 1) {
+    ROS_INFO("registering transform listner");
     laserNotifierL.registerCallback(
         boost::bind(&ObjectAvoidance::scanCallback, this, _1)
     );

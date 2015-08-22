@@ -27,9 +27,10 @@ class ObjectAvoidance {
 	    //ros::Subscriber sub;
         ros::Publisher pub;
         
+        tf::TransformListener  listener;
         message_filters::Subscriber<sensor_msgs::LaserScan> sub;
         tf::MessageFilter<sensor_msgs::LaserScan> laserNotifierL;
-        tf::TransformListener  listener;
+        
         
         
 };
