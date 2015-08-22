@@ -19,7 +19,7 @@ int main(int argc, char ** argv) {
     ObjectAvoidance.run();
 }
 
-ObjectAvoidance::ObjectAvoidance() : nh(), sub(nh, "laser_scan", 1),
+ObjectAvoidance::ObjectAvoidance() : nh(), sub(nh, "/hokuyo", 1),
     laserNotifierL(sub,listener, "left_front_wheel_hub", 1) {
     ROS_INFO("registering transform listner");
     laserNotifierL.registerCallback(
