@@ -21,16 +21,16 @@ int main(int argc, char ** argv) {
     
     
     //init ros
-    ros::init(argc, argv, "owr_position_node");
+    ros::init(argc, argv, "owr_magnet_node");
     
     MagnetConverter p(TOPIC);
     p.spin();
-    
+    ROS_INFO("finished!!!\n\n\n\n\n\n\n\n\n\n\n\n\n");
     return EXIT_SUCCESS;   
 }
 
 MagnetConverter::MagnetConverter(const std::string topic) {
-    subscriber = node.subscribe("/owr/sensors/mag", 5, &MagnetConverter::receiveMsg, this); // mangnet stuff
+    subscriber = node.subscribe("/mag", 5, &MagnetConverter::receiveMsg, this); // mangnet stuff
     publisher =  node.advertise<owr_messages::heading>("/owr/heading", 10);
 }
 
@@ -48,15 +48,15 @@ void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 
     float norm = sqrt(pow(msg->x,2) + pow(msg->y,2) + pow(msg->z,2));
     geometry_msgs::Quaternion magQuart;
     magQuart.x = msg->x/norm;
-    magQuart.y = msg->y/norm;
+    magQuart.y = -msg->y/norm;
     magQuart.z = msg->z/norm;
     magQuart.w = 0;
-
     //sensor_msgs::Imu imu;
     //geometry_msgs::Vector3 absDir = hamiltonProduct(magQuart,imu.orientation);
     //double heading = atan2(1,0) - atan2(absDir.y,absDir.x);
     double heading = atan2(1,0) - atan2(magQuart.y,magQuart.x);
     
+    ROS_INFO("recived");
     //We need orientation set
     //TODO: set valuews
     owr_messages::heading msg2;
@@ -70,5 +70,6 @@ void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 
 void MagnetConverter::spin() {
     while(ros::ok()) {
         ros::spinOnce();
+        //ROS_INFO("spinning");
     }
 }
