@@ -8,8 +8,14 @@
 #include "ListNode.h"
 #include <list>
 #include "GLUTWindow.h"
+#include "GPSInputManager.h"
 
 #define SCALE 40000
+
+#define INPUT_BUFFER_SIZE 30
+#define INPUT_DISABLED 0
+#define INPUT_LAT 1
+#define INPUT_LON 2
 
 class AutoGUI : public GLUTWindow {
 	public:
@@ -19,6 +25,13 @@ class AutoGUI : public GLUTWindow {
 		void idle();
 		void display();
 		void keydown(unsigned char key, int x, int y);
+		
+		double targetLat;
+		double targetLon;
+		bool haveTargetLat;
+		bool haveTargetLon;
+		
+		GPSInputManager *keymanager;
 		
 		void drawFullMap(double refLat, double refLon);
 		void drawGPSPos();

@@ -7,6 +7,7 @@
 #include "AutoGUI.h"
 #include "AutoNode.h"
 #include <ros/ros.h>
+#include "GPSInputManager.h"
 
 void AutoGUI::updateInfo(ListNode cur) {
 	if (cur != NULL) path.push_front(cur);
@@ -128,19 +129,69 @@ void AutoGUI::display() {
 	drawTrackingMap();
 	drawGPSPos();
 	
+	glPushMatrix();
+	
+	glTranslated(50, -100, 0);
+	glColor3f(1,1,1);
+	char txt[100];
+	sprintf(txt, "Text buffer: %s", keymanager->getBuffer());
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	glTranslated(0, -30, 0);
+	if(haveTargetLat) {
+		sprintf(txt, "Target Lat: %.10f", targetLat);
+	} else {
+		sprintf(txt, "Target Lat: ?");
+	}
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glTranslated(0, -30, 0);
+	if(haveTargetLon) {
+		sprintf(txt, "Target Lon: %.10f", targetLon);
+	} else {
+		sprintf(txt, "Target Lon: ?");
+	}
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
+	glPopMatrix();
+	
 	glutSwapBuffers();
 }
 
 void AutoGUI::keydown(unsigned char key, int x, int y) {
+	printf("key pressed: %d '%c'\n", key, key);
 	switch (key) {
 		case 27:
 			exit(0);
+			break;
+		case 'i':
+			if(!keymanager->isEnabled()) {
+				keymanager->enableInput();
+			}
+			break;
+		case 'a':
+			if(keymanager->isEnabled()) {
+				targetLat = keymanager->convert2Double();
+				keymanager->clearBuffer();
+				keymanager->disableInput();
+				haveTargetLat = true;
+			}
+			break;
+		case 'o':
+			if(keymanager->isEnabled()) {
+				targetLon = keymanager->convert2Double();
+				keymanager->clearBuffer();
+				keymanager->disableInput();
+				haveTargetLon = true;
+			}
+			break;
+		default:
+			keymanager->input(key);
 			break;
 	}
 }
 
 AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[], double destPos[3][2]) : GLUTWindow(width, height, argc, argv, "AutoGUI") {
-	autoNode = new AutoNode(this);	
+	autoNode = new AutoNode(this);
 	
 	glClearColor(0, 0, 0, 0);
 	glShadeModel(GL_FLAT);
@@ -152,6 +203,9 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[], double destPos[
 	mapCentre[1] = (dests[0][1]+dests[1][1]+dests[2][1])/3.0;
 	
 	memset(&currentPos, 0, sizeof(currentPos));
+	
+	keymanager = new GPSInputManager();
+	haveTargetLat = haveTargetLon = false;
 	
 	ListNode init = (ListNode)malloc(sizeof(vector3D));
 	init->lat = -33.9178303;
