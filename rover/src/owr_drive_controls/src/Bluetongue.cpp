@@ -145,7 +145,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
             sizeof(struct toNUCMsg));
     struct status stat;
 	if (resp.magic != MESSAGE_MAGIC) {
-		 ROS_INFO("Update Bluetongue had a error");
+		 ROS_ERROR("Update Bluetongue had a error");
         stat.roverOk = false;    
 	} else {
         stat.roverOk = true;

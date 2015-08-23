@@ -24,7 +24,7 @@
 
 
 // Defines how fast the rover accelerates or starts turning, the range of output is -1 to 1, so currently 1/10th of range
-#define INCREMENT 0.05
+#define INCREMENT 0.025
 
 int main(int argc, char ** argv) {
     
@@ -93,7 +93,7 @@ void PathingController::sendMsg() {
     double c = 2*atan2(sqrt(a), sqrt(1.0 - a));
     double distance = earthRadius * c;
 
-	ROS_INFO("distance %f earthRadius: %f \n", distance, earthRadius);
+	ROS_INFO("distance %f earthRadius: %f destLat %f destLon %f\n", distance, earthRadius, destLat, destLong);
 
 	if (distance < CHECKPOINT_DISTANCE || destLat == 0){
 		// Within 10m of destination... if needed, can set up a counter in here to increment until we a point where we call for next destination.
@@ -111,7 +111,7 @@ void PathingController::sendMsg() {
 		destHeading = fmod((angle * 180.0 / M_PI) + 360.0, 360.0);
 
 		// Work out the desired action to be taken
-		if (currHeading == destHeading){
+		if (currHeading > destHeading - 1 && currHeading < destHeading + 1){
 			//Go straight, decrement lr
 			currPower += INCREMENT;
 			if(currLR){
@@ -158,7 +158,8 @@ void PathingController::sendMsg() {
 
     //Send twist message
     vel.linear.x = currPower;
-	vel.linear.y = currLR;
+	vel.linear.y = 0;
+	//vel.linear.y = currLR;
 	twistPublisher.publish(vel);
 
 }
