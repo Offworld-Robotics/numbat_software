@@ -158,7 +158,6 @@ void AutoGUI::display() {
 }
 
 void AutoGUI::keydown(unsigned char key, int x, int y) {
-	printf("key pressed: %d '%c'\n", key, key);
 	switch (key) {
 		case 27:
 			exit(0);
