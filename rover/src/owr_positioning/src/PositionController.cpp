@@ -35,17 +35,24 @@ PositionController::PositionController(const std::string topic) {
     pitch = 0;
     roll = 0;
     heading = 0;
-    publisher =  node.advertise<owr_messages::position>(topic,1000,true);
+    publisher =  node.advertise<owr_messages::position>(topic,10,true);
     gpsSubscriber = node.subscribe("/gps/fix", 1000, &PositionController::receiveGPSMsg, this); // GPS related data
+    headingSubscriber = node.subscribe("/owr/heading", 2, &PositionController::receiveHeadingMsg, this);
+}
+
+void PositionController::receiveHeadingMsg(const boost::shared_ptr<owr_messages::heading const> & msg) {
+    heading = msg->heading;
+    sendMsg();
 }
 
 void PositionController::receiveGPSMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) {
+    
     altitude  = msg->altitude;
     latitude  = msg->latitude;
     longitude = msg->longitude;
     latitudes.push_front(latitude);
     longitudes.push_front(longitude);
-    updateHeading();
+    //updateHeading();
     sendMsg();
 }
 

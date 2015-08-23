@@ -8,8 +8,9 @@
 #define POS_CONTROL_H
 
 #include <ros/ros.h>
-#include "owr_messages/position.h"
-#include <sensor_msgs/Imu.h>
+#include "owr_messages/heading.h"
+#include <geometry_msgs/Quaternion.h>
+#include <geometry_msgs/Vector3.h>
 
 class MagnetConverter {
     
@@ -18,12 +19,12 @@ class MagnetConverter {
         void spin();
     protected:
         
-        void receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 const> & msg) ;
+        void receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 const> & msg);
         ros::Publisher  publisher;   
         ros::Subscriber subscriber;  
     
-    private
-        
+    private:
+        geometry_msgs::Quaternion hamiltonProduct(geometry_msgs::Quaternion q1, geometry_msgs::Quaternion q2);
         ros::NodeHandle node;
         std::string topic;
         

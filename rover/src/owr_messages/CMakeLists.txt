@@ -58,6 +58,7 @@ find_package(catkin REQUIRED COMPONENTS
    position.msg
    voltage.msg
    ultrasonic.msg
+   heading.msg
  )
 
 ## Generate services in the 'srv' folder

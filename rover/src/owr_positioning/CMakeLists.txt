@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
   sensor_msgs
   std_msgs
-  
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -82,10 +82,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES owr_positioning
-#  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES owr_positioning
+  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs
+  DEPENDS system_lib
 )
 
 ###########
@@ -114,6 +114,9 @@ add_dependencies(owr_positioning_node owr_messages)
 add_dependencies(owr_positioning_node owr_messages_gencpp)
 target_link_libraries(owr_positioning_node ${catkin_LIBRARIES})
 
+add_executable(owr_magnet_node src/MagnetCoverter.cpp)
+add_dependencies(owr_magnet_node owr_messages_gencpp)
+target_link_libraries(owr_magnet_node ${catkin_LIBRARIES})
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(owr_positioning_node
 #   ${catkin_LIBRARIES}
