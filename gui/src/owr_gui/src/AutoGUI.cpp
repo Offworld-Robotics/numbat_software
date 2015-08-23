@@ -7,6 +7,7 @@
 #include "AutoGUI.h"
 #include "AutoNode.h"
 #include <ros/ros.h>
+#include "GPSInputManager.h"
 
 void AutoGUI::updateInfo(ListNode cur) {
 	if (cur != NULL) path.push_front(cur);
@@ -132,16 +133,24 @@ void AutoGUI::display() {
 	
 	glTranslated(50, -100, 0);
 	glColor3f(1,1,1);
-	char txt[50];
+	char txt[100];
+	sprintf(txt, "Text buffer: %s", keymanager->getBuffer());
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	glTranslated(0, -30, 0);
 	if(haveTargetLat) {
 		sprintf(txt, "Target Lat: %.10f", targetLat);
-		drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	} else {
+		sprintf(txt, "Target Lat: ?");
 	}
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
 	glTranslated(0, -30, 0);
 	if(haveTargetLon) {
 		sprintf(txt, "Target Lon: %.10f", targetLon);
-		drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	} else {
+		sprintf(txt, "Target Lon: ?");
 	}
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	
 	glPopMatrix();
 	
@@ -150,38 +159,34 @@ void AutoGUI::display() {
 
 void AutoGUI::keydown(unsigned char key, int x, int y) {
 	printf("key pressed: %d '%c'\n", key, key);
-	if(key == 27) {
-		exit(0);
-	} else if (key == 'i') {
-		if(inputMode == INPUT_DISABLED) {
-			inputMode = INPUT_LAT;
-			printf("Input enabled, entering latitude\n");
-		} else {
-			inputMode = INPUT_DISABLED;
-			inputBufferIndex = 0;
-			printf("Input mode disabled\n");
-		}
-	} else if ((key >= '0' && key <= '9') || key == '.' || key == '-' || key == 13) {
-		if(inputMode != INPUT_DISABLED && inputBufferIndex < INPUT_BUFFER_SIZE - 1) {
-			if(key == 13) {
-				double completed = strtold(inputBuffer, NULL);
-				if(inputMode == INPUT_LAT) {
-					targetLat = completed;
-					haveTargetLat = true;
-					inputMode = INPUT_LON;
-					printf("entering longitude\n");
-				} else {
-					targetLon = completed;
-					haveTargetLon = true;
-					inputMode = INPUT_DISABLED;
-				}
-				inputBufferIndex = 0;
-				inputBuffer[0] = '\0';
-			} else {
-				inputBuffer[inputBufferIndex++] = key;
-				inputBuffer[inputBufferIndex] = '\0';
+	switch (key) {
+		case 27:
+			exit(0);
+			break;
+		case 'i':
+			if(!keymanager->isEnabled()) {
+				keymanager->enableInput();
 			}
-		}
+			break;
+		case 'a':
+			if(keymanager->isEnabled()) {
+				targetLat = keymanager->convert2Double();
+				keymanager->clearBuffer();
+				keymanager->disableInput();
+				haveTargetLat = true;
+			}
+			break;
+		case 'o':
+			if(keymanager->isEnabled()) {
+				targetLon = keymanager->convert2Double();
+				keymanager->clearBuffer();
+				keymanager->disableInput();
+				haveTargetLon = true;
+			}
+			break;
+		default:
+			keymanager->input(key);
+			break;
 	}
 }
 
@@ -199,10 +204,7 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[], double destPos[
 	
 	memset(&currentPos, 0, sizeof(currentPos));
 	
-	inputMode = false;
-	memset(inputBuffer, 0, INPUT_BUFFER_SIZE*sizeof(char));
-	inputBuffer[0] = '\0';
-	inputBufferIndex = 0;
+	keymanager = new GPSInputManager();
 	haveTargetLat = haveTargetLon = false;
 	
 	ListNode init = (ListNode)malloc(sizeof(vector3D));

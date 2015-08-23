@@ -118,7 +118,7 @@ add_dependencies(finecontrol bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(finecontrol bluesat_owr_protobuf)
 target_link_libraries(finecontrol ${catkin_LIBRARIES} GL GLU glut)
 
-add_executable(auto src/AutoGUI.cpp src/GLUTWindow.cpp) 
+add_executable(auto src/AutoGUI.cpp src/AutoNode.cpp src/GLUTWindow.cpp src/GPSKeyInputManager.cpp) 
 add_dependencies(auto ${catkin_EXPORTED_TARGETS})
 add_dependencies(auto bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(auto bluesat_owr_protobuf)
