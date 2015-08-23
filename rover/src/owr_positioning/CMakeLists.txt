@@ -10,6 +10,9 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   geometry_msgs
+   message_filters
+    laser_geometry
+    tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -84,7 +87,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES owr_positioning
-  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs
+  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry tf
   DEPENDS system_lib
 )
 
@@ -117,6 +120,9 @@ target_link_libraries(owr_positioning_node ${catkin_LIBRARIES})
 add_executable(owr_magnet_node src/MagnetCoverter.cpp)
 add_dependencies(owr_magnet_node owr_messages_gencpp)
 target_link_libraries(owr_magnet_node ${catkin_LIBRARIES})
+
+add_executable(owr_object_avoidance src/ObjectAvoidance.cpp)
+target_link_libraries(owr_object_avoidance ${catkin_LIBRARIES})
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(owr_positioning_node
 #   ${catkin_LIBRARIES}

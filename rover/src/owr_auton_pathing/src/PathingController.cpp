@@ -139,9 +139,9 @@ void PathingController::sendMsg() {
 		}
 	}
     if(currPower > 1){
-    	currPower = 1;
+    	currPower = 0.5;
     } else if(currPower < -1){
-    	currPower = -1;
+    	currPower = -0.5;
     } else if (currPower < (0.9 * INCREMENT) && currPower > -(0.9 * INCREMENT)){
     	currPower = 0; //at least in soft testing, have found that the LR and pwr dont return back to 0 very well (end up 0.099...)
     }
