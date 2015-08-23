@@ -27,6 +27,10 @@ struct toControlMsg {
     int16_t armBottom;
     int16_t clawRotate;
     int16_t clawGrip;
+    int16_t cameraBottomRotate;
+    int16_t cameraBottomTilt;
+    int16_t cameraTopRotate;
+    int16_t cameraTopTilt;
 } __attribute__((packed));
 
 struct toNUCMsg {
@@ -125,7 +129,9 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
 }
 
 struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
-    int armBottom, double armRotate, int clawRotate, int clawGrip) {
+    int armBottom, double armRotate, int clawRotate, int clawGrip,
+    int cameraBottomRotate, int cameraBottomTilt, int cameraTopRotate,
+    int cameraTopTilt) {
 	struct toControlMsg mesg;
 	struct toNUCMsg resp;
 	mesg.magic = MESSAGE_MAGIC;
@@ -136,10 +142,17 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.armBottom = armBottom;
     mesg.clawRotate = clawRotate;
     mesg.clawGrip = clawGrip;
+    mesg.cameraBottomRotate = cameraBottomRotate;
+    mesg.cameraBottomTilt = cameraBottomTilt;
+    mesg.cameraTopRotate = cameraTopRotate;
+    mesg.cameraTopTilt = cameraTopTilt;
     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
 	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
-	ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);
+	ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
+            mesg.armBottom, mesg.armRotate);
+    ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
+            cameraBottomTilt, cameraTopRotate, cameraTopTilt);
 	comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
     struct status stat;

@@ -20,6 +20,11 @@
 #define CLAW_ROTATION_MAX 90
 #define CLAW_ROTATION_MIN 0
 
+#define CAMERA_ROTATION_MID 90
+#define CAMERA_ROTATION_MAX 180
+#define CAMERA_ROTATION_MIN 0
+#define CAMERA_SCALE 2
+
 #define MAX_IN 1.0
 #define DIFF 0.25
 
@@ -61,10 +66,27 @@ BoardControl::BoardControl() {
     armRotate = ROTATION_MID;
     clawRotate = CLAW_ROTATION_MID;
     clawGrip = CLAW_ROTATION_MID;
+    cameraBottomRotate = CAMERA_ROTATION_MID;
+    cameraBottomTilt = CAMERA_ROTATION_MID;
+    cameraTopRotate = CAMERA_ROTATION_MID;
+    cameraTopTilt = CAMERA_ROTATION_MID;
     armIncRate = 0;
+    cameraBottomRotateIncRate = 0;
+    cameraBottomTiltIncRate = 0;
+    cameraTopRotateIncRate = 0;
+    cameraTopTiltIncRate = 0;
     gpsSequenceNum = 0;
     rotState = STOP;
     clawState = STOP;
+}
+
+int servoRotScale(int raw) {
+    return ((float)raw/(float)CLAW_ROTATION_MAX)*1000.0 + 1000;
+}
+
+void cap(int *a, int low, int high) {
+    *a = *a < low ? low : *a;
+    *a = *a > high ? high : *a;
 }
 
 void BoardControl::run() {
@@ -72,56 +94,53 @@ void BoardControl::run() {
     nh.param<std::string>("board_tty", board, TTY);
     ROS_INFO("connecting to board on %s", board.c_str());
     Bluetongue* steve = new Bluetongue(board.c_str());
-
+    ros::Rate r(5);
     while(ros::ok()) {
         armTop += armIncRate;
-        if (armTop > MOTOR_MAX) {
-            armTop = MOTOR_MAX;
-        } else if (armTop < MOTOR_MIN) {
-            armTop = MOTOR_MIN;
-        }
+        cap(&armTop, MOTOR_MIN, MOTOR_MAX);
         
+        cameraBottomRotate += cameraBottomRotateIncRate;
+        cap(&cameraBottomRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
         
+        cameraBottomTilt += cameraBottomTiltIncRate;
+        cap(&cameraBottomTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+        
+        cameraTopRotate += cameraTopRotateIncRate;
+        cap(&cameraTopRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+        
+        cameraTopTilt += cameraTopTiltIncRate;
+        cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+
         if (clawState == OPEN) {
             clawRotate += 5;
         } else if (clawState == CLOSE) {
             clawRotate-= 5;
         }
-        
-        
-        if (clawRotate > CLAW_ROTATION_MAX) {
-            clawRotate = CLAW_ROTATION_MAX;
-        } else if (clawRotate < CLAW_ROTATION_MIN) {
-            clawRotate = CLAW_ROTATION_MIN;
-        }
-        
+        cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);
         
         if (clawGrip == OPEN) {
             clawGrip += 5;
         } else if (clawGrip == CLOSE) {
             clawGrip -=  5;
         }
+        cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
         
-        if (clawGrip > CLAW_ROTATION_MAX) {
-            clawGrip = CLAW_ROTATION_MAX;
-        } else if (clawGrip < CLAW_ROTATION_MIN) {
-            clawGrip = CLAW_ROTATION_MIN;
-        }
         
+
         struct status s = steve->update(leftDrive, rightDrive,
-            armTop, armBottom, armRotate, ((float)clawRotate/(float)CLAW_ROTATION_MAX)*1000.0+1000, ((float)clawGrip/(float)CLAW_ROTATION_MAX)*1000.0+1000);
+            armTop, armBottom, armRotate, servoRotScale(clawRotate),
+            servoRotScale(clawGrip), servoRotScale(cameraBottomRotate),
+            servoRotScale(cameraBottomTilt), 
+            servoRotScale(cameraTopRotate), servoRotScale(cameraTopTilt)); 
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
         publishIMU(s.imuData);
-        //if (s.roverOk == false) {
-        //    delete steve;
-        //    Bluetongue* steve = new Bluetongue("/dev/ttyACM0");
-        //}
+        
         printStatus(&s);
-        usleep(100000);
         //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
         ros::spinOnce();
+        r.sleep();
     }
     delete steve;
 }
@@ -174,11 +193,22 @@ void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
 }
 
 void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
-    
+    cameraBottomRotateIncRate = 0;
+    cameraBottomTiltIncRate = 0;
+    cameraTopRotateIncRate = 0;
+    cameraTopTiltIncRate = -1;
 
 	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
-    leftDrive = (joy->axes[STICK_L_UD]);
-    rightDrive = -joy->axes[DRIVE_AXES_UD];
+    if (joy->buttons[BUTTON_A]) {
+        cameraBottomRotateIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
+        cameraBottomTiltIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+    } else if (joy->buttons[BUTTON_B]) {
+        cameraTopRotateIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
+        cameraTopTiltIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+    } else {
+        leftDrive = (joy->axes[STICK_L_UD]);
+        rightDrive = -joy->axes[DRIVE_AXES_UD];
+    }
     /*
     float power = joy->axes[DRIVE_AXES_UD];
     float lr = (-joy->axes[STICK_L_LR]);
