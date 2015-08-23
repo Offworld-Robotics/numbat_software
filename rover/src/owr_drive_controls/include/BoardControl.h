@@ -53,6 +53,10 @@ class BoardControl {
         int armTop, armBottom;
         float armRotate;
         int armIncRate;
+        int cameraBottomRotate, cameraBottomTilt, cameraTopRotate,
+            cameraTopTilt;
+        int cameraBottomRotateIncRate, cameraBottomTiltIncRate, 
+            cameraTopRotateIncRate, cameraTopTiltIncRate;
         //gps sequence number
         int gpsSequenceNum;
         
