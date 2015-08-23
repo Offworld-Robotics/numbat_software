@@ -51,10 +51,11 @@ void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 
     magQuart->z = msg->z/norm;
     magQuart->w = 0;
 
-    sensor_msgs::Imu imu;
-    geometry_msgs::Vector3 absDir = hamiltonProduct(magQuart,imu->orientation);
-    double heading = atan2(1,0) - atan2(absDir->y,absDir->x);
-
+    //sensor_msgs::Imu imu;
+    //geometry_msgs::Vector3 absDir = hamiltonProduct(magQuart,imu->orientation);
+    //double heading = atan2(1,0) - atan2(absDir->y,absDir->x);
+    double heading = atan2(1,0) - atan2(magQuart->y,magQuart->x);
+    
     //We need orientation set
     //TODO: set valuews
     publisher.publish(imu);
