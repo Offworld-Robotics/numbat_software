@@ -19,7 +19,7 @@ int main(int argc, char ** argv) {
     ObjectAvoidance.run();
 }
 
-ObjectAvoidance::ObjectAvoidance() : nh(), sub(nh, "/hokuyo", 1),
+ObjectAvoidance::ObjectAvoidance() : nh(), sub(nh, "/scan", 1),
     laserNotifierL(sub,listener, "left_front_wheel_hub", 1) {
     ROS_INFO("registering transform listner");
     laserNotifierL.registerCallback(
@@ -46,7 +46,7 @@ void ObjectAvoidance::run() {
 void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
     #define DANGER_DIST 2.0
     #define ERROR_MARGIN 5
-    
+    ROS_INFO("received message");
     laser_geometry::LaserProjection projector;
     sensor_msgs::PointCloud cloudL;
     sensor_msgs::PointCloud cloudR;

@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="urg_node" type="urg_node" name="laser" />
+</launch>

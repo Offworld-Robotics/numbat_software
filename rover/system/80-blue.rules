@@ -1,1 +1,3 @@
-SUBSYSTEM=="tty", ATTR{Product}="Bluetongue Control Board", ATTR{SerialNumber}=0001333533, SYMLINK+="board0",  GROUP="dialout", OWNER="bluenuc"
+SUBSYSTEM=="sub", KERNEL=="ttyACM[0-9]*" ATTR{Product}=="Bluetongue Control Board", ATTR{SerialNumber}==0001333533, SYMLINK+="board0",  GROUP="dialout", MODE="666"
+
+SUBSYSTEMS=="usb", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{idVendor}=="15d1", ATTRS{idProduct}=="0000", MODE="666", PROGRAM="/opt/ros/indigo/lib/urg_node/getID /dev/%k q", SYMLINK+="sensors/hokuyo_%c", GROUP="dialout"

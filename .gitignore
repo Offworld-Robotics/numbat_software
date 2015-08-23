@@ -8,6 +8,7 @@
 ehthumbs.db
 Thumbs.db
 *~
+*.orig
 
 # ROS Build directories #
 #########################
