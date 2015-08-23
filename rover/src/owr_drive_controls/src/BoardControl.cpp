@@ -86,6 +86,11 @@ int servoRotScale(int raw) {
     return ((float)raw/(float)CLAW_ROTATION_MAX)*1000.0 + 1000;
 }
 
+
+int camServoRotScale(int raw) {
+    return ((float)raw/(float)CAMERA_ROTATION_MAX)*1000.0 + 1000;
+}
+
 void cap(int *a, int low, int high) {
     *a = *a < low ? low : *a;
     *a = *a > high ? high : *a;
@@ -131,9 +136,9 @@ void BoardControl::run() {
 
         struct status s = steve->update(leftDrive, rightDrive,
             armTop, armBottom, armRotate, servoRotScale(clawRotate),
-            servoRotScale(clawGrip), servoRotScale(cameraBottomRotate),
-            servoRotScale(cameraBottomTilt), 
-            servoRotScale(cameraTopRotate), servoRotScale(cameraTopTilt)); 
+            servoRotScale(clawGrip), camServoRotScale(cameraBottomRotate),
+            camServoRotScale(cameraBottomTilt), 
+            camServoRotScale(cameraTopRotate), camServoRotScale(cameraTopTilt)); 
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
@@ -204,9 +209,11 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     if (joy->buttons[BUTTON_A]) {
         cameraBottomRotateIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
         cameraBottomTiltIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+        ROS_INFO("Addjusting Bottom Camera");
     } else if (joy->buttons[BUTTON_B]) {
         cameraTopRotateIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
         cameraTopTiltIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+        ROS_INFO("Adjusting Top Camera");
     } else {
         leftDrive = (joy->axes[STICK_L_UD]);
         rightDrive = -joy->axes[DRIVE_AXES_UD];

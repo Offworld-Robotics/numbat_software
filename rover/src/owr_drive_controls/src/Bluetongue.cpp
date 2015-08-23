@@ -103,13 +103,13 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
     void *resp, int resp_len) {
 	ROS_INFO("Writing message: ");
 	for (int i = 0; i < message_len; i++) {
-		ROS_INFO("%d: %02x\n", i, *((char *) message + i));
+		//ROS_INFO("%d: %02x\n", i, *((char *) message + i));
 	}
 	int written = 0;
 	do {
 		written += write(port_fd, (int8_t*)message + written, message_len - written);
 	} while (written < message_len);
-	ROS_INFO("Written packet, expecting to read %d", resp_len);
+	ROS_INFO("Written  packet, expecting to read %d", resp_len);
 	tcflush(port_fd, TCIOFLUSH); 
 	int readCount = 0;
     timeout.tv_sec = 0;
@@ -124,7 +124,7 @@ void Bluetongue::comm(bool forBattery, void *message, int message_len,
         } else {
 		  readCount += read(port_fd, (int8_t*)resp + readCount, resp_len - readCount);
 		}
-        ROS_INFO("reading... %d", readCount);
+        //ROS_INFO("reading... %d", readCount);
 	} while (readCount < resp_len);
 	ROS_INFO("Read packet");
 }
