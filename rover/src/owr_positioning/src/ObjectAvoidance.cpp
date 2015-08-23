@@ -20,12 +20,14 @@ int main(int argc, char ** argv) {
 }
 
 ObjectAvoidance::ObjectAvoidance() : nh(), sub(nh, "/scan", 1),
-    laserNotifierL(sub,listener, "left_front_wheel_hub", 1) {
+    laserNotifierL(sub,listenerL, "left_front_wheel_hub", 1),
+    laserNotifierR(sub,listenerL, "right_front_wheel_hub", 1) {
     ROS_INFO("registering transform listner");
     laserNotifierL.registerCallback(
         boost::bind(&ObjectAvoidance::scanCallback, this, _1)
     );
     laserNotifierL.setTolerance(ros::Duration(0.01));
+    laserNotifierR.setTolerance(ros::Duration(0.01));
     //laserNotifierR.setTolerance(ros::Duration(0.01));
     //ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
     //sub = nh.subscribe<sensor_msgs::LaserScan>("joy",1, &ObjectAvoidance::scanCallback, this);
@@ -51,25 +53,32 @@ void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
     sensor_msgs::PointCloud cloudL;
     sensor_msgs::PointCloud cloudR;
     try{
-        projector.transformLaserScanToPointCloud("left_front_wheel_hub",*scan, cloudL,listener);                        
-        projector.transformLaserScanToPointCloud("right_front_wheel_hub",*scan, cloudL,listener); 
+        projector.transformLaserScanToPointCloud("left_front_wheel_hub",*scan, cloudL,listenerL);                        
+        projector.transformLaserScanToPointCloud("right_front_wheel_hub",*scan, cloudR,listenerR); 
         int arrayLen = (scan->angle_max - scan->angle_min)/scan->angle_increment;
         int leftCount = 0;
         int rightCount = 0;
-        for(int i =0; i<arrayLen; i++) {
+        for(int i =0; i<cloudL.points.size(); i++) {
             float distL = sqrt(pow(cloudL.points[i].x, 2) + pow(cloudL.points[i].y,2));
-            float distR = sqrt(pow(cloudR.points[i].x, 2) + pow(cloudR.points[i].y,2));
+            //FIX TO AVOId different sized arrays (somehow?)
+            float distR;
+            if(i<cloudR.points.size()) {
+                distR = sqrt(pow(cloudR.points[i].x, 2) + pow(cloudR.points[i].y,2));
+            } else {
+                ROS_ERROR("No cloudR");
+            }
             if(distL < DANGER_DIST) {
-                distL++;
+                leftCount++;
             }
             if(distR < DANGER_DIST) {
-                distR ++;
+                rightCount ++;
             }
+            //ROS_INFO("\tL:%f R:%f", 
         }
         ROS_INFO("R %d L %d", rightCount, leftCount);
         float lf = 0.0;
         if (leftCount >= ERROR_MARGIN && leftCount > rightCount) {
-            ROS_INFO("Turn right");
+            ROS_INFO("Turn left");
             lf = 1.0;
         } else if (rightCount >= ERROR_MARGIN) {
             ROS_INFO("Turn right");  
@@ -77,7 +86,7 @@ void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
         }
         //Send twist message
         geometry_msgs::Twist vel;
-        vel.linear.x = 1.0;
+        vel.linear.x = 0.5;
 	    vel.linear.y = lf;
 	    pub.publish(vel);
     } catch (tf::TransformException ex) {

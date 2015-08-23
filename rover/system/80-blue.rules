@@ -1,3 +1,3 @@
 SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{product}=="Bluetongue Control Board", SYMLINK+="board0",  GROUP="dialout", MODE="666"
 
-SUBSYSTEMS=="usb", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{idVendor}=="15d1", ATTRS{idProduct}=="0000", MODE="666", PROGRAM="/opt/ros/indigo/lib/urg_node/getID /dev/%k q", SYMLINK+="sensors/hokuyo_%c", GROUP="dialout"
+SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{product}=="URG-Series USB Driver", SYMLINK+="hokuyo", GROUP="dialout", MODE="666"
