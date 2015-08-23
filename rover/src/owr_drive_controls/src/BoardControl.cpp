@@ -130,8 +130,8 @@ void BoardControl::run() {
 
 void BoardControl::publishGPS(GPSData gps) {
     sensor_msgs::NavSatFix msg;
-    msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
-    msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) * -1.0; // fix issue with -ve longitude
+    msg.longitude = (((float)gps.longitude)/GPS_FLOAT_OFFSET)* -1.0;
+    msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) ; // fix issue with -ve longitude
     msg.altitude = gps.altitude;
     
     if (gps.fixValid) {

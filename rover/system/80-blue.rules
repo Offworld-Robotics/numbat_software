@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty", ATTR{Product}="Bluetongue Control Board", ATTR{SerialNumber}=0001333533, SYMLINK+="board0",  GROUP="dialout", OWNER="bluenuc"
