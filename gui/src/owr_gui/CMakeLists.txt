@@ -118,6 +118,12 @@ add_dependencies(finecontrol bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(finecontrol bluesat_owr_protobuf)
 target_link_libraries(finecontrol ${catkin_LIBRARIES} GL GLU glut)
 
+add_executable(auto src/AutoGUI.cpp src/AutoNode.cpp src/GLUTWindow.cpp src/GPSInputManager.cpp) 
+add_dependencies(auto ${catkin_EXPORTED_TARGETS})
+add_dependencies(auto bluesat_owr_protobuf_generate_messages_cpp)
+add_dependencies(auto bluesat_owr_protobuf)
+target_link_libraries(auto ${catkin_LIBRARIES} GL GLU glut)
+
 ## Declare a cpp library
 # add_library(owr_gui
 #   src/${PROJECT_NAME}/owr_gui.cpp
