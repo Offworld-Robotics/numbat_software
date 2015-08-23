@@ -42,10 +42,10 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// created yet, will wait til it has w/o doing anything
-	
-	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this);
-	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg1, this);
-	videoSub[3] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this);
+	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this, transportHints);
+	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg1, this, transportHints);
+	videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this, transportHints);
 	//videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this);
 	//videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg3, this);
 }
@@ -93,7 +93,7 @@ void FineControlNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg)
 	
 	//ROS_INFO("received a message");
 	//ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
-		
+	
 	vector3D l;
 	l.lat = msg->latitude;
 	l.lon = msg->longitude;
