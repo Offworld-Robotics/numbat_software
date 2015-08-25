@@ -28,6 +28,8 @@
 #define MAX_IN 1.0
 #define DIFF 0.25
 
+#define RECONNECT_DELAY 1000
+
 // Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
 #define SENSITIVITY 1
 
@@ -80,9 +82,13 @@ BoardControl::BoardControl() {
     clawState = STOP;
 }
 
-int servoRotScale(int raw) {
+int clawRotScale(int raw) {
     return ((float)raw/(float)CLAW_ROTATION_MAX)*1000.0 + 1000;
 }
+int cameraRotScale(int raw) {
+    return ((float)raw/(float)CAMERA_ROTATION_MAX)*1000.0 + 1000;
+}
+
 
 void cap(int *a, int low, int high) {
     *a = *a < low ? low : *a;
@@ -94,53 +100,70 @@ void BoardControl::run() {
     nh.param<std::string>("board_tty", board, TTY);
     ROS_INFO("connecting to board on %s", board.c_str());
     Bluetongue* steve = new Bluetongue(board.c_str());
+    struct status s;
+    s.isConnected = true;
     ros::Rate r(5);
-    while(ros::ok()) {
-        armTop += armIncRate;
-        cap(&armTop, MOTOR_MIN, MOTOR_MAX);
-        
-        cameraBottomRotate += cameraBottomRotateIncRate;
-        cap(&cameraBottomRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
-        
-        cameraBottomTilt += cameraBottomTiltIncRate;
-        cap(&cameraBottomTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
-        
-        cameraTopRotate += cameraTopRotateIncRate;
-        cap(&cameraTopRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
-        
-        cameraTopTilt += cameraTopTiltIncRate;
-        cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+    int cbr = 0, cbt = 0;
+    while (ros::ok()) {
+        while(ros::ok()) {
+            cbr = 0; //cbr < 180 ? cbr + 10 : 0;
+            cbt = cbr;
+            armTop += armIncRate;
+            cap(&armTop, MOTOR_MIN, MOTOR_MAX);
+            
+            cameraBottomRotate += cameraBottomRotateIncRate;
+            cap(&cameraBottomRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+            
+            cameraBottomTilt += cameraBottomTiltIncRate;
+            cap(&cameraBottomTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+            
+            cameraTopRotate += cameraTopRotateIncRate;
+            cap(&cameraTopRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+            
+            cameraTopTilt += cameraTopTiltIncRate;
+            cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
-        if (clawState == OPEN) {
-            clawRotate += 5;
-        } else if (clawState == CLOSE) {
-            clawRotate-= 5;
+            if (clawState == OPEN) {
+                clawRotate += 5;
+            } else if (clawState == CLOSE) {
+                clawRotate-= 5;
+            }
+            cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);
+            
+            if (clawGrip == OPEN) {
+                clawGrip += 5;
+            } else if (clawGrip == CLOSE) {
+                clawGrip -=  5;
+            }
+            cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
+            
+            cameraBottomTilt = cbt;
+            cameraBottomRotate = cbr; 
+            struct status s = steve->update(leftDrive, rightDrive,
+                armTop, armBottom, armRotate, clawRotScale(clawRotate),
+                clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
+                cameraRotScale(cameraBottomTilt), 
+                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+            if (!s.isConnected) break;
+
+            publishGPS(s.gpsData);
+            publishMag(s.magData);
+            publishIMU(s.imuData);
+            
+            printStatus(&s);
+            //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
+            ros::spinOnce();
+            r.sleep();
         }
-        cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);
-        
-        if (clawGrip == OPEN) {
-            clawGrip += 5;
-        } else if (clawGrip == CLOSE) {
-            clawGrip -=  5;
+        ROS_ERROR("Lost usb connection to Bluetongue");
+        ROS_ERROR("Trying to reconnect every %d ms", RECONNECT_DELAY);
+        bool success = false;
+        while (ros::ok() && !success) {
+            usleep(RECONNECT_DELAY * 1000);
+            success = steve->reconnect();
+            if (success) ROS_INFO("Bluetongue reconnected!");
+            else ROS_WARN("Bluetongue reconnection failed. Trying again soon...");
         }
-        cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
-        
-        
-
-        struct status s = steve->update(leftDrive, rightDrive,
-            armTop, armBottom, armRotate, servoRotScale(clawRotate),
-            servoRotScale(clawGrip), servoRotScale(cameraBottomRotate),
-            servoRotScale(cameraBottomTilt), 
-            servoRotScale(cameraTopRotate), servoRotScale(cameraTopTilt)); 
-
-        publishGPS(s.gpsData);
-        publishMag(s.magData);
-        publishIMU(s.imuData);
-        
-        printStatus(&s);
-        //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
-        ros::spinOnce();
-        r.sleep();
     }
     delete steve;
 }

@@ -31,6 +31,7 @@ typedef struct imuData IMUData;
 
 struct status {
     bool roverOk;
+    bool isConnected;
     double batteryVoltage;
     GPSData gpsData;
     MagData magData;
@@ -39,9 +40,12 @@ struct status {
 	
 class Bluetongue {
 	private:
-		void comm(bool forBattery, void *message, int message_len, void *resp, 
+		bool comm(bool forBattery, void *message, int message_len, void *resp, 
 				int resp_len);
+        bool connect();
+        bool isConnected;
 		int port_fd;
+        std::string bluetongue_port;
         fd_set uart_set;
         struct timeval timeout;
 	
@@ -53,5 +57,6 @@ class Bluetongue {
                 int clawRotate, int clawGrip, int cameraBottomRotate,
                 int cameraBottomTilt, int cameraTopRotate, 
                 int cameraTopTilt);
+        bool reconnect(void);
 };
 #endif
