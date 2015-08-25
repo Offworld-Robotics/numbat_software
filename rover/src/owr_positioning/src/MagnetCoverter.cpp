@@ -54,7 +54,7 @@ void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 
     //sensor_msgs::Imu imu;
     //geometry_msgs::Vector3 absDir = hamiltonProduct(magQuart,imu.orientation);
     //double heading = atan2(1,0) - atan2(absDir.y,absDir.x);
-    double heading = atan2(1,0) - atan2(magQuart.y,magQuart.x);
+    double heading = atan2(magQuart.x,magQuart.y);
     
     ROS_INFO("recived");
     //We need orientation set
