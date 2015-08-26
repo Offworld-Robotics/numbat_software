@@ -13,6 +13,11 @@ class DataFusion{
         ros::Subscriber subAccel;
         ros::Subscriber subGyro;
         ros::Publisher pub;
+
+        geometry::Vector3 mag;
+        geometry::Vector3 acc;
+        geometry::Vector3 gyro;
+
     private:
         ros::NodeHandle node;
 

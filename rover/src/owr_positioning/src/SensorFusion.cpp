@@ -34,7 +34,10 @@ void
 SensorFusion::fuseData() {
     // accel and mag
     // normalize data
+    vector_normalize(mag);
+    vector_normalize(acc);
     // calc correction vector
+    
     // gyro
     // avg the shit
     // convert to roll pitch and yaw
@@ -82,10 +85,10 @@ vector_add(geometry::Vector3 v1, geometry::Vector3 v2, geometry::Vector3 vd) {
 
 void 
 DCM_othonormalize(geometry::Vector3 dcm[3]) {
-   double error = vector_dot(dcm[0], dcm[1];
-   double delta[2][3];
-   vector_scale(-err/2, dcm[1], delta[0]);
-   vector_scale(-err/2, dcm[0], delta[1]);
+   double error = vector_dot(dcm[0], dcm[1]);
+   geometry::Vector3 delta[2];
+   vector_scale(-error/2, dcm[1], delta[0]);
+   vector_scale(-error/2, dcm[0], delta[1]);
    vector_add(dcm[0], delta[0], dcm[0]);
    vector_add(dcm[1], delta[1], dcm[1]);
 
