@@ -1,7 +1,11 @@
 #include "SensorFusion.h"
 #include <cmath>
+#define _USE_MATH_DEFINES
+#define ACC_WEIGHT 0.05 
+#define MAG_WEIGHT 0.0 
 
-int main(int argc, char  argv) {
+int
+main(int argc, char  argv) {
     ros::init(argc, argv, "owr_sensor_fusion__node");
     
     SensorFusion p;
@@ -37,10 +41,28 @@ SensorFusion::fuseData() {
     vector_normalize(mag);
     vector_normalize(acc);
     // calc correction vector
-    
+    geometry::Vector3 corMag;
+    vector_corss(dcm[2],mag,corMag);
+
+    geometry::Vector3 corAcc;
+    vector_corss(dcm[3],acc,corAcc);
     // gyro
     // avg the shit
+    geometry::Vector3 weightedAvg;
+    weightedAvg->x = (gyr->x + ACC_WEIGHT * corAcc->x * MAG_WEIGHT * corMag->x) / (1 + ACC_WEIGHT + MAG_WEIGHT);
+    weightedAvg->y = (gyr->y + ACC_WEIGHT * corAcc->y * MAG_WEIGHT * corMag->y) / (1 + ACC_WEIGHT + MAG_WEIGHT);
+    weightedAvg->z = (gyr->z + ACC_WEIGHT * corAcc->z * MAG_WEIGHT * corMag->z) / (1 + ACC_WEIGHT + MAG_WEIGHT);
+    DCM_rotate(dcm, weightedAvg);
     // convert to roll pitch and yaw
+    roll = radToDeg(-asin(dcm[2]->x));
+    pitch = radToDeg(atan2(dcm[2]->y, dcm[2]->z));
+    yaw = radToDeg(atan2(dcm[1]->x,dcm[0]->x));
+    //heading
+    
+    heading = radToDeg(atan2(mag->x,mag->y);
+    
+    //publish stuff
+
 }
 
 double
@@ -115,3 +137,9 @@ SensorFusion::spin() {
         ros::spinOnce();
     }
 }
+
+double
+radToDeg(double rad) {
+    return (rad / M_PI) * 180;
+}
+
