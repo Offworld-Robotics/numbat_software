@@ -3,6 +3,8 @@
 #define _USE_MATH_DEFINES
 #define ACC_WEIGHT 0.05 
 #define MAG_WEIGHT 0.0 
+#define SYDNEY 12.33
+#define POLAND 4.48
 
 int
 main(int argc, char  argv) {
