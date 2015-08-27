@@ -10,6 +10,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <geometry_msgs/Vector3.h>
+#include <std_msgs/Float64.h>
 
 #define MOTOR_MID 1500.0
 #define MOTOR_MAX 1900.0
@@ -60,6 +61,7 @@ BoardControl::BoardControl() {
     magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
     gyroPublisher = nh.advertise<geometry_msgs::Vector3>("gyro", 10);
     accPublisher = nh.advertise<geometry_msgs::Vector3>("acc", 10);
+    battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
     velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
@@ -106,8 +108,8 @@ void BoardControl::run() {
     int cbr = 0, cbt = 0;
     while (ros::ok()) {
         while(ros::ok()) {
-            cbr = 0; //cbr < 180 ? cbr + 10 : 0;
-            cbt = cbr;
+            cbr = cbr < 120 ? cbr + 5 : 0;
+            cbt = cbt < 70 ? cbt + 5 : 0;
             armTop += armIncRate;
             cap(&armTop, MOTOR_MIN, MOTOR_MAX);
             
@@ -149,7 +151,7 @@ void BoardControl::run() {
             publishGPS(s.gpsData);
             publishMag(s.magData);
             publishIMU(s.imuData);
-            
+            publishBattery(s.batteryVoltage);
             printStatus(&s);
             //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
             ros::spinOnce();
@@ -192,6 +194,12 @@ void BoardControl::publishMag(MagData mag) {
     msg.z = mag.z;
     // Header just has dummy values
     magPublisher.publish(msg);
+}
+
+void BoardControl::publishBattery(double batteryVoltage) {
+    std_msgs::Float64 msg;
+    msg.data = batteryVoltage;
+    battVoltPublisher.publish(msg);
 }
 
 void BoardControl::publishIMU(IMUData imu) {
