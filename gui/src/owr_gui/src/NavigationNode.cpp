@@ -11,6 +11,10 @@
 #include "NavigationNode.h"
 #include <fstream>
 
+// Include for the image_trasport pkg which will allow us to use compressed
+// images through magic ros stuff :)
+#include <image_transport/image_transport.h>
+
 NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	ROS_INFO("Starting Navigation Node");
 	gui = newgui;
@@ -23,7 +27,6 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	tiltX = 30;
 	tiltY = 30;
 	ultrasonic = 0;
-	altitude = 0;
 	
 	//Initialise the feeds array
 	for(int i = 0; i < TOTAL_FEEDS; i++)
@@ -39,13 +42,12 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
-	// createed yet, will wait til it has w/o doing anything
+	// created yet, will wait til it has w/o doing anything
 	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
 	videoSub[0] = n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
 	videoSub[1] = n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
 	videoSub[2] = n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
 	videoSub[3] = n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this, transportHints); // Frames of video from camera
-	
 }
 
 // Spin to wait until a message is received
@@ -118,11 +120,3 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
 }
-
-/*void NavigationNode::receiveAvailableFeedsMsg(const bluesat_owr_protobuf::& msg) {
-	assert(msg);
-	
-	//ROS_INFO("received available feeds");
-	
-	gui->updateAvailableFeeds(msg->);
-}*/
