@@ -10,6 +10,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <geometry_msgs/Vector3.h>
+#include <std_msgs/Float64.h>
 
 #define MOTOR_MID 1500.0
 #define MOTOR_MAX 1900.0
@@ -28,6 +29,8 @@
 #define MAX_IN 1.0
 #define DIFF 0.25
 
+#define RECONNECT_DELAY 1000
+
 // Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
 #define SENSITIVITY 1
 
@@ -39,7 +42,6 @@ int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_telop");
     BoardControl BoardControl;
     BoardControl.run();
-    
 }
 
 BoardControl::BoardControl() {
@@ -59,6 +61,7 @@ BoardControl::BoardControl() {
     magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
     gyroPublisher = nh.advertise<geometry_msgs::Vector3>("gyro", 10);
     accPublisher = nh.advertise<geometry_msgs::Vector3>("acc", 10);
+    battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
     velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
@@ -79,17 +82,15 @@ BoardControl::BoardControl() {
     gpsSequenceNum = 0;
     rotState = STOP;
     clawState = STOP;
-          
 }
 
-int servoRotScale(int raw) {
+int clawRotScale(int raw) {
     return ((float)raw/(float)CLAW_ROTATION_MAX)*1000.0 + 1000;
 }
-
-
-int camServoRotScale(int raw) {
+int cameraRotScale(int raw) {
     return ((float)raw/(float)CAMERA_ROTATION_MAX)*1000.0 + 1000;
 }
+
 
 void cap(int *a, int low, int high) {
     *a = *a < low ? low : *a;
@@ -101,34 +102,69 @@ void BoardControl::run() {
     nh.param<std::string>("board_tty", board, TTY);
     ROS_INFO("connecting to board on %s", board.c_str());
     Bluetongue* steve = new Bluetongue(board.c_str());
+    struct status s;
+    s.isConnected = true;
     ros::Rate r(5);
-    while(ros::ok()) {
-        armTop += armIncRate;
-        cap(&armTop, MOTOR_MIN, MOTOR_MAX);
-        
-        cameraBottomRotate += cameraBottomRotateIncRate;
-        cap(&cameraBottomRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
-        
-        cameraBottomTilt += cameraBottomTiltIncRate;
-        cap(&cameraBottomTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
-        
-        cameraTopRotate += cameraTopRotateIncRate;
-        cap(&cameraTopRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
-        
-        cameraTopTilt += cameraTopTiltIncRate;
-        cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+    int cbr = 0, cbt = 0;
+    while (ros::ok()) {
+        while(ros::ok()) {
+            cbr = cbr < 120 ? cbr + 5 : 0;
+            cbt = cbt < 70 ? cbt + 5 : 0;
+            armTop += armIncRate;
+            cap(&armTop, MOTOR_MIN, MOTOR_MAX);
+            
+            cameraBottomRotate += cameraBottomRotateIncRate;
+            cap(&cameraBottomRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+            
+            cameraBottomTilt += cameraBottomTiltIncRate;
+            cap(&cameraBottomTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+            
+            cameraTopRotate += cameraTopRotateIncRate;
+            cap(&cameraTopRotate, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
+            
+            cameraTopTilt += cameraTopTiltIncRate;
+            cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
-        if (clawState == OPEN) {
-            clawRotate += 5;
-        } else if (clawState == CLOSE) {
-            clawRotate-= 5;
+            if (clawState == OPEN) {
+                clawRotate += 5;
+            } else if (clawState == CLOSE) {
+                clawRotate-= 5;
+            }
+            cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);
+            
+            if (clawGrip == OPEN) {
+                clawGrip += 5;
+            } else if (clawGrip == CLOSE) {
+                clawGrip -=  5;
+            }
+            cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
+            
+            cameraBottomTilt = cbt;
+            cameraBottomRotate = cbr; 
+            struct status s = steve->update(leftDrive, rightDrive,
+                armTop, armBottom, armRotate, clawRotScale(clawRotate),
+                clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
+                cameraRotScale(cameraBottomTilt), 
+                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+            if (!s.isConnected) break;
+
+            publishGPS(s.gpsData);
+            publishMag(s.magData);
+            publishIMU(s.imuData);
+            publishBattery(s.batteryVoltage);
+            printStatus(&s);
+            //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
+            ros::spinOnce();
+            r.sleep();
         }
-        cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);
-        
-        if (clawGrip == OPEN) {
-            clawGrip += 5;
-        } else if (clawGrip == CLOSE) {
-            clawGrip -=  5;
+        ROS_ERROR("Lost usb connection to Bluetongue");
+        ROS_ERROR("Trying to reconnect every %d ms", RECONNECT_DELAY);
+        bool success = false;
+        while (ros::ok() && !success) {
+            usleep(RECONNECT_DELAY * 1000);
+            success = steve->reconnect();
+            if (success) ROS_INFO("Bluetongue reconnected!");
+            else ROS_WARN("Bluetongue reconnection failed. Trying again soon...");
         }
         cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
         
@@ -136,9 +172,9 @@ void BoardControl::run() {
 
         struct status s = steve->update(leftDrive, rightDrive,
             armTop, armBottom, armRotate, servoRotScale(clawRotate),
-            servoRotScale(clawGrip), camServoRotScale(cameraBottomRotate),
-            camServoRotScale(cameraBottomTilt), 
-            camServoRotScale(cameraTopRotate), camServoRotScale(cameraTopTilt)); 
+            servoRotScale(clawGrip), servoRotScale(cameraBottomRotate),
+            servoRotScale(cameraBottomTilt), 
+            servoRotScale(cameraTopRotate), servoRotScale(cameraTopTilt)); 
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
@@ -154,8 +190,8 @@ void BoardControl::run() {
 
 void BoardControl::publishGPS(GPSData gps) {
     sensor_msgs::NavSatFix msg;
-    msg.longitude = (((float)gps.longitude)/GPS_FLOAT_OFFSET)* -1.0;
-    msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) ; // fix issue with -ve longitude
+    msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
+    msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) * -1.0; // fix issue with -ve longitude
     msg.altitude = gps.altitude;
     
     if (gps.fixValid) {
@@ -176,6 +212,12 @@ void BoardControl::publishMag(MagData mag) {
     msg.z = mag.z;
     // Header just has dummy values
     magPublisher.publish(msg);
+}
+
+void BoardControl::publishBattery(double batteryVoltage) {
+    std_msgs::Float64 msg;
+    msg.data = batteryVoltage;
+    battVoltPublisher.publish(msg);
 }
 
 void BoardControl::publishIMU(IMUData imu) {
@@ -209,11 +251,9 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     if (joy->buttons[BUTTON_A]) {
         cameraBottomRotateIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
         cameraBottomTiltIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
-        ROS_INFO("Addjusting Bottom Camera");
     } else if (joy->buttons[BUTTON_B]) {
         cameraTopRotateIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
         cameraTopTiltIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
-        ROS_INFO("Adjusting Top Camera");
     } else {
         leftDrive = (joy->axes[STICK_L_UD]);
         rightDrive = -joy->axes[DRIVE_AXES_UD];
