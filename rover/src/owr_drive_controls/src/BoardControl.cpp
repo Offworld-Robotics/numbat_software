@@ -171,10 +171,10 @@ void BoardControl::run() {
         
 
         struct status s = steve->update(leftDrive, rightDrive,
-            armTop, armBottom, armRotate, servoRotScale(clawRotate),
-            servoRotScale(clawGrip), servoRotScale(cameraBottomRotate),
-            servoRotScale(cameraBottomTilt), 
-            servoRotScale(cameraTopRotate), servoRotScale(cameraTopTilt)); 
+            armTop, armBottom, armRotate, clawRotScale(clawRotate),
+            clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
+            cameraRotScale(cameraBottomTilt), 
+            cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
