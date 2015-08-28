@@ -21,6 +21,7 @@ main(int argc, char ** argv) {
 
 SensorFusion::SensorFusion() {
     //set up subs and pub
+    allThree = 0;
     subMag = node.subscribe("/mag", 5, &SensorFusion::receiveMag, this);
     
     subAccel = node.subscribe("/acc", 5, &SensorFusion::receiveAccel, this);
@@ -35,6 +36,7 @@ SensorFusion::receiveMag(const geometry_msgs::Vector3::ConstPtr& _mag) {
     mag.x = _mag->x;
     mag.y = _mag->y;
     mag.z = _mag->z;
+    ROS_INFO("mag %x", allThree);
     if(allThree == 0x7) fuseData();
 }
 
@@ -44,6 +46,7 @@ SensorFusion::receiveAccel(const geometry_msgs::Vector3::ConstPtr& _acc) {
     acc.x = _acc->x;
     acc.y = _acc->y;
     acc.z = _acc->z;
+    ROS_INFO("acc %x", allThree);
     if(allThree == 0x7) fuseData();
 }
 
@@ -53,6 +56,7 @@ SensorFusion::receiveGyro(const geometry_msgs::Vector3::ConstPtr& _gyro) {
     gyro.x = _gyro->x/GYRO_HZ;
     gyro.y = _gyro->y/GYRO_HZ;
     gyro.z = _gyro->z/GYRO_HZ;
+    ROS_INFO("gyro %x", allThree);
     if(allThree == 0x7) fuseData();
 }
 
@@ -81,10 +85,14 @@ SensorFusion::fuseData() {
     pitch = radToDeg(atan2(dcm[2].y, dcm[2].z));
     yaw = radToDeg(atan2(dcm[1].x,dcm[0].x));
     //heading
+
     heading = radToDeg(atan2(mag.x,mag.y)) - SYDNEY;
     
     //publish stuff
-    
+    owr_messages::heading msg2;
+    msg2.heading = heading;
+    pub.publish(msg2);
+
 }
 
 double
@@ -156,6 +164,7 @@ SensorFusion::DCM_rotate (geometry_msgs::Vector3 dcm[3], geometry_msgs::Vector3 
 void
 SensorFusion::spin() {
     while(ros::ok()) {
+        //ROS_INFO("spin");
         ros::spinOnce();
     }
 }
