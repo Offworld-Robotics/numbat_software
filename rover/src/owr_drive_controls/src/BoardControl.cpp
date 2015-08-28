@@ -291,7 +291,8 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armRotate = joy->axes[STICK_CH_LR];
  
     //armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
-    armIncRate = top * 50;
+        armIncRate = top * 25;
+    
     //TODO: check these actually match up
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
     
