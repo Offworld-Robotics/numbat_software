@@ -257,6 +257,7 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     } else {
         leftDrive = (joy->axes[STICK_L_UD]);
         rightDrive = -joy->axes[DRIVE_AXES_UD];
+        //leftDrive = rightDrive;
     }
     /*
     float power = joy->axes[DRIVE_AXES_UD];
