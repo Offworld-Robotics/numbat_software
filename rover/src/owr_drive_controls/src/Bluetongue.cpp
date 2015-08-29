@@ -124,7 +124,7 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
 	}
 	int written = 0;
     timeout.tv_sec = 0;
-    timeout.tv_usec = 200000;
+    timeout.tv_usec = 400000;
     int empty_writes = 0;
 	do {
 		int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
@@ -149,7 +149,7 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
             ROS_ERROR("select"); /* an error accured */
             return false;
         } else if(rv == 0) {
-            ROS_INFO("timeout"); /* a timeout occured */
+            ROS_ERROR("timeout"); /* a timeout occured */
             return false; // This might not require a full reset...
         } else {
 		  int read_amount = read(port_fd, (int8_t*)resp + readCount, resp_len - readCount);
