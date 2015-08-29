@@ -4,23 +4,35 @@ import os
 #import requests
 #import subprocess 
 import telnetlib
-from owr_messages.msg import stream
+import time
+import json
+#from owr_messages.msg import stream
 
 def run():
     #telnet = subprocess.Popen(["telnet",  "192.168.1.20"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     #print telnet.communicate("bluetounge\nbluetoung\n/usr/www/signal.cgi");
-    connection = telnetlib.Telnet("192.168.1.21")
+    connection.open("192.168.1.20")
     connection.read_until("login:")
-    connection.write("bluetounge")
+    connection.write("bluetounge\n")
     connection.read_until("Password:")
-    connection.write("bluetoung")
+    connection.write("bluetoung\n")
     connection.read_until("XM.v5.5.8#")
-    connection.write("/usr/www/signal.cgi")
-    json = connection.read_very_eager()
-    print json
+    connection.write("/usr/www/signal.cgi\n")
     
+    data = connection.read_until('}', 2)
+
+    #cleaning header off telnet response
+    data = (data.split('{', 1)[-1])
+    data = '{' + data
+    #data = data.strip(" \n\t");
+    data_dict = json.loads(data)
+    print data_dict['signal']
+    connection.close()
     pass
 
     
 if __name__ == '__main__':
-    run()
+    while True:
+	connection = telnetlib.Telnet("192.168.1.20")  #192.168.1.20
+    	run()
+	time.sleep(3)
