@@ -53,6 +53,8 @@ class AutoGUI : public GLUTWindow {
 		std::list<ListNode> obstacles;
 		double scale[2];
 		
+		bool animPath;
+		
 		// draws map for left side of the window
 		void drawOverviewMap();
 		// draws map for right side of the window
