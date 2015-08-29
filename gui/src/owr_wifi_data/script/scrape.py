@@ -6,7 +6,7 @@ import os
 import telnetlib
 import time
 import json
-#from owr_messages.msg import stream
+from owr_messages.msg import status
 
 def run():
     #telnet = subprocess.Popen(["telnet",  "192.168.1.20"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -24,9 +24,9 @@ def run():
     #cleaning header off telnet response
     data = (data.split('{', 1)[-1])
     data = '{' + data
-    #data = data.strip(" \n\t");
+    #data = data.strip(" \n\t");cd 
     data_dict = json.loads(data)
-    print data_dict['signal']
+    status.signal = (-data_dict['signal'])/100.0
     connection.close()
     pass
 
