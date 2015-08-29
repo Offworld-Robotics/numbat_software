@@ -7,6 +7,7 @@ project(owr_gui)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  image_transport
 )
 
 ## System dependencies are found with CMake's conventions
@@ -81,7 +82,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES owr_gui
-  CATKIN_DEPENDS  message_runtime roscpp std_msgs bluesat_owr_protobuf
+  CATKIN_DEPENDS  message_runtime roscpp std_msgs bluesat_owr_protobuf image_transport
   DEPENDS system_lib
 )
 #find_package(bluesat_owr_protobuf)
