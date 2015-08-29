@@ -8,6 +8,7 @@
 #include "AutoGUI.h"
 #include "AutoNode.h"
 #include <ros/ros.h>
+#include <sensor_msgs/NavSatFix.h>
 #include "GPSInputManager.h"
 
 void AutoGUI::updateInfo(ListNode cur) {
@@ -225,9 +226,9 @@ void AutoGUI::keydown(unsigned char key, int x, int y) {
 				destNum--;
 			}
 			break;
-		case 'P':
-			//publishGPS();
+		case ':':
 			keymanager->clearBuffer();
+			keymanager->disableInput();
 			for(int i = 0;i < NUM_DESTS;i++) {
 				mapCentre[0] += dests[i][0];
 				mapCentre[1] += dests[i][1];
@@ -237,7 +238,13 @@ void AutoGUI::keydown(unsigned char key, int x, int y) {
 			haveDests = true;
 			break;
 		default:
-			keymanager->input(key);
+			if(keymanager->isEnabled()) {
+				keymanager->input(key);
+			} else if(key >= '0' && key <= '3') {
+				int i = key - '0';
+				ROS_INFO("Publishing coords for destination %d", i);
+				publishGPS(dests[i][0], dests[i][1]);
+			}
 			break;
 	}
 }
@@ -275,6 +282,9 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[]) : GLUTWindow(wi
 	keymanager = new GPSInputManager();
 	
 	scale[0] = scale[1] = SCALE;
+	
+	ros::NodeHandle nh;
+	gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/owr/dest", 10);
 	
 	ListNode l = (ListNode)malloc(sizeof(vector3D));
 	l->lat = -33.91779377339266;

@@ -7,6 +7,8 @@
 
 #include "ListNode.h"
 #include <list>
+#include <ros/ros.h>
+#include <sensor_msgs/NavSatFix.h>
 #include "GLUTWindow.h"
 #include "GPSInputManager.h"
 
@@ -58,6 +60,8 @@ class AutoGUI : public GLUTWindow {
 		
 		// pointer to the ROS handler
 		void *autoNode;
+		
+		ros::Publisher gpsPublisher;
 };
 
 #endif // AUTOGUI_H
