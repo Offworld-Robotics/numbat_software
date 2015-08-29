@@ -28,9 +28,11 @@ void AutoGUI::drawFullMap(double refLat, double refLon) {
 	
 	// THIS ANIMATES
 	// see http://www.felixgers.de/teaching/jogl/stippledLines.html
-	glLineStipple(1000, 0xAAAA);
+	if(animPath) {
+		glLineStipple(1000, 0xAAAA);
+		glEnable(GL_LINE_STIPPLE);
+	}
 	glColor3f(0,1,0);
-	glEnable(GL_LINE_STIPPLE);
 	glBegin(GL_LINE_STRIP);
 	for (int i = 0;i < NUM_DESTS;i++)
 		glVertex2d(dests[i][1] - refLon, dests[i][0] - refLat);
@@ -80,8 +82,10 @@ void AutoGUI::drawTrackingMap() {
 	
 	glScaled(1.5*scale[1], 1.5*scale[1], 1);
 	
-	drawFullMap(currentPos.lat, currentPos.lon);
-	
+	if(path.size())
+		drawFullMap((*path.begin())->lat, (*path.begin())->lon);
+	else
+		drawFullMap(mapCentre[0], mapCentre[1]);
 	glPopMatrix();
 }
 
@@ -203,6 +207,9 @@ void AutoGUI::keydown(unsigned char key, int x, int y) {
 		case 27:
 			exit(0);
 			break;
+		case '\t':
+			animPath = !animPath;
+			break;
 		case 'i':
 			if(!keymanager->isEnabled()) {
 				keymanager->enableInput();
@@ -268,6 +275,7 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[]) : GLUTWindow(wi
 	memset(arrows, 0, 4*sizeof(bool));
 	
 	haveDests = false;
+	animPath = true;
 	
 	double maxdouble = std::numeric_limits<float>::max();
 	
@@ -286,7 +294,7 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[]) : GLUTWindow(wi
 	ros::NodeHandle nh;
 	gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/owr/dest", 10);
 	
-	ListNode l = (ListNode)malloc(sizeof(vector3D));
+	/*ListNode l = (ListNode)malloc(sizeof(vector3D));
 	l->lat = -33.91779377339266;
 	l->lon = 151.23166680335999;
 	l->alt = 0;
@@ -305,7 +313,7 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[]) : GLUTWindow(wi
 	keymanager->str2DD(d0, &dests[0][0], &dests[0][1]);
 	keymanager->str2DD(d1, &dests[1][0], &dests[1][1]);
 	keymanager->str2DD(d2, &dests[2][0], &dests[2][1]);
-	keymanager->str2DD(d3, &dests[3][0], &dests[3][1]);
+	keymanager->str2DD(d3, &dests[3][0], &dests[3][1]);*/
 }
 
 int main(int argc, char *argv[]) {
