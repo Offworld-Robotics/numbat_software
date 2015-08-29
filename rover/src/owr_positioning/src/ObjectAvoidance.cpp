@@ -50,15 +50,17 @@ void ObjectAvoidance::run() {
 
 void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
     #define DANGER_DIST 2.0
+    #define ERROR_DIST 0.1
     #define ERROR_MARGIN 5
     ROS_INFO("received message");
-    
-    sensor_msgs::LaserScan fixedScan;
-    angleFilter.update(*scan, fixedScan);
+    //get the bit we want
+    //sensor_msgs::LaserScan fixedScan;
+    //ROS_INFO("min %f max %f", scan->angle_min, scan->angle_max);
     
     laser_geometry::LaserProjection projector;
     sensor_msgs::PointCloud cloudL;
     sensor_msgs::PointCloud cloudR;
+    
     try{
         projector.transformLaserScanToPointCloud("left_front_wheel_hub",fixedScan, cloudL,listenerL);                        
         projector.transformLaserScanToPointCloud("right_front_wheel_hub",fixedScan, cloudR,listenerR); 
@@ -74,26 +76,32 @@ void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
             } else {
                 ROS_ERROR("No cloudR");
             }
-            if(distL < DANGER_DIST) {
+            if(distL < DANGER_DIST && distL > ERROR_DIST)  {
                 leftCount++;
             }
-            if(distR < DANGER_DIST) {
+            if(distR < DANGER_DIST && distR > ERROR_DIST) {
                 rightCount ++;
+                ROS_INFO("dist: %f", distR);
             }
             //ROS_INFO("\tL:%f R:%f", 
         }
         ROS_INFO("R %d L %d", rightCount, leftCount);
+        geometry_msgs::Twist vel;
         float lf = 0.0;
         if (leftCount >= ERROR_MARGIN && leftCount > rightCount) {
             ROS_INFO("Turn left");
             lf = 1.0;
+            vel.linear.x = 0;
         } else if (rightCount >= ERROR_MARGIN) {
             ROS_INFO("Turn right");  
             lf = -1.0;
+            vel.linear.x = 0;
+        } else {
+            vel.linear.x = -0.5;
         }
         //Send twist message
-        geometry_msgs::Twist vel;
-        vel.linear.x = 0.5;
+
+        //vel.linear.x = -0.5;
 	    vel.linear.y = lf;
 	    pub.publish(vel);
     } catch (tf::TransformException ex) {

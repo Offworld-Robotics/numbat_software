@@ -7,6 +7,7 @@ class SensorFusion{
         SensorFusion();
         void spin();
     protected:
+        ros::NodeHandle node;
         void receiveMag(const geometry_msgs::Vector3::ConstPtr&);
         void receiveAccel(const geometry_msgs::Vector3::ConstPtr&);
         void receiveGyro(const geometry_msgs::Vector3::ConstPtr&);
@@ -29,7 +30,7 @@ class SensorFusion{
 
         unsigned char allThree; 
     private:
-        ros::NodeHandle node;
+        
         
         double vector_mod(geometry_msgs::Vector3);
         void vector_normalize(geometry_msgs::Vector3);
