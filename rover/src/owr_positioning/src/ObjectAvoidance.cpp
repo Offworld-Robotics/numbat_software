@@ -22,6 +22,9 @@ int main(int argc, char ** argv) {
 ObjectAvoidance::ObjectAvoidance() : nh(), sub(nh, "/scan", 1),
     laserNotifierL(sub,listenerL, "left_front_wheel_hub", 1),
     laserNotifierR(sub,listenerL, "right_front_wheel_hub", 1) {
+    angleFilter.lower_angle_ = -1.57;
+    angleFilter.upper_angle_ = 1.57;
+    
     ROS_INFO("registering transform listner");
     laserNotifierL.registerCallback(
         boost::bind(&ObjectAvoidance::scanCallback, this, _1)
@@ -49,12 +52,16 @@ void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
     #define DANGER_DIST 2.0
     #define ERROR_MARGIN 5
     ROS_INFO("received message");
+    
+    sensor_msgs::LaserScan fixedScan;
+    angleFilter.update(*scan, fixedScan);
+    
     laser_geometry::LaserProjection projector;
     sensor_msgs::PointCloud cloudL;
     sensor_msgs::PointCloud cloudR;
     try{
-        projector.transformLaserScanToPointCloud("left_front_wheel_hub",*scan, cloudL,listenerL);                        
-        projector.transformLaserScanToPointCloud("right_front_wheel_hub",*scan, cloudR,listenerR); 
+        projector.transformLaserScanToPointCloud("left_front_wheel_hub",fixedScan, cloudL,listenerL);                        
+        projector.transformLaserScanToPointCloud("right_front_wheel_hub",fixedScan, cloudR,listenerR); 
         int arrayLen = (scan->angle_max - scan->angle_min)/scan->angle_increment;
         int leftCount = 0;
         int rightCount = 0;
