@@ -1,13 +1,14 @@
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
 
-#define BUFFER_SIZE 50
+#define BUFFER_SIZE 100
 
 class GPSInputManager {
 	private:
 		char buffer[BUFFER_SIZE];
 		int index;
 		bool enable;
+		bool DMSChars(unsigned char key);
 	public:
 		GPSInputManager();
 		void enableInput();

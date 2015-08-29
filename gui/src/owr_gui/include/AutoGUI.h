@@ -16,15 +16,20 @@
 #define INPUT_DISABLED 0
 #define INPUT_LAT 1
 #define INPUT_LON 2
+#define NUM_DESTS 4
 
 class AutoGUI : public GLUTWindow {
 	public:
-		AutoGUI(int width, int height, int *argc, char *argv[], double destPos[3][2]);
+		AutoGUI(int width, int height, int *argc, char *argv[]);
 		void updateInfo(ListNode cur);
 	private:
 		void idle();
 		void display();
 		void keydown(unsigned char key, int x, int y);
+		
+		// destinations management
+		bool haveDests;
+		int destNum;
 		
 		double targetLat;
 		double targetLon;
@@ -35,9 +40,11 @@ class AutoGUI : public GLUTWindow {
 		
 		void drawFullMap(double refLat, double refLon);
 		void drawGPSPos();
+		void drawDividingLine();
+		void drawGPSDests();
 		
 		bool arrows[4];
-		double dests[3][2];
+		double dests[NUM_DESTS][2];
 		double mapCentre[2];
 		vector3D currentPos;
 		

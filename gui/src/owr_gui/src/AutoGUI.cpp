@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <list>
+#include <limits>
 #include "AutoGUI.h"
 #include "AutoNode.h"
 #include <ros/ros.h>
@@ -113,10 +114,7 @@ void AutoGUI::drawGPSPos() {
 	glPopMatrix();
 }
 
-void AutoGUI::display() {
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-	// draw dividing line
+void AutoGUI::drawDividingLine() {
 	glPushMatrix();
 	glColor3f(1,1,1);
 	glBegin(GL_LINES);
@@ -124,36 +122,52 @@ void AutoGUI::display() {
 	glVertex2d(currWinW/3.0, -currWinH);
 	glEnd();
 	glPopMatrix();
-	
-	drawOverviewMap();
-	drawTrackingMap();
-	drawGPSPos();
-	
+}
+
+void AutoGUI::drawGPSDests() {
 	glPushMatrix();
 	
-	glTranslated(50, -100, 0);
-	glColor3f(1,1,1);
+	glTranslated(50, -50, 0);
 	char txt[100];
+	glColor3f(1,0,0);
+	sprintf(txt, "Input format: [NSEW]deg,min,sec");
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	glTranslated(0, -30, 0);
+	glColor3f(1,1,1);
+	sprintf(txt, "Currently inputting destination %d", destNum);
+	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	glTranslated(0, -30, 0);
 	sprintf(txt, "Text buffer: %s", keymanager->getBuffer());
 	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	glTranslated(0, -30, 0);
-	if(haveTargetLat) {
-		sprintf(txt, "Target Lat: %.10f", targetLat);
-	} else {
-		sprintf(txt, "Target Lat: ?");
-	}
-	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 	
-	glTranslated(0, -30, 0);
-	if(haveTargetLon) {
-		sprintf(txt, "Target Lon: %.10f", targetLon);
-	} else {
-		sprintf(txt, "Target Lon: ?");
+	for(int i = 0;i < NUM_DESTS;i++) {
+		sprintf(txt, "Dest %d Lat: %.10f", i, dests[i][0]);
+		drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+		glTranslated(0, -30, 0);
+		sprintf(txt, "Dest %d Lon: %.10f", i, dests[i][1]);
+		drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+		glTranslated(0, -30, 0);
 	}
-	drawText(txt, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+	
 	
 	glPopMatrix();
+}
+
+void AutoGUI::display() {
+	glClear(GL_COLOR_BUFFER_BIT);
 	
+	if(haveDests) {
+		drawDividingLine();
+		
+		drawOverviewMap();
+		drawTrackingMap();
+		drawGPSPos();
+		
+		
+	}
+	
+	drawGPSDests();	
 	glutSwapBuffers();
 }
 
@@ -165,23 +179,36 @@ void AutoGUI::keydown(unsigned char key, int x, int y) {
 		case 'i':
 			if(!keymanager->isEnabled()) {
 				keymanager->enableInput();
+			} else {
+				keymanager->disableInput();
 			}
+			break;
+		case 'c':
+			keymanager->clearBuffer();
 			break;
 		case 'a':
 			if(keymanager->isEnabled()) {
-				targetLat = keymanager->convert2Double();
-				keymanager->clearBuffer();
-				keymanager->disableInput();
-				haveTargetLat = true;
+				dests[destNum][0] = keymanager->convert2Double();
 			}
 			break;
 		case 'o':
 			if(keymanager->isEnabled()) {
-				targetLon = keymanager->convert2Double();
-				keymanager->clearBuffer();
-				keymanager->disableInput();
-				haveTargetLon = true;
+				dests[destNum][1] = keymanager->convert2Double();
 			}
+			break;
+		case 'n':
+			if(!haveDests && destNum < NUM_DESTS-1) {
+				destNum++;
+			}
+			break;
+		case 'b':
+			if(!haveDests && destNum > 0) {
+				destNum--;
+			}
+			break;
+		case 'p':
+			//publishGPS();
+			haveDests = true;
 			break;
 		default:
 			keymanager->input(key);
@@ -189,7 +216,25 @@ void AutoGUI::keydown(unsigned char key, int x, int y) {
 	}
 }
 
-AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[], double destPos[3][2]) : GLUTWindow(width, height, argc, argv, "AutoGUI") {
+
+/*void AutoGUI::publishGPS(GPSData gps) {
+	sensor_msgs::NavSatFix msg;
+	msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
+	msg.latitude = ((float)gps.latitude)/GPS_FLOAT_OFFSET;
+	msg.altitude = gps.altitude;
+	
+	if (gps.fixValid) {
+		msg.status.status = msg.status.STATUS_FIX;
+	} else {
+		msg.status.status = msg.status.STATUS_NO_FIX;
+	}
+	msg.status.service = msg.status.SERVICE_GPS; //NOt sure this is right
+	msg.header.seq = gpsSequenceNum;
+	msg.header.frame_id = 1; // global frame
+	gpsPublisher.publish(msg);
+}*/
+
+AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[]) : GLUTWindow(width, height, argc, argv, "AutoGUI") {
 	autoNode = new AutoNode(this);
 	
 	glClearColor(0, 0, 0, 0);
@@ -197,48 +242,25 @@ AutoGUI::AutoGUI(int width, int height, int *argc, char *argv[], double destPos[
 	glutKeyboardFunc(glut_keydown);
 	
 	memset(arrows, 0, 4*sizeof(bool));
-	memcpy(dests, destPos, 6*sizeof(double));
-	mapCentre[0] = (dests[0][0]+dests[1][0]+dests[2][0])/3.0;
-	mapCentre[1] = (dests[0][1]+dests[1][1]+dests[2][1])/3.0;
 	
-	memset(&currentPos, 0, sizeof(currentPos));
+	haveDests = false;
+	
+	double maxdouble = std::numeric_limits<float>::max();
+	
+	currentPos.lat = currentPos.lat = maxdouble;
+	currentPos.alt = 0;
+	
+	for(int i = 0;i < NUM_DESTS;i++)
+		dests[i][0] = dests[i][1] = maxdouble;
+	destNum = 0;
 	
 	keymanager = new GPSInputManager();
 	haveTargetLat = haveTargetLon = false;
-	
-	ListNode init = (ListNode)malloc(sizeof(vector3D));
-	init->lat = -33.9178303;
-	init->lon = 151.2318155;
-	init->alt = 0;
-	path.push_front(init);
-	memcpy(&currentPos, init, sizeof(vector3D));
-	
-	init = (ListNode)malloc(sizeof(vector3D));
-	init->lat = -33.9188303;
-	init->lon = 151.2328155;
-	init->alt = 0;
-	path.push_front(init);
-	
-	init = (ListNode)malloc(sizeof(vector3D));
-	init->lat = -33.914873;
-	init->lon = 151.225468;
-	init->alt = 0;
-	path.push_front(init);
 }
 
 int main(int argc, char *argv[]) {
-	double dest[3][2] = {
-		{-33.914873, 151.225468},
-		{-33.916547, 151.236519},
-		{-33.920643, 151.235553}
-	};
-	/*for(int i = 0;i<3;i++) {
-		for(int j = 0;j<2;j++) {
-			scanf("%lf", &dest[i][j]);
-		}
-	}*/
 	ros::init(argc, argv, "AutoGUI");
-	AutoGUI gui(1855, 1056, &argc, argv, dest);
+	AutoGUI gui(1855, 1056, &argc, argv);
 	gui.run();
 	return 0;
 }
