@@ -193,7 +193,9 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
 	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
-	ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
+	ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
+            mesg.clawRotate);
+    ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
             mesg.armBottom, mesg.armRotate);
     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
             cameraBottomTilt, cameraTopRotate, cameraTopTilt);

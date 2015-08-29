@@ -125,16 +125,16 @@ void BoardControl::run() {
             cameraTopTilt += cameraTopTiltIncRate;
             cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
-            if (clawState == OPEN) {
+            if (rotState == OPEN) {
                 clawRotate += 5;
-            } else if (clawState == CLOSE) {
+            } else if (rotState == CLOSE) {
                 clawRotate-= 5;
             }
             cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);
             
-            if (clawGrip == OPEN) {
+            if (clawState  == OPEN) {
                 clawGrip += 5;
-            } else if (clawGrip == CLOSE) {
+            } else if (clawState  == CLOSE) {
                 clawGrip -=  5;
             }
             cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
