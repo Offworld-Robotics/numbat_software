@@ -18,8 +18,8 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	ros::NodeHandle n("~");
 	
 	//Initialise all the information to be used in by the gui
-	battery = 5;
-	signal = 5;
+	battery = 6;
+	signal = 6;
 	tiltX = 30;
 	tiltY = 30;
 	ultrasonic = 0;
