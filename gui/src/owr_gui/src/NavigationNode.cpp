@@ -38,7 +38,7 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
-	// createed yet, will wait til it has w/o doing anything
+	// created yet, will wait til it has w/o doing anything
 	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
 	videoSub[0] = n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
 	videoSub[1] = n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
@@ -100,13 +100,13 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 }
 
 
-void NavigationNode::receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg) {
+void NavigationNode::receiveBatteryMsg(const owr_messages::status::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received a message");
 	//ROS_INFO("voltage %f", msg->voltage);
-	battery = msg->voltage;
-	
+	signal = msg->signal;
+	battery = msg->battery;
 	gui->updateInfo(battery, signal, ultrasonic, NULL, target);
 }
 
