@@ -8,14 +8,16 @@ class GPSInputManager {
 		char buffer[BUFFER_SIZE];
 		int index;
 		bool enable;
-		bool DMSChars(unsigned char key);
+		bool compassChars(unsigned char key);
+		bool numericChars(unsigned char key);
 	public:
 		GPSInputManager();
 		void enableInput();
 		void disableInput();
 		void input(unsigned char key);
 		const char *getBuffer();
-		double convert2Double();
+		void convert2DD(double *lat, double *lon);
+		void str2DD(char *str, double *lat, double *lon);
 		bool isEnabled();
 		void clearBuffer();
 };

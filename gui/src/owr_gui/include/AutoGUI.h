@@ -26,15 +26,11 @@ class AutoGUI : public GLUTWindow {
 		void idle();
 		void display();
 		void keydown(unsigned char key, int x, int y);
+		void special_keydown(int keycode, int x, int y);
 		
 		// destinations management
 		bool haveDests;
 		int destNum;
-		
-		double targetLat;
-		double targetLon;
-		bool haveTargetLat;
-		bool haveTargetLon;
 		
 		GPSInputManager *keymanager;
 		
@@ -42,6 +38,9 @@ class AutoGUI : public GLUTWindow {
 		void drawGPSPos();
 		void drawDividingLine();
 		void drawGPSDests();
+		void drawScales();
+		
+		void publishGPS(double lat, double lon);
 		
 		bool arrows[4];
 		double dests[NUM_DESTS][2];
@@ -50,6 +49,7 @@ class AutoGUI : public GLUTWindow {
 		
 		std::list<ListNode> path;
 		std::list<ListNode> obstacles;
+		double scale[2];
 		
 		// draws map for left side of the window
 		void drawOverviewMap();
