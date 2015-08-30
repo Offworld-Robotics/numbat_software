@@ -40,7 +40,7 @@ void displaySensorDetails(void)
 {
   sensor_t sensor;
   mag.getSensor(&sensor);
-  Serial.println("------------------------------------");
+  /*Serial.println("------------------------------------");
   Serial.print  ("Sensor:       "); Serial.println(sensor.name);
   Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
   Serial.print  ("Unique ID:    "); Serial.println(sensor.sensor_id);
@@ -48,7 +48,7 @@ void displaySensorDetails(void)
   Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println(" uT");
   Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println(" uT");  
   Serial.println("------------------------------------");
-  Serial.println("");
+  Serial.println("");*/
   delay(500);
 }
 
@@ -102,7 +102,8 @@ void loop(void)
   // Convert radians to degrees for readability.
   float headingDegrees = heading * 180/M_PI; 
   
-  //Serial.print("Heading (degrees): "); Serial.println(headingDegrees);
+  //Serial.print("Heading (degrees): "); 
+  Serial.println(headingDegrees);
   
   delay(500);
 }
