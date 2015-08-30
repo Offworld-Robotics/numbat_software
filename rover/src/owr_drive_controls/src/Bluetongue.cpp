@@ -124,7 +124,7 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
 	}
 	int written = 0;
     timeout.tv_sec = 0;
-    timeout.tv_usec = 200000;
+    timeout.tv_usec = 300000;
     int empty_writes = 0;
 	do {
 		int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
@@ -215,7 +215,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
 	} else {
         stat.roverOk = true;
     }
-    stat.batteryVoltage = (resp.vbat / 1024.0) * 3.3;
+    stat.batteryVoltage = ((resp.vbat / 1024.0) * 3.3) * 5.7;
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
