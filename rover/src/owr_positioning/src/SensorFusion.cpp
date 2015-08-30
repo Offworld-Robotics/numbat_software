@@ -84,7 +84,7 @@ SensorFusion::fuseData() {
     //heading
 
     heading = radToDeg(atan2(mag.x,mag.y)) - SYDNEY;
-    if ( heading < 0 ) heading += 180; 
+    if ( heading < 0 ) heading += 360; 
     //publish stuff
     owr_messages::heading msg2;
     msg2.heading = heading;

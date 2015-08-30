@@ -190,8 +190,8 @@ void BoardControl::run() {
 
 void BoardControl::publishGPS(GPSData gps) {
     sensor_msgs::NavSatFix msg;
-    msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
-    msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) * -1.0; // fix issue with -ve longitude
+    msg.longitude = (((float)gps.longitude)/GPS_FLOAT_OFFSET)* -1.0;
+    msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) ; // fix issue with -ve longitude
     msg.altitude = gps.altitude;
     
     if (gps.fixValid) {
@@ -326,11 +326,11 @@ void BoardControl::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
     // This set of equations ensure the correct proportional powering of the wheels at varying levels of power and lr
 
     if(lr < 0){
-    	lDrive = power + (2 * lr * power);
+    	lDrive = power + (fabs(lr) * power);
     	rDrive = power;
     } else if (lr > 0){
     	lDrive = power;
-    	rDrive = power - (2 * lr * power);
+    	rDrive = power - (fabs(lr) * power);
     } else {
     	lDrive = power;
     	rDrive = power;
@@ -339,7 +339,7 @@ void BoardControl::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
     lDrive = power;
     rDrive = power;
     leftDrive = lDrive;
-    rightDrive = rDrive;
+    rightDrive = -rDrive;
     //leftDrive = (lDrive * 400) + MOTOR_MID;
     //rightDrive = (rDrive * 400) + MOTOR_MID;
     ROS_ERROR("%f,%f", leftDrive, rightDrive);
