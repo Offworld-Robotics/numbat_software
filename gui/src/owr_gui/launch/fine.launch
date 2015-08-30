@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="owr_gui" type="finecontrol" name="finecontrol" />
+</launch>

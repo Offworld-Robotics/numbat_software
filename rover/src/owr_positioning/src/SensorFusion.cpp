@@ -36,7 +36,19 @@ SensorFusion::receiveMag(const geometry_msgs::Vector3::ConstPtr& _mag) {
     mag.x = _mag->x;
     mag.y = _mag->y;
     mag.z = _mag->z;
-    ROS_INFO("mag %x", allThree);
+    ROS_INFO("%f %f %f",mag.x,mag.y,mag.z);
+    int16_t tempx = mag.x;
+    int8_t highx = tempx >>8;
+    int8_t lowx = tempx;
+    ROS_INFO("X: %x %x", highx, lowx);
+    int16_t tempy = mag.y;
+    int8_t highy = tempy >>8;
+    int8_t lowy = tempy;
+    ROS_INFO("Y: %x %x", highy, lowy);
+    int16_t tempz = mag.z;
+    int8_t highz = tempz >>8;
+    int8_t lowz = tempz;
+    ROS_INFO("Z: %x %x", highz, lowz);
     if(allThree == 0x7) fuseData();
 }
 
@@ -46,7 +58,6 @@ SensorFusion::receiveAccel(const geometry_msgs::Vector3::ConstPtr& _acc) {
     acc.x = _acc->x;
     acc.y = _acc->y;
     acc.z = _acc->z;
-    ROS_INFO("acc %x", allThree);
     if(allThree == 0x7) fuseData();
 }
 
@@ -56,7 +67,6 @@ SensorFusion::receiveGyro(const geometry_msgs::Vector3::ConstPtr& _gyro) {
     gyro.x = _gyro->x/GYRO_HZ;
     gyro.y = _gyro->y/GYRO_HZ;
     gyro.z = _gyro->z/GYRO_HZ;
-    ROS_INFO("gyro %x", allThree);
     if(allThree == 0x7) fuseData();
 }
 
@@ -91,6 +101,7 @@ SensorFusion::fuseData() {
     //publish stuff
     owr_messages::heading msg2;
     msg2.heading = heading;
+    ROS_INFO("%f", heading);
     pub.publish(msg2);
 
 }

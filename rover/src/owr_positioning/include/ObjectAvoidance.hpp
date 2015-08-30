@@ -11,6 +11,8 @@
 #include <tf/message_filter.h>
 #include <message_filters/subscriber.h>
 #include <laser_geometry/laser_geometry.h>
+#include <laser_filters/angular_bounds_filter.h>
+#define ANGLE_LIMIT 0.785398163
 
 using namespace std; 
 
@@ -32,6 +34,7 @@ class ObjectAvoidance {
         tf::MessageFilter<sensor_msgs::LaserScan> laserNotifierL;
         tf::TransformListener  listenerR;
         tf::MessageFilter<sensor_msgs::LaserScan> laserNotifierR;
+        laser_filters::LaserScanAngularBoundsFilter angleFilter;
         
         
 };

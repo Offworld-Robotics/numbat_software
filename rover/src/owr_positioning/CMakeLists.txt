@@ -125,6 +125,7 @@ add_executable(owr_fusion_node src/SensorFusion.cpp)
 add_dependencies(owr_fusion_node owr_messages_gencpp)
 target_link_libraries(owr_fusion_node ${catkin_LIBRARIES})
 
+
 add_executable(owr_object_avoidance src/ObjectAvoidance.cpp)
 target_link_libraries(owr_object_avoidance ${catkin_LIBRARIES})
 ## Specify libraries to link a library or executable target against
