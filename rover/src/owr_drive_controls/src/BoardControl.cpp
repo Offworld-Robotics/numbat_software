@@ -24,7 +24,7 @@
 #define CAMERA_ROTATION_MID 90
 #define CAMERA_ROTATION_MAX 180
 #define CAMERA_ROTATION_MIN 0
-#define CAMERA_SCALE 2
+#define CAMERA_SCALE 1
 
 #define MAX_IN 1.0
 #define DIFF 0.25
@@ -108,8 +108,8 @@ void BoardControl::run() {
     int cbr = 0, cbt = 0;
     while (ros::ok()) {
         while(ros::ok()) {
-            cbr = cbr < 120 ? cbr + 5 : 0;
-            cbt = cbt < 70 ? cbt + 5 : 0;
+            //cbr = cbr < 120 ? cbr + 5 : 0;
+            //cbt = cbt < 70 ? cbt + 5 : 0;
             armTop += armIncRate;
             cap(&armTop, MOTOR_MIN, MOTOR_MAX);
             
@@ -139,8 +139,8 @@ void BoardControl::run() {
             }
             cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
-            cameraBottomTilt = cbt;
-            cameraBottomRotate = cbr; 
+            //cameraBottomTilt = cbt;
+            //cameraBottomRotate = cbr; 
             struct status s = steve->update(leftDrive, rightDrive,
                 armTop, armBottom, armRotate, clawRotScale(clawRotate),
                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
@@ -292,7 +292,7 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armRotate = joy->axes[STICK_CH_LR];
  
     //armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
-        armIncRate = top * 25;
+        armIncRate = top * 5;
     
     //TODO: check these actually match up
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
