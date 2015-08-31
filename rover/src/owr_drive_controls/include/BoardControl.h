@@ -38,6 +38,7 @@ class BoardControl {
         void publishMag(MagData mag);
         void publishIMU(IMUData imu);
         void publishBattery(double batteryVoltage);
+        void publishVoltmeter(double voltage);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
@@ -48,6 +49,7 @@ class BoardControl {
         ros::Publisher gyroPublisher;
         ros::Publisher accPublisher;
         ros::Publisher battVoltPublisher;
+        ros::Publisher voltmeterPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
         float leftDrive, rightDrive;

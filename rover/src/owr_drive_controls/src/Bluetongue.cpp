@@ -37,9 +37,11 @@ struct toControlMsg {
 struct toNUCMsg {
     uint16_t magic;
     uint16_t vbat;
+    uint16_t voltmeter;
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
+    uint16_t padding;
 } __attribute__((packed));
 
 bool Bluetongue::reconnect(void) {
@@ -216,6 +218,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
         stat.roverOk = true;
     }
     stat.batteryVoltage = ((resp.vbat / 1024.0) * 3.3) * 5.7;
+    stat.voltmeter = (((resp.voltmeter / 1024.0)*3.3) - 1.65) * (37.2 / 2.2);
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;

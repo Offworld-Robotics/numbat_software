@@ -62,6 +62,7 @@ BoardControl::BoardControl() {
     gyroPublisher = nh.advertise<geometry_msgs::Vector3>("gyro", 10);
     accPublisher = nh.advertise<geometry_msgs::Vector3>("acc", 10);
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
+    voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
     velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
@@ -152,6 +153,7 @@ void BoardControl::run() {
             publishMag(s.magData);
             publishIMU(s.imuData);
             publishBattery(s.batteryVoltage);
+            publishVoltmeter(s.voltmeter);
             printStatus(&s);
             //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
             ros::spinOnce();
@@ -218,6 +220,12 @@ void BoardControl::publishBattery(double batteryVoltage) {
     std_msgs::Float64 msg;
     msg.data = batteryVoltage;
     battVoltPublisher.publish(msg);
+}
+
+void BoardControl::publishVoltmeter(double voltage) {
+    std_msgs::Float64 msg;
+    msg.data = voltage;
+    voltmeterPublisher.publish(msg);
 }
 
 void BoardControl::publishIMU(IMUData imu) {

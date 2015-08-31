@@ -33,6 +33,7 @@ struct status {
     bool roverOk;
     bool isConnected;
     double batteryVoltage;
+    double voltmeter;
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
