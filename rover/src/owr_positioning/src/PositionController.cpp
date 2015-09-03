@@ -50,7 +50,7 @@ void PositionController::receiveGPSMsg(const boost::shared_ptr<sensor_msgs::NavS
     //we want to ignore those
     #define GPS_ERROR_ZONE 1.0 
     //only relay messages with valid lat/long and a good status
-    if (msg->status.status && fabs(msg->latitude) > GPS_ERROR_ZONE) {
+    if (!msg->status.status && fabs(msg->latitude) > GPS_ERROR_ZONE) {
         altitude  = msg->altitude;
         latitude  = msg->latitude;
         longitude = msg->longitude;
