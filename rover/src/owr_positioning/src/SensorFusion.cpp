@@ -83,7 +83,7 @@ void SensorFusion::fuseData() {
     //heading
 */
     vector_normalize(mag); 
-    //heading = radToDeg(atan2(mag.x,mag.y)) - POLAND;
+    heading = radToDeg(atan2(mag.x,mag.y)) + POLAND;
     if ( heading < 0 ) heading += 360; 
     //publish stuff
     owr_messages::heading msg2;
