@@ -17,8 +17,8 @@
 #define POS_TOPIC "/owr/position"
 #define DEST_TOPIC "/owr/dest"
 //#define EARTH_RADIUS 6371009
-#define EQUATORIAL_RADIUS 63781370
-#define POLAR_RADIUS 63567523
+#define EQUATORIAL_RADIUS 63781370.0
+#define POLAR_RADIUS 63567523.0
 #define CHECKPOINT_DISTANCE 5
  
 
@@ -98,10 +98,11 @@ void PathingController::sendMsg() {
 	if (distance < CHECKPOINT_DISTANCE || destLat == 0){
 		// Within 10m of destination... if needed, can set up a counter in here to increment until we a point where we call for next destination.
 		if(currPower){
+		
 			currPower -= INCREMENT * (currPower / fabs(currPower));
 		}
         if(currLR){
-        	currLR -= INCREMENT * (currLR / fabs(currLR));
+        	//currLR -= INCREMENT * (currLR / fabs(currLR));
         }
 		ROS_INFO("At destination! You are awesome!\n");
 	} else {
@@ -109,13 +110,15 @@ void PathingController::sendMsg() {
 		// Find the bearing from the lat and long values of position and destination: 'http://www.ig.utexas.edu/outreach/googleearth/latlong.html'
 		double angle = atan2( (cos(lat2) * sin(long2 - long1)), ((sin(lat2) * cos(lat1)) - (sin(lat1) * cos(lat2) * cos(long2 - long1))));
 		destHeading = fmod((angle * 180.0 / M_PI) + 360.0, 360.0);
-
+        #define HEADING_MARGIN 10
 		// Work out the desired action to be taken
-		if (currHeading > destHeading - 1 && currHeading < destHeading + 1){
+		if (currHeading > destHeading - HEADING_MARGIN && currHeading < destHeading + HEADING_MARGIN){
 			//Go straight, decrement lr
 			currPower += INCREMENT;
 			if(currLR){
-				currLR -= INCREMENT * (currLR / fabs(currLR));
+				//currLR -= INCREMENT * (currLR / fabs(currLR));
+				currLR = 0.0;
+				
 			}
 		} else if (fmod((currHeading + 180.0), 360.0) == destHeading){
 			//Go backwards, decrement lr
@@ -126,7 +129,7 @@ void PathingController::sendMsg() {
 		} else {
 			angle = destHeading - currHeading;
 
-			if(angle > 180 && angle < 360){
+			if(fmod(angle+360.0, 360.0) > 180 && fmod(angle+360.0, 360.0) < 360){
 				//turn left
 				currPower += INCREMENT;
 				currLR -= INCREMENT;
@@ -138,10 +141,10 @@ void PathingController::sendMsg() {
 			}
 		}
 	}
-    if(currPower > 1){
-    	currPower = 0.5;
+    if(currPower > 1) {
+    	currPower = 0.7;
     } else if(currPower < -1){
-    	currPower = -0.5;
+    	currPower = -0.7;
     } else if (currPower < (0.9 * INCREMENT) && currPower > -(0.9 * INCREMENT)){
     	currPower = 0; //at least in soft testing, have found that the LR and pwr dont return back to 0 very well (end up 0.099...)
     }

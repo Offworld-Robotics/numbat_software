@@ -22,8 +22,8 @@ int main(int argc, char ** argv) {
 ObjectAvoidance::ObjectAvoidance() : nh(), sub(nh, "/scan", 1),
     laserNotifierL(sub,listenerL, "left_front_wheel_hub", 1),
     laserNotifierR(sub,listenerL, "right_front_wheel_hub", 1) {
-    angleFilter.lower_angle_ = -ANGLE_LIMIT;
-    angleFilter.upper_angle_ = ANGLE_LIMIT;
+    angleFilter.lower_angle_ = -ANGLE_LIMIT_L;
+    angleFilter.upper_angle_ = ANGLE_LIMIT_R;
     
     ROS_INFO("registering transform listner");
     laserNotifierL.registerCallback(
@@ -51,7 +51,7 @@ void ObjectAvoidance::run() {
 void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
     #define DANGER_DIST 2.0
     #define ERROR_DIST 0.1
-    #define ERROR_MARGIN 5
+    #define ERROR_MARGIN 100
     ROS_INFO("received message");
     //get the bit we want
     sensor_msgs::LaserScan fixedScan;
@@ -98,7 +98,7 @@ void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
             lf = -1.0;
             vel.linear.x = 0;
         } else {
-            vel.linear.x = -0.5;
+            vel.linear.x = 0.5;
         }
         //Send twist message
 

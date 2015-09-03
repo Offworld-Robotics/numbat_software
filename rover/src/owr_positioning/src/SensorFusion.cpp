@@ -36,19 +36,6 @@ SensorFusion::receiveMag(const geometry_msgs::Vector3::ConstPtr& _mag) {
     mag.x = _mag->x;
     mag.y = _mag->y;
     mag.z = _mag->z;
-    ROS_INFO("%f %f %f",mag.x,mag.y,mag.z);
-    int16_t tempx = mag.x;
-    int8_t highx = tempx >>8;
-    int8_t lowx = tempx;
-    ROS_INFO("X: %x %x", highx, lowx);
-    int16_t tempy = mag.y;
-    int8_t highy = tempy >>8;
-    int8_t lowy = tempy;
-    ROS_INFO("Y: %x %x", highy, lowy);
-    int16_t tempz = mag.z;
-    int8_t highz = tempz >>8;
-    int8_t lowz = tempz;
-    ROS_INFO("Z: %x %x", highz, lowz);
     if(allThree == 0x7) fuseData();
 }
 
@@ -97,7 +84,7 @@ SensorFusion::fuseData() {
     //heading
 
     heading = radToDeg(atan2(mag.x,mag.y)) - SYDNEY;
-    
+    if ( heading < 0 ) heading += 360; 
     //publish stuff
     owr_messages::heading msg2;
     msg2.heading = heading;
