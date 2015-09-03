@@ -23,6 +23,9 @@ using namespace std;
 #define STOP  1
 #define CLOSE 2
 
+//the minimum number of satelites required to make the fix valid
+#define MIN_SATELITES 3
+
 class BoardControl {
     public:
         BoardControl();

@@ -153,7 +153,7 @@ void BoardControl::run() {
             publishMag(s.magData);
             publishIMU(s.imuData);
             publishBattery(s.batteryVoltage);
-            publishVoltmeter(s.voltmeter);
+            //publishVoltmeter(s.voltmeter);
             printStatus(&s);
             //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
             ros::spinOnce();
@@ -196,9 +196,11 @@ void BoardControl::publishGPS(GPSData gps) {
     msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) ; // fix issue with -ve longitude
     msg.altitude = gps.altitude;
     
-    if (gps.fixValid) {
+    if (gps.fixValid && gps.numSatelites >= MIN_SATELITES) {
         msg.status.status = msg.status.STATUS_FIX;
+        ROS_DEBUG("Statelites %d", gps.numSatelites);
     } else {
+        ROS_ERROR("Invalid fix, w/ only %d satelites", gps.numSatelites);
         msg.status.status = msg.status.STATUS_NO_FIX;
     }
     msg.status.service = msg.status.SERVICE_GPS; //NOt sure this is right

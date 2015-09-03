@@ -1,6 +1,6 @@
 <launch>
     
-    <node pkg="hokuyo_node" type="hokuyo_node" name="laser" >
-	<param name="port" value="/dev/hokuyo"/>
+    <node pkg="hokuyo_node" type="hokuyo_node" name="laser" output="screen" >
+	    <param name="port" value="/dev/hokuyo"/>
     </node>
 </launch>

@@ -46,16 +46,25 @@ void PositionController::receiveHeadingMsg(const boost::shared_ptr<owr_messages:
 }
 
 void PositionController::receiveGPSMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) {
-    altitude  = msg->altitude;
-    latitude  = msg->latitude;
-    longitude = msg->longitude;
-    std::list<double>::iterator latItr = latitudes.begin();
-    double x1 = *(latItr);
-    std::list<double>::iterator lonItr = longitudes.begin();
-    double y1 = *(lonItr);
-    if (x1 != latitude && y1 != longitude) {
-        latitudes.push_front(latitude);
-        longitudes.push_front(longitude);
+    //for some reason when the gps dosen't have a fix it gives us values close to zero
+    //we want to ignore those
+    #define GPS_ERROR_ZONE 1.0 
+    //only relay messages with valid lat/long and a good status
+    if (msg->status.status && fabs(msg->latitude) > GPS_ERROR_ZONE) {
+        altitude  = msg->altitude;
+        latitude  = msg->latitude;
+        longitude = msg->longitude;
+        std::list<double>::iterator latItr = latitudes.begin();
+        double x1 = *(latItr);
+        std::list<double>::iterator lonItr = longitudes.begin();
+        double y1 = *(lonItr);
+        if (x1 != latitude && y1 != longitude) {
+            latitudes.push_front(latitude);
+            longitudes.push_front(longitude);
+        }
+    } else {
+        ROS_INFO("Dropped invalid gps fix %f, %f, status: %d", 
+            msg->latitude, msg->longitude, msg->status.status);
     }
     //updateHeading();
     sendMsg();
