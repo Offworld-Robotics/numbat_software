@@ -15,6 +15,7 @@
 
 #define PUBLISH_TOPIC "/owr/auton_twist"
 #define POS_TOPIC "/owr/position"
+#define POS_DODGE_TOPIC "/owr/position/dodge"
 #define DEST_TOPIC "/owr/dest"
 //#define EARTH_RADIUS 6371009
 #define EQUATORIAL_RADIUS 63781370.0
@@ -51,12 +52,13 @@ PathingController::PathingController( void) {
 	vel.linear.x = 0;
 	vel.linear.y = 0;
     earthRadius = 6371009; // mean in meters, initial value but will be calculated throughout
-
+    go = true;
 
     twistPublisher =  node.advertise<geometry_msgs::Twist>(PUBLISH_TOPIC,1000,true);
 
-    positionSubscriber = node.subscribe(POS_TOPIC, 1000, &PathingController::receivePosMsg, this);
-    destinationSubscriber = node.subscribe(DEST_TOPIC, 100, &PathingController::receiveDestMsg, this);
+    positionSubscriber = node.subscribe(POS_TOPIC, 10, &PathingController::receivePosMsg, this);
+    dodgeSubscriber = node.subscribe(POS_DODGE_TOPIC, 10, &PathingController::receiveDodgeMsg, this);
+    destinationSubscriber = node.subscribe(DEST_TOPIC, 10, &PathingController::receiveDestMsg, this);
 }
 
 // Get the msg types for Destination and Position.
@@ -67,6 +69,17 @@ void PathingController::receivePosMsg(const owr_messages::position &msg) {
    sendMsg();
 }
 
+void PathingController::receiveDodgeMsg(const geometry_msgs::Twist::ConstPtr& velMsg) {
+    if(velMsg->linear.x != 0) {
+        go = false;
+        vel.linear.x = velMsg->linear.x;
+        vel.linear.y = velMsg->linear.y;
+    } else {
+        go = true;
+    }
+    sendMsg();
+}
+
  
 void PathingController::receiveDestMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> &msg) {
    destLat = msg->latitude;
@@ -75,7 +88,9 @@ void PathingController::receiveDestMsg(const boost::shared_ptr<sensor_msgs::NavS
 
 
 void PathingController::sendMsg() {
-
+    if(!go) {
+        twistPublisher.publish(vel);
+    }
     //Calculate desired heading, first convert lat/longs into radians
 
     double lat1 = currLat * (M_PI / 180);

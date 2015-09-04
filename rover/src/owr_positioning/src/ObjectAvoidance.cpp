@@ -11,6 +11,8 @@
 #include <geometry_msgs/Twist.h>
 #include <tf/transform_listener.h>
 
+#define POS_DODGE_TOPIC "/owr/position/dodge"
+
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_avoidance");
     ROS_INFO("object avoidance starting");
@@ -34,7 +36,7 @@ ObjectAvoidance::ObjectAvoidance() : nh(), sub(nh, "/scan", 1),
     //laserNotifierR.setTolerance(ros::Duration(0.01));
     //ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
     //sub = nh.subscribe<sensor_msgs::LaserScan>("joy",1, &ObjectAvoidance::scanCallback, this);
-    pub = nh.advertise<geometry_msgs::Twist>("/owr/auton_twist", 10);
+    pub = nh.advertise<geometry_msgs::Twist>(POS_DODGE_TOPIC, 2);
     
           
 }
@@ -51,7 +53,7 @@ void ObjectAvoidance::run() {
 void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan) {
     #define DANGER_DIST 2.0
     #define ERROR_DIST 0.1
-    #define ERROR_MARGIN 100
+    #define ERROR_MARGIN 15
     ROS_INFO("received message");
     //get the bit we want
     sensor_msgs::LaserScan fixedScan;
@@ -69,20 +71,26 @@ void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
         int leftCount = 0;
         int rightCount = 0;
         for(int i =0; i<cloudL.points.size(); i++) {
-            float distL = sqrt(pow(cloudL.points[i].x, 2) + pow(cloudL.points[i].y,2));
+            //float distL = sqrt(pow(cloudL.points[i].x, 2) + pow(cloudL.points[i].y,2));
             //FIX TO AVOId different sized arrays (somehow?)
-            float distR;
+            /*float distR;
             if(i<cloudR.points.size()) {
                 distR = sqrt(pow(cloudR.points[i].x, 2) + pow(cloudR.points[i].y,2));
             } else {
                 ROS_ERROR("No cloudR");
+            }*/
+            //box x: +/-0.5 y: -1 to -3
+            float ly = cloudL.points[i].y;
+            float lx = cloudL.points[i].x;
+            if( lx <= 0.5 && lx >= -0.25 && ly <= -0.4 && ly >= -2.0)  {
+                leftCount++; 
+                //ROS_INFO("%d left", leftCount);
             }
-            if(distL < DANGER_DIST && distL > ERROR_DIST)  {
-                leftCount++;
-            }
-            if(distR < DANGER_DIST && distR > ERROR_DIST) {
-                rightCount ++;
-                //ROS_INFO("dist: %f", distR);
+            float rx = cloudR.points[i].x;
+            float ry = cloudR.points[i].y;
+            if( rx <= 0.5 && rx >= -0.25 && ry <= -0.4 && ry >= -2.0)  {
+                rightCount++;
+                //ROS_INFO("%d right", rightCount);
             }
             //ROS_INFO("\tL:%f R:%f", 
         }
@@ -92,13 +100,13 @@ void ObjectAvoidance::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
         if (leftCount >= ERROR_MARGIN && leftCount > rightCount) {
             ROS_INFO("Turn left");
             lf = 1.0;
-            vel.linear.x = 0;
+            vel.linear.x = 1;
         } else if (rightCount >= ERROR_MARGIN) {
             ROS_INFO("Turn right");  
             lf = -1.0;
-            vel.linear.x = 0;
+            vel.linear.x = 1;
         } else {
-            vel.linear.x = 0.5;
+            vel.linear.x = 0;
         }
         //Send twist message
 
