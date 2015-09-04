@@ -20,7 +20,7 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	gui = newgui;
 	//a nodehandler is used to communiate with the rest of ros
 	ros::NodeHandle n("~");
-        image_transport::ImageTransport imgTrans(n);
+    image_transport::ImageTransport imgTrans(n);
 	
 	//Initialise all the information to be used in by the gui
 	battery = 5;
