@@ -23,10 +23,12 @@ class PathingController {
     protected:
         void receivePosMsg(const owr_messages::position &msg) ;
         void receiveDestMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) ;
+        void receiveDodgeMsg(const geometry_msgs::Twist::ConstPtr& velMsg);
         void sendMsg();
         ros::Publisher  twistPublisher;   
         ros::Subscriber positionSubscriber;
         ros::Subscriber destinationSubscriber;  
+        ros::Subscriber  dodgeSubscriber;
     
     private:
         ros::NodeHandle node;
@@ -43,6 +45,7 @@ class PathingController {
         double destLat;
         double destLong;
         double earthRadius;
+        bool go;
 };
 
 
