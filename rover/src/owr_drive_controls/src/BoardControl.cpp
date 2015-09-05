@@ -5,6 +5,7 @@
  */
  
 #include "BoardControl.h"
+#include "DeadBoard.h"
 #include "Bluetongue.h"
 #include <assert.h>
 #include <ros/ros.h>
@@ -100,11 +101,19 @@ void cap(int *a, int low, int high) {
 
 void BoardControl::run() {
     std::string board;
+    std::string deadBoard;
     nh.param<std::string>("board_tty", board, TTY);
     ROS_INFO("connecting to board on %s", board.c_str());
+    nh.param<std::string>("dead_board_tty", deadBoard, TTY);
+    ROS_INFO("connecting to dead board on %s", deadBoard.c_str());
+    
     Bluetongue* steve = new Bluetongue(board.c_str());
+    
+    DeadBoard* bob = new DeadBoard(deadBoard.c_str());
     struct status s;
+    struct dead_status deadStatus;
     s.isConnected = true;
+    deadStatus.isConnected = true;
     ros::Rate r(5);
     int cbr = 0, cbt = 0;
     while (ros::ok()) {
@@ -143,6 +152,11 @@ void BoardControl::run() {
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr; 
             struct status s = steve->update(leftDrive, rightDrive,
+                armTop, armBottom, armRotate, clawRotScale(clawRotate),
+                clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
+                cameraRotScale(cameraBottomTilt), 
+                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+            struct dead_status deadStatus = bob->update(leftDrive, rightDrive,
                 armTop, armBottom, armRotate, clawRotScale(clawRotate),
                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
                 cameraRotScale(cameraBottomTilt), 

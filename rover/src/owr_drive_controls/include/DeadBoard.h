@@ -1,5 +1,5 @@
-#ifndef BLUETONGUE_H
-#define BLUETONGUE_H
+#ifndef DeadBoard_H
+#define DeadBoard_H
 
 #include <string>
 //#include <cstdint>
@@ -10,7 +10,7 @@
 //enable voltmeter code
 #define VOLTMETER_ON 
 
-struct gpsData {
+struct dead_gpsData {
     uint16_t time;
     int32_t latitude; // lat * 10000 - to avoid floats
     int32_t longitude; // lon * 10000 - to avoid floats
@@ -18,47 +18,47 @@ struct gpsData {
     int16_t altitude;
     uint16_t fixValid; //bool
 } __attribute__((packed));
-typedef struct gpsData GPSData;
+typedef struct dead_gpsData dead_GPSData;
 
-struct magData {
+struct dead_magData {
     int16_t x, y, z;
     int16_t padding;
 } __attribute__((packed));
-typedef struct magData MagData;
+typedef struct dead_magData dead_MagData;
 
-struct imuData {
+struct dead_imuData {
         int16_t gx, gy, gz;
         int16_t ax, ay, az;
 } __attribute__((packed)); 
-typedef struct imuData IMUData;
+typedef struct dead_imuData dead_IMUData;
 
-struct status {
+struct dead_status {
     bool roverOk;
     bool isConnected;
     double batteryVoltage;
     #ifdef VOLTMETER_ON
     double voltmeter;
     #endif
-    GPSData gpsData;
-    MagData magData;
-    IMUData imuData;
+    dead_GPSData gpsData;
+    dead_MagData magData;
+    dead_IMUData imuData;
 };
 	
-class Bluetongue {
+class DeadBoard {
 	private:
 		bool comm(bool forBattery, void *message, int message_len, void *resp, 
 				int resp_len);
         bool connect();
         bool isConnected;
 		int port_fd;
-        std::string bluetongue_port;
+        std::string DeadBoard_port;
         fd_set uart_set;
         struct timeval timeout;
 	
 	public:
-		Bluetongue(const char* port);
-		~Bluetongue();
-		struct status update(double leftMotor, double rightMotor, 
+		DeadBoard(const char* port);
+		~DeadBoard();
+		struct dead_status update(double leftMotor, double rightMotor, 
                 int armTop, int armBottom, double armRotate, 
                 int clawRotate, int clawGrip, int cameraBottomRotate,
                 int cameraBottomTilt, int cameraTopRotate, 

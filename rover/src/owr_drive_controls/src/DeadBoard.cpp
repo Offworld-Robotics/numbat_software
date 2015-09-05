@@ -10,9 +10,8 @@
 #include <sys/select.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "Bluetongue.h"
-#include <ros/ros.h>
 #include "DeadBoard.h"
+#include <ros/ros.h>
 
 using namespace std;
 
@@ -40,27 +39,27 @@ struct toControlMsg {
 struct toNUCMsg {
     uint16_t magic;
     uint16_t vbat;
-    #ifdef VOLTMETER_ON
+    #ifdef VOLTMETER_DEAD_ON
     uint16_t voltmeter;
     #endif
-    GPSData gpsData;
-    MagData magData;
-    IMUData imuData;
-    #ifdef VOLTMETER_ON
+    dead_GPSData gpsData;
+    dead_MagData magData;
+    dead_IMUData imuData;
+    #ifdef VOLTMETER_DEAD_ON
     uint16_t padding;
     #endif
 } __attribute__((packed));
 
-bool Bluetongue::reconnect(void) {
-    if (access(bluetongue_port.c_str(), W_OK | R_OK) != -2) {
+bool DeadBoard::reconnect(void) {
+    if (access(DeadBoard_port.c_str(), W_OK | R_OK) != -2) {
         close(port_fd);
     }
     isConnected = connect();
     return isConnected;
 }
 
-bool Bluetongue::connect() {
-    port_fd = open(bluetongue_port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+bool DeadBoard::connect() {
+    port_fd = open(DeadBoard_port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
 	if (port_fd == -1) {
 		ROS_ERROR("Error in open uart port");
         return false;
@@ -78,7 +77,7 @@ bool Bluetongue::connect() {
 	memset(&tty, 0, sizeof tty);
 
 	// Error Handling 
-	if (tcgetattr(Bluetongue::port_fd, &tty) != 0) {
+	if (tcgetattr(DeadBoard::port_fd, &tty) != 0) {
 		ROS_ERROR("Error %d from tcgetattr: %s", errno, strerror(errno));
         close(port_fd);
         return false;
@@ -114,18 +113,18 @@ bool Bluetongue::connect() {
     return true;
 }
 
-Bluetongue::Bluetongue(const char* port) {
+DeadBoard::DeadBoard(const char* port) {
 	// Open serial port
-    bluetongue_port = port;
+    DeadBoard_port = port;
     isConnected = connect();	
-    ROS_INFO("Finished initalizing bluetongue");
+    ROS_INFO("Finished initalizing DeadBoard");
 }
 
-Bluetongue::~Bluetongue(void) {
-	close(Bluetongue::port_fd);
+DeadBoard::~DeadBoard(void) {
+	close(DeadBoard::port_fd);
 }
 
-bool Bluetongue::comm(bool forBattery, void *message, int message_len, 
+bool DeadBoard::comm(bool forBattery, void *message, int message_len, 
     void *resp, int resp_len) {
 	ROS_DEBUG("Writing message: ");
 	for (int i = 0; i < message_len; i++) {
@@ -175,11 +174,11 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
     return true;
 }
 
-struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
+struct dead_status DeadBoard::update(double leftMotor, double rightMotor, int armTop, 
     int armBottom, double armRotate, int clawRotate, int clawGrip,
     int cameraBottomRotate, int cameraBottomTilt, int cameraTopRotate,
     int cameraTopTilt) {
-    struct status stat;
+    struct dead_status stat;
     if (!isConnected) {
         stat.isConnected = false;
         stat.roverOk = false;
@@ -220,14 +219,14 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     }
     
     if (resp.magic != MESSAGE_MAGIC) {
-		ROS_INFO("Update Bluetongue had a error");
+		ROS_INFO("Update DeadBoard had a error");
         stat.roverOk = false;    
         return stat;
 	} else {
         stat.roverOk = true;
     }
     stat.batteryVoltage = ((resp.vbat / 1024.0) * 3.3) * 5.7;
-    #ifdef VOLTMETER_ON
+    #ifdef VOLTMETER_DEAD_ON
     stat.voltmeter = (((resp.voltmeter / 1024.0)*3.3) - 1.65) * (37.2 / 2.2);
     #endif
     stat.gpsData = resp.gpsData;
