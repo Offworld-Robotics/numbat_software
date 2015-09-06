@@ -27,6 +27,7 @@
 // Defines how fast the rover accelerates or starts turning, the range of output is -1 to 1, so currently 1/10th of range
 #define INCREMENT 0.025
 #define MAX_POW 1.0
+#define MAX_SPEED 0.7
 
 int main(int argc, char ** argv) {
     
@@ -163,10 +164,10 @@ void PathingController::sendMsg() {
     	currPower = 0; //at least in soft testing, have found that the LR and pwr dont return back to 0 very well (end up 0.099...)
     } 
 
-    if(currLR > 1.0){
-    	currLR = 1.0;
-    } else if(currLR < -1){
-    	currLR = -1.0;
+    if(currLR > MAX_SPEED){
+    	currLR = MAX_SPEED;
+    } else if(currLR < -MAX_SPEED){
+    	currLR = -MAX_SPEED;
     } else if (currLR < (0.9 * INCREMENT) && currLR > -(0.9 * INCREMENT)){
     	currLR = 0; //at least in soft testing, have found that the LR and pwr dont return back to 0 very well (end up 0.099...)
     }
