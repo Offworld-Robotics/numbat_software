@@ -27,7 +27,7 @@
 // Defines how fast the rover accelerates or starts turning, the range of output is -1 to 1, so currently 1/10th of range
 #define INCREMENT 0.025
 #define MAX_POW 1.0
-#define MAX_SPEED 0.7
+#define MAX_SPEED 1.0
 
 int main(int argc, char ** argv) {
     

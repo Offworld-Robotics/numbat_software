@@ -15,7 +15,7 @@
 #define TOPIC "/owr/position"
 //minum number of lat/long inputs to calculate the heading
 #define MIN_H_CALC_BUFFER_SIZE 2 
-#define POS_DODGE_TOPIC "/owr/position/dodge"
+#define POS_DODGE_TOPIC "/owr/position"
  
 int main(int argc, char ** argv) {
     
@@ -23,7 +23,7 @@ int main(int argc, char ** argv) {
     //init ros
     ros::init(argc, argv, "owr_position_node");
     
-    PositionController p(POS_DODGE_TOPIC);
+    PositionController p(TOPIC);
     p.spin();
     
     return EXIT_SUCCESS;   

@@ -360,10 +360,10 @@ void BoardControl::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
     	rDrive = power;
     }
     
-    lDrive = power;
-    rDrive = power;
+    //lDrive = power;
+    //rDrive = power;
     leftDrive = lDrive;
-    rightDrive = -rDrive;
+    rightDrive = rDrive;
     //leftDrive = (lDrive * 400) + MOTOR_MID;
     //rightDrive = (rDrive * 400) + MOTOR_MID;
     ROS_ERROR("%f,%f", leftDrive, rightDrive);
