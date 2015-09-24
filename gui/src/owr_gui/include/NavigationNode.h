@@ -13,6 +13,7 @@
 #include <sensor_msgs/Image.h>
 #include "owr_messages/status.h"
 #include "NavigationGUI.h"
+#include <image_transport/image_transport.h>
 
 // The message structs needed for availableFeeds
 #include "owr_messages/activeCameras.h"
@@ -32,7 +33,7 @@ class NavigationNode {
 		NavigationGUI *gui;
 		ros::Subscriber gpsSub;
 		ros::Subscriber batterySub;
-		ros::Subscriber videoSub[TOTAL_FEEDS];
+		image_transport::Subscriber videoSub[TOTAL_FEEDS];
 		ros::Subscriber feedsSub;
 		
 		float battery;

@@ -7,6 +7,7 @@ project(owr_gui)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  image_transport
 )
 
 ## System dependencies are found with CMake's conventions
@@ -81,7 +82,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES owr_gui
-  CATKIN_DEPENDS  message_runtime roscpp std_msgs bluesat_owr_protobuf
+  CATKIN_DEPENDS  message_runtime roscpp std_msgs bluesat_owr_protobuf image_transport
   DEPENDS system_lib
 )
 #find_package(bluesat_owr_protobuf)
@@ -117,6 +118,12 @@ add_dependencies(finecontrol ${catkin_EXPORTED_TARGETS})
 add_dependencies(finecontrol bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(finecontrol bluesat_owr_protobuf)
 target_link_libraries(finecontrol ${catkin_LIBRARIES} GL GLU glut)
+
+add_executable(auto src/AutoGUI.cpp src/AutoNode.cpp src/GLUTWindow.cpp src/GPSInputManager.cpp) 
+add_dependencies(auto ${catkin_EXPORTED_TARGETS})
+add_dependencies(auto bluesat_owr_protobuf_generate_messages_cpp)
+add_dependencies(auto bluesat_owr_protobuf)
+target_link_libraries(auto ${catkin_LIBRARIES} GL GLU glut)
 
 ## Declare a cpp library
 # add_library(owr_gui

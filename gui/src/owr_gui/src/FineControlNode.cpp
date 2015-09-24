@@ -12,12 +12,16 @@
 #include "FineControlGUI.h"
 #include "ListNode.h"
 #include <fstream>
+// Include for the image_trasport pkg which will allow us to use compressed
+// images through magic ros stuff :)
+#include <image_transport/image_transport.h>
 
 FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	ROS_INFO("Starting FineControl Node");
 	gui = newgui;
 	//a nodehandler is used to communiate with the rest of ros
 	ros::NodeHandle n("~");
+    image_transport::ImageTransport imgTrans(n);
 	
 	//Initialise the feeds array
 	for(int i = 0; i < TOTAL_FEEDS; i++)
@@ -37,18 +41,17 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	// pass the function that is called when a message is received into the subscribe function
 	// 
 	
-	//gpsSub = n.subscribe("/gps/fix", 1000, &FineControlNode::receiveGpsMsg, this); // GPS related data
+	gpsSub = n.subscribe("/gps/fix", 1000, &FineControlNode::receiveGpsMsg, this); // GPS related data
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &FineControlNode::receiveFeedsStatus, this);
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
-	// createed yet, will wait til it has w/o doing anything
-	//ros::TransportHints transportHints = ros::TransportHints().udp().tcpNoDelay();
-	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this, transportHints);
-	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg1, this, transportHints);
-	//videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this, transportHints);
-	//videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg3, this, transportHints); // Frames of video from camera
-	
+	// created yet, will wait til it has w/o doing anything
+	videoSub[0] = imgTrans.subscribe("/cam0", 1, &FineControlNode::receiveVideoMsg0, this, image_transport::TransportHints("compressed"));
+	videoSub[1] = imgTrans.subscribe("/cam1", 1, &FineControlNode::receiveVideoMsg1, this, image_transport::TransportHints("compressed"));
+	videoSub[2] = imgTrans.subscribe("/cam2", 1, &FineControlNode::receiveVideoMsg2, this, image_transport::TransportHints("compressed"));
+	videoSub[3] = imgTrans.subscribe("/cam3", 1, &FineControlNode::receiveVideoMsg3, this, image_transport::TransportHints("compressed"));
+	//videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this);
+	//videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg3, this);
 }
 
 // Spin to wait until a message is received
@@ -78,7 +81,7 @@ void FineControlNode::receiveFeedsStatus(const owr_messages::activeCameras::Cons
 		// Get the actual camera number from msg
 		int feed = msg->cameras[i].stream;
 		
-		// If on, then it is streaming, oterwise its only connected 
+		// If on, then it is streaming, otherwise its only connected 
 		if(msg->cameras[i].on)
 			feeds[feed] = FEED_ACTIVE;
 		else
@@ -89,26 +92,25 @@ void FineControlNode::receiveFeedsStatus(const owr_messages::activeCameras::Cons
 	gui->updateFeedsStatus(feeds, msg->num);
 }
 
-/*void FineControlNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
+void FineControlNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received a message");
 	//ROS_INFO("long %lf, lat %lf, alt %lf", msg->longitude, msg->latitude, msg->altitude);
-		
-	//create a new node
-	ListNode l = (ListNode)malloc(sizeof(vector2D));
-	l->y = msg->latitude;
-	l->x = msg->longitude;
-	altitude = msg->altitude;
-	//gui->updateInfo(battery, signal, ultrasonic, l, altitude, target);
-}*/
+	
+	vector3D l;
+	l.lat = msg->latitude;
+	l.lon = msg->longitude;
+	l.alt = msg->altitude;
+	gui->updateInfo(voltage, ultrasonic, pH, humidity, NULL, heading, tiltX, tiltY, &l);
+}
 
 void FineControlNode::receiveVideoMsg0(const sensor_msgs::Image::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height,0);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 0);
 }
 
 void FineControlNode::receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg) {
@@ -116,5 +118,21 @@ void FineControlNode::receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg) 
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height,0);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 1);
+}
+
+void FineControlNode::receiveVideoMsg2(const sensor_msgs::Image::ConstPtr& msg) {
+	assert(msg);
+	
+	//ROS_INFO("received video frame");
+	
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 2);
+}
+
+void FineControlNode::receiveVideoMsg3(const sensor_msgs::Image::ConstPtr& msg) {
+	assert(msg);
+	
+	//ROS_INFO("received video frame");
+	
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 3);
 }

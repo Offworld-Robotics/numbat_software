@@ -9,6 +9,7 @@
 
 #include <ros/ros.h>
 #include "owr_messages/position.h"
+#include "owr_messages/heading.h"
 #include <sensor_msgs/NavSatFix.h>
 
 class PositionController {
@@ -19,15 +20,17 @@ class PositionController {
     protected:
         
         void receiveGPSMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) ;
+        void receiveHeadingMsg(const boost::shared_ptr<owr_messages::heading const> & msg);
         void sendMsg();
         ros::Publisher  publisher;   
         ros::Subscriber gpsSubscriber;  
+        ros::Subscriber headingSubscriber;  
     
     private:
         //used to calcualte the heading
         void updateHeading();
         
-        ros::Subscriber sub;
+        //ros::Subscriber sub;
         ros::NodeHandle node;
         std::string topic;
         

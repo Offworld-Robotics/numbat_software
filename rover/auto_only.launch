@@ -1,0 +1,4 @@
+<launch>
+    <include file="$(find owr_bluetounge_tf)/launch/position.launch"/>
+    <node pkg="owr_auton_pathing" type="owr_auton_pathing_node" name="auton_pathing" />
+</launch>

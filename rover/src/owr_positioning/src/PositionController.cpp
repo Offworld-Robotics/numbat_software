@@ -15,6 +15,7 @@
 #define TOPIC "/owr/position"
 //minum number of lat/long inputs to calculate the heading
 #define MIN_H_CALC_BUFFER_SIZE 2 
+#define POS_DODGE_TOPIC "/owr/position/dodge"
  
 int main(int argc, char ** argv) {
     
@@ -22,7 +23,7 @@ int main(int argc, char ** argv) {
     //init ros
     ros::init(argc, argv, "owr_position_node");
     
-    PositionController p(TOPIC);
+    PositionController p(POS_DODGE_TOPIC);
     p.spin();
     
     return EXIT_SUCCESS;   
@@ -35,17 +36,38 @@ PositionController::PositionController(const std::string topic) {
     pitch = 0;
     roll = 0;
     heading = 0;
-    publisher =  node.advertise<owr_messages::position>(topic,1000,true);
+    publisher =  node.advertise<owr_messages::position>(topic,10,true);
     gpsSubscriber = node.subscribe("/gps/fix", 1000, &PositionController::receiveGPSMsg, this); // GPS related data
+    headingSubscriber = node.subscribe("/owr/heading", 2, &PositionController::receiveHeadingMsg, this);
+}
+
+void PositionController::receiveHeadingMsg(const boost::shared_ptr<owr_messages::heading const> & msg) {
+    heading = msg->heading;
+    sendMsg();
 }
 
 void PositionController::receiveGPSMsg(const boost::shared_ptr<sensor_msgs::NavSatFix const> & msg) {
-    altitude  = msg->altitude;
-    latitude  = msg->latitude;
-    longitude = msg->longitude;
-    latitudes.push_front(latitude);
-    longitudes.push_front(longitude);
-    updateHeading();
+    //for some reason when the gps dosen't have a fix it gives us values close to zero
+    //we want to ignore those
+    #define GPS_ERROR_ZONE 1.0 
+    //only relay messages with valid lat/long and a good status
+    if (!msg->status.status && fabs(msg->latitude) > GPS_ERROR_ZONE) {
+        altitude  = msg->altitude;
+        latitude  = msg->latitude;
+        longitude = msg->longitude;
+        std::list<double>::iterator latItr = latitudes.begin();
+        double x1 = *(latItr);
+        std::list<double>::iterator lonItr = longitudes.begin();
+        double y1 = *(lonItr);
+        if (x1 != latitude && y1 != longitude) {
+            latitudes.push_front(latitude);
+            longitudes.push_front(longitude);
+        }
+    } else {
+        ROS_INFO("Dropped invalid gps fix %f, %f, status: %d", 
+            msg->latitude, msg->longitude, msg->status.status);
+    }
+    //updateHeading();
     sendMsg();
 }
 
@@ -55,12 +77,14 @@ void PositionController::receiveGPSMsg(const boost::shared_ptr<sensor_msgs::NavS
 void PositionController::updateHeading() {
     //check we have enought data
     if(latitudes.size() >= MIN_H_CALC_BUFFER_SIZE) {
+
         std::list<double>::iterator latItr = latitudes.begin();
         double x1 = *(latItr);
         double x2 = *(++latItr);
         std::list<double>::iterator lonItr = longitudes.begin();
         double y1 = *(lonItr);
         double y2 = *(++lonItr);
+	ROS_INFO("%f %f and %f %f", x1, x2, y1, y2);
         //this formula from http://www.moveable-type.co.uk/scripts/latlong.html
         //should calculate the bearing between two points.
         //TODO: check that this is correct.
