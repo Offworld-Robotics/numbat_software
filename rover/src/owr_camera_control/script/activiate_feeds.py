@@ -8,12 +8,13 @@ from owr_messages.msg import stream
 def callback(data):
     print data
     if data.on:
-        print "on"
+        rospy.loginfo("turn on /dev/video%d", data.stream)
         os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! video/x-raw-rgb,framerate=30/1,width=320,height=240 ! ffmpegcolorspace"
         #subprocess.Popen([ "rosrun","gscam", "gscam","__name=" + str(data.stream) + "_camera","gscam_publisher:=\/cam" + str(data.stream)])
         subprocess.Popen([ "rosrun","gscam", "gscam","__name:=" + "camera_" + str(data.stream),"/camera/image_raw:=/cam" + str(data.stream)])
 
     else:
+        rospy.loginfo("closing /dev/video%d", data.stream)
         subprocess.call(["rosnode","kill","/camera_" + str(data.stream)]);
         #subprocess.call(["rosnode","kill","gscam_publisher/cam" + str(data.stream)]);
 
@@ -23,9 +24,11 @@ def activateFeeds():
     rospy.init_node('activateFeeds')
     rospy.Subscriber("owr/control/activateFeeds", stream, callback)
     print "running"
+    
     #loops while ros is running
     rospy.spin()
     
     
 if __name__ == '__main__':
+    rospy.loginfo("running activate_feeds")
     activateFeeds()
