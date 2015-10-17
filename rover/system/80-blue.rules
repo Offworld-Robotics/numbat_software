@@ -1,3 +1,19 @@
 SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{product}=="Bluetongue Control Board", SYMLINK+="board0",  GROUP="dialout", MODE="666"
 
 SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{product}=="URG-Series USB Driver", SYMLINK+="hokuyo", GROUP="dialout", MODE="666"
+
+#---STATIC CAMERA NAMING---
+
+#to rename, change: SYMLINK+="cam_<enter-name-here>", LEAVE THE REST AS IS!!
+
+#Left Camera (blue base [circle base] gimbal)
+SUBSYSTEM=="video4linux", ATTR{name}=="HD Pro Webcam C920", ATTRS{serial}=="C86BAA3F", SYMLINK+="cam_left"
+
+#Right camera (white base gimbal)
+SUBSYSTEM=="video4linux", ATTR{name}=="HD Pro Webcam C920", ATTRS{serial}=="03B9A16F", SYMLINK+="cam_right"
+
+#Arm Cam [non gible]
+SUBSYSTEM=="video4linux", ATTR{name}=="HD Pro Webcam C920", ATTRS{serial}=="4186916F", SYMLINK+="cam_arm"
+
+#Additional cam [TODO: add name]
+SUBSYSTEM=="video4linux", ATTR{name}=="gspca main driver", ATTRS{idProduct}=="00f7", SYMLINK+="cam_add_name"

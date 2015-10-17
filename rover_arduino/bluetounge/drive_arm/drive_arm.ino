@@ -8,8 +8,8 @@
 //1999 is out
 //1100 is in
 //max min values for actuators
-//#define MAX 1050
-//#define MIN 2000
+#define MAX 1000
+#define MIN 2000
 // SERVO VALUES DEALS WITH POSITION NOT VELOCITY
 #define FULL_EXTENSION 1750
 #define FULL_RETRACTION 1250
@@ -20,11 +20,11 @@ Servo top, bottom;
 void setup() {
   //pinMode(servopin, OUTPUT);
   //Serial.begin(BUAD_RATE);
-  top.attach(PIN_TOP, 1000, 2000);
+  top.attach(PIN_TOP, MIN, MAX);
   //bottom.attach(PIN_BOTTOM, MIN, MAX);
   
   //default position
-  top.writeMicroseconds(1500);
+  top.writeMicroseconds(2000);
   //bottom.writeMicroseconds(1500);
   //bottom.writeMicroseconds(2000);
   //Serial.begin(9600);
@@ -36,7 +36,35 @@ void loop() {
   //digitalWrite(servopin, LOW);
   //delay(20);
   
-  top.writeMicroseconds(1500);
+  /*float topNum = Serial.parseFloat();
+  float voidNum = Serial.parseFloat();
+  Serial.println(Serial.parseFloat());
+  float bottomNum = Serial.parseFloat();
+  voidNum = Serial.parseFloat();
+  Serial.println(Serial.parseFloat());
+
+  if(topNum > MAX){
+    topNum = MAX;
+  }
+  if(topNum < MIN){
+    topNum = MIN;
+  }
+  if(bottomNum > MAX){
+    bottomNum = MAX;
+  }
+  if(bottomNum < MIN){
+    bottomNum = MIN;
+  }
+  
+
+  Serial.println(topNum);
+  Serial.println(bottomNum);
+  //topDrive = Serial.parseFloat();  
+  //bottomDrive = Serial.parseFloat();
+  
+  // higher value = more extension
+  */
+  top.writeMicroseconds(1000);
   //top.writeMicroseconds(topNum);
 
   //top.writeMicroseconds(topDrive);

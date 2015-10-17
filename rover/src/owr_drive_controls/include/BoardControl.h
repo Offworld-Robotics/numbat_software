@@ -17,7 +17,7 @@ using namespace std;
 
 
 //serial IO
-#define TTY "/dev/ttyACM0"
+#define TTY "/dev/board1"
 
 #define OPEN  0
 #define STOP  1
