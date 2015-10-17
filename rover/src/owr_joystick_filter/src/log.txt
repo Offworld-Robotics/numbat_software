@@ -1,0 +1,1096 @@
+Opened uart port
+Setting up uart
+About to make raw
+Finished initalizing bluetongue
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
+Writing 8bytes.
+Writing message: 
+0: ffffffaa
+1: 55
+2: ffffffcc
+3: 0c
+4: ffffffcc
+5: 0c
+6: 00
+7: 00
+Written packet, expecting to read 4
+timeoutRead packet
+Update Bluetongue had a error
+Battery voltage: 0
