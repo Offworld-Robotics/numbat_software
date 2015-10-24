@@ -1,6 +1,0 @@
-<launch>
-	<param name="board_tty" value="/dev/board0"/>
-	<node pkg="owr_drive_controls" type="owr_drive_board" name="owr_drive_board" output="screen">
-	</node>
-</launch>
-

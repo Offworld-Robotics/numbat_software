@@ -5,8 +5,14 @@ project(owr_joystick_filter)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
+  owr_messages
+    roscpp
+  sensor_msgs
   std_msgs
+  geometry_msgs
+   message_filters
+    laser_geometry
+    tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -27,10 +33,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## * Let MSG_DEP_SET be the set of packages whose message types you use in
 ##   your messages/services/actions (e.g. std_msgs, actionlib_msgs, ...).
 ## * In the file package.xml:
-##   * add a build_depend tag for "message_generation"
 ##   * add a build_depend and a run_depend tag for each package in MSG_DEP_SET
-##   * If MSG_DEP_SET isn't empty the following dependency has been pulled in
-##     but can be declared for certainty nonetheless:
+##   * If MSG_DEP_SET isn't empty the following dependencies might have been
+##     pulled in transitively but can be declared for certainty nonetheless:
+##     * add a build_depend tag for "message_generation"
 ##     * add a run_depend tag for "message_runtime"
 ## * In this file (CMakeLists.txt):
 ##   * add "message_generation" and every package in MSG_DEP_SET to
@@ -66,27 +72,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs
-# )
-
-################################################
-## Declare ROS dynamic reconfigure parameters ##
-################################################
-
-## To declare and build dynamic reconfigure parameters within this
-## package, follow these steps:
-## * In the file package.xml:
-##   * add a build_depend and a run_depend tag for "dynamic_reconfigure"
-## * In this file (CMakeLists.txt):
-##   * add "dynamic_reconfigure" to
-##     find_package(catkin REQUIRED COMPONENTS ...)
-##   * uncomment the "generate_dynamic_reconfigure_options" section below
-##     and list every .cfg file to be processed
-
-## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
+#   sensor_msgs#   std_msgs
 # )
 
 ###################################
@@ -99,10 +85,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES owr_joystick_filter
-#  CATKIN_DEPENDS joy roscpp std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES owr_joystick_filter
+  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry tf
+  DEPENDS system_lib
 )
 
 ###########
@@ -114,25 +100,34 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+   include
 )
 
-## Declare a C++ library
+## Declare a cpp library
 # add_library(owr_joystick_filter
 #   src/${PROJECT_NAME}/owr_joystick_filter.cpp
 # )
 
-## Add cmake target dependencies of the library
-## as an example, code may need to be generated before libraries
-## either from message generation or dynamic reconfigure
-# add_dependencies(owr_joystick_filter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+## Declare a cpp executable
+add_executable(owr_joystick_filter_node src/PositionController.cpp)
 
-## Declare a C++ executable
-# add_executable(owr_joystick_filter_node src/owr_joystick_filter_node.cpp)
+## Add cmake target dependencies of the executable/library
+## as an example, message headers may need to be generated before nodes
+add_dependencies(owr_joystick_filter_node owr_messages)
+#add_dependencies(owr_joystick_filter_node owr_messages_gencpp)
+target_link_libraries(owr_joystick_filter_node ${catkin_LIBRARIES})
 
-## Add cmake target dependencies of the executable
-## same as for the library above
-# add_dependencies(owr_joystick_filter_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_executable(owr_magnet_node src/MagnetCoverter.cpp)
+#add_dependencies(owr_magnet_node owr_messages_gencpp)
+#target_link_libraries(owr_magnet_node ${catkin_LIBRARIES})
 
+#add_executable(owr_fusion_node src/SensorFusion.cpp)
+#add_dependencies(owr_fusion_node owr_messages_gencpp)
+#target_link_libraries(owr_fusion_node ${catkin_LIBRARIES})
+
+
+#add_executable(owr_object_avoidance src/ObjectAvoidance.cpp)
+#target_link_libraries(owr_object_avoidance ${catkin_LIBRARIES})
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(owr_joystick_filter_node
 #   ${catkin_LIBRARIES}
@@ -153,7 +148,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS owr_joystick_filter owr_joystick_filter_node
+# install(TARGETS owr_positioning owr_positioning_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
