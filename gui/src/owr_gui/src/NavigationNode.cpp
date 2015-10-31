@@ -108,8 +108,9 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	gui->updateInfo(battery, signal, ultrasonic, l, target);
 }
 
+void NavigationNode::receiveBatterySignal(const std_msgs::Float64
 
-void NavigationNode::receiveBatteryMsg(const owr_messages::status::ConstPtr& msg) {
+void NavigationNode::receiveWifiSigMsg(const owr_messages::status::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received a message");
