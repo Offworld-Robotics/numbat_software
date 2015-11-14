@@ -109,7 +109,7 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(owr_joystick_filter_node src/PositionController.cpp)
+add_executable(owr_joystick_filter_node src/JoystickFilter.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes

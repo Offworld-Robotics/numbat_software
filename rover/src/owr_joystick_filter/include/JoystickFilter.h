@@ -13,10 +13,10 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Joy.h>
 
-class PositionController {
+class JoystickFilter {
     
     public:
-        PositionController(const std::string topic);
+        JoystickFilter(const std::string topic);
         void spin();
     protected:
         
@@ -26,7 +26,7 @@ class PositionController {
         ros::Subscriber headingSubscriber;  
 
     private:
-        //used to calcualte the heading
+        //used to calculate the heading
         void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void armCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
@@ -37,7 +37,10 @@ class PositionController {
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
 
+        sensor_msgs::Joy msgsOut;
+        
         std::string topic;
+
         
         //variables we use to store calculated message data
         //these correspond to to the message variables owr_messages/position

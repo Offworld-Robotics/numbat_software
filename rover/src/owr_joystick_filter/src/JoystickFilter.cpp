@@ -9,17 +9,20 @@
 #include "ButtonDefs.h"
 #include "RoverDefs.h"
 
-#include "PositionController.h" 
+#include "JoystickFilter.h" 
 
 #include <iostream>
 #include <list>
 #include <cmath>
 #include <stdio.h>
 
+
+
+
 #define TOPIC "/owr/position"
 //minum number of lat/long inputs to calculate the heading
 #define MIN_H_CALC_BUFFER_SIZE 2 
-#define POS_DODGE_TOPIC "/owr/position/dodge"
+#define JOYSTICK_TOPIC "/owr/joysticks"
 #define MID_IN 0
 #define DIFF 0.25
 #define MAX_IN 1.0
@@ -34,47 +37,38 @@ int main(int argc, char ** argv) {
     //init ros
     ros::init(argc, argv, "owr_position_node");
     
-    PositionController p(POS_DODGE_TOPIC);
+    JoystickFilter p(JOYSTICK_TOPIC);
     p.spin();
     
     return EXIT_SUCCESS;   
 }
 
-PositionController::PositionController(const std::string topic) {
+JoystickFilter::JoystickFilter(const std::string topic) {
     altitude = 0;
     latitude = 0;
     longitude = 0;
     pitch = 0;
     roll = 0;
     heading = 0;
-    publisher =  node.advertise<owr_messages::position>(topic,10,true);
 
-    joySubscriber = node.subscribe<sensor_msgs::Joy>("joy",2, &PositionController::joyCallback, this);
-    armSubscriber = node.subscribe<sensor_msgs::Joy>("arm_joy", 2, &PositionController::armCallback, this);
 
-}
-
-void PositionController::sendMsg() {
-    owr_messages::position msg;
-    msg.latitude = latitude;
-    msg.longitude = longitude;
-    msg.altitude = altitude;
-    msg.pitch = pitch;
-    msg.roll = roll;
-    msg.heading = heading;
+    //publisher =  node.advertise<owr_messages::position>(topic,10,true);
+    publisher = node.advertise<sensor_msgs::Joy>(topic,10,true);
     
-    publisher.publish(msg);
+    //msgsOut.axes = std::vector<float>(20);
+    msgsOut.axes.resize(20);
+    joySubscriber = node.subscribe<sensor_msgs::Joy>("joy",2, &JoystickFilter::joyCallback, this);
+    armSubscriber = node.subscribe<sensor_msgs::Joy>("arm_joy", 2, &JoystickFilter::armCallback, this);
+
 }
 
 
-void PositionController::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
-    int cameraBottomRotateIncRate = 0;
-    int cameraBottomTiltIncRate = 0;
-    int cameraTopRotateIncRate = 0;
-    int cameraTopTiltIncRate = -1;
-    sensor_msgs::Joy msgsOut;
+void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+    
 
-    // Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
+    // Set sensitivity between 0 and 1: 
+    //  - 0 makes it output = input 
+    //  - 1 makes output = input ^3
     if (joy->buttons[BUTTON_A]) {
 
         msgsOut.axes[CAMERA_BOTTOM_ROTATE] = joy->axes[STICK_L_LR];
@@ -93,20 +87,23 @@ void PositionController::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         msgsOut.axes[LEFT_WHEELS] = joy->axes[STICK_L_UD];
         msgsOut.axes[RIGHT_WHEELS] = joy->axes[STICK_R_UD];
     }
+    publisher.publish(msgsOut);
 }
 
-void PositionController::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
+    // Handle arm movement
 
-    sensor_msgs::Joy msgsOut;
-
-    // Handle arm movement    
     msgsOut.axes[ARM_STICK_TOP] = joy->axes[STICK_R_UD];
+
     msgsOut.axes[ARM_STICK_BOTTOM] = (joy->axes[STICK_L_UD]) ;//* 0.2;
     msgsOut.axes[ARM_ROTATE] = joy->axes[STICK_CH_LR];
 
     // Handle claw opening and closing
     if(joy->buttons[BUTTON_LB]) {
+
+        printf("ljkdsfjkldsfjkl");
+  
         msgsOut.axes[CLAW_STATE] = CLOSE;
     } else if (joy->buttons[BUTTON_RB]) {
         msgsOut.axes[CLAW_STATE] = OPEN;
@@ -122,12 +119,12 @@ void PositionController::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     } else {
         msgsOut.axes[ARM_ROTATE] = STOP;
     }
-    
+    publisher.publish(msgsOut);
 }
 
 
 //main loop
-void PositionController::spin() {
+void JoystickFilter::spin() {
     while(ros::ok()) {
         ros::spinOnce();
     }
