@@ -93,17 +93,12 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
     // Handle arm movement
-
     msgsOut.axes[ARM_STICK_TOP] = joy->axes[STICK_R_UD];
-
     msgsOut.axes[ARM_STICK_BOTTOM] = (joy->axes[STICK_L_UD]) ;//* 0.2;
     msgsOut.axes[ARM_ROTATE] = joy->axes[STICK_CH_LR];
 
     // Handle claw opening and closing
     if(joy->buttons[BUTTON_LB]) {
-
-        printf("ljkdsfjkldsfjkl");
-  
         msgsOut.axes[CLAW_STATE] = CLOSE;
     } else if (joy->buttons[BUTTON_RB]) {
         msgsOut.axes[CLAW_STATE] = OPEN;

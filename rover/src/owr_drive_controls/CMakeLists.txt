@@ -38,7 +38,7 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add "message_generation" and every package in MSG_DEP_SET to
 ##     find_package(catkin REQUIRED COMPONENTS ...)
 ##   * add "message_runtime" and every package in MSG_DEP_SET to
-##     catkin_package(CATKIN_DEPENDS ...)
+##      catkin_package(...)
 ##   * uncomment the add_*_files sections below as needed
 ##     and list every .msg/.srv/.action file to be processed
 ##   * uncomment the generate_messages entry below
@@ -81,7 +81,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS include 
   LIBRARIES owr_drive_controls
   CATKIN_DEPENDS owr_messages roscpp rospy std_msgs
   DEPENDS system_lib
@@ -96,6 +96,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   include
+  ../owr_joystick_filter/include/
   ${catkin_INCLUDE_DIRS}
 )
 

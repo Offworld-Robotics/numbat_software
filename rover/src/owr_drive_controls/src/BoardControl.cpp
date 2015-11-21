@@ -6,6 +6,8 @@
  
 #include "BoardControl.h"
 #include "Bluetongue.h"
+#include "RoverDefs.h"
+#include "ButtonDefs.h"
 #include <assert.h>
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
@@ -55,8 +57,8 @@ BoardControl::BoardControl() {
     //assert(fd != NULL);
     //subscribe to xbox controller
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy",2, &BoardControl::joyCallback, this, transportHints);
-    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
+    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy",2, &BoardControl::controllerCallback, this, transportHints);
+//    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
     magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
     gyroPublisher = nh.advertise<geometry_msgs::Vector3>("gyro", 10);
@@ -251,78 +253,47 @@ void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
     } 
 }
 
-void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
-    cameraBottomRotateIncRate = 0;
-    cameraBottomTiltIncRate = 0;
-    cameraTopRotateIncRate = 0;
-    cameraTopTiltIncRate = -1;
 
-	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
-    if (joy->buttons[BUTTON_A]) {
-        cameraBottomRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
-        cameraBottomTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-    } else if (joy->buttons[BUTTON_B]) {
-        cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
-        cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-    } else {
-        leftDrive = (joy->axes[STICK_L_UD]);
-        rightDrive = -joy->axes[DRIVE_AXES_UD];
-        //leftDrive = rightDrive;
-    }
-    /*
-    float power = joy->axes[DRIVE_AXES_UD];
-    float lr = (-joy->axes[STICK_L_LR]);
-    
-    armRotate = joy->axes[STICK_CH_LR];
-    
-    //float leftDrive  = 1.0f;
-    //float rightDrive = 1.0f;
-    
-    float lDrive  =   ((power + lr)/2)*500 + MOTOR_MID;
-    float rDrive =   (-(power - lr)/2)*500 + MOTOR_MID;
-    
-    // The formula in use i: output = (ax^3 + (1-a)x) * 500 + MOTOR_MID
-    // Where a = SENSITIVITY
-
-    //leftDrive = SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive;
-    //rightDrive = SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive;
-    */
-}
-
-void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
     #define MID_IN 0
     #define DIFF 0.25
     
     float top = joy->axes[STICK_R_UD] ;//* 0.2;
     float bottom = (joy->axes[STICK_L_UD]) ;//* 0.2;
-    
-    //float leftDrive  = 1.0f;
-    //float rightDrive = 1.0f;
+    cameraBottomRotateIncRate = 0;
+    cameraBottomTiltIncRate = 0;
+    cameraTopRotateIncRate = 0;
+    cameraTopTiltIncRate = 0;
+
+
+
+	// Set sensitivity between 0 and 1:
+    //  * 0 makes it output = input, 
+    //  * 1 makes output = input ^3
+
+    cameraBottomRotateIncRate = joy->axes[CAMERA_BOTTOM_ROTATE];
+    cameraBottomTiltIncRate = joy->axes[CAMERA_BOTTOM_TILT];
+
+    cameraTopRotateIncRate = joy->axes[CAMERA_TOP_ROTATE];
+    cameraTopTiltIncRate = joy->axes[CAMERA_TOP_TILT];
+
+    leftDrive = joy->axes[LEFT_WHEELS];
+    rightDrive = joy->axes[RIGHT_WHEELS];
+   
+
     armRotate = joy->axes[STICK_CH_LR];
- 
-    //armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
-        armIncRate = top * 5;
-    
-    //TODO: check these actually match up
+    armIncRate = top * 5;
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
     
-    if(joy->buttons[BUTTON_LB]) {
-        clawState = OPEN;
-    } else if (joy->buttons[BUTTON_RB]) {
-        clawState = CLOSE;
-    } else {
-        clawState = STOP;
-    }
+    // Handle claw opening and closing
+    clawState = joy->axes[ARM_ROTATE];
 
-    if(joy->buttons[BUTTON_A]) {
-        rotState = OPEN;
-    } else if (joy->buttons[BUTTON_B]) {
-        rotState = CLOSE;
-    } else {
-        rotState = STOP;
-    }
+    //Handle arm rotation
+    rotState = joy->axes[ARM_ROTATE];
+
 }
+
 
 // Convert subscribed Twist input to motor vectors for arduino output
 void BoardControl::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
