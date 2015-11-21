@@ -37,6 +37,7 @@ void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame
     pcl::PointCloud<pcl::PointXYZRGB> pc = getLatestPointCloud();
     int x,y;
     float deltaX, deltaY;
+    //calc this here so it only does the math once, #defines will run this many time
     const float focalLengthPx = (PIXEL_TO_M_RATIO/FOCAL_LENGTH_M);
     for(x = 0; x < frame->width; x++) {
         deltaX = tanh(x*focalLengthPx);
