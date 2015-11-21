@@ -96,7 +96,7 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     msgsOut.axes[ARM_STICK_TOP] = joy->axes[STICK_R_UD];
     msgsOut.axes[ARM_STICK_BOTTOM] = (joy->axes[STICK_L_UD]) ;//* 0.2;
     msgsOut.axes[ARM_ROTATE] = joy->axes[STICK_CH_LR];
-
+    
     // Handle claw opening and closing
     if(joy->buttons[BUTTON_LB]) {
         msgsOut.axes[CLAW_STATE] = CLOSE;
@@ -106,14 +106,26 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         msgsOut.axes[CLAW_STATE] = STOP;
     }
 
-    //Handle arm rotation
-    if(joy->buttons[DPAD_LEFT]) {
-        msgsOut.axes[ARM_ROTATE] = ANTICLOCKWISE;
-    } else if (joy->buttons[DPAD_RIGHT]) {
-        msgsOut.axes[ARM_ROTATE] = CLOCKWISE;
+    //Handle claw rotation
+    if(joy->buttons[BUTTON_A]){
+        msgsOut.axes[CLAW_ROTATE] = ANTICLOCKWISE;
+    } else if(joy->buttons[BUTTON_B]){
+        msgsOut.axes[CLAW_ROTATE] = CLOCKWISE;
     } else {
-        msgsOut.axes[ARM_ROTATE] = STOP;
+        msgsOut.axes[CLAW_ROTATE] = STOP;
     }
+
+    // //Handle arm rotation
+    // if(joy->buttons[DPAD_LEFT]) {
+    //     msgsOut.axes[ARM_ROTATE] = ANTICLOCKWISE;
+    // } else if (joy->buttons[DPAD_RIGHT]) {
+    //     msgsOut.axes[ARM_ROTATE] = CLOCKWISE;
+    // } else {
+    //     msgsOut.axes[ARM_ROTATE] = STOP;
+    // }
+    // ROS_INFO("HERE: %d", ARM_ROTATE);
+    // ROS_INFO("AND HERE: %f", msgsOut.axes[ARM_ROTATE]);
+
     publisher.publish(msgsOut);
 }
 

@@ -57,7 +57,7 @@ BoardControl::BoardControl() {
     //assert(fd != NULL);
     //subscribe to xbox controller
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy",2, &BoardControl::controllerCallback, this, transportHints);
+    joySubscriber = nh.subscribe<sensor_msgs::Joy>("/owr/joysticks",2, &BoardControl::controllerCallback, this, transportHints);
 //    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
     magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
@@ -259,8 +259,8 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     #define MID_IN 0
     #define DIFF 0.25
     
-    float top = joy->axes[STICK_R_UD] ;//* 0.2;
-    float bottom = (joy->axes[STICK_L_UD]) ;//* 0.2;
+    float top = joy->axes[ARM_STICK_TOP] ;//* 0.2;
+    float bottom = joy->axes[ARM_STICK_BOTTOM];//* 0.2;
     cameraBottomRotateIncRate = 0;
     cameraBottomTiltIncRate = 0;
     cameraTopRotateIncRate = 0;
@@ -280,17 +280,16 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
     leftDrive = joy->axes[LEFT_WHEELS];
     rightDrive = joy->axes[RIGHT_WHEELS];
-   
-
-    armRotate = joy->axes[STICK_CH_LR];
-    armIncRate = top * 5;
-    armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
     
-    // Handle claw opening and closing
-    clawState = joy->axes[ARM_ROTATE];
+    // Handle claw
+    clawState = joy->axes[CLAW_STATE];
+    rotState = joy->axes[CLAW_ROTATE];
 
     //Handle arm rotation
-    rotState = joy->axes[ARM_ROTATE];
+    armRotate = joy->axes[ARM_ROTATE];
+    //armRotate = joy->axes[STICK_CH_LR];
+    armIncRate = top * 5;
+    armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
 
 }
 

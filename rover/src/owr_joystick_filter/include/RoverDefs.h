@@ -8,6 +8,8 @@
 #define CAMERA_TOP_ROTATE			5
 #define CAMERA_BOTTOM_TILT			6
 #define CAMERA_TOP_TILT				7
+#define CLAW_ROTATE					8
+
 
 //Common for most rover inputs
 #define STOP 						0

@@ -15,7 +15,6 @@
 #define BUTTON_STICK_R 		10
 #define ARM_STICK_TOP   	11
 #define ARM_STICK_BOTTOM 	12
-#define STICK_CH_LR			13
 
 
 //LR = Left Right, UD = Up Down
@@ -28,6 +27,7 @@
 #define STICK_R_LR     3
 #define STICK_R_UD     4
 #define STICK_RT       5
+#define STICK_CH_LR	   6
 
 //DPAD left and right buttons are used for arm rotation
 #define DPAD_LEFT	   6 // These aren't mapped yet it used to be 2 array indexes (L&R - U&D)

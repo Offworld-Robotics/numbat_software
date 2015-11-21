@@ -64,9 +64,9 @@ class BoardControl {
         //claw stuff
         int clawState;
         int rotateState;
-        int clawRotate;
+        int clawRotate; // pwm
         int clawGrip;
-        int rotState;
+        int rotState; // On-Off
         //int clawState;
         
         //to keep track of button states. It is possible press could change it
