@@ -13,6 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
+find_package(OpenCL)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -133,7 +135,7 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(camera_fusion_node src/CameraFusionNode.cpp)
-target_link_libraries(camera_fusion_node ${catkin_LIBRARIES})
+target_link_libraries(camera_fusion_node ${catkin_LIBRARIES}  ${OPENCL_LIBRARIES})
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
