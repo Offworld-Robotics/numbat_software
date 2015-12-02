@@ -13,6 +13,8 @@
 // #define __NO_STD_VECTOR // Use cl::vector instead of STL version //This is apparently depricated
 #include <CL/cl.hpp>
 
+#include "owr_3d_fusion/Octree.h"
+
 //quick open CL error checking function from:
 //http://developer.amd.com/tools-and-sdks/opencl-zone/opencl-resources/introductory-tutorial-to-opencl/
 inline void checkErr(cl_int err, const char * name) {
@@ -58,6 +60,7 @@ pcl::PointCloud< pcl::PointXYZRGB > CameraFusionNode::getLatestPointCloud() {
 }
 
 void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame ) {
+    Octree oct;
 //     pcl::PointCloud<pcl::PointXYZRGB> pc = getLatestPointCloud();
 //     int x,y;
 //     float deltaX, deltaY;

@@ -134,7 +134,7 @@ include_directories(
 # add_dependencies(owr_3d_fusion ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(camera_fusion_node src/CameraFusionNode.cpp)
+add_executable(camera_fusion_node src/CameraFusionNode.cpp src/Octree.cpp)
 target_link_libraries(camera_fusion_node ${catkin_LIBRARIES}  ${OPENCL_LIBRARIES} OpenCL stdc++)
 
 ## Add cmake target dependencies of the executable
@@ -190,6 +190,6 @@ target_link_libraries(camera_fusion_node ${catkin_LIBRARIES}  ${OPENCL_LIBRARIES
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
-
+catkin_add_gtest(utest test/utest.cpp src/Octree.cpp)
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
