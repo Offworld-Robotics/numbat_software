@@ -1,4 +1,7 @@
 
+//Single joystick defs
+#define WHEELS_FORWARD_BACK
+
 // Rover control array indexes
 #define RIGHT_WHEELS 				0
 #define LEFT_WHEELS 				1

@@ -30,6 +30,7 @@
 #define MOTOR_MAX 1900.0
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
+#define SENSITIVITY 5
  
 int main(int argc, char ** argv) {
     
@@ -63,12 +64,16 @@ JoystickFilter::JoystickFilter(const std::string topic) {
 }
 
 
+// Attempt at single joystick driving
 void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
+    float leftWheelSpeed = 0;
+    float rightWheelSpeed = 0;
 
     // Set sensitivity between 0 and 1: 
     //  - 0 makes it output = input 
     //  - 1 makes output = input ^3
+
     if (joy->buttons[BUTTON_A]) {
 
         msgsOut.axes[CAMERA_BOTTOM_ROTATE] = joy->axes[STICK_L_LR];
@@ -83,12 +88,57 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
         // cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
         // cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-    } else {
-        msgsOut.axes[LEFT_WHEELS] = joy->axes[STICK_L_UD];
-        msgsOut.axes[RIGHT_WHEELS] = joy->axes[STICK_R_UD];
     }
+
+    
+    if(STICK_R_LR > 0){
+
+        leftWheelSpeed = STICK_R_UD + std::abs(STICK_R_LR/(2 + SENSITIVITY));
+        rightWheelSpeed = STICK_R_UD - std::abs(STICK_R_LR /(2 + SENSITIVITY));    
+
+    } else if(STICK_R_LR < 0){
+
+        leftWheelSpeed = STICK_R_UD - std::abs(STICK_R_LR/(2 + SENSITIVITY));
+        rightWheelSpeed = STICK_R_UD + std::abs(STICK_R_LR/(2 + SENSITIVITY));    
+
+    } else {
+        leftWheelSpeed = STICK_R_UD;
+        rightWheelSpeed = STICK_R_UD;
+
+    }
+    msgsOut.axes[LEFT_WHEELS] = leftWheelSpeed;
+    msgsOut.axes[RIGHT_WHEELS] = rightWheelSpeed;
+    
     publisher.publish(msgsOut);
 }
+
+
+// void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+    
+
+//     // Set sensitivity between 0 and 1: 
+//     //  - 0 makes it output = input 
+//     //  - 1 makes output = input ^3
+//     if (joy->buttons[BUTTON_A]) {
+
+//         msgsOut.axes[CAMERA_BOTTOM_ROTATE] = joy->axes[STICK_L_LR];
+//         msgsOut.axes[CAMERA_BOTTOM_TILT] = joy->axes[STICK_L_UD];
+
+//         // cameraBottomRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+//         // cameraBottomTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
+//     } else if (joy->buttons[BUTTON_B]) {
+
+//         msgsOut.axes[CAMERA_TOP_ROTATE] = joy->axes[STICK_L_LR];
+//         msgsOut.axes[CAMERA_TOP_TILT] = joy->axes[STICK_L_UD];
+
+//         // cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+//         // cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
+//     } else {
+//         msgsOut.axes[LEFT_WHEELS] = joy->axes[STICK_L_UD];
+//         msgsOut.axes[RIGHT_WHEELS] = joy->axes[STICK_R_UD];
+//     }
+//     publisher.publish(msgsOut);
+// }
 
 void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
