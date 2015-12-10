@@ -69,6 +69,7 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     float leftWheelSpeed = 0;
     float rightWheelSpeed = 0;
+    float leftRightMagnitude = std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
 
     // Set sensitivity between 0 and 1: 
     //  - 0 makes it output = input 
@@ -90,21 +91,25 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         // cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
     }
 
-    
     if(STICK_R_LR > 0){
 
-        leftWheelSpeed = joy->axes[STICK_R_UD] + std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
-        rightWheelSpeed = joy->axes[STICK_R_UD] - std::abs(joy->axes[STICK_R_LR] /(SENSITIVITY));    
+        leftWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;
+        rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;    
 
     } else if(STICK_R_LR < 0){
 
-        leftWheelSpeed = joy->axes[STICK_R_UD] - std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
-        rightWheelSpeed = joy->axes[STICK_R_UD] + std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));    
+        leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
+        rightWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;    
 
     } else {
-        //Divide by 2 so that the max value for left/rightWheelSpeed can never exceed {-1..1} 
-        leftWheelSpeed = joy->axes[STICK_R_UD]/2;
-        rightWheelSpeed = joy->axes[STICK_R_UD]/2;
+
+        // Minus value of LR to get the total value back between {-1..1}
+        leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
+        rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
+
+        // //Divide by 2 so that the max value for left/rightWheelSpeed can never exceed {-1..1} 
+        // leftWheelSpeed = joy->axes[STICK_R_UD]/2;
+        // rightWheelSpeed = joy->axes[STICK_R_UD]/2;
 
     }
     msgsOut.axes[LEFT_WHEELS] = leftWheelSpeed;
