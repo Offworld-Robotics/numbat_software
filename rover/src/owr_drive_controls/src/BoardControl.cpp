@@ -65,6 +65,7 @@ BoardControl::BoardControl() {
     accPublisher = nh.advertise<geometry_msgs::Vector3>("acc", 10);
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
     voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
+    boardStatusPublisher = nh.advertise<owr_messages::board>("/owr/board_status",10);
     velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
@@ -149,6 +150,10 @@ void BoardControl::run() {
                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
                 cameraRotScale(cameraBottomTilt), 
                 cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+            owr_messages::board statusMsg;
+            statusMsg.leftDrive = leftDrive;
+            statusMsg.rightDrive = rightDrive;
+            boardStatusPublisher.publish(statusMsg);
             if (!s.isConnected) break;
 
             publishGPS(s.gpsData);

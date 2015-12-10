@@ -30,7 +30,7 @@
 #define MOTOR_MAX 1900.0
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
-#define SENSITIVITY 5 //CANNOT BE 0
+#define SENSITIVITY 1 //CANNOT BE 0
  
 int main(int argc, char ** argv) {
     
