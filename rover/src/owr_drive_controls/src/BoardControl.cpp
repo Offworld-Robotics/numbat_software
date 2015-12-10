@@ -6,6 +6,8 @@
  
 #include "BoardControl.h"
 #include "Bluetongue.h"
+#include "RoverDefs.h"
+#include "ButtonDefs.h"
 #include <assert.h>
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
@@ -55,8 +57,8 @@ BoardControl::BoardControl() {
     //assert(fd != NULL);
     //subscribe to xbox controller
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("joy",2, &BoardControl::joyCallback, this, transportHints);
-    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
+    joySubscriber = nh.subscribe<sensor_msgs::Joy>("/owr/joysticks",2, &BoardControl::controllerCallback, this, transportHints);
+//    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
     magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
     gyroPublisher = nh.advertise<geometry_msgs::Vector3>("gyro", 10);
@@ -146,7 +148,11 @@ void BoardControl::run() {
                 armTop, armBottom, armRotate, clawRotScale(clawRotate),
                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
                 cameraRotScale(cameraBottomTilt), 
-                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), rightDrive); 
+                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+            owr_messages::board statusMsg;
+            statusMsg.leftDrive = leftDrive;
+            statusMsg.rightDrive = rightDrive;
+            boardStatusPublisher.publish(statusMsg);
             if (!s.isConnected) break;
 
             publishGPS(s.gpsData);
@@ -323,6 +329,7 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         rotState = STOP;
     }
 }
+
 
 // Convert subscribed Twist input to motor vectors for arduino output
 void BoardControl::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
