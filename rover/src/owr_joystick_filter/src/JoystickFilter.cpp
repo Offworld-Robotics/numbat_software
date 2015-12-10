@@ -30,7 +30,7 @@
 #define MOTOR_MAX 1900.0
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
-#define SENSITIVITY 5
+#define SENSITIVITY 5 //CANNOT BE 0
  
 int main(int argc, char ** argv) {
     
@@ -93,17 +93,18 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     if(STICK_R_LR > 0){
 
-        leftWheelSpeed = STICK_R_UD + std::abs(STICK_R_LR/(2 + SENSITIVITY));
-        rightWheelSpeed = STICK_R_UD - std::abs(STICK_R_LR /(2 + SENSITIVITY));    
+        leftWheelSpeed = joy->axes[STICK_R_UD] + std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
+        rightWheelSpeed = joy->axes[STICK_R_UD] - std::abs(joy->axes[STICK_R_LR] /(SENSITIVITY));    
 
     } else if(STICK_R_LR < 0){
 
-        leftWheelSpeed = STICK_R_UD - std::abs(STICK_R_LR/(2 + SENSITIVITY));
-        rightWheelSpeed = STICK_R_UD + std::abs(STICK_R_LR/(2 + SENSITIVITY));    
+        leftWheelSpeed = joy->axes[STICK_R_UD] - std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
+        rightWheelSpeed = joy->axes[STICK_R_UD] + std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));    
 
     } else {
-        leftWheelSpeed = STICK_R_UD;
-        rightWheelSpeed = STICK_R_UD;
+        //Divide by 2 so that the max value for left/rightWheelSpeed can never exceed {-1..1} 
+        leftWheelSpeed = joy->axes[STICK_R_UD]/2;
+        rightWheelSpeed = joy->axes[STICK_R_UD]/2;
 
     }
     msgsOut.axes[LEFT_WHEELS] = leftWheelSpeed;
