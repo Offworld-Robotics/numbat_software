@@ -279,7 +279,7 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     cameraTopTiltIncRate = joy->axes[CAMERA_TOP_TILT];
 
     leftDrive = joy->axes[LEFT_WHEELS];
-    rightDrive = joy->axes[RIGHT_WHEELS];
+    rightDrive = -joy->axes[RIGHT_WHEELS];
     
     // Handle claw
     clawState = joy->axes[CLAW_STATE];
