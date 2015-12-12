@@ -11,7 +11,7 @@
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <../../home/ros/vbox/src/VBox/Devices/EFI/FirmwareOld/BaseTools/Source/C/VfrCompile/Pccts/antlr/antlr.g>
+
 
 #define NUM_OCT_TREE_CHILDREN 8
 #define FIRST_GUESS_DEPTH 6
@@ -35,10 +35,11 @@ typedef struct _simplePoint {
 typedef struct _octnode {
     uint32_t locationCode;
     uint8_t childrenMask; //each bit is a node, 1 means it is present
-    simplePoint points[NUM_OCT_TREE_CHILDREN];
+    simplePoint points[NUM_OCT_TREE_CHILDREN]; //the children of leaves
+    simplePoint orig;
 } octNode;
 
-typedef struct hashNode *HashNode;
+typedef struct _hashNode *HashNode;
 
 typedef struct _hashNode {
     octNode data;
@@ -53,8 +54,7 @@ class Octree {
         Octree();
         ~Octree();
         
-        void addPoint(pcl::PointXYZ * point);
-        void addPointRecure(pcl::PointXYZ * point, TreeNode t);
+        void addPoint(pcl::PointXYZ  point);
         //helper functions
         int getDepth();
         int getNumPoints();
@@ -70,11 +70,14 @@ class Octree {
         //helper functions
 //         void setChildrenToNull(TreeNode node);
 //         TreeNode findLeaf(pcl::PointXYZ * point);
-//         int calculateIndex(pcl::PointXYZ * point, pcl::PointXYZ orig);
-        octNode createNewLeaf(octNode parent, int index);
-        void splitLeaf(TreeNode leaf);
+        int calculateIndex(simplePoint  point, simplePoint orig);
+        void addPoint(simplePoint pt, octNode parent);
+        octNode createNewLeaf(uint32_t parent, int index, simplePoint orig);
+        void splitLeaf(int leaf);
 
-        uint32_t hash(uint32_t locCode);
+        uint32_t doHash(uint32_t locCode);
+        
+        simplePoint pclToSimplePoint(pcl::PointXYZ pt);
 
 };
 
