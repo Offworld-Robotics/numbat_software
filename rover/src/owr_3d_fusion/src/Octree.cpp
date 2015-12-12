@@ -14,134 +14,120 @@
 #include <boost/iterator/iterator_concepts.hpp>
 #include <string.h>
 
-Octree::Octree() : depthCount(FIRST_GUESS_DEPTH,0) {
+Octree::Octree() {
     //setup the root node
-    head = (TreeNode) malloc(sizeof(treeNode)); 
-    head->depth = 0;
-    head->isLeaf = true;
-    pcl::PointXYZ orig;
-    orig.x = 0.0;
-    orig.y = 0.0;
-    orig.z = 0.0;
-    head->origin = orig;
-    setChildrenToNull(head);
-    
-    //setup the depth
-    depthCount[0] = 1;
-    depth = 1;
-    
-    //setup the size
-    numPoints = 0;
+//     head = (TreeNode) malloc(sizeof(treeNode)); 
+//     head->depth = 0;
+//     head->isLeaf = true;
+//     pcl::PointXYZ orig;
+//     orig.x = 0.0;
+//     orig.y = 0.0;
+//     orig.z = 0.0;
+//     head->origin = orig;
+//     setChildrenToNull(head);
+//     
+//     //setup the depth
+//     depthCount[0] = 1;
+//     depth = 1;
+//     
+//     //setup the size
+//     numPoints = 0;
+
+    //initalise the hashmap
+    int i = 0;
+    for(i=0;i<HASH_MAP_SIZE;i++) {
+        hashMap[i] = NULL;
+    }
     
 }
 
 Octree::~Octree() {
     //TODO: walk the tree and free
-    free(head);
+//     free(head);
 }
 
-void Octree::addPoint(pcl::PointXYZ * point) {
-    TreeNode t = findLeaf(point);
-    addPointRecure(point,t);
-}
+// void Octree::addPoint(pcl::PointXYZ * point) {
+//     TreeNode t = findLeaf(point);
+//     addPointRecure(point,t);
+// }
+// 
+// void Octree::addPointRecure ( pcl::PointXYZ* point, TreeNode t ) {
+//     const int index = calculateIndex(point,t->origin);
+//     if(t->isLeaf) {
+//         //full
+//         if(t->children.leafChildren[index]) {
+//             splitLeaf(t);
+//             addPointRecure(point, t->children.nodeChildren[index]);
+//         } else {
+//             t->children.leafChildren[index] = point;
+//             numPoints++;
+//         }
+//         //TODO: account for when this is full
+//     } else {
+//         t->children.nodeChildren[calculateIndex(point,t->origin)] = createNewLeaf(t,index);
+//         addPointRecure(point,t);
+//     }
+// }
+// 
+// int Octree::getDepth() {
+//     return depth;
+// }
+// 
+// int Octree::getNumPoints() {
+//     return numPoints;
+// }
+// 
+// //helper function to split a leaft into 8 leaf nodes and a parent
+// void Octree::splitLeaf ( TreeNode leaf ) {
+//     pcl::PointXYZ * leafChildren[NUM_OCT_TREE_CHILDREN];
+//     memcpy(leafChildren, leaf->children.leafChildren, sizeof(leafChildren));
+//     leaf->isLeaf = false;
+//     int i;
+//     for(i = 0; i < NUM_OCT_TREE_CHILDREN; i++) {
+//         leaf->children.leafChildren[i] = NULL;
+//         //TODO: this could be made more efficient by passing the index
+//         leaf->children.nodeChildren[i] = createNewLeaf(leaf,i);
+//         addPointRecure(leafChildren[i], leaf->children.nodeChildren[i]);
+//     }
+// }
 
-void Octree::addPointRecure ( pcl::PointXYZ* point, TreeNode t ) {
-    const int index = calculateIndex(point,t->origin);
-    if(t->isLeaf) {
-        //full
-        if(t->children.leafChildren[index]) {
-            splitLeaf(t);
-            addPointRecure(point, t->children.nodeChildren[index]);
-        } else {
-            t->children.leafChildren[index] = point;
-            numPoints++;
+
+
+octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index ) {
+    uint32_t locCode = parent.locationCode << 3; //shift the code of the parent
+    locCode |= (uint32_t)index;
+    uint32_t hash = hash(locCode);
+    HashNode node = (HashNode) malloc(sizeof(hashNode));
+    node->locationCode = locCode;
+    node->next = NULL;
+    node->data.locationCode = locCode;
+    node->data.childrenMask = 0;
+    if(hashMap[hash]) {
+        HashNode parentNode = NULL;
+        HashNode nextNode = hashMap[hash];
+        while(parentNode) {
+            if(nextNpde->locationCode < node->locationCode && nextNode) {
+                parentNode = nextNode->next;
+            } else {
+                parentNode = nextNode;
+                break;
+            }
         }
-        //TODO: account for when this is full
+        if(parentNode) {
+            parentNode->next = node;
+        } else {
+            hashMap[hash] = node;
+        }
     } else {
-        t->children.nodeChildren[calculateIndex(point,t->origin)] = createNewLeaf(t,index);
-        addPointRecure(point,t);
-    }
-}
-
-int Octree::getDepth() {
-    return depth;
-}
-
-int Octree::getNumPoints() {
-    return numPoints;
-}
-
-//helper function to split a leaft into 8 leaf nodes and a parent
-void Octree::splitLeaf ( TreeNode leaf ) {
-    pcl::PointXYZ * leafChildren[NUM_OCT_TREE_CHILDREN];
-    memcpy(leafChildren, leaf->children.leafChildren, sizeof(leafChildren));
-    leaf->isLeaf = false;
-    int i;
-    for(i = 0; i < NUM_OCT_TREE_CHILDREN; i++) {
-        leaf->children.leafChildren[i] = NULL;
-        //TODO: this could be made more efficient by passing the index
-        leaf->children.nodeChildren[i] = createNewLeaf(leaf,i);
-        addPointRecure(leafChildren[i], leaf->children.nodeChildren[i]);
+       hashMap[hash] = node;
     }
 }
 
 
-//helper function to set all the children to null
-void Octree::setChildrenToNull ( TreeNode node ) {
-    int i;
-    for(i=0;i<NUM_OCT_TREE_CHILDREN;i++) {
-        node->children.nodeChildren[i] = NULL;
-    }
-}
 
-//helper function to find the leaf releavant to this point
-TreeNode Octree::findLeaf ( pcl::PointXYZ * point ) {
-    TreeNode current = head;
-    TreeNode temp = head;
-    while(current->isLeaf != true) {
-        temp = head->children.nodeChildren[calculateIndex(point,current->origin)];
-        if(temp) {
-            current = temp;
-        } else {
-            break;
-        }
-    }
-    return current;
-}
-
-TreeNode Octree::createNewLeaf ( TreeNode parent, int index ) {
-    TreeNode n = (TreeNode) malloc(sizeof(treeNode));
-    setChildrenToNull(n);
-    n->depth = parent->depth+1;
-    if(depthCount[n->depth] == 0) {
-        depth++;
-    }
-    n->isLeaf = true;
-    
-    //increase the depth count
-    if(depthCount.size() < n->depth) {
-        depthCount.resize(n->depth);
-    }
-    depthCount[n->depth]++;
-    return n;
-}
-
-
-
-int Octree::calculateIndex ( pcl::PointXYZ * point, pcl::PointXYZ orig ) {
-    int oct = 0;
-    //8 is 100 in binary
-    //position in tree is determined by this algorithm
-    if(point->x > orig.x) {
-        oct |= 4;
-    }
-    if(point->y > orig.y) {
-        oct |= 2;
-    }
-    if(point->z > orig.z) {
-        oct |= 1;
-    }
-    return oct;
+uint32_t Octree::hash ( uint32_t locCode ) {
+    //TODO: find a better hash function, this is the one that java supposedly uses
+    return (locCode & 0x7FFFFFFF) % NUM_OCT_TREE_CHILDREN;
 }
 
 
