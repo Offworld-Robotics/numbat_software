@@ -32,6 +32,8 @@ struct toControlMsg {
     int16_t cameraBottomTilt;
     int16_t cameraTopRotate;
     int16_t cameraTopTilt;
+    int16_t lidarTilt;
+    int16_t padding;
 } __attribute__((packed));
 
 struct toNUCMsg {
