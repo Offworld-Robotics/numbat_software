@@ -15,7 +15,8 @@
 #include <string.h>
 #include <limits>
 
-Octree::Octree() {
+Octree::Octree(simplePoint dimensions) {
+    this->dimensions = dimensions;
     //setup the root node
 //     head = (TreeNode) malloc(sizeof(treeNode)); 
 //     head->depth = 0;
@@ -42,7 +43,7 @@ Octree::Octree() {
     
     //create the root
     simplePoint pt = {0.0,0.0,0.0};
-    createNewLeaf(0,0,pt);
+    createNewLeaf(0,0,pt,dimensions);
     
 }
 
@@ -59,11 +60,12 @@ void Octree::addPoint(pcl::PointXYZ  point) {
 }
 
 void Octree::addPoint ( simplePoint pt, octNode parent ) {
+    const int index = calculateIndex(pt,parent.orig);
     //we have a leaf
     if(!parent.childrenMask) {
         //TODO: leaf code
     } else {
-        const int index = calculateIndex(pt,parent.orig);
+        
         //does our index exist
         uint32_t childMask = 0;
         switch(index) {
@@ -97,9 +99,26 @@ void Octree::addPoint ( simplePoint pt, octNode parent ) {
         }
         //will be true if the child exists
         if(parent.childrenMask ^ (~childMask)) {
-            
+            //lookup the child and continue
+            uint32_t locCode = parent.locationCode << 3; //shift the code of the parent
+            locCode |= (uint32_t)index;
+            addPoint(pt, hashMap[doHash(locCode)]->data);
         } else {
-//            createNewLeaf(parent.locationCode, index, ) 
+           simplePoint dimensions = parent.dimensions;
+           dimensions.x *= 0.5f;
+           dimensions.y *= 0.5f;
+           dimensions.z *= 0.5f;
+           simplePoint orig = parent.orig;
+           //calculate the new origin by spliting the existing 
+           orig.x += dimensions.x * (index & 4 ? .5f : -.5f);
+           orig.y += dimensions.y * (index & 2 ? .5f : -.5f);
+           orig.z += dimensions.z * (index & 1 ? .5f : -.5f);
+           dimensions.x *= 0.5f;
+           dimensions.y *= 0.5f;
+           dimensions.z *= 0.5f;
+           //continue deeper
+           addPoint(pt, createNewLeaf(parent.locationCode, index, orig, dimensions ));
+            
         }
     }
 }
@@ -153,7 +172,7 @@ simplePoint Octree::pclToSimplePoint ( pcl::PointXYZ pt ) {
 
 
 
-octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint orig ) {
+octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint orig, simplePoint dimensions ) {
     uint32_t locCode = locCodeParent << 3; //shift the code of the parent
     locCode |= (uint32_t)index;
     uint32_t hash = doHash(locCode);
@@ -163,6 +182,7 @@ octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint o
     node->data.locationCode = locCode;
     node->data.childrenMask = 0;
     node->data.orig = orig;
+    node->data.dimensions = dimensions;
     
     //clear the points
     int i = 0;
@@ -218,5 +238,7 @@ int Octree::calculateIndex ( simplePoint point, simplePoint orig ) {
     }
     return oct;
 }
+
+
 
 

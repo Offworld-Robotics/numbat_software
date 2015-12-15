@@ -13,18 +13,19 @@
 #include <pcl/point_types.h>
 
 
+
 #define NUM_OCT_TREE_CHILDREN 8
 #define FIRST_GUESS_DEPTH 6
 //this stores the tree nodes
 
-#define CHILD_1 00000001b
-#define CHILD_2 00000010b
-#define CHILD_3 00000100b
-#define CHILD_4 00001000b
-#define CHILD_5 00010000b
-#define CHILD_6 00100000b
-#define CHILD_7 01000000b
-#define CHILD_8 10000000b
+#define CHILD_1 0b00000001
+#define CHILD_2 0b00000010
+#define CHILD_3 0b00000100
+#define CHILD_4 0b00001000
+#define CHILD_5 0b00010000
+#define CHILD_6 0b00100000
+#define CHILD_7 0b01000000
+#define CHILD_8 0b10000000
 
 #define HASH_MAP_SIZE 100000
 
@@ -37,6 +38,7 @@ typedef struct _octnode {
     uint8_t childrenMask; //each bit is a node, 1 means it is present
     simplePoint points[NUM_OCT_TREE_CHILDREN]; //the children of leaves
     simplePoint orig;
+    simplePoint dimensions; //the dimensions of this node
 } octNode;
 
 typedef struct _hashNode *HashNode;
@@ -51,7 +53,7 @@ typedef struct _hashNode {
 
 class Octree {
     public:
-        Octree();
+        Octree(simplePoint dimensions);
         ~Octree();
         
         void addPoint(pcl::PointXYZ  point);
@@ -72,12 +74,14 @@ class Octree {
 //         TreeNode findLeaf(pcl::PointXYZ * point);
         int calculateIndex(simplePoint  point, simplePoint orig);
         void addPoint(simplePoint pt, octNode parent);
-        octNode createNewLeaf(uint32_t parent, int index, simplePoint orig);
+        octNode createNewLeaf(uint32_t parent, int index, simplePoint orig, simplePoint dimensions);
         void splitLeaf(int leaf);
 
         uint32_t doHash(uint32_t locCode);
         
         simplePoint pclToSimplePoint(pcl::PointXYZ pt);
+//         simplePoint calculateOrigin(simplePoint parentOrig, unsigned int index);
+        simplePoint dimensions;
 
 };
 
