@@ -8,7 +8,6 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/Twist.h>
-#include <owr_messages/board.h>
 #include <termios.h>
 #include <stdio.h>
 #include "buttons.h"
@@ -54,7 +53,6 @@ class BoardControl {
         ros::Publisher accPublisher;
         ros::Publisher battVoltPublisher;
         ros::Publisher voltmeterPublisher;
-        ros::Publisher boardStatusPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
         float leftDrive, rightDrive;

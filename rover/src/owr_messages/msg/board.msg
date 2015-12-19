@@ -1,2 +1,0 @@
-float32 leftDrive
-float32 rightDrive
