@@ -59,7 +59,7 @@ class Bluetongue {
                 int armTop, int armBottom, double armRotate, 
                 int clawRotate, int clawGrip, int cameraBottomRotate,
                 int cameraBottomTilt, int cameraTopRotate, 
-                int cameraTopTilt);
+                int cameraTopTilt, int lidarTilt);
         bool reconnect(void);
 };
 #endif

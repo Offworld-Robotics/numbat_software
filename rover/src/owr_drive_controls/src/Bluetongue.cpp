@@ -177,7 +177,7 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
 struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
     int armBottom, double armRotate, int clawRotate, int clawGrip,
     int cameraBottomRotate, int cameraBottomTilt, int cameraTopRotate,
-    int cameraTopTilt) {
+    int cameraTopTilt, int lidarTilt) {
     struct status stat;
     if (!isConnected) {
         stat.isConnected = false;
@@ -198,7 +198,8 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.cameraBottomTilt = cameraBottomTilt;
     mesg.cameraTopRotate = cameraTopRotate;
     mesg.cameraTopTilt = cameraTopTilt;
-    mesg.lidarTilt = 1700;
+    mesg.lidarTilt = (lidarTilt * 500) + 1500;
+    //mesg.lidarTilt = 1700;
     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
 	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));

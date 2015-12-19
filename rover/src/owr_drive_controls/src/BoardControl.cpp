@@ -142,11 +142,11 @@ void BoardControl::run() {
             
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr; 
-            struct status s = steve->update(leftDrive, rightDrive,
+            struct status s = steve->update(leftDrive, 1500,
                 armTop, armBottom, armRotate, clawRotScale(clawRotate),
                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
                 cameraRotScale(cameraBottomTilt), 
-                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), rightDrive); 
             if (!s.isConnected) break;
 
             publishGPS(s.gpsData);
@@ -172,11 +172,11 @@ void BoardControl::run() {
         
         
 
-        struct status s = steve->update(leftDrive, rightDrive,
+        struct status s = steve->update(leftDrive, 1500,
             armTop, armBottom, armRotate, clawRotScale(clawRotate),
             clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
             cameraRotScale(cameraBottomTilt), 
-            cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+            cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), rightDrive); 
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
