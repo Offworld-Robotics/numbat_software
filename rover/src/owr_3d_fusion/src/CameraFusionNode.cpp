@@ -60,8 +60,11 @@ pcl::PointCloud< pcl::PointXYZRGB > CameraFusionNode::getLatestPointCloud() {
 }
 
 void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame ) {
-    simplePoint pt = {50.0, 50.0, 50.0};
-    Octree oct(pt);
+    pcl::PointXYZ dims;
+    dims.x = 50.0;
+    dims.y = 50.0;
+    dims.z = 50.0;
+    Octree oct(dims);
 //     pcl::PointCloud<pcl::PointXYZRGB> pc = getLatestPointCloud();
 //     int x,y;
 //     float deltaX, deltaY;

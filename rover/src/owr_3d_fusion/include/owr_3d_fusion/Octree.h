@@ -53,25 +53,17 @@ typedef struct _hashNode {
 
 class Octree {
     public:
-        Octree(simplePoint dimensions);
+        Octree(pcl::PointXYZ dimensions);
         ~Octree();
         
         void addPoint(pcl::PointXYZ  point);
         //helper functions
         int getDepth();
         int getNumPoints();
+        octNode getNode(pcl::PointXYZ pt);
     private:
-//         TreeNode head;
-//         std::vector<int> depthCount;
-//         int numPoints;
-//         int depth;
-//
+
         HashNode hashMap[HASH_MAP_SIZE];
-        //the root node of the octtree
-//         octNode root;
-        //helper functions
-//         void setChildrenToNull(TreeNode node);
-//         TreeNode findLeaf(pcl::PointXYZ * point);
         int calculateIndex(simplePoint  point, simplePoint orig);
         void addPoint(simplePoint pt, octNode parent);
         octNode createNewLeaf(uint32_t parent, int index, simplePoint orig, simplePoint dimensions);
@@ -80,8 +72,10 @@ class Octree {
         uint32_t doHash(uint32_t locCode);
         
         simplePoint pclToSimplePoint(pcl::PointXYZ pt);
-//         simplePoint calculateOrigin(simplePoint parentOrig, unsigned int index);
         simplePoint dimensions;
+        
+        HashNode  getLoc(uint32_t locationCode);
+        HashNode getNode(octNode parent, simplePoint pt);
 
 };
 
