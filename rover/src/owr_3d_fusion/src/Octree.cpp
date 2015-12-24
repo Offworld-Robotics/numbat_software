@@ -15,6 +15,8 @@
 #include <string.h>
 #include <limits>
 
+
+#define DEBUG
 //helper functions
 inline simplePoint calculateOrigin(const simplePoint parentDimensions, const simplePoint parentOrigin, const int index) {
     simplePoint dimensions = parentDimensions;
@@ -29,6 +31,9 @@ inline simplePoint calculateOrigin(const simplePoint parentDimensions, const sim
     dimensions.x *= 0.5f;
     dimensions.y *= 0.5f;
     dimensions.z *= 0.5f;
+    #ifdef DEBUG
+        std::cout << "Calc Orig Point" << orig.x << "," << orig.y << "," << orig.z << "index" << index << std::endl;
+    #endif
     return orig;
 }
 
@@ -111,18 +116,30 @@ void Octree::addPoint(pcl::PointXYZ  point) {
 }
 
 void Octree::addPoint ( simplePoint pt, octNode parent ) {
+    #ifdef DEBUG
+        std::cout << "Adding Point" << pt.x << "," << pt.y << "," << pt.z << "to" << parent.locationCode << std::endl;
+    #endif
     const int index = calculateIndex(pt,parent.orig);
     //we have a leaf
     if(!parent.childrenMask) {
+        #ifdef DEBUG
+            std::cout << "Found a leaf" << std::endl;
+        #endif
         //is there already a child at our index?
-        if(parent.points[index].x ==  std::numeric_limits<float>::infinity()) {
-            //TODO: implement spliting
-            uint32_t childMask = 1;
+        if(parent.points[index].x !=  std::numeric_limits<float>::infinity()) {
+//             return;
+            //implement spliting
+//             uint32_t childMask = 1;
             int i;
-            for(i =0; i < NUM_OCT_TREE_CHILDREN; i++,childMask = childMask << 1) {
+            for(i =0; i < NUM_OCT_TREE_CHILDREN; i++) {
+
                 //does a child exist for this index
-                if(parent.childrenMask ^ (~childMask)) {
+                if(parent.points[i].x !=  std::numeric_limits<float>::infinity()) {
                     simplePoint orig = calculateOrigin(parent.dimensions, parent.orig, i);
+                    simplePoint dimensions = parent.dimensions;
+                    dimensions.x *= 0.5f;
+                    dimensions.y *= 0.5f;
+                    dimensions.z *= 0.5f;
                     addPoint(parent.points[i], createNewLeaf(parent.locationCode, i, orig, dimensions ));
                 }
             }
@@ -135,7 +152,7 @@ void Octree::addPoint ( simplePoint pt, octNode parent ) {
             hashMap[doHash(parent.locationCode)]->data.points[index] = pt;
         }
     } else {
-        
+//                 return;
         //does our index exist
         const uint32_t childMask = getMaskFromIndex(index);
         //will be true if the child exists
@@ -161,6 +178,8 @@ simplePoint Octree::pclToSimplePoint ( pcl::PointXYZ pt ) {
 
 
 octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint orig, simplePoint dimensions ) {
+    
+    
     uint32_t locCode = locCodeParent << 3; //shift the code of the parent
     locCode |= (uint32_t)index;
     uint32_t hash = doHash(locCode);
@@ -171,7 +190,9 @@ octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint o
     node->data.childrenMask = 0;
     node->data.orig = orig;
     node->data.dimensions = dimensions;
-    
+    #ifdef DEBUG
+        std::cout << "Adding Leaf" << orig.x << "," << orig.y << "," << orig.z << "at" << locCodeParent << " id:" <<locCode << std::endl;
+    #endif
     //clear the points
     int i = 0;
     const simplePoint empty = {
@@ -183,34 +204,34 @@ octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint o
         node->data.points[i] = empty;
     }
     if(hashMap[hash]) {
-        HashNode parentNode = NULL;
+        #ifdef DEBUG
+            std::cout << "Conflict" << std::endl;
+        #endif
+        
         HashNode nextNode = hashMap[hash];
-        while(parentNode) {
-            if(nextNode->locationCode < node->locationCode && nextNode) {
-                parentNode = nextNode->next;
-            } else {
-                parentNode = nextNode;
-                break;
-            }
-        }
-        if(parentNode) {
-            parentNode->next = node;
-        } else {
-            hashMap[hash] = node;
-        }
-    } else {
-       hashMap[hash] = node;
-    }
+        #ifdef DEBUG
+            std::cout  << nextNode << std::endl;
+        #endif
+        //TODO: sort this
+        node->next = nextNode;
+    } 
+    hashMap[hash] = node;
+    getLoc(locCodeParent)->data.childrenMask |= getMaskFromIndex(index);
     return node->data;
 }
 
 HashNode Octree::getLoc ( uint32_t locationCode ) {
     HashNode h = hashMap[doHash(locationCode)];
     if(h) {
+        #ifdef DEBUG
+                std::cout << locationCode << "cmp" << h->locationCode << std::endl;
+        #endif
         while(h->locationCode != locationCode) {
+            
             if(h->next) {
                 h = h->next;
             } else {
+                
                 h = NULL;
                 break;
             }
@@ -264,6 +285,7 @@ int Octree::calculateIndex ( simplePoint point, simplePoint orig ) {
     if(point.z > orig.z) {
         oct |= 1;
     }
+    std::cout << "index cacluated" << oct << std::endl;
     return oct;
 }
 
