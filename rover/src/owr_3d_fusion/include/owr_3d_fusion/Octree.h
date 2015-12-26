@@ -31,15 +31,32 @@
 
 typedef struct _simplePoint {
     float x, y, z;
+    bool operator==(const _simplePoint& lhs) const {
+        return (x == lhs.x) && (y == lhs.y) &&(z == lhs.z);
+    }
 } simplePoint;
 
-typedef struct _octnode {
-    uint32_t locationCode;
-    uint8_t childrenMask; //each bit is a node, 1 means it is present
-    simplePoint points[NUM_OCT_TREE_CHILDREN]; //the children of leaves
-    simplePoint orig;
-    simplePoint dimensions; //the dimensions of this node
-} octNode;
+class octNode {
+    public:
+        uint32_t locationCode;
+        uint8_t childrenMask; //each bit is a node, 1 means it is present
+        simplePoint points[NUM_OCT_TREE_CHILDREN]; //the children of leaves
+        simplePoint orig;
+        simplePoint dimensions; //the dimensions of this node
+        //helper functions to abstract this a bit
+        //may not be the most efficient
+        inline bool isLeaf() { return (bool) !childrenMask; }
+        inline bool hasChildren() {
+            int i = 0;
+            for(i=0;i<NUM_OCT_TREE_CHILDREN; i++) {
+                if (points[i].x != std::numeric_limits<float>::infinity()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        inline simplePoint getPointAt(int i) { return points[i]; }
+};
 
 typedef struct _hashNode *HashNode;
 
@@ -61,10 +78,13 @@ class Octree {
         int getDepth();
         int getNumPoints();
         octNode getNode(pcl::PointXYZ pt);
+        octNode getNode(simplePoint pt);
+        simplePoint getDimensions();
+        int calculateIndex(simplePoint  point, simplePoint orig);
     private:
 
         HashNode hashMap[HASH_MAP_SIZE];
-        int calculateIndex(simplePoint  point, simplePoint orig);
+        
         void addPoint(simplePoint pt, octNode parent);
         octNode createNewLeaf(uint32_t parent, int index, simplePoint orig, simplePoint dimensions);
         void splitLeaf(int leaf);

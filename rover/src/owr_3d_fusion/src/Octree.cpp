@@ -16,7 +16,7 @@
 #include <limits>
 
 
-#define DEBUG
+// #define DEBUG
 //helper functions
 inline simplePoint calculateOrigin(const simplePoint parentDimensions, const simplePoint parentOrigin, const int index) {
     simplePoint dimensions = parentDimensions;
@@ -178,8 +178,6 @@ simplePoint Octree::pclToSimplePoint ( pcl::PointXYZ pt ) {
 
 
 octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint orig, simplePoint dimensions ) {
-    
-    
     uint32_t locCode = locCodeParent << 3; //shift the code of the parent
     locCode |= (uint32_t)index;
     uint32_t hash = doHash(locCode);
@@ -216,7 +214,9 @@ octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint o
         node->next = nextNode;
     } 
     hashMap[hash] = node;
-    getLoc(locCodeParent)->data.childrenMask |= getMaskFromIndex(index);
+    if(locCodeParent) {
+        getLoc(locCodeParent)->data.childrenMask |= getMaskFromIndex(index);
+    }
     return node->data;
 }
 
@@ -245,7 +245,16 @@ HashNode Octree::getLoc ( uint32_t locationCode ) {
  */
 octNode Octree::getNode ( pcl::PointXYZ point ) {
     //start with the root and burrow
-    getNode(hashMap[doHash(0)]->data,pclToSimplePoint(point))->data;
+    return getNode(hashMap[doHash(0)]->data,pclToSimplePoint(point))->data;
+    //TODO: handle empty
+}
+
+/**
+ * Retrives the node closest to the point
+ */
+octNode Octree::getNode ( simplePoint point ) {
+    //start with the root and burrow
+    return getNode(hashMap[doHash(0)]->data,point)->data;
     //TODO: handle empty
 }
 
@@ -285,10 +294,15 @@ int Octree::calculateIndex ( simplePoint point, simplePoint orig ) {
     if(point.z > orig.z) {
         oct |= 1;
     }
-    std::cout << "index cacluated" << oct << std::endl;
+    #ifdef DEBUG
+        std::cout << "index cacluated" << oct << std::endl;
+    #endif
     return oct;
 }
 
 
+simplePoint Octree::getDimensions() {
+    return dimensions;
+}
 
 
