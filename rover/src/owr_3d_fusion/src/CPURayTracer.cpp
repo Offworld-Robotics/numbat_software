@@ -73,5 +73,14 @@ void CPURayTracer::runTraces() {
 }
 
 void CPURayTracer::match ( simplePoint pt, cv::Vec3i pixel ) {
+    pcl::PointXYZRGB newPt;
+    newPt.x = pt.x;
+    newPt.y = pt.y;
+    newPt.z = pt.z;
+    //BGR
+    newPt.b = pixel[0];
+    newPt.g = pixel[1];
+    newPt.r = pixel[2];
     
+    cld.push_back(newPt);
 }
