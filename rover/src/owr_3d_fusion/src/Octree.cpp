@@ -15,6 +15,9 @@
 #include <string.h>
 #include <limits>
 
+#define DEBUG
+#define ROOT_LOC_CODE 1
+
 
 // #define DEBUG
 //helper functions
@@ -40,28 +43,28 @@ inline simplePoint calculateOrigin(const simplePoint parentDimensions, const sim
 inline uint32_t getMaskFromIndex(const int index) {
     uint32_t childMask = 0;
     switch(index) {
-        case 1:
+        case 0:
             childMask = CHILD_1;
             break;
-        case 2:
+        case 1:
             childMask = CHILD_2;
             break;
-        case 3:
+        case 2:
             childMask = CHILD_3;
             break;
-        case 4:
+        case 3:
             childMask = CHILD_4;
             break;
-        case 5:
+        case 4:
             childMask = CHILD_5;
             break;
-        case 6:
+        case 5:
             childMask = CHILD_6;
             break;
-        case 7:
+        case 6:
             childMask = CHILD_7;
             break;
-        case 8:
+        case 7:
             childMask = CHILD_8;
             break;
         default: 
@@ -99,7 +102,7 @@ Octree::Octree(pcl::PointXYZ dims) {
     
     //create the root
     simplePoint pt = {0.0,0.0,0.0};
-    createNewLeaf(0,0,pt,dimensions);
+    createNewLeaf(0,ROOT_LOC_CODE,pt,dimensions);
     
 }
 
@@ -112,7 +115,7 @@ Octree::~Octree() {
 //pre-condition: the root node has been initalized
 void Octree::addPoint(pcl::PointXYZ  point) {
     
-    addPoint(pclToSimplePoint(point),hashMap[doHash(0)]->data);
+    addPoint(pclToSimplePoint(point),hashMap[doHash(ROOT_LOC_CODE)]->data);
 }
 
 void Octree::addPoint ( simplePoint pt, octNode parent ) {
@@ -245,7 +248,7 @@ HashNode Octree::getLoc ( uint32_t locationCode ) {
  */
 octNode Octree::getNode ( pcl::PointXYZ point ) {
     //start with the root and burrow
-    return getNode(hashMap[doHash(0)]->data,pclToSimplePoint(point))->data;
+    return getNode(hashMap[doHash(ROOT_LOC_CODE)]->data,pclToSimplePoint(point))->data;
     //TODO: handle empty
 }
 
@@ -254,7 +257,7 @@ octNode Octree::getNode ( pcl::PointXYZ point ) {
  */
 octNode Octree::getNode ( simplePoint point ) {
     //start with the root and burrow
-    return getNode(hashMap[doHash(0)]->data,point)->data;
+    return getNode(hashMap[doHash(ROOT_LOC_CODE)]->data,point)->data;
     //TODO: handle empty
 }
 

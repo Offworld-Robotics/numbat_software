@@ -133,7 +133,8 @@ TEST(OctreeTest, testAddAndRetrive) {
     std::cout << "index: " << oct.calculateIndex(rt.orig, orig) << std::endl;
     EXPECT_EQ(empty, rt.getPointAt(oct.calculateIndex(rt.orig, orig)));
     oct.addPoint(pt);
-    rt = oct.getNode(orig);
+    rt = oct.getNode(pt);
+    EXPECT_EQ(orig, rt.getPointAt(oct.calculateIndex(rt.orig, orig)));
     //should be a leaf
     EXPECT_EQ(true,rt.isLeaf());
     EXPECT_EQ(true,rt.hasChildren());
@@ -144,10 +145,14 @@ TEST(OctreeTest, testAddAndRetrive) {
     pt2.x = 1.0;
     pt2.y = 0.0;
     pt2.z = 0.0;
+    
     oct.addPoint(pt2);
-    rt = oct.getNode(orig);
+    rt = oct.getNode(pt2);
     //should be a leaf
     EXPECT_EQ(true,rt.isLeaf());
+    //check retrival
+    simplePoint spt2 = {pt2.x,pt2.y, pt2.z};
+    EXPECT_EQ(spt2, rt.getPointAt(oct.calculateIndex(spt2, rt.orig)));
     std::cout << "2" << std::endl;
 //     EXPECT_EQ(2, oct.getNumPoints());
 //     EXPECT_EQ(1, oct.getDepth());
@@ -156,9 +161,12 @@ TEST(OctreeTest, testAddAndRetrive) {
     pt3.y = 1.0;
     pt3.z = 0.0;
     oct.addPoint(pt3);
-    rt = oct.getNode(orig);
+    rt = oct.getNode(pt3);
     //should be a leaf
     EXPECT_EQ(true,rt.isLeaf());
+    //check retrival
+    simplePoint spt3 = {pt3.x,pt3.y, pt3.z};
+    EXPECT_EQ(spt3, rt.getPointAt(oct.calculateIndex(spt3, rt.orig)));
     std::cout << "3" << std::endl;
 //     EXPECT_EQ(3, oct.getNumPoints());
 //     EXPECT_EQ(1, oct.getDepth());
@@ -167,9 +175,12 @@ TEST(OctreeTest, testAddAndRetrive) {
     pt4.y = 1.0;
     pt4.z = 1.0;
     oct.addPoint(pt4);
-    rt = oct.getNode(orig);
+    rt = oct.getNode(pt4);
     //should be a leaf
     EXPECT_EQ(true,rt.isLeaf());
+    //check retrival
+    simplePoint spt4 = {pt4.x,pt4.y, pt4.z};
+    EXPECT_EQ(spt4, rt.getPointAt(oct.calculateIndex(spt4, rt.orig)));
     std::cout << "4" << std::endl;
 //     EXPECT_EQ(4, oct.getNumPoints());
 //     EXPECT_EQ(1, oct.getDepth());
@@ -178,9 +189,12 @@ TEST(OctreeTest, testAddAndRetrive) {
     pt5.y = 0.0;
     pt5.z = 1.0;
     oct.addPoint(pt5);
-    rt = oct.getNode(orig);
+    rt = oct.getNode(pt5);
     //should be a leaf
     EXPECT_EQ(true,rt.isLeaf());
+    //check retrival
+    simplePoint spt5 = {pt5.x,pt5.y, pt5.z};
+    EXPECT_EQ(spt5, rt.getPointAt(oct.calculateIndex(spt5, rt.orig)));
     std::cout << "5" << std::endl;
 //     EXPECT_EQ(5, oct.getNumPoints());
 //     EXPECT_EQ(1, oct.getDepth());
@@ -189,9 +203,12 @@ TEST(OctreeTest, testAddAndRetrive) {
     pt6.y = 1.0;
     pt6.z = 1.0;
     oct.addPoint(pt6);
-    rt = oct.getNode(orig);
+    rt = oct.getNode(pt6);
     //should be a leaf
     EXPECT_EQ(true,rt.isLeaf());
+    //check retrival
+    simplePoint spt6 = {pt6.x,pt6.y, pt6.z};
+    EXPECT_EQ(spt6, rt.getPointAt(oct.calculateIndex(spt6, rt.orig)));
     std::cout << "6" << std::endl;
 //     EXPECT_EQ(6, oct.getNumPoints());
 //     EXPECT_EQ(1, oct.getDepth());
@@ -200,9 +217,12 @@ TEST(OctreeTest, testAddAndRetrive) {
     pt7.y = 1.0;
     pt7.z = 0.0;
     oct.addPoint(pt7);
-    rt = oct.getNode(orig);
+    rt = oct.getNode(pt7);
     //should be a leaf
     EXPECT_EQ(true,rt.isLeaf());
+    //check retrival
+    simplePoint spt7 = {pt7.x,pt7.y, pt7.z};
+    EXPECT_EQ(spt7, rt.getPointAt(oct.calculateIndex(spt7, rt.orig)));
     std::cout << "7" << std::endl;
 //     EXPECT_EQ(7, oct.getNumPoints());
 //     EXPECT_EQ(1, oct.getDepth());
@@ -211,9 +231,12 @@ TEST(OctreeTest, testAddAndRetrive) {
     pt8.y = 0.0;
     pt8.z = 1.0;
     oct.addPoint(pt8);
-    rt = oct.getNode(orig);
+    rt = oct.getNode(pt8);
     //should be a leaf
     EXPECT_EQ(true,rt.isLeaf());
+    //check retrival
+    simplePoint spt8 = {pt8.x,pt8.y, pt8.z};
+    EXPECT_EQ(spt8, rt.getPointAt(oct.calculateIndex(spt8, rt.orig)));
     std::cout << "8" << std::endl;
 //     EXPECT_EQ(8, oct.getNumPoints());
 //     EXPECT_EQ(1, oct.getDepth());
@@ -222,9 +245,12 @@ TEST(OctreeTest, testAddAndRetrive) {
     pt9.y = 0.0;
     pt9.z = 1.1;
     oct.addPoint(pt9);
-//     rt = oct.getNode(orig);
+    rt = oct.getNode(pt9);
     //should be a leaf
 //     EXPECT_EQ(false,rt.isLeaf());
+    //check retrival
+    simplePoint spt9 = {pt9.x,pt9.y, pt9.z};
+    EXPECT_EQ(spt9, rt.getPointAt(oct.calculateIndex(spt9, rt.orig)));
     std::cout << "9" << std::endl;
 //     EXPECT_EQ(9, oct.getNumPoints());
 //     EXPECT_EQ(2, oct.getDepth());
