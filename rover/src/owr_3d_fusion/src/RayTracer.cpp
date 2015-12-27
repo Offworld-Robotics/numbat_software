@@ -6,7 +6,13 @@
  * ROS Package: owr_3d_fusion
  * Purpose: Abstract interface for ray tracing (built this way so we can easily switch to OpenCL)
  */
-boost::shared_ptr< pcl::PointCloud< pcl::PointXYZRGB > > RayTracer::getResult() {
+#include "owr_3d_fusion/RayTracer.hpp"
+
+using namespace boost;
+
+simplePoint DIMS = {50.0, 50.0, 50.0};
+
+shared_ptr< pcl::PointCloud< pcl::PointXYZRGB > > RayTracer::getResult() {
 
 }
 
@@ -14,7 +20,7 @@ void RayTracer::loadImage ( cv::Mat image ) {
     this->image = image;
 }
 
-RayTracer::RayTracer() {
+RayTracer::RayTracer() : tree(DIMS) {
 
 }
 

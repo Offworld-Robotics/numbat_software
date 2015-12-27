@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_conversions
   sensor_msgs
   std_msgs
+  cv_bridge
 )
 
 find_package(OpenCL)
@@ -105,10 +106,10 @@ find_package(OpenCL)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES owr_3d_fusion
-#  CATKIN_DEPENDS owr_messages pcl_ros pcl_conversions roscpp sensor_msgs std_msgs
-#  DEPENDS system_lib
+ INCLUDE_DIRS include
+ LIBRARIES owr_3d_fusion
+ CATKIN_DEPENDS owr_messages pcl_ros pcl_conversions roscpp sensor_msgs std_msgs cv_bridge
+ DEPENDS system_lib
 )
 
 ###########
@@ -134,7 +135,7 @@ include_directories(
 # add_dependencies(owr_3d_fusion ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(camera_fusion_node src/CameraFusionNode.cpp src/Octree.cpp)
+add_executable(camera_fusion_node src/CameraFusionNode.cpp src/Octree.cpp src/CPURayTracer.cpp src/RayTracer.cpp)
 target_link_libraries(camera_fusion_node ${catkin_LIBRARIES}  ${OPENCL_LIBRARIES} OpenCL stdc++)
 
 ## Add cmake target dependencies of the executable

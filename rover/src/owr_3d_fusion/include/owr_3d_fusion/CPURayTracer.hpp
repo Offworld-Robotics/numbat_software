@@ -9,10 +9,14 @@
 #ifndef CPU_RAY_TRACER_H
 #define CPU_RAY_TRACER_H
 #include "RayTracer.hpp"
+#include "Octree.h"
 class CPURayTracer: RayTracer {  
     public:
         void runTraces();
         CPURayTracer() ;
         ~CPURayTracer();
+    private:
+        void match(simplePoint pt, cv::Vec3i pixel);
+        pcl::PointCloud<pcl::PointXYZRGB> cld;
 };
 #endif

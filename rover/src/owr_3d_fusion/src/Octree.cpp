@@ -74,26 +74,13 @@ inline uint32_t getMaskFromIndex(const int index) {
     return childMask;
 }
 
-Octree::Octree(pcl::PointXYZ dims) {
+Octree::Octree(pcl::PointXYZ dims) : Octree(pclToSimplePoint(dims)) {
     this->dimensions = pclToSimplePoint(dims);
-    //setup the root node
-//     head = (TreeNode) malloc(sizeof(treeNode)); 
-//     head->depth = 0;
-//     head->isLeaf = true;
-//     pcl::PointXYZ orig;
-//     orig.x = 0.0;
-//     orig.y = 0.0;
-//     orig.z = 0.0;
-//     head->origin = orig;
-//     setChildrenToNull(head);
-//     
-//     //setup the depth
-//     depthCount[0] = 1;
-//     depth = 1;
-//     
-//     //setup the size
-//     numPoints = 0;
 
+}
+
+Octree::Octree ( simplePoint dims )  {
+    this->dimensions = dims;
     //initalise the hashmap
     int i = 0;
     for(i=0;i<HASH_MAP_SIZE;i++) {

@@ -11,7 +11,10 @@
 #include "owr_3d_fusion/Octree.h"
 #include <opencv2/core/core.hpp>
 #include <pcl/point_cloud.h>
+#include <boost/shared_ptr.hpp>
 #define RES 0.0001
+
+using namespace boost;
 
 class RayTracer {
     
@@ -26,10 +29,10 @@ class RayTracer {
         //run the task, return the point cloud
         virtual void runTraces() = 0;
         //get the result of the task
-        boost::shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > getResult();
+        shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > getResult();
         
         
-    private:
+    protected:
         //the current octree
         Octree tree;
         cv::Mat image;

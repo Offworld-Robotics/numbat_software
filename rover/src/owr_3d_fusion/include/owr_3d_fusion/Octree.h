@@ -34,7 +34,26 @@ typedef struct _simplePoint {
     bool operator==(const _simplePoint& lhs) const {
         return (x == lhs.x) && (y == lhs.y) &&(z == lhs.z);
     }
+    _simplePoint operator-(_simplePoint& lhs) const {
+        lhs.x-=x;
+        lhs.y-=y;
+        lhs.z-=z;
+        return (lhs);
+    }
+    inline bool isEmpty() {
+        if(x == std::numeric_limits<float>::infinity()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 } simplePoint;
+
+const simplePoint EMPTY_POINT = {
+        std::numeric_limits<float>::infinity(),
+        std::numeric_limits<float>::infinity(),
+        std::numeric_limits<float>::infinity()
+};
 
 class octNode {
     public:
@@ -71,6 +90,7 @@ typedef struct _hashNode {
 class Octree {
     public:
         Octree(pcl::PointXYZ dimensions);
+        Octree(simplePoint dimensions);
         ~Octree();
         
         void addPoint(pcl::PointXYZ  point);
