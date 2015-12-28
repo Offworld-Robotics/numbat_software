@@ -12,19 +12,17 @@ using namespace boost;
 
 simplePoint DIMS = {50.0, 50.0, 50.0};
 
-shared_ptr< pcl::PointCloud< pcl::PointXYZRGB > > RayTracer::getResult() {
 
-}
 
 void RayTracer::loadImage ( cv::Mat image ) {
     this->image = image;
 }
 
-RayTracer::RayTracer() : tree(DIMS) {
+RayTracer::RayTracer() {
 
 }
 
-void RayTracer::setOctree ( Octree octTree ) {
+void RayTracer::setOctree ( Octree * octTree ) {
     tree = octTree;
 }
 

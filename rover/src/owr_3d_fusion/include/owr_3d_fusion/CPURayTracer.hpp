@@ -10,13 +10,14 @@
 #define CPU_RAY_TRACER_H
 #include "RayTracer.hpp"
 #include "Octree.h"
-class CPURayTracer: RayTracer {  
+class CPURayTracer: public RayTracer {  
     public:
         void runTraces();
         CPURayTracer() ;
         ~CPURayTracer();
+        virtual shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > getResult();
     private:
         void match(simplePoint pt, cv::Vec3i pixel);
-        pcl::PointCloud<pcl::PointXYZRGB> cld;
+        shared_ptr< pcl::PointCloud< pcl::PointXYZRGB > > cld;
 };
 #endif

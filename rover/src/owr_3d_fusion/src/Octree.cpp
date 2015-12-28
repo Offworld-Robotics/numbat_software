@@ -35,7 +35,7 @@ inline simplePoint calculateOrigin(const simplePoint parentDimensions, const sim
     dimensions.y *= 0.5f;
     dimensions.z *= 0.5f;
     #ifdef DEBUG
-        std::cout << "Calc Orig Point" << orig.x << "," << orig.y << "," << orig.z << "index" << index << std::endl;
+        std::cout << "Calc Orig Point" << orig.x << "," << orig.y << "," << orig.z << "index " << index << std::endl;
     #endif
     return orig;
 }

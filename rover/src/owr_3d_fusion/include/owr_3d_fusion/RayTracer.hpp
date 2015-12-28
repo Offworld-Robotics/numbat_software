@@ -12,7 +12,9 @@
 #include <opencv2/core/core.hpp>
 #include <pcl/point_cloud.h>
 #include <boost/shared_ptr.hpp>
-#define RES 0.0001
+#define RES 0.0001 //(1cm)
+#define TRACE_RANGE 60
+
 
 using namespace boost;
 
@@ -23,18 +25,18 @@ class RayTracer {
         ~RayTracer();
         
         //set the octree for this to use
-        void setOctree(Octree octTree);
+        void setOctree(Octree * octTree);
         //set the image to use
         void loadImage(cv::Mat image);
         //run the task, return the point cloud
         virtual void runTraces() = 0;
         //get the result of the task
-        shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > getResult();
+        virtual shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > getResult() = 0;
         
         
     protected:
         //the current octree
-        Octree tree;
+        Octree * tree = NULL;
         cv::Mat image;
     
 };
