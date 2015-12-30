@@ -12,7 +12,7 @@
 #include <math.h>
 
 //focal length in m
-#define FOCAL_LENGTH_M 0.000367 //3.67mm source: https://forums.logitech.com/t5/Webcams/Focal-Length-of-Logitech-HD-Pro-Webcam-C920/td-p/1280722
+#define FOCAL_LENGTH_M 0.00367 //3.67mm source: https://forums.logitech.com/t5/Webcams/Focal-Length-of-Logitech-HD-Pro-Webcam-C920/td-p/1280722
 
 //the dimensions of the sensor in meters
 //source: https://forums.logitech.com/t5/Webcams/Logitech-HD-Pro-Webcam-C920-optical-sensor-size/td-p/807013
@@ -28,8 +28,8 @@
 
 // #define PIXEL_TO_M_RATIO (SENSOR_WIDTH_M/RESOLUTION_W)
 // #define M_TO_PIXEL_RATIO (RESOLUTION_W/SENSOR_WIDTH_M)
-#define PX_TO_M SENSOR_DIAG_M/sqrt(pow(1920,2) + pow(1080,2))
-#define M_TO_PX sqrt(pow(1920,2) + pow(1080,2))/SENSOR_DIAG_M/
+#define PX_TO_M (SENSOR_DIAG_M/sqrt(pow(RESOLUTION_W,2) + pow(1080,2)))
+#define M_TO_PX (sqrt(pow(RESOLUTION_W,2) + pow(1080,2))/SENSOR_DIAG_M)
 #define FOCAL_LENGTH_P (FOCAL_LENGTH_M * M_TO_PX)
 
 #endif

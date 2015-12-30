@@ -12,7 +12,7 @@
 #include <opencv2/core/core.hpp>
 #include <pcl/point_cloud.h>
 #include <boost/shared_ptr.hpp>
-#define RES 0.0001 //(1cm)
+#define RES 0.01 //(1cm)
 #define TRACE_RANGE 60
 
 

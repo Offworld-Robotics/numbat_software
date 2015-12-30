@@ -260,6 +260,8 @@ HashNode Octree::getNode ( octNode parent, simplePoint pt ) {
             uint32_t locCode = parent.locationCode << 3; //shift the code of the parent
             locCode |= (uint32_t)index;
             return getNode(getLoc(locCode)->data, pt);
+        } else {
+            return getLoc(parent.locationCode);
         }
     }
 }

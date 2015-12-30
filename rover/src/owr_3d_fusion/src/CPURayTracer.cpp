@@ -41,11 +41,11 @@ void CPURayTracer::runTraces() {
     //search the image
     for(pixelX = 0; pixelX < image.rows; pixelX++) {
         metricX= pixelX * pxToM;
-        deltaX = tanh(metricX*FOCAL_LENGTH_M);
+        deltaX = tanh(metricX/FOCAL_LENGTH_M);
         for(pixelY = 0; pixelY < image.cols; pixelY++) {
             cv::Vec3b pt = image.at<cv::Vec3b>(pixelX,pixelY);
             metricY= pixelY * pxToM;
-            deltaY = tanh(metricY*focalLengthPx);
+            deltaY = tanh(metricY/focalLengthPx);
             #ifdef DEBUG
                 std::cout << "pixelY:" << pixelY
                     << "deltaY:" << deltaY 
@@ -55,16 +55,29 @@ void CPURayTracer::runTraces() {
             //gradient of z is the minimum resolution on the z axis of the point cloud
             simplePoint target;
             float dist = 0;
-
+            //the node retrived
+            octNode node;
+            node.dimensions.x = 0;
+            node.dimensions.y = 0;
+            node.dimensions.z = 0;
+            float incDist = RES;
             //this is in metric
-            for(dist = 0;dist < TRACE_RANGE; dist+=RES) {
-                target.x = deltaX * RES;
-                target.y = deltaY * RES;
+            for(dist = 0; 
+                dist < TRACE_RANGE;
+                //use the larger of the dimension of the cell or half the resolution as an increase
+//                 incDist = (RES < (node.dimensions.x/2)) ? (node.dimensions.x/2) : RES, dist+=incDist 
+                dist+=RES
+            ) {
+                target.x = deltaX * dist;
+                target.y = deltaY * dist;
                 target.z = dist;
-//                 #ifdef DEBUG
-//                     std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
-//                 #endif
-                octNode node = tree->getNode(target);
+                #ifdef DEBUG
+                    std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
+                #endif
+                node = tree->getNode(target);
+                #ifdef DEBUG
+                    std::cout << node.orig.x << "," << node.orig.y << "," << node.orig.z << " is found" << std::endl;
+                #endif
                 
                 //if a point is exists at our resolution then we have a match
                 if(node.dimensions.x <= RES) {
@@ -85,6 +98,9 @@ void CPURayTracer::runTraces() {
                     //check within required accuracy
                     simplePoint existingPoint = node.getPointAt(tree->calculateIndex(target, node.orig));
                     if(existingPoint.isEmpty()) {
+                        #ifdef DEBUG
+                            std::cout << "empty" << std::endl;
+                        #endif
                         continue;
                     }
                     existingPoint = target-existingPoint;

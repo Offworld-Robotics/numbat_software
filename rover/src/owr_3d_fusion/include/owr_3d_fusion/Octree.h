@@ -42,9 +42,9 @@ typedef struct _simplePoint {
     }
     inline bool isEmpty() {
         if(x == std::numeric_limits<float>::infinity()) {
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }
 } simplePoint;
