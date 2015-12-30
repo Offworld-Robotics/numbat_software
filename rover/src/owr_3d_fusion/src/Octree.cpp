@@ -15,7 +15,7 @@
 #include <string.h>
 #include <limits>
 
-#define DEBUG
+// #define DEBUG
 #define ROOT_LOC_CODE 1
 
 
@@ -256,7 +256,7 @@ HashNode Octree::getNode ( octNode parent, simplePoint pt ) {
         const int index = calculateIndex(pt, parent.orig);
         const uint32_t childMask = getMaskFromIndex(index);
         //check there is a child
-        if(parent.childrenMask ^ (~childMask)) {
+        if(parent.childrenMask & (childMask)) {
             uint32_t locCode = parent.locationCode << 3; //shift the code of the parent
             locCode |= (uint32_t)index;
             return getNode(getLoc(locCode)->data, pt);
@@ -271,9 +271,10 @@ uint32_t Octree::doHash ( uint32_t locCode ) {
     return (locCode & 0x7FFFFFFF) % NUM_OCT_TREE_CHILDREN;
 }
 
+//calculates an index between 0 and 7
 int Octree::calculateIndex ( simplePoint point, simplePoint orig ) {
     int oct = 0;
-    //8 is 100 in binary
+    //8 is 1000 in binary
     //position in tree is determined by this algorithm
     if(point.x > orig.x) {
         oct |= 4;
