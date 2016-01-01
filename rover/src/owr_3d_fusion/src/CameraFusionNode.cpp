@@ -19,6 +19,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+const simplePoint DIMS = {50.0, 50.0, 50.0};
+
 //quick open CL error checking function from:
 //http://developer.amd.com/tools-and-sdks/opencl-zone/opencl-resources/introductory-tutorial-to-opencl/
 inline void checkErr(cl_int err, const char * name) {
@@ -50,9 +52,9 @@ int main(int argc, char ** argv) {
 }
 
 
-CameraFusionNode::CameraFusionNode() {
+CameraFusionNode::CameraFusionNode() : tr(DIMS) {
     colourPub = nh.advertise<sensor_msgs::PointCloud2>(TOPIC,10,true);
-    pcSub =  nh.subscribe("/pcl", 1000, &CameraFusionNode()::pointCloudCallback, this);
+    pcSub =  nh.subscribe("/pcl", 1000, &CameraFusionNode::pointCloudCallback, this);
     
 }
 
@@ -103,17 +105,18 @@ void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame
 }
 
 void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::ConstPtr& pc ) {
-    pcl::PointCloud<pcl::PointXYZRGB> cld;
-    pcl::fromROSMsg<pcl::PointCloud<pcl::PointXYZRGB> >(pc, cld);
+    pcl::PointCloud<pcl::PointXYZ> cld;
+    sensor_msgs::PointCloud2 pc2 = *pc;
+    pcl::fromROSMsg<pcl::PointXYZ>(pc2, cld);
     
     //TODO: clear the octree
     
     //load the point cloud into the octree
-    for (size_t i = 0; i < cld->points.size (); ++i) {
-        tr.addPoint(cld->points[i]);
+    for (size_t i = 0; i < cld.points.size (); ++i) {
+        tr.addPoint(cld.points[i]);
     }
     
-    tracer.setOctree(&oct);
+    tracer.setOctree(&tr);
     //TODO: fix this path
     cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/test.jpg", CV_LOAD_IMAGE_COLOR);
     if(!image.data) {
@@ -121,12 +124,13 @@ void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::Cons
     }
     tracer.loadImage(image);
     tracer.runTraces();
-    cld =  tracer.getResult();
+    shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > cld2;
+    cld2 =  tracer.getResult();
     sensor_msgs::PointCloud2 pcl2;
     
-    pcl::toROSMsg(*cld, pcl2);
+    pcl::toROSMsg(*cld2, pcl2);
     pcl2.header.frame_id = pc->header.frame_id;
-    std::cout << cld->points.size() << std::endl;
+    std::cout << cld.points.size() << std::endl;
     colourPub.publish(pcl2);
 }
 
