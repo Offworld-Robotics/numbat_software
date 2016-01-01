@@ -13,7 +13,11 @@
 // #define __NO_STD_VECTOR // Use cl::vector instead of STL version //This is apparently depricated
 #include <CL/cl.hpp>
 
-#include "owr_3d_fusion/Octree.h"
+
+#include </opt/ros/indigo/include/pcl_conversions/pcl_conversions.h>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 //quick open CL error checking function from:
 //http://developer.amd.com/tools-and-sdks/opencl-zone/opencl-resources/introductory-tutorial-to-opencl/
@@ -25,33 +29,39 @@ inline void checkErr(cl_int err, const char * name) {
 }
 
 int main(int argc, char ** argv) {
-   cl_int err;
-   std::vector< cl::Platform > platformList;
-   cl::Platform::get(&platformList);
-   checkErr(platformList.size()!=0 ? CL_SUCCESS : -1, "cl::Platform::get");
-   std::cerr << "Platform number is: " << platformList.size() << std::endl;std::string platformVendor;
-   platformList[0].getInfo((cl_platform_info)CL_PLATFORM_VENDOR, &platformVendor);
-   std::cerr << "Platform is by: " << platformVendor << "\n";
-   cl_context_properties cprops[3] = {CL_CONTEXT_PLATFORM, (cl_context_properties)(platformList[0])(), 0};cl::Context context(
-      CL_DEVICE_TYPE_CPU,
-      cprops,
-      NULL,
-      NULL,
-      &err);
-   checkErr(err, "Context::Context()");
+    ros::init(argc,argv,"camera_fusion_node");
+    CameraFusionNode node;
+    node.spin();
+    
+//    cl_int err;
+//    std::vector< cl::Platform > platformList;
+//    cl::Platform::get(&platformList);
+//    checkErr(platformList.size()!=0 ? CL_SUCCESS : -1, "cl::Platform::get");
+//    std::cerr << "Platform number is: " << platformList.size() << std::endl;std::string platformVendor;
+//    platformList[0].getInfo((cl_platform_info)CL_PLATFORM_VENDOR, &platformVendor);
+//    std::cerr << "Platform is by: " << platformVendor << "\n";
+//    cl_context_properties cprops[3] = {CL_CONTEXT_PLATFORM, (cl_context_properties)(platformList[0])(), 0};cl::Context context(
+//       CL_DEVICE_TYPE_CPU,
+//       cprops,
+//       NULL,
+//       NULL,
+//       &err);
+//    checkErr(err, "Context::Context()");
 }
 
 
 CameraFusionNode::CameraFusionNode() {
-
+    colourPub = nh.advertise<sensor_msgs::PointCloud2>(TOPIC,10,true);
+    pcSub =  nh.subscribe("/pcl", 1000, &CameraFusionNode()::pointCloudCallback, this);
+    
 }
 
 CameraFusionNode::~CameraFusionNode() {
 
 }
 
-sensor_msgs::PointCloud CameraFusionNode::doColouring ( pcl::PointCloud< pcl::PointXYZRGB > pc, sensor_msgs::Image img ) {
-    return sensor_msgs::PointCloud();
+sensor_msgs::PointCloud2 CameraFusionNode::doColouring ( pcl::PointCloud< pcl::PointXYZRGB > pc, sensor_msgs::Image img ) {
+    return sensor_msgs::PointCloud2();
 }
 
 pcl::PointCloud< pcl::PointXYZRGB > CameraFusionNode::getLatestPointCloud() {
@@ -92,7 +102,38 @@ void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame
 //     }
 }
 
-void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud::ConstPtr& pc ) {
+void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::ConstPtr& pc ) {
+    pcl::PointCloud<pcl::PointXYZRGB> cld;
+    pcl::fromROSMsg<pcl::PointCloud<pcl::PointXYZRGB> >(pc, cld);
     
+    //TODO: clear the octree
+    
+    //load the point cloud into the octree
+    for (size_t i = 0; i < cld->points.size (); ++i) {
+        tr.addPoint(cld->points[i]);
+    }
+    
+    tracer.setOctree(&oct);
+    //TODO: fix this path
+    cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/test.jpg", CV_LOAD_IMAGE_COLOR);
+    if(!image.data) {
+        std::cout << "no data" << std::endl;
+    }
+    tracer.loadImage(image);
+    tracer.runTraces();
+    cld =  tracer.getResult();
+    sensor_msgs::PointCloud2 pcl2;
+    
+    pcl::toROSMsg(*cld, pcl2);
+    pcl2.header.frame_id = pc->header.frame_id;
+    std::cout << cld->points.size() << std::endl;
+    colourPub.publish(pcl2);
 }
 
+void CameraFusionNode::spin() {
+    
+    while(ros::ok()) {
+        
+        ros::spinOnce();
+    }
+}
