@@ -53,7 +53,7 @@ class CameraFusionNode {
         ros::Subscriber camSub;
         
         CPURayTracer tracer;
-        Octree tr;
+        Octree * tr;
         
         
 };

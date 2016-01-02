@@ -52,10 +52,10 @@ int main(int argc, char ** argv) {
 }
 
 
-CameraFusionNode::CameraFusionNode() : tr(DIMS) {
+CameraFusionNode::CameraFusionNode(){
     colourPub = nh.advertise<sensor_msgs::PointCloud2>(TOPIC,10,true);
     pcSub =  nh.subscribe("/pcl", 1000, &CameraFusionNode::pointCloudCallback, this);
-    
+    tr = NULL;
 }
 
 CameraFusionNode::~CameraFusionNode() {
@@ -110,13 +110,16 @@ void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::Cons
     pcl::fromROSMsg<pcl::PointXYZ>(pc2, cld);
     
     //TODO: clear the octree
-    
+    if(tr) {
+        delete tr;
+    }
+    tr = new  Octree(DIMS);
     //load the point cloud into the octree
     for (size_t i = 0; i < cld.points.size (); ++i) {
-        tr.addPoint(cld.points[i]);
+        tr->addPoint(cld.points[i]);
     }
     
-    tracer.setOctree(&tr);
+    tracer.setOctree(tr);
     //TODO: fix this path
     cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/test.jpg", CV_LOAD_IMAGE_COLOR);
     if(!image.data) {
@@ -132,6 +135,7 @@ void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::Cons
     pcl2.header.frame_id = pc->header.frame_id;
     std::cout << cld.points.size() << std::endl;
     colourPub.publish(pcl2);
+    cld2.reset();
 }
 
 void CameraFusionNode::spin() {

@@ -18,11 +18,14 @@ CPURayTracer::CPURayTracer() : RayTracer(), cld(new pcl::PointCloud<pcl::PointXY
 }
 
 CPURayTracer::~CPURayTracer() {
-    
+    cld.reset();
 }
 
 
 void CPURayTracer::runTraces() {
+    cld.reset();
+    shared_ptr< pcl::PointCloud< pcl::PointXYZRGB > > newCld(new pcl::PointCloud<pcl::PointXYZRGB> ());
+    cld = newCld;
     //NOTE: this function unfortuantly has to use two cordinate systems
     //a metric one in meters, and a pixel based one in pixels.
     int pixelX, pixelY;
@@ -40,14 +43,23 @@ void CPURayTracer::runTraces() {
     const float metricXOffset = (image.cols/2.0) * pxToM;
     const float metricYOffset = (image.rows/2.0) * pxToM;
     //NOTE: this is not the most efficient way to do this
-    //but it is the simplest
+    //but it is a simpler way.
     //see: http://docs.opencv.org/2.4/doc/tutorials/core/how_to_scan_images/how_to_scan_images.html
     //search the image
-    for(pixelX = 0; pixelX < image.cols; pixelX++) {
-        metricX= pixelX * pxToM + metricXOffset;
-        deltaX = tanh(metricX/FOCAL_LENGTH_M);
-        for(pixelY = 0; pixelY < image.rows; pixelY++) {
-            cv::Vec3b pt = image.at<cv::Vec3b>(pixelX,pixelY);
+    cv::MatIterator_<cv::Vec3b> it, end;
+    for(it = image.begin<cv::Vec3b>(), end = image.end<cv::Vec3b>(); it != end; ++it) {
+//     for(pixelX = 0; pixelX < image.cols; pixelX++) {
+        pixelX = it.pos().x;
+        pixelY = it.pos().y;
+        #ifdef DEBUG
+            std::cout << "pixel" << pixelX << "," << pixelY << std::endl;
+        #endif
+//         if(!pixelX) {
+            metricX= pixelX * pxToM + metricXOffset;
+            deltaX = tanh(metricX/FOCAL_LENGTH_M);
+//         }
+//         for(pixelY = 0; pixelY < image.rows; pixelY++) {
+            cv::Vec3b pt = (*it);
             metricY= pixelY * pxToM + metricYOffset;
             deltaY = tanh(metricY/focalLengthPx);
             #ifdef DEBUG
@@ -124,7 +136,7 @@ void CPURayTracer::runTraces() {
                     }
                 }
             }
-        }
+//         }
     }
 }
 
