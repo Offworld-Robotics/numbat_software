@@ -15,6 +15,10 @@ simplePoint DIMS = {50.0, 50.0, 50.0};
 
 
 void RayTracer::loadImage ( cv::Mat image ) {
+    if(image.channels() != 3) {
+        std::cout << "wrong number of channels" << std::endl;
+        exit(1);
+    }
     this->image = image;
 }
 

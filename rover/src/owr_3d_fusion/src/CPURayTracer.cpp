@@ -35,16 +35,20 @@ void CPURayTracer::runTraces() {
         std::cout << "focalLengthPx:" << focalLengthPx << "PX_TO_M" <<PX_TO_M << std::endl;
     #endif
     const float pxToM = PX_TO_M;
+    //the image co-ordinate system starts in the top right corner, whilst the pcl system starts in the center
+    //we need to add an offset
+    const float metricXOffset = (image.cols/2.0) * pxToM;
+    const float metricYOffset = (image.rows/2.0) * pxToM;
     //NOTE: this is not the most efficient way to do this
     //but it is the simplest
     //see: http://docs.opencv.org/2.4/doc/tutorials/core/how_to_scan_images/how_to_scan_images.html
     //search the image
-    for(pixelX = 0; pixelX < image.rows; pixelX++) {
-        metricX= pixelX * pxToM;
+    for(pixelX = 0; pixelX < image.cols; pixelX++) {
+        metricX= pixelX * pxToM + metricXOffset;
         deltaX = tanh(metricX/FOCAL_LENGTH_M);
-        for(pixelY = 0; pixelY < image.cols; pixelY++) {
+        for(pixelY = 0; pixelY < image.rows; pixelY++) {
             cv::Vec3b pt = image.at<cv::Vec3b>(pixelX,pixelY);
-            metricY= pixelY * pxToM;
+            metricY= pixelY * pxToM + metricYOffset;
             deltaY = tanh(metricY/focalLengthPx);
             #ifdef DEBUG
                 std::cout << "pixelY:" << pixelY
@@ -84,7 +88,9 @@ void CPURayTracer::runTraces() {
                     //match
                     //NOTE: we have a loss of accuracy by using the target point here
                     //testing should be done to see if it is better to use the laserScan point.
-                    std::cout << "match on small node" << std::endl;
+                    #ifdef DEBUG
+                        std::cout << "match on small node" << std::endl;
+                    #endif
                     match(target,pt);
                     break;
                 //the next size up, match

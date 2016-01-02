@@ -27,7 +27,11 @@
 #define CHILD_7 0b01000000
 #define CHILD_8 0b10000000
 
-#define HASH_MAP_SIZE 100000
+//Important: this number must be prime
+#define HASH_MAP_SIZE 100003
+
+//The maximum resolution (min dimensions) that new nodes can be created at
+#define MAX_RESOLUTON 0.005 //5mm
 
 typedef struct _simplePoint {
     float x, y, z;
@@ -57,7 +61,7 @@ const simplePoint EMPTY_POINT = {
 
 class octNode {
     public:
-        uint32_t locationCode;
+        uint64_t locationCode;
         uint8_t childrenMask; //each bit is a node, 1 means it is present
         simplePoint points[NUM_OCT_TREE_CHILDREN]; //the children of leaves
         simplePoint orig;
@@ -81,7 +85,7 @@ typedef struct _hashNode *HashNode;
 
 typedef struct _hashNode {
     octNode data;
-    uint32_t locationCode;
+    uint64_t locationCode;
 //     bool hasData;
     HashNode  next;
 } hashNode;
@@ -106,15 +110,15 @@ class Octree {
         HashNode hashMap[HASH_MAP_SIZE];
         
         void addPoint(simplePoint pt, octNode parent);
-        octNode createNewLeaf(uint32_t parent, int index, simplePoint orig, simplePoint dimensions);
+        octNode createNewLeaf(uint64_t parent, int index, simplePoint orig, simplePoint dimensions);
         void splitLeaf(int leaf);
 
-        uint32_t doHash(uint32_t locCode);
+        uint64_t doHash(uint64_t locCode);
         
         simplePoint pclToSimplePoint(pcl::PointXYZ pt);
         simplePoint dimensions;
         
-        HashNode  getLoc(uint32_t locationCode);
+        HashNode  getLoc(uint64_t locationCode);
         HashNode getNode(octNode parent, simplePoint pt);
 
 };

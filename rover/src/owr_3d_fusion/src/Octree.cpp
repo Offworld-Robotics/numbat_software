@@ -40,8 +40,8 @@ inline simplePoint calculateOrigin(const simplePoint parentDimensions, const sim
     return orig;
 }
 
-inline uint32_t getMaskFromIndex(const int index) {
-    uint32_t childMask = 0;
+inline uint64_t getMaskFromIndex(const int index) {
+    uint64_t childMask = 0;
     switch(index) {
         case 0:
             childMask = CHILD_1;
@@ -119,24 +119,30 @@ void Octree::addPoint ( simplePoint pt, octNode parent ) {
         if(parent.points[index].x !=  std::numeric_limits<float>::infinity()) {
 //             return;
             //implement spliting
-//             uint32_t childMask = 1;
+//             uint64_t childMask = 1;
             int i;
-            for(i =0; i < NUM_OCT_TREE_CHILDREN; i++) {
+            simplePoint dimensions = parent.dimensions;
+            dimensions.x *= 0.5f;
+            dimensions.y *= 0.5f;
+            dimensions.z *= 0.5f;
+            if(dimensions.x < MAX_RESOLUTON) {
+                //there is already a point close enough that we don't need to 
+                //ad a new one
+            } else {
+                for(i =0; i < NUM_OCT_TREE_CHILDREN; i++) {
 
-                //does a child exist for this index
-                if(parent.points[i].x !=  std::numeric_limits<float>::infinity()) {
-                    simplePoint orig = calculateOrigin(parent.dimensions, parent.orig, i);
-                    simplePoint dimensions = parent.dimensions;
-                    dimensions.x *= 0.5f;
-                    dimensions.y *= 0.5f;
-                    dimensions.z *= 0.5f;
-                    addPoint(parent.points[i], createNewLeaf(parent.locationCode, i, orig, dimensions ));
+                    //does a child exist for this index
+                    if(parent.points[i].x !=  std::numeric_limits<float>::infinity()) {
+                        simplePoint orig = calculateOrigin(parent.dimensions, parent.orig, i);
+                        
+                        addPoint(parent.points[i], createNewLeaf(parent.locationCode, i, orig, dimensions ));
+                    }
                 }
+                //lookup the child and continue
+                uint64_t locCode = parent.locationCode << 3; //shift the code of the parent
+                locCode |= (uint64_t)index;
+                addPoint(pt, getLoc(locCode)->data);
             }
-            //lookup the child and continue
-            uint32_t locCode = parent.locationCode << 3; //shift the code of the parent
-            locCode |= (uint32_t)index;
-            addPoint(pt, getLoc(locCode)->data);
         } else {
             //just store it there
             hashMap[doHash(parent.locationCode)]->data.points[index] = pt;
@@ -144,12 +150,12 @@ void Octree::addPoint ( simplePoint pt, octNode parent ) {
     } else {
 //                 return;
         //does our index exist
-        const uint32_t childMask = getMaskFromIndex(index);
+        const uint64_t childMask = getMaskFromIndex(index);
         //will be true if the child exists
-        if(parent.childrenMask ^ (~childMask)) {
+        if(parent.childrenMask & (childMask)) {
             //lookup the child and continue
-            uint32_t locCode = parent.locationCode << 3; //shift the code of the parent
-            locCode |= (uint32_t)index;
+            uint64_t locCode = parent.locationCode << 3; //shift the code of the parent
+            locCode |= (uint64_t)index;
             addPoint(pt, getLoc(locCode)->data);
         } else {
            simplePoint orig = calculateOrigin(parent.dimensions, parent.orig, index);
@@ -167,10 +173,10 @@ simplePoint Octree::pclToSimplePoint ( pcl::PointXYZ pt ) {
 
 
 
-octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint orig, simplePoint dimensions ) {
-    uint32_t locCode = locCodeParent << 3; //shift the code of the parent
-    locCode |= (uint32_t)index;
-    uint32_t hash = doHash(locCode);
+octNode Octree::createNewLeaf ( uint64_t locCodeParent, int index, simplePoint orig, simplePoint dimensions ) {
+    uint64_t locCode = locCodeParent << 3; //shift the code of the parent
+    locCode |= (uint64_t)index;
+    uint64_t hash = doHash(locCode);
     HashNode node = (HashNode) malloc(sizeof(hashNode));
     node->locationCode = locCode;
     node->next = NULL;
@@ -210,7 +216,7 @@ octNode Octree::createNewLeaf ( uint32_t locCodeParent, int index, simplePoint o
     return node->data;
 }
 
-HashNode Octree::getLoc ( uint32_t locationCode ) {
+HashNode Octree::getLoc ( uint64_t locationCode ) {
     HashNode h = hashMap[doHash(locationCode)];
     if(h) {
         #ifdef DEBUG
@@ -254,11 +260,11 @@ HashNode Octree::getNode ( octNode parent, simplePoint pt ) {
         return getLoc(parent.locationCode);
     } else {
         const int index = calculateIndex(pt, parent.orig);
-        const uint32_t childMask = getMaskFromIndex(index);
+        const uint64_t childMask = getMaskFromIndex(index);
         //check there is a child
         if(parent.childrenMask & (childMask)) {
-            uint32_t locCode = parent.locationCode << 3; //shift the code of the parent
-            locCode |= (uint32_t)index;
+            uint64_t locCode = parent.locationCode << 3; //shift the code of the parent
+            locCode |= (uint64_t)index;
             return getNode(getLoc(locCode)->data, pt);
         } else {
             return getLoc(parent.locationCode);
@@ -268,7 +274,7 @@ HashNode Octree::getNode ( octNode parent, simplePoint pt ) {
 
 
 
-uint32_t Octree::doHash ( uint32_t locCode ) {
+uint64_t Octree::doHash ( uint64_t locCode ) {
     //TODO: find a better hash function, this is the one that java supposedly uses
     return (locCode & 0x7FFFFFFF) % NUM_OCT_TREE_CHILDREN;
 }
