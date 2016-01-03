@@ -20,7 +20,6 @@
 
 
 
-// #define DEBUG
 //helper functions
 inline simplePoint calculateOrigin(const simplePoint parentDimensions, const simplePoint parentOrigin, const int index) {
     simplePoint dimensions = parentDimensions;
@@ -91,6 +90,7 @@ Octree::Octree ( simplePoint dims )  {
     //create the root
     simplePoint pt = {0.0,0.0,0.0};
     createNewLeaf(0,ROOT_LOC_CODE,pt,dimensions);
+    root = getLoc(ROOT_LOC_CODE);
     
 }
 
@@ -103,7 +103,7 @@ Octree::~Octree() {
 //pre-condition: the root node has been initalized
 void Octree::addPoint(pcl::PointXYZ  point) {
     
-    addPoint(pclToSimplePoint(point),hashMap[doHash(ROOT_LOC_CODE)]->data);
+    addPoint(pclToSimplePoint(point),root->data);
 }
 
 void Octree::addPoint ( simplePoint pt, octNode parent ) {
@@ -251,7 +251,7 @@ octNode Octree::getNode ( pcl::PointXYZ point ) {
  */
 octNode Octree::getNode ( simplePoint point ) {
     //start with the root and burrow
-    return getNode(hashMap[doHash(ROOT_LOC_CODE)]->data,point)->data;
+    return getNode(root->data,point)->data;
     //TODO: handle empty
 }
 

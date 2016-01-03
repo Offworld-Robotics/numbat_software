@@ -80,7 +80,7 @@ void CPURayTracer::runTraces() {
 //         node.dimensions.z = 0;
         float incDist = RES;
         //this is in metric
-        for(dist = 0; 
+        for(dist = FOCAL_LENGTH_M;  //start at the end of the focal length, because of how we calculate everything our z origin is at -f
             dist < TRACE_RANGE;
             //use the larger of the dimension of the cell or half the resolution as an increase
 //                 incDist = (RES < (node.dimensions.x/2)) ? (node.dimensions.x/2) : RES, dist+=incDist 
@@ -88,13 +88,15 @@ void CPURayTracer::runTraces() {
         ) {
             target.x = deltaX * dist;
             target.y = deltaY * dist;
-            target.z = dist;
+            target.z = dist - FOCAL_LENGTH_M;
             #ifdef DEBUG
                 std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
             #endif
             node = tree->getNode(target);
             #ifdef DEBUG
                 std::cout << node.orig.x << "," << node.orig.y << "," << node.orig.z << " is found" << std::endl;
+                std::cout << "\t" << node.dimensions.x << "," << node.dimensions.y << "," << node.dimensions.z << " (dims)" << std::endl;
+                std::cout << "\tlocCode:" << node.locationCode << " childMask" << node.childrenMask  << std::endl;
             #endif
             
             //if a point is exists at our resolution then we have a match
@@ -104,6 +106,7 @@ void CPURayTracer::runTraces() {
                 //testing should be done to see if it is better to use the laserScan point.
                 #ifdef DEBUG
                     std::cout << "match on small node" << std::endl;
+                    std::cout << pixelX << "," << pixelY << std::endl;
                 #endif
                 match(target,pt);
                 break;

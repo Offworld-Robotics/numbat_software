@@ -110,6 +110,8 @@ class Octree {
     private:
 
         HashNode hashMap[HASH_MAP_SIZE];
+        //this makes it more efficent
+        HashNode root;
         
         void addPoint(simplePoint pt, octNode parent);
         octNode createNewLeaf(uint64_t parent, int index, simplePoint orig, simplePoint dimensions);
@@ -122,6 +124,8 @@ class Octree {
         
         HashNode  getLoc(uint64_t locationCode);
         HashNode getNode(octNode parent, simplePoint pt);
+        
+        
 
 };
 

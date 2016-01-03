@@ -109,7 +109,7 @@ void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::Cons
     sensor_msgs::PointCloud2 pc2 = *pc;
     pcl::fromROSMsg<pcl::PointXYZ>(pc2, cld);
     
-    //TODO: clear the octree
+    //clear the octree
     if(tr) {
         delete tr;
     }
@@ -117,6 +117,7 @@ void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::Cons
     //load the point cloud into the octree
     for (size_t i = 0; i < cld.points.size (); ++i) {
         tr->addPoint(cld.points[i]);
+//         ROS_INFO("pt.x=%f;\npt.y=%f;\npt.z=%f;\ntr->addPoint(pt)\nTEST HERE",cld.points[i].x, cld.points[i].y, cld.points[i].z);
     }
     
     tracer.setOctree(tr);
@@ -132,9 +133,11 @@ void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::Cons
     sensor_msgs::PointCloud2 pcl2;
     
     pcl::toROSMsg(*cld2, pcl2);
-    pcl2.header.frame_id = pc->header.frame_id;
-    std::cout << cld.points.size() << std::endl;
+    //use the header from the input point cloud, latter we will have to update the farme on this
+    pcl2.header = pc->header;
+    std::cout << cld2->points.size() << std::endl;
     colourPub.publish(pcl2);
+    
     cld2.reset();
 }
 
