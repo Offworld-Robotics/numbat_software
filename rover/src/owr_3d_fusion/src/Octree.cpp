@@ -19,6 +19,7 @@
 #define ROOT_LOC_CODE 1
 
 
+
 // #define DEBUG
 //helper functions
 inline simplePoint calculateOrigin(const simplePoint parentDimensions, const simplePoint parentOrigin, const int index) {
@@ -116,7 +117,7 @@ void Octree::addPoint ( simplePoint pt, octNode parent ) {
             std::cout << "Found a leaf" << std::endl;
         #endif
         //is there already a child at our index?
-        if(parent.points[index].x !=  std::numeric_limits<float>::infinity()) {
+        if(parent.points[index].x !=  FLOAT_INF) {
 //             return;
             //implement spliting
 //             uint64_t childMask = 1;
@@ -132,7 +133,7 @@ void Octree::addPoint ( simplePoint pt, octNode parent ) {
                 for(i =0; i < NUM_OCT_TREE_CHILDREN; i++) {
 
                     //does a child exist for this index
-                    if(parent.points[i].x !=  std::numeric_limits<float>::infinity()) {
+                    if(parent.points[i].x !=  FLOAT_INF) {
                         simplePoint orig = calculateOrigin(parent.dimensions, parent.orig, i);
                         
                         addPoint(parent.points[i], createNewLeaf(parent.locationCode, i, orig, dimensions ));
@@ -166,7 +167,7 @@ void Octree::addPoint ( simplePoint pt, octNode parent ) {
     }
 }
 
-simplePoint Octree::pclToSimplePoint ( pcl::PointXYZ pt ) {
+inline simplePoint Octree::pclToSimplePoint ( pcl::PointXYZ pt ) {
     simplePoint point = {pt.x, pt.y, pt.z};
     return point;
 }
@@ -190,9 +191,9 @@ octNode Octree::createNewLeaf ( uint64_t locCodeParent, int index, simplePoint o
     //clear the points
     int i = 0;
     const simplePoint empty = {
-        std::numeric_limits<float>::infinity(),
-        std::numeric_limits<float>::infinity(),
-        std::numeric_limits<float>::infinity()
+        FLOAT_INF,
+        FLOAT_INF,
+        FLOAT_INF
     };
     for(i=0;i<NUM_OCT_TREE_CHILDREN;i++) {
         node->data.points[i] = empty;
@@ -241,7 +242,7 @@ HashNode Octree::getLoc ( uint64_t locationCode ) {
  */
 octNode Octree::getNode ( pcl::PointXYZ point ) {
     //start with the root and burrow
-    return getNode(hashMap[doHash(ROOT_LOC_CODE)]->data,pclToSimplePoint(point))->data;
+    return getNode(pclToSimplePoint(point));
     //TODO: handle empty
 }
 
@@ -280,7 +281,7 @@ uint64_t Octree::doHash ( uint64_t locCode ) {
 }
 
 //calculates an index between 0 and 7
-int Octree::calculateIndex ( simplePoint point, simplePoint orig ) {
+int Octree::calculateIndex (  simplePoint const& point, simplePoint const& orig ) {
     int oct = 0;
     //8 is 1000 in binary
     //position in tree is determined by this algorithm

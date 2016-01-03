@@ -28,7 +28,7 @@ void CPURayTracer::runTraces() {
     cld = newCld;
     //NOTE: this function unfortuantly has to use two cordinate systems
     //a metric one in meters, and a pixel based one in pixels.
-    int pixelX, pixelY;
+    int pixelX = -1, pixelY = -1;
     double metricX, metricY;
     //our accuracy does not require double precision
     float deltaX, deltaY;
@@ -49,93 +49,95 @@ void CPURayTracer::runTraces() {
     cv::MatIterator_<cv::Vec3b> it, end;
     for(it = image.begin<cv::Vec3b>(), end = image.end<cv::Vec3b>(); it != end; ++it) {
 //     for(pixelX = 0; pixelX < image.cols; pixelX++) {
-        pixelX = it.pos().x;
-        pixelY = it.pos().y;
+        const cv::Point pos = it.pos();
+        pixelX = pos.x;
+        if(pixelY != pos.y) {
+            pixelY = pos.y;
+            metricY= pixelY * pxToM + metricYOffset;
+            deltaY = tanh(metricY/focalLengthPx);
+        }
         #ifdef DEBUG
             std::cout << "pixel" << pixelX << "," << pixelY << std::endl;
         #endif
-//         if(!pixelX) {
-            metricX= pixelX * pxToM + metricXOffset;
-            deltaX = tanh(metricX/FOCAL_LENGTH_M);
-//         }
+        metricX= pixelX * pxToM + metricXOffset;
+        deltaX = tanh(metricX/FOCAL_LENGTH_M);
 //         for(pixelY = 0; pixelY < image.rows; pixelY++) {
-            cv::Vec3b pt = (*it);
-            metricY= pixelY * pxToM + metricYOffset;
-            deltaY = tanh(metricY/focalLengthPx);
-            #ifdef DEBUG
-                std::cout << "pixelY:" << pixelY
-                    << "deltaY:" << deltaY 
-                    <<  "metricY:" << metricY
-                    << "tanInput:" << metricY*focalLengthPx << std::endl;
-            #endif
-            //gradient of z is the minimum resolution on the z axis of the point cloud
-            simplePoint target;
-            float dist = 0;
-            //the node retrived
-            octNode node;
-            node.dimensions.x = 0;
-            node.dimensions.y = 0;
-            node.dimensions.z = 0;
-            float incDist = RES;
-            //this is in metric
-            for(dist = 0; 
-                dist < TRACE_RANGE;
-                //use the larger of the dimension of the cell or half the resolution as an increase
+        cv::Vec3b pt = (*it);
+       
+        #ifdef DEBUG
+            std::cout << "pixelY:" << pixelY
+                << "deltaY:" << deltaY 
+                <<  "metricY:" << metricY
+                << "tanInput:" << metricY*focalLengthPx << std::endl;
+        #endif
+        //gradient of z is the minimum resolution on the z axis of the point cloud
+        simplePoint target;
+        float dist = 0;
+        //the node retrived
+        octNode node;
+//         node.dimensions.x = 0;
+//         node.dimensions.y = 0;
+//         node.dimensions.z = 0;
+        float incDist = RES;
+        //this is in metric
+        for(dist = 0; 
+            dist < TRACE_RANGE;
+            //use the larger of the dimension of the cell or half the resolution as an increase
 //                 incDist = (RES < (node.dimensions.x/2)) ? (node.dimensions.x/2) : RES, dist+=incDist 
-                dist+=RES
-            ) {
-                target.x = deltaX * dist;
-                target.y = deltaY * dist;
-                target.z = dist;
+            dist+=RES
+        ) {
+            target.x = deltaX * dist;
+            target.y = deltaY * dist;
+            target.z = dist;
+            #ifdef DEBUG
+                std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
+            #endif
+            node = tree->getNode(target);
+            #ifdef DEBUG
+                std::cout << node.orig.x << "," << node.orig.y << "," << node.orig.z << " is found" << std::endl;
+            #endif
+            
+            //if a point is exists at our resolution then we have a match
+            if(node.dimensions.x <= RES) {
+                //match
+                //NOTE: we have a loss of accuracy by using the target point here
+                //testing should be done to see if it is better to use the laserScan point.
                 #ifdef DEBUG
-                    std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
+                    std::cout << "match on small node" << std::endl;
                 #endif
-                node = tree->getNode(target);
-                #ifdef DEBUG
-                    std::cout << node.orig.x << "," << node.orig.y << "," << node.orig.z << " is found" << std::endl;
-                #endif
-                
-                //if a point is exists at our resolution then we have a match
-                if(node.dimensions.x <= RES) {
-                    //match
-                    //NOTE: we have a loss of accuracy by using the target point here
-                    //testing should be done to see if it is better to use the laserScan point.
-                    #ifdef DEBUG
-                        std::cout << "match on small node" << std::endl;
-                    #endif
+                match(target,pt);
+                break;
+            //the next size up, match
+            } else if (node.dimensions.x <= RES * 8) {
+                if(!node.getPointAt(tree->calculateIndex(target, node.orig)).isEmpty()) {
+                    std::cout << "match on smallish node" << std::endl;
                     match(target,pt);
                     break;
-                //the next size up, match
-                } else if (node.dimensions.x <= RES * 8) {
-                    if(!node.getPointAt(tree->calculateIndex(target, node.orig)).isEmpty()) {
-                        std::cout << "match on smallish node" << std::endl;
-                        match(target,pt);
-                        break;
-                    }
-                } else {
-                    //check within required accuracy
-                    simplePoint existingPoint = node.getPointAt(tree->calculateIndex(target, node.orig));
-                    if(existingPoint.isEmpty()) {
-                        #ifdef DEBUG
-                            std::cout << "empty" << std::endl;
-                        #endif
-                        continue;
-                    }
-                    existingPoint = target-existingPoint;
-                    
-                    if(fabs(existingPoint.x) <= RES && fabs(existingPoint.y) <= RES && fabs(existingPoint.z) <= RES) {
-                        std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
-                        //obviously this is a realy slow way to do this, but its only for debuging
-                        std::cout << node.getPointAt(tree->calculateIndex(target, node.orig)).x << 
-                            "," << node.getPointAt(tree->calculateIndex(target, node.orig)).y << 
-                            "," << node.getPointAt(tree->calculateIndex(target, node.orig)).z << " is existing" << std::endl;
-                        std::cout << existingPoint.x << "," << existingPoint.y << "," << existingPoint.z << " is diff" << std::endl;
-                        std::cout << "match on comparision" << std::endl;
-                        match(target,pt);
-                        break;
-                    }
+                }
+            } else {
+                //check within required accuracy
+                simplePoint existingPoint = node.getPointAt(tree->calculateIndex(target, node.orig));
+                if(existingPoint.isEmpty()) {
+                    #ifdef DEBUG
+                        std::cout << "empty" << std::endl;
+                    #endif
+                    continue;
+                }
+                existingPoint = target-existingPoint;
+                
+                if(fabs(existingPoint.x) <= RES && fabs(existingPoint.y) <= RES && fabs(existingPoint.z) <= RES) {
+                    std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
+                    //obviously this is a realy slow way to do this, but its only for debuging
+                    std::cout << node.getPointAt(tree->calculateIndex(target, node.orig)).x << 
+                        "," << node.getPointAt(tree->calculateIndex(target, node.orig)).y << 
+                        "," << node.getPointAt(tree->calculateIndex(target, node.orig)).z << " is existing" << std::endl;
+                    std::cout << existingPoint.x << "," << existingPoint.y << "," << existingPoint.z << " is diff" << std::endl;
+                    std::cout << "match on comparision" << std::endl;
+                    match(target,pt);
+                    break;
                 }
             }
+        }
 //         }
     }
 }

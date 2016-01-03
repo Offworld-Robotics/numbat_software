@@ -33,6 +33,8 @@
 //The maximum resolution (min dimensions) that new nodes can be created at
 #define MAX_RESOLUTON 0.005 //5mm
 
+const float FLOAT_INF = std::numeric_limits<float>::infinity();
+
 typedef struct _simplePoint {
     float x, y, z;
     bool operator==(const _simplePoint& lhs) const {
@@ -44,8 +46,8 @@ typedef struct _simplePoint {
         lhs.z-=z;
         return (lhs);
     }
-    inline bool isEmpty() {
-        if(x == std::numeric_limits<float>::infinity()) {
+    inline bool isEmpty() const {
+        if(x == FLOAT_INF) {
             return true;
         } else {
             return false;
@@ -54,9 +56,9 @@ typedef struct _simplePoint {
 } simplePoint;
 
 const simplePoint EMPTY_POINT = {
-        std::numeric_limits<float>::infinity(),
-        std::numeric_limits<float>::infinity(),
-        std::numeric_limits<float>::infinity()
+        FLOAT_INF,
+        FLOAT_INF,
+        FLOAT_INF
 };
 
 class octNode {
@@ -68,17 +70,17 @@ class octNode {
         simplePoint dimensions; //the dimensions of this node
         //helper functions to abstract this a bit
         //may not be the most efficient
-        inline bool isLeaf() { return (bool) !childrenMask; }
-        inline bool hasChildren() {
+        inline bool isLeaf() const { return (bool) !childrenMask; }
+        inline bool hasChildren() const {
             int i = 0;
             for(i=0;i<NUM_OCT_TREE_CHILDREN; i++) {
-                if (points[i].x != std::numeric_limits<float>::infinity()) {
+                if (points[i].x != FLOAT_INF) {
                     return true;
                 }
             }
             return false;
         }
-        inline simplePoint getPointAt(int i) { return points[i]; }
+        inline simplePoint getPointAt(int i) const { return points[i]; }
 };
 
 typedef struct _hashNode *HashNode;
@@ -104,7 +106,7 @@ class Octree {
         octNode getNode(pcl::PointXYZ pt);
         octNode getNode(simplePoint pt);
         simplePoint getDimensions();
-        int calculateIndex(simplePoint  point, simplePoint orig);
+        int calculateIndex (  simplePoint const& point, simplePoint const& orig );
     private:
 
         HashNode hashMap[HASH_MAP_SIZE];
@@ -115,7 +117,7 @@ class Octree {
 
         uint64_t doHash(uint64_t locCode);
         
-        simplePoint pclToSimplePoint(pcl::PointXYZ pt);
+        inline simplePoint pclToSimplePoint(pcl::PointXYZ pt);
         simplePoint dimensions;
         
         HashNode  getLoc(uint64_t locationCode);
