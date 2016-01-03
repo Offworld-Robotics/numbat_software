@@ -277,7 +277,7 @@ HashNode Octree::getNode ( octNode parent, simplePoint pt ) {
 
 uint64_t Octree::doHash ( uint64_t locCode ) {
     //TODO: find a better hash function, this is the one that java supposedly uses
-    return (locCode & 0x7FFFFFFF) % NUM_OCT_TREE_CHILDREN;
+    return (locCode & 0x7FFFFFFF) % HASH_MAP_SIZE;
 }
 
 //calculates an index between 0 and 7
