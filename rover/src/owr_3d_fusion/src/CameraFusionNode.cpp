@@ -122,7 +122,7 @@ void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::Cons
     
     tracer.setOctree(tr);
     //TODO: fix this path
-    cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/test.jpg", CV_LOAD_IMAGE_COLOR);
+    cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/100sq.jpg", CV_LOAD_IMAGE_COLOR);
     if(!image.data) {
         std::cout << "no data" << std::endl;
     }

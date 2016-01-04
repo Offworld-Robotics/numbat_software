@@ -23,24 +23,43 @@ CPURayTracer::~CPURayTracer() {
 
 
 void CPURayTracer::runTraces() {
+    /*
+     * Important:
+     * This function uses two co-ordinate systems, the one used by ROS, and the one used by OpenCV
+     * OpenCV co-ordinates have the origin in the top-right corner of the image, with x being the horizontal axis
+     * and y being the vertical axis. (+X is down, and +Y is right)
+     * ROS uses a 3D co-ordinate sytem where the origin is at the center of the image, +X is forward, +Y is left, and +Z is up
+     * 
+     * So the conversion from openCV to ROS co-ordinates (without projecting) is:
+     * 
+     *    F(x,y) = (0, -x * pxToM + halfImageHeightInM, -y * pxToM - halfImageHeightInM)
+     * 
+     * i.e x and y are inverted and offset by half the width of the image. 
+     * 
+     * Aditionally when we do our projection, our origin in ROS's co-ordinate system is offset by the focal length from the origin on the Z axis.
+     * 
+     * This function uses floats not double as ROSs co-ordinate system is in M and our maximum resolution is currently 1cm.
+     */
+    
     cld.reset();
     shared_ptr< pcl::PointCloud< pcl::PointXYZRGB > > newCld(new pcl::PointCloud<pcl::PointXYZRGB> ());
     cld = newCld;
     //NOTE: this function unfortuantly has to use two cordinate systems
     //a metric one in meters, and a pixel based one in pixels.
     int pixelX = -1, pixelY = -1;
-    double metricX, metricY;
-    //our accuracy does not require double precision
-    float deltaX, deltaY;
+    float metricZ, metricY;
+    float deltaZ, deltaY;
     //calc this here so it only does the math once, #defines will run this many time
     const float focalLengthPx = (PX_TO_M/FOCAL_LENGTH_M);
     #ifdef DEBUG
-        std::cout << "focalLengthPx:" << focalLengthPx << "PX_TO_M" <<PX_TO_M << std::endl;
+        std::cout << "focalLengthPx:" << focalLengthPx << "PZ_TO_M" <<PX_TO_M << std::endl;
     #endif
-    const float pxToM = PX_TO_M;
+    
+    //we redo this function here as it is dependent on the resolution of the image
+    const float pxToM = SENSOR_DIAG_M/sqrt(pow(image.cols,2) + pow(image.rows,2)) ;
     //the image co-ordinate system starts in the top right corner, whilst the pcl system starts in the center
     //we need to add an offset
-    const float metricXOffset = (image.cols/2.0) * pxToM;
+    const float metricZOffset = (image.cols/2.0) * pxToM;
     const float metricYOffset = (image.rows/2.0) * pxToM;
     //NOTE: this is not the most efficient way to do this
     //but it is a simpler way.
@@ -53,14 +72,14 @@ void CPURayTracer::runTraces() {
         pixelX = pos.x;
         if(pixelY != pos.y) {
             pixelY = pos.y;
-            metricY= pixelY * pxToM + metricYOffset;
+            metricY= pixelY * (-pxToM) + metricYOffset;
             deltaY = tanh(metricY/focalLengthPx);
         }
         #ifdef DEBUG
             std::cout << "pixel" << pixelX << "," << pixelY << std::endl;
         #endif
-        metricX= pixelX * pxToM + metricXOffset;
-        deltaX = tanh(metricX/FOCAL_LENGTH_M);
+        metricZ= pixelX * (-pxToM) + metricZOffset;
+        deltaZ = tanh(metricZ/FOCAL_LENGTH_M);
 //         for(pixelY = 0; pixelY < image.rows; pixelY++) {
         cv::Vec3b pt = (*it);
        
@@ -86,9 +105,9 @@ void CPURayTracer::runTraces() {
 //                 incDist = (RES < (node.dimensions.x/2)) ? (node.dimensions.x/2) : RES, dist+=incDist 
             dist+=RES
         ) {
-            target.x = deltaX * dist;
+            target.x = dist - FOCAL_LENGTH_M;
             target.y = deltaY * dist;
-            target.z = dist - FOCAL_LENGTH_M;
+            target.z = deltaZ * dist;
             #ifdef DEBUG
                 std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
             #endif

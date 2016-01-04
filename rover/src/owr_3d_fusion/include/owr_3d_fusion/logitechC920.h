@@ -28,8 +28,8 @@
 
 // #define PIXEL_TO_M_RATIO (SENSOR_WIDTH_M/RESOLUTION_W)
 // #define M_TO_PIXEL_RATIO (RESOLUTION_W/SENSOR_WIDTH_M)
-#define PX_TO_M (SENSOR_DIAG_M/sqrt(pow(RESOLUTION_W,2) + pow(1080,2)))
-#define M_TO_PX (sqrt(pow(RESOLUTION_W,2) + pow(1080,2))/SENSOR_DIAG_M)
+#define PX_TO_M (SENSOR_DIAG_M/sqrt(pow(RESOLUTION_W,2) + pow(RESOLUTION_H,2)))
+#define M_TO_PX (sqrt(pow(RESOLUTION_W,2) + pow(RESOLUTION_H,2))/SENSOR_DIAG_M)
 #define FOCAL_LENGTH_P (FOCAL_LENGTH_M * M_TO_PX)
 
 #endif

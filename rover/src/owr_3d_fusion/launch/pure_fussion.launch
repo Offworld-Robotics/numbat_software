@@ -10,7 +10,7 @@
             []
         </rosparam>
         <param name="high_fidelity" value="true" />
-        <param name="target_frame" type="string" value="base_link" />
+        <param name="target_frame" type="string" value="laser" />
 <!--         <remap from="scan" to="scan" /> -->
         <remap from="cloud_filtered" to="/pcl" />
     </node>
