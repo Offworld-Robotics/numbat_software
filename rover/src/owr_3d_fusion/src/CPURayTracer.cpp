@@ -32,7 +32,7 @@ void CPURayTracer::runTraces() {
      * 
      * So the conversion from openCV to ROS co-ordinates (without projecting) is:
      * 
-     *    F(x,y) = (0, -x * pxToM + halfImageHeightInM, -y * pxToM - halfImageHeightInM)
+     *    F(x,y) = (0,-y * pxToM - halfImageHeightInM, -x * pxToM + halfImageHeightInM )
      * 
      * i.e x and y are inverted and offset by half the width of the image. 
      * 
@@ -47,8 +47,8 @@ void CPURayTracer::runTraces() {
     //NOTE: this function unfortuantly has to use two cordinate systems
     //a metric one in meters, and a pixel based one in pixels.
     int pixelX = -1, pixelY = -1;
-    float metricZ, metricY;
-    float deltaZ, deltaY;
+    float metricY, metricZ;
+    float deltaY, deltaZ;
     //calc this here so it only does the math once, #defines will run this many time
     const float focalLengthPx = (PX_TO_M/FOCAL_LENGTH_M);
     #ifdef DEBUG
@@ -59,8 +59,8 @@ void CPURayTracer::runTraces() {
     const float pxToM = SENSOR_DIAG_M/sqrt(pow(image.cols,2) + pow(image.rows,2)) ;
     //the image co-ordinate system starts in the top right corner, whilst the pcl system starts in the center
     //we need to add an offset
-    const float metricZOffset = (image.cols/2.0) * pxToM;
-    const float metricYOffset = (image.rows/2.0) * pxToM;
+    const float metricYOffset = (image.cols/2.0) * pxToM;
+    const float metricZOffset = (image.rows/2.0) * pxToM;
     //NOTE: this is not the most efficient way to do this
     //but it is a simpler way.
     //see: http://docs.opencv.org/2.4/doc/tutorials/core/how_to_scan_images/how_to_scan_images.html
@@ -72,22 +72,22 @@ void CPURayTracer::runTraces() {
         pixelX = pos.x;
         if(pixelY != pos.y) {
             pixelY = pos.y;
-            metricY= pixelY * (-pxToM) + metricYOffset;
-            deltaY = tanh(metricY/focalLengthPx);
+            metricZ= pixelY * (-pxToM) + metricZOffset;
+            deltaZ = tanh(metricZ/focalLengthPx);
         }
         #ifdef DEBUG
             std::cout << "pixel" << pixelX << "," << pixelY << std::endl;
         #endif
-        metricZ= pixelX * (-pxToM) + metricZOffset;
-        deltaZ = tanh(metricZ/FOCAL_LENGTH_M);
+        metricY= pixelX * (-pxToM) + metricYOffset;
+        deltaY = tanh(metricY/FOCAL_LENGTH_M);
 //         for(pixelY = 0; pixelY < image.rows; pixelY++) {
         cv::Vec3b pt = (*it);
        
         #ifdef DEBUG
             std::cout << "pixelY:" << pixelY
-                << "deltaY:" << deltaY 
-                <<  "metricY:" << metricY
-                << "tanInput:" << metricY*focalLengthPx << std::endl;
+                << "deltaZ:" << deltaZ 
+                <<  "metricZ:" << metricZ
+                << "tanInput:" << metricZ*focalLengthPx << std::endl;
         #endif
         //gradient of z is the minimum resolution on the z axis of the point cloud
         simplePoint target;
