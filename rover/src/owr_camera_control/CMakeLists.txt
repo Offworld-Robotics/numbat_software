@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   gscam
   message_generation
   owr_messages
+  sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -86,7 +87,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
   LIBRARIES owr_camera_control
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime gscam
+  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime gscam sensor_msgs
   DEPENDS system_lib
 )
 
