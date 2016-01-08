@@ -14,12 +14,17 @@
 #include <CL/cl.hpp>
 
 
-#include </opt/ros/indigo/include/pcl_conversions/pcl_conversions.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <cv_bridge/cv_bridge.h>
+
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <tf2_sensor_msgs/tf2_sensor_msgs.h>
+
 
 const simplePoint DIMS = {50.0, 50.0, 50.0};
+const ros::Duration TF_WAIT_TIME(0.1);
 
 //quick open CL error checking function from:
 //http://developer.amd.com/tools-and-sdks/opencl-zone/opencl-resources/introductory-tutorial-to-opencl/
@@ -52,9 +57,10 @@ int main(int argc, char ** argv) {
 }
 
 
-CameraFusionNode::CameraFusionNode(){
+CameraFusionNode::CameraFusionNode() : tfBuffer(), tfListener(tfBuffer){
     colourPub = nh.advertise<sensor_msgs::PointCloud2>(TOPIC,10,true);
-    pcSub =  nh.subscribe("/pcl", 1000, &CameraFusionNode::pointCloudCallback, this);
+    pcSub =  nh.subscribe("/pcl", 1, &CameraFusionNode::pointCloudCallback, this);
+    camSub = nh.subscribe("/cam0", 1, &CameraFusionNode::imageCallback, this);
     tr = NULL;
 }
 
@@ -72,73 +78,56 @@ pcl::PointCloud< pcl::PointXYZRGB > CameraFusionNode::getLatestPointCloud() {
 }
 
 void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame ) {
-    pcl::PointXYZ dims;
-    dims.x = 50.0;
-    dims.y = 50.0;
-    dims.z = 50.0;
-    Octree oct(dims);
-//     pcl::PointCloud<pcl::PointXYZRGB> pc = getLatestPointCloud();
-//     int x,y;
-//     float deltaX, deltaY;
-//     //we asume a 15m^2 grid. That can grow as needed
-//     
-//     //pc.size()
-//     //calc this here so it only does the math once, #defines will run this many time
-//     const float focalLengthPx = (PIXEL_TO_M_RATIO/FOCAL_LENGTH_M);
-//     for(x = 0; x < frame->width; x++) {
-//         deltaX = tanh(x*focalLengthPx);
-//         for(y = 0; y < frame->height; y++) {
-//             deltaY = tanh(y*focalLengthPx);
-//             //gradient of z is the minimum resolution on the z axis of the point cloud
-//             float px, py, pz;
-//             float dist = 0;
-// #define RES 1
-//             //TODO: 
-//             for(dist = 0;dist < 100; dist+=RES) {
-//                 px = deltaX * RES;
-//                 py = deltaY * RES;
-//                 pz = dist;
-//                 pc.at(px,py,px);
-//             }
-//         }
-//     }
+    //TODO: when we start using SLAMed data we won't be able to use base_link for the stantionary frame
+    geometry_msgs::TransformStamped transformStamped;
+//     tfBuffer.waitForTransform(frame->header.frame_id,frame->header.stamp,pcHeader.frame_id, pcHeader.stamp, "base_link", TF_WAIT_TIME);
+    try {
+        transformStamped = tfBuffer.lookupTransform(frame->header.frame_id,frame->header.stamp,pcHeader.frame_id, pcHeader.stamp, "base_link", TF_WAIT_TIME);
+        pcl::PointCloud<pcl::PointXYZ> cld;
+        sensor_msgs::PointCloud2 pc2;
+        tf2::doTransform(latestPointCloud, pc2, transformStamped);
+        pcl::fromROSMsg<pcl::PointXYZ>(pc2, cld);
+        
+        //clear the octree
+        if(tr) {
+            delete tr;
+        }
+        tr = new  Octree(DIMS);
+        //load the point cloud into the octree
+        for (size_t i = 0; i < cld.points.size (); ++i) {
+            tr->addPoint(cld.points[i]);
+    //         ROS_INFO("pt.x=%f;\npt.y=%f;\npt.z=%f;\ntr->addPoint(pt)\nTEST HERE",cld.points[i].x, cld.points[i].y, cld.points[i].z);
+        }
+        
+        tracer.setOctree(tr);
+        //TODO: fix this path
+//         cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/100sq.jpg", CV_LOAD_IMAGE_COLOR);
+        const cv::Mat * image = &cv_bridge::toCvShare(frame)->image;
+        if(!image->data) {
+            std::cout << "no data" << std::endl;
+        }
+        tracer.loadImage(image);
+        tracer.runTraces();
+        shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > cld2;
+        cld2 =  tracer.getResult();
+        sensor_msgs::PointCloud2 pcl2;
+        
+        pcl::toROSMsg(*cld2, pcl2);
+        //use the header from the input point cloud, latter we will have to update the farme on this
+        pcl2.header = latestPointCloud.header;
+        std::cout << cld2->points.size() << std::endl;
+        colourPub.publish(pcl2);
+        
+        cld2.reset();
+    } catch (tf2::TransformException &ex) {
+        ROS_WARN("%s", ex.what());
+    }
 }
 
+
 void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::ConstPtr& pc ) {
-    pcl::PointCloud<pcl::PointXYZ> cld;
-    sensor_msgs::PointCloud2 pc2 = *pc;
-    pcl::fromROSMsg<pcl::PointXYZ>(pc2, cld);
+    latestPointCloud = *pc;
     
-    //clear the octree
-    if(tr) {
-        delete tr;
-    }
-    tr = new  Octree(DIMS);
-    //load the point cloud into the octree
-    for (size_t i = 0; i < cld.points.size (); ++i) {
-        tr->addPoint(cld.points[i]);
-//         ROS_INFO("pt.x=%f;\npt.y=%f;\npt.z=%f;\ntr->addPoint(pt)\nTEST HERE",cld.points[i].x, cld.points[i].y, cld.points[i].z);
-    }
-    
-    tracer.setOctree(tr);
-    //TODO: fix this path
-    cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/100sq.jpg", CV_LOAD_IMAGE_COLOR);
-    if(!image.data) {
-        std::cout << "no data" << std::endl;
-    }
-    tracer.loadImage(image);
-    tracer.runTraces();
-    shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > cld2;
-    cld2 =  tracer.getResult();
-    sensor_msgs::PointCloud2 pcl2;
-    
-    pcl::toROSMsg(*cld2, pcl2);
-    //use the header from the input point cloud, latter we will have to update the farme on this
-    pcl2.header = pc->header;
-    std::cout << cld2->points.size() << std::endl;
-    colourPub.publish(pcl2);
-    
-    cld2.reset();
 }
 
 void CameraFusionNode::spin() {

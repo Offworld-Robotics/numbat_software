@@ -27,7 +27,7 @@ class RayTracer {
         //set the octree for this to use
         void setOctree(Octree * octTree);
         //set the image to use
-        void loadImage(cv::Mat image);
+        void loadImage(const cv::Mat * image);
         //run the task, return the point cloud
         virtual void runTraces() = 0;
         //get the result of the task
@@ -37,7 +37,7 @@ class RayTracer {
     protected:
         //the current octree
         Octree * tree = NULL;
-        cv::Mat image;
+        const cv::Mat * image;
     
 };
 

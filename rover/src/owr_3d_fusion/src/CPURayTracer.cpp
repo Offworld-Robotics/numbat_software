@@ -56,17 +56,17 @@ void CPURayTracer::runTraces() {
     #endif
     
     //we redo this function here as it is dependent on the resolution of the image
-    const float pxToM = SENSOR_DIAG_M/sqrt(pow(image.cols,2) + pow(image.rows,2)) ;
+    const float pxToM = SENSOR_DIAG_M/sqrt(pow(image->cols,2) + pow(image->rows,2)) ;
     //the image co-ordinate system starts in the top right corner, whilst the pcl system starts in the center
     //we need to add an offset
-    const float metricYOffset = (image.cols/2.0) * pxToM;
-    const float metricZOffset = (image.rows/2.0) * pxToM;
+    const float metricYOffset = (image->cols/2.0) * pxToM;
+    const float metricZOffset = (image->rows/2.0) * pxToM;
     //NOTE: this is not the most efficient way to do this
     //but it is a simpler way.
     //see: http://docs.opencv.org/2.4/doc/tutorials/core/how_to_scan_images/how_to_scan_images.html
     //search the image
-    cv::MatIterator_<cv::Vec3b> it, end;
-    for(it = image.begin<cv::Vec3b>(), end = image.end<cv::Vec3b>(); it != end; ++it) {
+    cv::MatConstIterator_<cv::Vec3b> it, end;
+    for(it = image->begin<cv::Vec3b>(), end = image->end<cv::Vec3b>(); it != end; ++it) {
 //     for(pixelX = 0; pixelX < image.cols; pixelX++) {
         const cv::Point pos = it.pos();
         pixelX = pos.x;

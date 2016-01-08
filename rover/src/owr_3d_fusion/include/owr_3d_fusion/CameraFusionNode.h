@@ -11,11 +11,14 @@
 
 #include <ros/ros.h>
 
-#include <tf/transform_listener.h>
-#include <tf/message_filter.h>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/buffer.h>
+#include <geometry_msgs/TransformStamped.h>
 
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <std_msgs/Header.h>
+
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -23,6 +26,7 @@
 
 #include "owr_3d_fusion/Octree.h"
 #include "owr_3d_fusion/CPURayTracer.hpp"
+
 
 #define TOPIC "/pcl/colourFuse0"
 #define PCL_IN_TOPIC "/pcl"
@@ -48,12 +52,18 @@ class CameraFusionNode {
         ros::Publisher colourPub;
         
 //         tf::MessageFilter<sensor_msgs::Image> frameCamFilter;
-        tf::TransformListener camTFListener;
+        tf2_ros::Buffer tfBuffer;
+        tf2_ros::TransformListener tfListener;
         ros::Subscriber pcSub;
         ros::Subscriber camSub;
         
         CPURayTracer tracer;
         Octree * tr;
+        //the latest incoming point cloud
+        sensor_msgs::PointCloud2 latestPointCloud;
+        
+        //header for the last point cloud
+        std_msgs::Header pcHeader;
         
         
 };
