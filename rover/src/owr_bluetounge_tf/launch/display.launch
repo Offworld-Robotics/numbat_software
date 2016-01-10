@@ -1,12 +1,12 @@
 <launch>
   <arg
-    name="bluetounge" />
+    name="model" />
   <arg
     name="gui"
-    default="False" />
+    default="True" />
   <param
     name="robot_description"
-    textfile="$(find owr_bluetounge_tf)/robots/bluetounge.URDF" />
+    textfile="$(find owr_bluetounge_tf)/robots/owr_bluetounge_tf.URDF" />
   <param
     name="use_gui"
     value="$(arg gui)" />
