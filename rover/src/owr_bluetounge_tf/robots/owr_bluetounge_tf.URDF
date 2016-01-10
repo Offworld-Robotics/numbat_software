@@ -135,23 +135,23 @@
   </link>
   <joint
     name="front_left_wheel_axel"
-    type="fixed">
+    type="continuous">
     <origin
-      xyz="0.00399999999999995 0.0290000000000001 -0.0253999999999999"
-      rpy="3.14159265358979 -1.5707963267949 0" />
+      xyz="-0.25399999999999995 0.0290000000000001 -0.0253999999999999"
+      rpy="0 1.57079632679 0 " />
     <parent
       link="left_bogey" />
     <child
       link="front_left_wheel" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 1" />
   </joint>
   <link
     name="back_left_bogey">
     <inertial>
       <origin
         xyz="0.214107893734074 -0.168692144671464 -0.161433659322479"
-        rpy="0 0 0" />
+        rpy="3.14159265359 0 0" />
       <mass
         value="5.97230241716652" />
       <inertia
@@ -165,7 +165,7 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="3.14159265359 0 0" />
       <geometry>
         <mesh
           filename="package://owr_bluetounge_tf/meshes/back_left_bogey.STL" />
@@ -179,7 +179,7 @@
     <collision>
       <origin
         xyz="0 0 0"
-        rpy="0 0 0" />
+        rpy="3.14159265359 0 0" />
       <geometry>
         <mesh
           filename="package://owr_bluetounge_tf/meshes/back_left_bogey.STL" />
@@ -203,16 +203,16 @@
     name="middle_left_wheel">
     <inertial>
       <origin
-        xyz="0.5 -2.96170694376596E-05 0.136489605026699"
+        xyz="0 -2.96170694409348E-05 0.136489605026699"
         rpy="0 0 0" />
       <mass
         value="2.15472811624945" />
       <inertia
         ixx="0.0154723847547672"
-        ixy="1.49192143439824E-21"
-        ixz="3.8842500352716E-18"
+        ixy="-2.56230745467387E-22"
+        ixz="3.77451925719516E-18"
         iyy="0.0154727320555494"
-        iyz="-1.01534941592785E-06"
+        iyz="-1.01534941592837E-06"
         izz="0.0180021390861626" />
     </inertial>
     <visual>
@@ -221,7 +221,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_bluetounge_tf/meshes/middle_left_wheel.STL" />
+          filename="package://owr_bluetounge_tf/meshes/back_left_wheel.STL" />
       </geometry>
       <material
         name="">
@@ -235,22 +235,22 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_bluetounge_tf/meshes/middle_left_wheel.STL" />
+          filename="package://owr_bluetounge_tf/meshes/back_left_wheel.STL" />
       </geometry>
     </collision>
   </link>
   <joint
     name="middle_left_wheel_axel"
-    type="fixed">
+    type="continuous">
     <origin
-      xyz="-0.0254000000000002 -0.0235 0.01363"
+      xyz="0.4754000000000002 0.0235 0.26363"
       rpy="3.14159265358979 0 0" />
     <parent
       link="back_left_bogey" />
     <child
       link="middle_left_wheel" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 1" />
   </joint>
   <link
     name="back_left_wheel">
@@ -294,16 +294,16 @@
   </link>
   <joint
     name="back_left_wheel_axel"
-    type="fixed">
+    type="continuous">
     <origin
-      xyz="-0.0254000000000002 -0.0235 0.01363"
+      xyz="-0.0254000000000002 0.0235 0.26363"
       rpy="3.14159265358979 0 0" />
     <parent
       link="back_left_bogey" />
     <child
       link="back_left_wheel" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 1" />
   </joint>
   <link
     name="arm_lazy_susan">
@@ -1301,7 +1301,7 @@
   </link>
   <joint
     name="front_right_wheel_axel"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="0.131047529535391 0.682426121888892 0.30766"
       rpy="0.57675421413977 -1.5707963267949 0" />
@@ -1310,7 +1310,7 @@
     <child
       link="front_right_wheel" />
     <axis
-      xyz="0 0 0" />
+      xyz="1 0 0" />
   </joint>
   <link
     name="back_right_bogey">
@@ -1357,7 +1357,7 @@
     type="fixed">
     <origin
       xyz="0.714828885819377 -0.161773416923871 0.373659999999994"
-      rpy="2.14755054093466 -1.5707963267949 0" />
+      rpy="2.14755054093466 -1.5707963267949 3.14159265359" />
     <parent
       link="right_bogey" />
     <child
@@ -1407,7 +1407,7 @@
   </link>
   <joint
     name="middle_right_wheel_axel"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="-0.0659999999999967 -0.0289999999999251 0.5253999999999"
       rpy="-1.57079632679489 -1.3363823550461E-45 2.40741243048404E-31" />
@@ -1416,7 +1416,7 @@
     <child
       link="middle_right_wheel" />
     <axis
-      xyz="0 0 0" />
+      xyz="1 0 0" />
   </joint>
   <link
     name="back_right_wheel">
@@ -1460,7 +1460,7 @@
   </link>
   <joint
     name="back_right_wheel_axel"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="-0.066 -0.029 0.0253999999999999"
       rpy="-1.57079632679489 0 0" />
@@ -1469,6 +1469,6 @@
     <child
       link="back_right_wheel" />
     <axis
-      xyz="0 0 0" />
+      xyz="1 0 0" />
   </joint>
 </robot>

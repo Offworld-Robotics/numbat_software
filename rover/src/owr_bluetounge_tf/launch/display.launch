@@ -3,7 +3,7 @@
     name="model" />
   <arg
     name="gui"
-    default="False" />
+    default="True" />
   <param
     name="robot_description"
     textfile="$(find owr_bluetounge_tf)/robots/owr_bluetounge_tf.URDF" />
