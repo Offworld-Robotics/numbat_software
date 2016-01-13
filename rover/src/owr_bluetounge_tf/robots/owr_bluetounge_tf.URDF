@@ -1476,7 +1476,141 @@
         <axis
         xyz="1 0 0" />
     </joint>
+    
+    
+    <link
+        name="laser_tilt_base">
+        <inertial>
+        <origin
+            xyz="0.43736 -0.0070195 0.04262"
+            rpy="0 0 0" />
+        <mass
+            value="0.060913" />
+        <inertia
+            ixx="5.6809E-05"
+            ixy="-3.1933E-07"
+            ixz="-4.1287E-07"
+            iyy="4.2988E-05"
+            iyz="1.9097E-05"
+            izz="3.5802E-05" />
+        </inertial>
+        <visual>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="package://owr_bluetounge_tf/meshes/laser_tilt_base.STL" />
+        </geometry>
+        <material
+            name="">
+            <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+        </visual>
+        <collision>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="package://owr_bluetounge_tf/meshes/laser_tilt_base.STL" />
+        </geometry>
+        </collision>
+    </link>
+    <joint name="laser_tilt_base_link" type="fixed">
+        <axis xyz="0 0 0" />
+        <origin xyz=".245 0.28 0.145 " rpy="0.785398 0 -1.5708"/>
+        <parent link="base_link"/>
+        <child link="laser_tilt_base"/>
+    </joint>
+    <link
+        name="laser_tilt_tilt">
+        <inertial>
+        <origin
+            xyz="0.027266 0.024274 -0.0025636"
+            rpy="0 0 0" />
+        <mass
+            value="0.060855" />
+        <inertia
+            ixx="4.334E-05"
+            ixy="1.9349E-06"
+            ixz="-1.9524E-07"
+            iyy="3.4772E-05"
+            iyz="-2.8452E-07"
+            izz="3.9596E-05" />
+        </inertial>
+        <visual>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="package://owr_bluetounge_tf/meshes/laser_tilt_tilt.STL" />
+        </geometry>
+        <material
+            name="">
+            <color
+            rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+        </visual>
+        <collision>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="package://owr_bluetounge_tf/meshes/laser_tilt_tilt.STL" />
+        </geometry>
+        </collision>
+    </link>
+    <joint
+        name="laser_tilt_joint"
+        type="continuous">
+        <origin
+        xyz="0.3929 -0.01446 -0.014263"
+        rpy="0.82137 0 0" />
+        <parent
+        link="laser_tilt_base" />
+        <child
+        link="laser_tilt_tilt" />
+        <axis
+        xyz="-1 0 0" />
+    </joint>
 
+    <include filename="$(find hector_sensors_description)/urdf/hokuyo_utm30lx.urdf.xacro" /> 
+    <xacro:hokuyo_utm30lx name="laser" ros_topic="/laser/scan" update_rate="40" ray_count="1440" min_angle="-2.35619" max_angle="2.35619" parent="laser_tilt_tilt">
+        <origin xyz="0.02 0.1 0" rpy="-1.6708 0 0"/>
+    </xacro:hokuyo_utm30lx>
+    <!--<joint name="hokuyo_joint" type="fixed">
+        <axis xyz="0 0 0" />
+        <origin xyz="0.04 0.08 0" rpy="-1.5708 0 0"/>
+        <parent link="laser_tilt_tilt"/>
+        <child link="laser"/>
+    </joint>-->
+
+    <!-- Hokuyo Laser -->
+    <!--<link name="laser">
+        <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <box size="0.1 0.1 0.1"/>
+        </geometry>
+        </collision>
+
+        <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+            <mesh filename="package://owr_bluetounge_tf/meshes/hokuyo.dae"/>
+        </geometry>
+        </visual>
+
+        <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+        </inertial>
+    </link>-->
     <!--
     ####################GAZEBO SIMULATOR STUFF#########################
     -->
@@ -1543,39 +1677,19 @@
         <hardwareInterface>VelocityJointInterface</hardwareInterface>
         </actuator>
     </transmission>
-
-
-    <joint name="hokuyo_joint" type="fixed">
-        <axis xyz="0 1 0" />
-        <origin xyz="0 0 1" rpy="0 0 0"/>
-        <parent link="base_link"/>
-        <child link="laser"/>
-    </joint>
-
-    <!-- Hokuyo Laser -->
-    <link name="laser">
-        <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-        <box size="0.1 0.1 0.1"/>
-        </geometry>
-        </collision>
-
-        <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-            <mesh filename="package://owr_bluetounge_tf/meshes/hokuyo.dae"/>
-        </geometry>
-        </visual>
-
-        <inertial>
-        <mass value="1e-5" />
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-        </inertial>
-    </link>
+    <transmission name="laser_tilt_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="laser_tilt_joint">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="laser_tilt_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    
     <!-- hokuyo -->
-    <gazebo reference="laser">
+<!--    <gazebo reference="laser">
         <sensor type="gpu_ray" name="head_hokuyo_sensor">
         <pose>0 0 0 0 0 0</pose>
         <visualize>false</visualize>
@@ -1595,12 +1709,12 @@
             <resolution>0.01</resolution>
             </range>
             <noise>
-            <type>gaussian</type>
+            <type>gaussian</type>-->
             <!-- Noise parameters based on published spec for Hokuyo laser
                 achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
                 stddev of 0.01m will put 99.7% of samples within 0.03m of the true
                 reading. -->
-            <mean>0.0</mean>
+          <!--  <mean>0.0</mean>
             <stddev>0.01</stddev>
             </noise>
         </ray>
@@ -1609,7 +1723,7 @@
             <frameName>laser</frameName>
         </plugin>
         </sensor>
-    </gazebo>
+    </gazebo>-->
 
 
     <!-- Camera -->
