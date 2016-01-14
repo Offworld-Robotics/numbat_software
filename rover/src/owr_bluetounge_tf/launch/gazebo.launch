@@ -2,7 +2,7 @@
   <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find owr_bluetounge_tf)/config/bluetounge_control.yaml" command="load"/>
   <include
-    file="$(find gazebo_ros)/launch/empty_world.launch" />
+    file="$(find gazebo_ros)/launch/rubble_world.launch" />
 <param
     name="robot_description"
     command="$(find xacro)/xacro '$(find owr_bluetounge_tf)/robots/owr_bluetounge_tf.URDF'" />
@@ -15,7 +15,7 @@
     name="spawn_model"
     pkg="gazebo_ros"
     type="spawn_model"
-    args="-param robot_description -urdf  -model owr_bluetounge_tf"
+    args="-param robot_description -urdf  -model owr_bluetounge_tf -z 2.0 -x 2.0"
     output="screen" />
   <!-- load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"

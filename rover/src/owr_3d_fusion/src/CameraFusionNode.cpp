@@ -11,7 +11,7 @@
 #include "owr_3d_fusion/logitechC920.h"
 #include <utility>
 // #define __NO_STD_VECTOR // Use cl::vector instead of STL version //This is apparently depricated
-#include <CL/cl.hpp>
+// #include <CL/cl.hpp>
 
 
 #include <pcl_conversions/pcl_conversions.h>
@@ -28,12 +28,12 @@ const ros::Duration TF_WAIT_TIME(0.1);
 
 //quick open CL error checking function from:
 //http://developer.amd.com/tools-and-sdks/opencl-zone/opencl-resources/introductory-tutorial-to-opencl/
-inline void checkErr(cl_int err, const char * name) {
-    if (err != CL_SUCCESS) {
-      std::cerr << "ERROR: " << name  << " (" << err << ")" << std::endl;
-      exit(EXIT_FAILURE);
-   }
-}
+// inline void checkErr(cl_int err, const char * name) {
+//     if (err != CL_SUCCESS) {
+//       std::cerr << "ERROR: " << name  << " (" << err << ")" << std::endl;
+//       exit(EXIT_FAILURE);
+//    }
+// }
 
 int main(int argc, char ** argv) {
     ros::init(argc,argv,"camera_fusion_node");
@@ -60,7 +60,7 @@ int main(int argc, char ** argv) {
 CameraFusionNode::CameraFusionNode() : tfBuffer(), tfListener(tfBuffer){
     colourPub = nh.advertise<sensor_msgs::PointCloud2>(TOPIC,10,true);
     pcSub =  nh.subscribe("/pcl", 1, &CameraFusionNode::pointCloudCallback, this);
-    camSub = nh.subscribe("/cam0", 1, &CameraFusionNode::imageCallback, this);
+    camSub = nh.subscribe("/camera0/image_raw", 1, &CameraFusionNode::imageCallback, this);
     tr = NULL;
 }
 

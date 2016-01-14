@@ -1,0 +1,8 @@
+<launch>
+    <include
+    file="$(find owr_bluetounge_tf)/launch/gazebo.launch" />
+    <include
+    file="$(find owr_3d_fusion)/launch/pure_fussion.launch" />
+    <node pkg="owr_3d_fusion" type="camera_fusion_node"
+        name="camera_fusion_node"  output="screen"/>
+</launch>
