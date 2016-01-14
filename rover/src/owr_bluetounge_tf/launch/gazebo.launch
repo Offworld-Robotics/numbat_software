@@ -15,7 +15,7 @@
     name="spawn_model"
     pkg="gazebo_ros"
     type="spawn_model"
-    args="-file $(find owr_bluetounge_tf)/robots/owr_bluetounge_tf.URDF -urdf  -model owr_bluetounge_tf"
+    args="-param robot_description -urdf  -model owr_bluetounge_tf"
     output="screen" />
   <!-- load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
