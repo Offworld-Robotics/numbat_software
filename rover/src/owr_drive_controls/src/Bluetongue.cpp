@@ -10,8 +10,10 @@
 #include <sys/select.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <math.h>
 #include "Bluetongue.h"
 #include <ros/ros.h>
+#include <std_msgs/Float64.h>
 
 using namespace std;
 
@@ -117,6 +119,8 @@ Bluetongue::Bluetongue(const char* port) {
 	// Open serial port
     bluetongue_port = port;
     isConnected = connect();	
+    
+    //lidarTFPublisher = nh.advertise<std_msgs::Float64>("lidarTFAngle", 10);
     ROS_INFO("Finished initalizing bluetongue");
 }
 
@@ -201,7 +205,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     
     //Testing Lidar positioning.
     //mesg.lidarTilt = (lidarTilt * 500) + 1500;
-    mesg.lidarTilt = 1695;
+    mesg.lidarTilt = 1295;
     
     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
@@ -240,5 +244,39 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
+    
+    //tf_lidar(mesg.lidarTilt);
+    
+    //Send rvis the angular position (in radians) of lidar tilt.
+    double lidarRads;
+    lidarRads = mesg.lidarTilt - LIDAR_HORIZ;
+    
+    //Find angle in degrees
+    lidarRads = lidarRads * DEG_PER_PWM;
+    
+    //Convert to radians
+    lidarRads = lidarRads * M_PI/180;
+    
+    //lidarTFPublisher.publish(lidarRads);
+    ROS_INFO("+++++Rads : %f ",lidarRads); 
+    
     return stat;
 }
+
+// Sends rviz a angle (radians) representing the current position of the lidar
+// gimbal. Angle is measured from horizontal (1330pwm = 0 rads), with tilting
+// towards the front of the rover measured as positive radians, and tilting in
+// the opposite direction as negative.
+/*void tf_lidar(int16_t pwm){
+    double lidarRads;
+    lidarRads = pwm - LIDAR_HORIZ;
+    
+    //Find angle in degrees
+    lidarRads = lidarRads * DEG_PER_PWM;
+    
+    //Convert to radians
+    lidarRads = lidarRads * M_PI/180;
+    
+    //lidarTFPublisher.publish(lidarRads);
+    ROS_INFO("+++++Rads : %f ",lidarRads); 
+}*/

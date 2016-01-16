@@ -1,11 +1,15 @@
 #ifndef BLUETONGUE_H
 #define BLUETONGUE_H
 
+#include <ros/ros.h>
 #include <string>
 //#include <cstdint>
 #include <vector>
 
 #define GPS_FLOAT_OFFSET 1000000
+
+#define LIDAR_HORIZ 1330
+#define DEG_PER_PWM 0.12328767123
 
 struct gpsData {
     uint16_t time;
@@ -51,6 +55,9 @@ class Bluetongue {
         std::string bluetongue_port;
         fd_set uart_set;
         struct timeval timeout;
+        
+        //ros::NodeHandle nh;
+        //ros::Publisher lidarTFPublisher;
 	
 	public:
 		Bluetongue(const char* port);
@@ -60,6 +67,7 @@ class Bluetongue {
                 int clawRotate, int clawGrip, int cameraBottomRotate,
                 int cameraBottomTilt, int cameraTopRotate, 
                 int cameraTopTilt, int lidarTilt);
+        //void tf_lidar(int16_t pwm);
         bool reconnect(void);
 };
 #endif
