@@ -2,7 +2,7 @@
   <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find owr_bluetounge_tf)/config/bluetounge_control.yaml" command="load"/>
   <include
-    file="$(find gazebo_ros)/launch/rubble_world.launch" />
+    file="$(find hector_gazebo_worlds)/launch/rolling_landscape_120m.launch" />
 <param
     name="robot_description"
     command="$(find xacro)/xacro '$(find owr_bluetounge_tf)/robots/owr_bluetounge_tf.URDF'" />

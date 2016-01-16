@@ -60,7 +60,7 @@ int main(int argc, char ** argv) {
 CameraFusionNode::CameraFusionNode() : nh(), it(nh), tfBuffer(), tfListener(tfBuffer){
     colourPub = nh.advertise<sensor_msgs::PointCloud2>(TOPIC,10,true);
     pcSub =  nh.subscribe("/pcl", 1, &CameraFusionNode::pointCloudCallback, this);
-    camSub = it.subscribe("/camera0", 1, &CameraFusionNode::imageCallback, this,  image_transport::TransportHints("compressed"));
+    camSub = it.subscribe("/camera0/image_raw", 1, &CameraFusionNode::imageCallback, this,  image_transport::TransportHints("compressed"));
     tr = NULL;
 }
 
@@ -103,7 +103,9 @@ void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame
         tracer.setOctree(tr);
         //TODO: fix this path
 //         cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/100sq.jpg", CV_LOAD_IMAGE_COLOR);
-        const cv::Mat * image = &cv_bridge::toCvShare(frame, "bgr8")->image;
+        cv_bridge::CvImageConstPtr cvPtr = cv_bridge::toCvShare(frame, "bgr8") ;
+        const cv::Mat * image = &cvPtr->image;
+        
         if(!image->data) {
             std::cout << "no data" << std::endl;
         }
