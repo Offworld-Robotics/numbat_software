@@ -198,8 +198,11 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.cameraBottomTilt = cameraBottomTilt;
     mesg.cameraTopRotate = cameraTopRotate;
     mesg.cameraTopTilt = cameraTopTilt;
-    mesg.lidarTilt = (lidarTilt * 500) + 1500;
-    //mesg.lidarTilt = 1700;
+    
+    //Testing Lidar positioning.
+    //mesg.lidarTilt = (lidarTilt * 500) + 1500;
+    mesg.lidarTilt = 1695;
+    
     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
 	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
@@ -209,6 +212,9 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
             mesg.armBottom, mesg.armRotate);
     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
+    
+    ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
+    
 	isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
 	
