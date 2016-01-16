@@ -14,7 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   tf2
   tf2_ros
-  tf2_sensor_msgs 
+  tf2_sensor_msgs
+  image_transport
 )
 
 find_package(OpenCL)
@@ -111,7 +112,7 @@ find_package(OpenCL)
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES owr_3d_fusion
- CATKIN_DEPENDS owr_messages pcl_ros pcl_conversions roscpp sensor_msgs std_msgs cv_bridge tf2 tf2_ros tf2_sensor_msgs 
+ CATKIN_DEPENDS owr_messages pcl_ros pcl_conversions roscpp sensor_msgs std_msgs cv_bridge tf2 tf2_ros tf2_sensor_msgs  image_transport
  DEPENDS system_lib
 )
 

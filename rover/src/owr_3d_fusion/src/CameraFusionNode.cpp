@@ -57,10 +57,10 @@ int main(int argc, char ** argv) {
 }
 
 
-CameraFusionNode::CameraFusionNode() : tfBuffer(), tfListener(tfBuffer){
+CameraFusionNode::CameraFusionNode() : nh(), it(nh), tfBuffer(), tfListener(tfBuffer){
     colourPub = nh.advertise<sensor_msgs::PointCloud2>(TOPIC,10,true);
     pcSub =  nh.subscribe("/pcl", 1, &CameraFusionNode::pointCloudCallback, this);
-    camSub = nh.subscribe("/camera0/image_raw", 1, &CameraFusionNode::imageCallback, this);
+    camSub = it.subscribe("/camera0", 1, &CameraFusionNode::imageCallback, this,  image_transport::TransportHints("compressed"));
     tr = NULL;
 }
 
@@ -82,6 +82,7 @@ void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame
     geometry_msgs::TransformStamped transformStamped;
 //     tfBuffer.waitForTransform(frame->header.frame_id,frame->header.stamp,pcHeader.frame_id, pcHeader.stamp, "base_link", TF_WAIT_TIME);
     try {
+        ROS_INFO("%s to %s",frame->header.frame_id.c_str(), pcHeader.frame_id.c_str());
         transformStamped = tfBuffer.lookupTransform(frame->header.frame_id,frame->header.stamp,pcHeader.frame_id, pcHeader.stamp, "base_link", TF_WAIT_TIME);
         pcl::PointCloud<pcl::PointXYZ> cld;
         sensor_msgs::PointCloud2 pc2;
@@ -102,7 +103,7 @@ void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame
         tracer.setOctree(tr);
         //TODO: fix this path
 //         cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/100sq.jpg", CV_LOAD_IMAGE_COLOR);
-        const cv::Mat * image = &cv_bridge::toCvShare(frame)->image;
+        const cv::Mat * image = &cv_bridge::toCvShare(frame, "bgr8")->image;
         if(!image->data) {
             std::cout << "no data" << std::endl;
         }
@@ -127,7 +128,7 @@ void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame
 
 void CameraFusionNode::pointCloudCallback ( const sensor_msgs::PointCloud2::ConstPtr& pc ) {
     latestPointCloud = *pc;
-    
+    pcHeader = pc->header;
 }
 
 void CameraFusionNode::spin() {

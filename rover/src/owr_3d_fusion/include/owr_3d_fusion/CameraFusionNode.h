@@ -15,6 +15,8 @@
 #include <tf2_ros/buffer.h>
 #include <geometry_msgs/TransformStamped.h>
 
+#include <image_transport/image_transport.h>
+
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <std_msgs/Header.h>
@@ -55,7 +57,9 @@ class CameraFusionNode {
         tf2_ros::Buffer tfBuffer;
         tf2_ros::TransformListener tfListener;
         ros::Subscriber pcSub;
-        ros::Subscriber camSub;
+        image_transport::Subscriber camSub;
+        image_transport::ImageTransport it;
+        
         
         CPURayTracer tracer;
         Octree * tr;
