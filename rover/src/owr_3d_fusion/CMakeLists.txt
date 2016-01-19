@@ -196,6 +196,8 @@ target_link_libraries(camera_fusion_node ${catkin_LIBRARIES}  ${OPENCL_LIBRARIES
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 catkin_add_gtest(test_octree test/testOctree.cpp src/Octree.cpp)
+catkin_add_gtest(test_cl_ray_trace test/testCLRayTrace.cpp src/CLRayTracer.cpp src/RayTracer.cpp src/Octree.cpp)
+target_link_libraries(test_cl_ray_trace ${catkin_LIBRARIES}  ${OPENCL_LIBRARIES} OpenCL stdc++)
 catkin_add_gtest(test_cpu_ray_trace test/testCPURayTrace.cpp src/CPURayTracer.cpp src/RayTracer.cpp src/Octree.cpp)
 target_link_libraries(test_cpu_ray_trace ${catkin_LIBRARIES}  ${OPENCL_LIBRARIES} OpenCL stdc++)
 ## Add folders to be run by python nosetests

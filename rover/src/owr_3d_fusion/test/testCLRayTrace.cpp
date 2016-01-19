@@ -1,5 +1,5 @@
 #include "owr_3d_fusion/Octree.h"
-#include "owr_3d_fusion/CPURayTracer.hpp"
+#include "owr_3d_fusion/CLRayTracer.hpp"
 #include <pcl/point_types.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -8,7 +8,7 @@
 #include <boost/concept_check.hpp>
 
 
-TEST(CPURayTraceTest, testConstructor) {
+TEST(CLRayTraceTest, testConstructor) {
     pcl::PointXYZ pt;
     pt.x = 50.0;
     pt.y = 50.0;
@@ -27,7 +27,7 @@ TEST(CPURayTraceTest, testConstructor) {
     oct.addPoint(pt5);
     oct.addPoint(pt6);
     
-    CPURayTracer tracer;
+    CLRayTracer tracer;
     tracer.setOctree(&oct);
     //int rows, int cols, int type, void* data
     char a[1024] = {'\n'};
@@ -43,7 +43,7 @@ TEST(CPURayTraceTest, testConstructor) {
     }
     //TODO: write none visual tests here
     std::cout << "actual image" << std::endl;
-    CPURayTracer tracer2;
+    CLRayTracer tracer2;
     tracer2.setOctree(&oct);
     //TODO: fix this path
     cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/10sq.jpg", CV_LOAD_IMAGE_COLOR);
@@ -2061,7 +2061,7 @@ TEST(OctreeTest, testLargeTree) {
     oct.addPoint(pt);
     //TEST HERE
     std::cout << "Done Load" << std::endl;
-    CPURayTracer tracer2;
+    CLRayTracer tracer2;
     tracer2.setOctree(&oct);
     //TODO: fix this path
     cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/10sq.jpg", CV_LOAD_IMAGE_COLOR);
