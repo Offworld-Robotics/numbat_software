@@ -9,7 +9,7 @@
 #ifndef LOGITECH_C920_H
 #define LOGITECH_C920_H
 
-#include <math.h>
+// #include <math.h>
 
 //focal length in m
 #define FOCAL_LENGTH_M 0.00367 //3.67mm source: https://forums.logitech.com/t5/Webcams/Focal-Length-of-Logitech-HD-Pro-Webcam-C920/td-p/1280722
