@@ -94,6 +94,12 @@ void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame
             delete tr;
         }
         tr = new  Octree(DIMS);
+        if(cld.points.size() < 100) {
+            ROS_INFO("Cloud size %d is too small", cld.points.size());
+            return;
+        } else {
+            ROS_INFO("Cloud size %dl", cld.points.size());
+        }
         //load the point cloud into the octree
         for (size_t i = 0; i < cld.points.size (); ++i) {
             tr->addPoint(cld.points[i]);
@@ -122,6 +128,7 @@ void CameraFusionNode::imageCallback ( const sensor_msgs::Image::ConstPtr& frame
         colourPub.publish(pcl2);
         
         cld2.reset();
+        ROS_INFO("Finished Processing");
     } catch (tf2::TransformException &ex) {
         ROS_WARN("%s", ex.what());
     }

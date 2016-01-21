@@ -186,7 +186,7 @@ void CLRayTracer::runTraces() {
                     continue;
                 }
                 existingPoint = target-existingPoint;
-                
+                //TODO: test if this works when comparing one cord, it should because the nodes are square
                 if(fabs(existingPoint.x) <= RES && fabs(existingPoint.y) <= RES && fabs(existingPoint.z) <= RES) {
                     std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
                     //obviously this is a realy slow way to do this, but its only for debuging
@@ -198,7 +198,7 @@ void CLRayTracer::runTraces() {
                     match(target,pt);
                     break;
                 }
-            }
+            } 
         }
 //         }
     }

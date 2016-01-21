@@ -14,7 +14,7 @@
         <remap from="scan" to="/laser/scan" />
         <remap from="cloud_filtered" to="/pcl" />
     </node>
-<!--     <node pkg="owr_3d_fusion" type="camera_fusion_node" name="camera_fusion_node" output="screen"> -->
-<!--     </node> -->
+    <node pkg="owr_3d_fusion" type="camera_fusion_node" name="camera_fusion_node" output="screen">
+    </node>
 </launch>
 
