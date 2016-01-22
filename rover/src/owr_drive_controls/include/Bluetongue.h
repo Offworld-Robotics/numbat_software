@@ -56,8 +56,8 @@ class Bluetongue {
         fd_set uart_set;
         struct timeval timeout;
         
-        //ros::NodeHandle nh;
-        //ros::Publisher lidarTFPublisher;
+        ros::NodeHandle nh;
+        ros::Publisher lidarTFPublisher;
 	
 	public:
 		Bluetongue(const char* port);
@@ -67,7 +67,7 @@ class Bluetongue {
                 int clawRotate, int clawGrip, int cameraBottomRotate,
                 int cameraBottomTilt, int cameraTopRotate, 
                 int cameraTopTilt, int lidarTilt);
-        //void tf_lidar(int16_t pwm);
+        void tf_lidar(int16_t pwm);
         bool reconnect(void);
 };
 #endif

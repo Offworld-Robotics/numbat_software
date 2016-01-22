@@ -63,69 +63,69 @@ bool Bluetongue::reconnect(void) {
 bool Bluetongue::connect() {
     port_fd = open(bluetongue_port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
 	if (port_fd == -1) {
-		ROS_ERROR("Error in open uart port");
-        return false;
+	    ROS_ERROR("Error in open uart port");
+            return false;
 	} else {
-		ROS_DEBUG("Opened uart port");
+	    ROS_DEBUG("Opened uart port");
 	}
     // Set up stuff for select so we can timeout on reads
     FD_ZERO(&uart_set); /* clear the set */
     FD_SET(port_fd, &uart_set); /* add our file descriptor to the set */
-	timeout.tv_sec = 1;
+    timeout.tv_sec = 1;
     timeout.tv_usec = 0;
 
-	// Set parameters
-	struct termios tty;
-	memset(&tty, 0, sizeof tty);
+    // Set parameters
+    struct termios tty;
+    memset(&tty, 0, sizeof tty);
 
-	// Error Handling 
-	if (tcgetattr(Bluetongue::port_fd, &tty) != 0) {
-		ROS_ERROR("Error %d from tcgetattr: %s", errno, strerror(errno));
+    // Error Handling 
+    if (tcgetattr(Bluetongue::port_fd, &tty) != 0) {
+        ROS_ERROR("Error %d from tcgetattr: %s", errno, strerror(errno));
         close(port_fd);
         return false;
-	}
-	ROS_DEBUG("Setting up uart");
+    }
+    ROS_DEBUG("Setting up uart");
 
-	// Set Baud Rate 
-	cfsetospeed(&tty, (speed_t)B19200);
-	cfsetispeed(&tty, (speed_t)B19200);
+    // Set Baud Rate 
+    cfsetospeed(&tty, (speed_t)B19200);
+    cfsetispeed(&tty, (speed_t)B19200);
 
-	// Setting other Port Stuff 
-	tty.c_cflag &= ~PARENB; // Make 8n1
-	tty.c_cflag &= ~CSTOPB;
-	tty.c_cflag &= ~CSIZE;
-	tty.c_cflag |= CS8;
+    // Setting other Port Stuff 
+    tty.c_cflag &= ~PARENB; // Make 8n1
+    tty.c_cflag &= ~CSTOPB;
+    tty.c_cflag &= ~CSIZE;
+    tty.c_cflag |= CS8;
 
-	tty.c_cflag &= ~CRTSCTS; // no flow control
-	tty.c_cc[VMIN] = 1; // read doesn't block
-	tty.c_cc[VTIME] = 5; // 0.5 seconds read timeout
-	tty.c_cflag |= CREAD | CLOCAL; // turn on READ & ignore ctrl lines
-	ROS_DEBUG("About to make raw");
+    tty.c_cflag &= ~CRTSCTS; // no flow control
+    tty.c_cc[VMIN] = 1; // read doesn't block
+    tty.c_cc[VTIME] = 5; // 0.5 seconds read timeout
+    tty.c_cflag |= CREAD | CLOCAL; // turn on READ & ignore ctrl lines
+    ROS_DEBUG("About to make raw");
 
-	// Make raw 
-	cfmakeraw(&tty);
+    // Make raw 
+    cfmakeraw(&tty);
 
-	// Flush Port, then applies attributes
-	tcflush(port_fd, TCIFLUSH);
-	if (tcsetattr(port_fd, TCSANOW, &tty) != 0) {
-		ROS_ERROR("Error %d from tcsetattr: %s" ,errno, strerror(errno));
+    // Flush Port, then applies attributes
+    tcflush(port_fd, TCIFLUSH);
+    if (tcsetattr(port_fd, TCSANOW, &tty) != 0) {
+        ROS_ERROR("Error %d from tcsetattr: %s" ,errno, strerror(errno));
         close(port_fd);
         return false;
-	}
+    }
     return true;
 }
 
 Bluetongue::Bluetongue(const char* port) {
-	// Open serial port
+    // Open serial port
     bluetongue_port = port;
     isConnected = connect();	
     
-    //lidarTFPublisher = nh.advertise<std_msgs::Float64>("lidarTFAngle", 10);
+    lidarTFPublisher = nh.advertise<sensor_msgs::joint_state>("laser_tilt_joint", 10);
     ROS_INFO("Finished initalizing bluetongue");
 }
 
 Bluetongue::~Bluetongue(void) {
-	close(Bluetongue::port_fd);
+    close(Bluetongue::port_fd);
 }
 
 bool Bluetongue::comm(bool forBattery, void *message, int message_len, 
@@ -134,12 +134,12 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
 	for (int i = 0; i < message_len; i++) {
 		ROS_DEBUG("%d: %02x\n", i, *((char *) message + i));
 	}
-	int written = 0;
+    int written = 0;
     timeout.tv_sec = 0;
     timeout.tv_usec = 400000;
     int empty_writes = 0;
-	do {
-		int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
+    do {
+	int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
         if (write_amount == -1) {
             ROS_ERROR("USB write error");
             return false;
@@ -150,12 +150,12 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
             ROS_ERROR("Dodgy usb connection detected");
             return false;
         }
-	} while (written < message_len);
-	ROS_DEBUG("Written packet, expecting to read %d", resp_len);
-	tcflush(port_fd, TCIOFLUSH); 
-	int empty_reads = 0;
+    } while (written < message_len);
+    ROS_DEBUG("Written packet, expecting to read %d", resp_len);
+    tcflush(port_fd, TCIOFLUSH); 
+    int empty_reads = 0;
     int readCount = 0;
-	do {
+    do {
         int rv = select(port_fd + 1, &uart_set, NULL, NULL, &timeout);
         if(rv == -1) {
             ROS_ERROR("select"); /* an error accured */
@@ -164,17 +164,17 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
             ROS_ERROR("timeout"); /* a timeout occured */
             return false; // This might not require a full reset...
         } else {
-		  int read_amount = read(port_fd, (int8_t*)resp + readCount, resp_len - readCount);
-          readCount += read_amount;
-          if (read_amount == 0) ++empty_reads;
-          if (empty_reads > DODGY_USB_CONNECTION) {
-              ROS_ERROR("Dodgy usb connection detected");
-              return false;
-          }
-		}
+            int read_amount = read(port_fd, (int8_t*)resp + readCount, resp_len - readCount);
+            readCount += read_amount;
+            if (read_amount == 0) ++empty_reads;
+            if (empty_reads > DODGY_USB_CONNECTION) {
+                ROS_ERROR("Dodgy usb connection detected");
+                return false;
+            }
+	}
         ROS_DEBUG("reading... %d", readCount);
-	} while (readCount < resp_len);
-	ROS_DEBUG("Read packet");
+    } while (readCount < resp_len);
+    ROS_DEBUG("Read packet");
     return true;
 }
 
@@ -188,11 +188,11 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
         stat.roverOk = false;
         return stat;
     }
-	struct toControlMsg mesg;
-	struct toNUCMsg resp;
-	mesg.magic = MESSAGE_MAGIC;
-	mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
-	mesg.rSpeed = (rightMotor * 500) + 1500;
+    struct toControlMsg mesg;
+    struct toNUCMsg resp;
+    mesg.magic = MESSAGE_MAGIC;
+    mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
+    mesg.rSpeed = (rightMotor * 500) + 1500;
     mesg.armRotate = (armRotate * 500) + 1500;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
@@ -203,9 +203,8 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.cameraTopRotate = cameraTopRotate;
     mesg.cameraTopTilt = cameraTopTilt;
     
-    //Testing Lidar positioning.
-    //mesg.lidarTilt = (lidarTilt * 500) + 1500;
-    mesg.lidarTilt = 1295;
+    //mesg.lidarTilt = (lidarTilt * 500) + 1500; // Use this line when reading lidar from a joystick
+    mesg.lidarTilt = 1295; //Testing Lidar positioning.
     
     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
@@ -245,38 +244,22 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
     
-    //tf_lidar(mesg.lidarTilt);
-    
-    //Send rvis the angular position (in radians) of lidar tilt.
-    double lidarRads;
-    lidarRads = mesg.lidarTilt - LIDAR_HORIZ;
-    
-    //Find angle in degrees
-    lidarRads = lidarRads * DEG_PER_PWM;
-    
-    //Convert to radians
-    lidarRads = lidarRads * M_PI/180;
-    
-    //lidarTFPublisher.publish(lidarRads);
-    ROS_INFO("+++++Rads : %f ",lidarRads); 
-    
+    tf_lidar(mesg.lidarTilt); 
     return stat;
 }
 
-// Sends rviz a angle (radians) representing the current position of the lidar
-// gimbal. Angle is measured from horizontal (1330pwm = 0 rads), with tilting
+// Sends rviz an angle (radians) representing the current position of the lidar
+// gimbal. Angle is measured from horizontal (1330:pwm = 0 rads), with tilting
 // towards the front of the rover measured as positive radians, and tilting in
 // the opposite direction as negative.
-/*void tf_lidar(int16_t pwm){
+void tf_lidar(int16_t pwm){
     double lidarRads;
     lidarRads = pwm - LIDAR_HORIZ;
+
+    lidarRads = lidarRads * DEG_PER_PWM;//Find angle in degrees
     
-    //Find angle in degrees
-    lidarRads = lidarRads * DEG_PER_PWM;
+    lidarRads = lidarRads * M_PI/180;//Convert to radians
     
-    //Convert to radians
-    lidarRads = lidarRads * M_PI/180;
-    
-    //lidarTFPublisher.publish(lidarRads);
-    ROS_INFO("+++++Rads : %f ",lidarRads); 
-}*/
+    lidarTFPublisher.publish(lidarRads);
+    ROS_INFO("Rads : %f ",lidarRads); // Print radians info to terminal
+}
