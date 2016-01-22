@@ -1,6 +1,6 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
-#include </home/bluenuc/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/logitechC920.h>
-#include </home/bluenuc/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/OctreeDefines.h>
+#include </home/ros/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/logitechC920.h>
+#include </home/ros/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/OctreeDefines.h>
 //see: http://enja.org/2011/03/30/adventures-in-opencl-part-3-constant-memory-structs/
 //for OpenCL structs
 typedef struct octNode {
@@ -19,7 +19,6 @@ typedef struct octNode {
 #define ROOT_LOC_CODE 1
 
 float3 getPointAt(struct octNode node , uchar index) {
-    //TODO: implement this
     return node.simplePoint[index];
 }
 
@@ -80,6 +79,8 @@ struct octNode getNodeAt(constant const struct octNode * tree, const unsigned lo
         current = tree[hash];
         if(current.locCode != locCode) {
             hash++;
+        } else {
+            break;
         }
         //TODO: I feel that if the tree gets very full we might need an additional saftey on this
     } while(current.exists);
@@ -135,17 +136,29 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
         target = delta*dist;
         target -= (float)FOCAL_LENGTH_M;
         struct octNode node = getNode(target, tree);
-//         //BEGIN TEST code, TODO: replace with above line
-//         struct octNode node = tree[0];
-//         //END TEST
+
         int index = get_global_id(CV_X_INDEX)*dims[0].z + get_global_id(CV_Y_INDEX);
         if(node.dimensions.x <= (float)RES) {
             
-            outcome = (target, img[index], 0, 0);
+            outcome = (target.x,
+                               target.y,
+                               target.z,
+                               img[index].x,
+                               img[index].y,
+                               img[index].z,
+                               0, 0
+                              );
             break;
         } else if (node.dimensions.x <= RES*8) {
             //if(!node.getPointAt(tree->calculateIndex(target, node.orig)).isEmpty()) {
-                    outcome = (target, img[index], 0, 0);
+                    outcome = (target.x,
+                               target.y,
+                               target.z,
+                               img[index].x,
+                               img[index].y,
+                               img[index].z,
+                               0, 0
+                              );
                     break;
             //}
         } else {
@@ -155,7 +168,14 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
             }
             existingPt = target-existingPt;
             if(fabs(existingPt.x) <= RES) {
-                outcome = (target, img[index], 0, 0);
+                outcome = (target.x,
+                               target.y,
+                               target.z,
+                               img[index].x,
+                               img[index].y,
+                               img[index].z,
+                               0, 0
+                              );
             }
         }
         

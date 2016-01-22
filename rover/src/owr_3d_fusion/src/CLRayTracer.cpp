@@ -8,13 +8,14 @@
  */
 
 #include "owr_3d_fusion/CLRayTracer.hpp"
-#include "owr_3d_fusion/CLOctree.h"
+
 #include <ros/ros.h>
 #include <ros/package.h>
 
 #include <stdio.h>
-
 #include <math.h>
+#include <malloc.h>
+
 #include "owr_3d_fusion/logitechC920.h"
 
 
@@ -119,8 +120,12 @@ void CLRayTracer::loadImage(const cv::Mat * image) {
     cl_float3 dims;
     dims.y = image->cols;
     dims.z = image->rows;
-    queue->enqueueWriteBuffer(*dimsBuffer, CL_TRUE, 0, sizeof(dims), &dims);
+    cl::Event dimsWriteEvent;
+    std::vector<cl::Event> events;
+    queue->enqueueWriteBuffer(*dimsBuffer, CL_TRUE, 0, sizeof(dims), &dims,&events, &dimsWriteEvent);
     queue->enqueueWriteBuffer(*imgBuffer, CL_TRUE, 0, imgSize, (cl_uchar3*)image->data);
+    //we need to make sure dims are written before it goes out of scope
+    dimsWriteEvent.wait();
 }
 
 
@@ -151,10 +156,11 @@ void CLRayTracer::runTraces() {
     checkErr(err, "Kernel::setArg()");
     err = rayTrace->setArg(3, *dimsBuffer);
     checkErr(err, "Kernel::setArg()");
-    //TODO: fix memory leak
-    queue->enqueueWriteBuffer(*treeBuffer, CL_TRUE, 0, sizeof(octNodeCL)*8*HASH_MAP_SIZE, tree->getFlatTree());
     
-    cl::Event event;
+    octNodeCL* flatTree = tree->getFlatTree();
+    queue->enqueueWriteBuffer(*treeBuffer, CL_TRUE, 0, sizeof(octNodeCL)*8*HASH_MAP_SIZE, flatTree);
+    
+    std::vector<cl::Event> events;
     int xOffset, yOffset;
     int xGroups = (image->rows/256 + 1);
     int yGroups = (image->rows/256 + 1);
@@ -170,22 +176,26 @@ void CLRayTracer::runTraces() {
                 xRange = image->cols % yRange;
             } 
             ROS_INFO("Spawning with workers %d, %d", xRange, yRange);
+            cl::Event event;
+            events.push_back(event);
             err = queue->enqueueNDRangeKernel(
                 *rayTrace,
                 cl::NDRange(xOffset,yOffset),
                 cl::NDRange(xRange,yRange),
                 cl::NDRange(1,1),
                 NULL,
-                &event
+                &events.back()
             );
             checkErr(err, "running kernel");
         }
     }
     cl_float8 * results = (cl_float8 *) malloc(sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT);
-    event.wait();
-    queue->enqueueReadBuffer(*result,CL_TRUE,0,sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT,results);
+//     event.wait();
+    cl::Event readEvent;
+    err =queue->enqueueReadBuffer(*result,CL_TRUE,0,sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT,results,&events,&readEvent);
+    checkErr(err, "enque read");
     ROS_INFO("Finished Reading");
-    
+    readEvent.wait();
     
     cld.reset();
     shared_ptr< pcl::PointCloud< pcl::PointXYZRGB > > newCld(new pcl::PointCloud<pcl::PointXYZRGB> ());
@@ -207,7 +217,8 @@ void CLRayTracer::runTraces() {
         }
     }
 
-    
+    free(results);
+    free(flatTree);
     
 }
 

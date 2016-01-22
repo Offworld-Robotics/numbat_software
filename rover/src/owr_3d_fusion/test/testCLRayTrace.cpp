@@ -2064,13 +2064,28 @@ TEST(OctreeTest, testLargeTree) {
     CLRayTracer tracer2;
     tracer2.setOctree(&oct);
     //TODO: fix this path
-    cv::Mat image = cv::imread("/home/bluenuc/owr_software/rover/src/owr_3d_fusion/test/10sq.jpg", CV_LOAD_IMAGE_COLOR);
+    cv::Mat image = cv::imread("/home/bluenuc/owr_software/rover/src/owr_3d_fusion/test/100sq.jpg", CV_LOAD_IMAGE_COLOR);
     if(!image.data) {
         std::cout << "no data" << std::endl;
     }
     tracer2.loadImage(&image);
     tracer2.runTraces();
     shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > cld =  tracer2.getResult();
+    for (size_t i = 0; i < cld->points.size (); ++i) {
+        std::cout <<  cld->points[i].x << "," <<  cld->points[i].y << ","
+            <<  cld->points[i].z << "," << std::endl;
+        std::cout << "RGB:" <<  (uint8_t) cld->points[i].r << "," << (uint8_t) cld->points[i].g << ","
+            << (uint8_t) cld->points[i].b << "," << std::endl;    
+    }
+    std::cout << cld->points.size() << std::endl;
+    EXPECT_EQ(true, cld->points.size() > 0);
+     image = cv::imread("/home/bluenuc/owr_software/rover/src/owr_3d_fusion/test/1080pGradient.png", CV_LOAD_IMAGE_COLOR);
+    if(!image.data) {
+        std::cout << "no data" << std::endl;
+    }
+    tracer2.loadImage(&image);
+    tracer2.runTraces();
+    cld =  tracer2.getResult();
     for (size_t i = 0; i < cld->points.size (); ++i) {
         std::cout <<  cld->points[i].x << "," <<  cld->points[i].y << ","
             <<  cld->points[i].z << "," << std::endl;
