@@ -17,6 +17,7 @@ class CLRayTracer: public RayTracer {
         CLRayTracer() ;
         ~CLRayTracer();
         virtual shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > getResult();
+        virtual void loadImage(const cv::Mat * image);
     private:
         void match(simplePoint pt, cv::Vec3i pixel);
         shared_ptr< pcl::PointCloud< pcl::PointXYZRGB > > cld;
@@ -25,7 +26,9 @@ class CLRayTracer: public RayTracer {
         cl::Buffer * imgBuffer = NULL;
         cl::Buffer * treeBuffer = NULL;
         cl::Buffer * result = NULL;
+        cl::Buffer * dimsBuffer = NULL;
         cl::CommandQueue * queue;
         std::vector<cl::Device> device;
+        cl::Kernel * rayTrace = NULL; 
 };
 #endif

@@ -8,7 +8,11 @@
  */
 
 #include "owr_3d_fusion/CLRayTracer.hpp"
+#include "owr_3d_fusion/CLOctree.h"
 #include <ros/ros.h>
+#include <ros/package.h>
+
+#include <stdio.h>
 
 #include <math.h>
 #include "owr_3d_fusion/logitechC920.h"
@@ -16,7 +20,15 @@
 
 #define IMG_MAX_WIDTH 1920
 #define IMG_MAX_HEIGHT 1080
+#define MAX_KERNEL_SIZE 20000
 // #define DEBUG
+
+inline void checkErr(cl_int err, const char * name) {
+    if (err != CL_SUCCESS) {
+      ROS_ERROR("%s: (%d)",name,err);
+      exit(EXIT_FAILURE);
+   }
+}
 
 CLRayTracer::CLRayTracer() : RayTracer(), cld(new pcl::PointCloud<pcl::PointXYZRGB> ()) {
     //this code based on opencl tutorial at 
@@ -41,9 +53,27 @@ CLRayTracer::CLRayTracer() : RayTracer(), cld(new pcl::PointCloud<pcl::PointXYZR
     }
     cl::Device default_device=all_devices[0];
     ROS_INFO("Using device: %s",default_device.getInfo<CL_DEVICE_NAME>().c_str());
-    context = new cl::Context({default_device});
+    context = new cl::Context(default_device);
+    
+     
+    
+    //load the kernel file
+    std::string path = ros::package::getPath("owr_3d_fusion");
+    char *sourceStr;
+    size_t sourceSize;
+    FILE *fp= fopen((path + "/cl/rayTrace.cl").c_str(), "r");
+    
+    if(!fp) {
+        ROS_ERROR("File not found: %s", (path + "/cl/rayTrace.cl").c_str());
+        ROS_ERROR("Error: %d (%s)\n", errno, strerror(errno));
+        exit(1);
+    }
+    sourceStr = (char*)malloc(MAX_KERNEL_SIZE);
+    sourceSize = fread(sourceStr, 1, MAX_KERNEL_SIZE, fp);
+    fclose(fp);
     
     cl::Program::Sources sources;
+    sources.push_back({sourceStr, sourceSize});
     //TODO: load kernel from file
     device.push_back(default_device);
     cl::Program program(*context,sources);
@@ -51,14 +81,46 @@ CLRayTracer::CLRayTracer() : RayTracer(), cld(new pcl::PointCloud<pcl::PointXYZR
         ROS_ERROR(" Error building: %s",program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(default_device).c_str());
         exit(1);
     }
+
+    cl_int err;    
+    rayTrace = new cl::Kernel(program, "rayTrace", &err);
+    size_t wgSize;
+    rayTrace->getWorkGroupInfo(default_device, CL_KERNEL_WORK_GROUP_SIZE, &wgSize);
+    ROS_INFO("Max Workgroups %lu", wgSize);
+    checkErr(err, "cl::Kernel");
     
-    result = new cl::Buffer(*context, CL_MEM_READ_WRITE,sizeof(simplePoint)*IMG_MAX_WIDTH*IMG_MAX_HEIGHT);
     
+    //NOTE: we can't create the image buffer here because we don't know how big it is going to be
+    result = new cl::Buffer(*context, CL_MEM_READ_WRITE,sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT);
+    treeBuffer = new cl::Buffer(*context, CL_MEM_READ_ONLY,sizeof(octNodeCL)*8*HASH_MAP_SIZE);
+    dimsBuffer = new cl::Buffer(*context, CL_MEM_READ_ONLY,sizeof(cl_float3));
+    
+
     queue = new cl::CommandQueue(*context,default_device);
+    
+    
 }
 
 CLRayTracer::~CLRayTracer() {
     cld.reset();
+}
+
+void CLRayTracer::loadImage(const cv::Mat * image) {
+    RayTracer::loadImage(image);
+    if(imgBuffer) {
+        delete imgBuffer;
+    }
+    /*if(rayTrace) {
+        delete rayTrace;
+    }
+    rayTrace = new cl::KernelFunctor(cl::Kernel(program,"rayTrace"),queue,cl::NullRange,cl::NDRange(image->rows,image->cols),cl::NullRange);*/
+    const size_t imgSize = sizeof(cl_uchar3)*image->rows*image->cols;
+    imgBuffer = new cl::Buffer(*context, CL_MEM_READ_ONLY,imgSize);
+    cl_float3 dims;
+    dims.y = image->cols;
+    dims.z = image->rows;
+    queue->enqueueWriteBuffer(*dimsBuffer, CL_TRUE, 0, sizeof(dims), &dims);
+    queue->enqueueWriteBuffer(*imgBuffer, CL_TRUE, 0, imgSize, (cl_uchar3*)image->data);
 }
 
 
@@ -80,128 +142,73 @@ void CLRayTracer::runTraces() {
      * 
      * This function uses floats not double as ROSs co-ordinate system is in M and our maximum resolution is currently 1cm.
      */
+    cl_int err;
+    err = rayTrace->setArg(0, *result);
+    checkErr(err, "Kernel::setArg()");
+    err = rayTrace->setArg(1, *imgBuffer);
+    checkErr(err, "Kernel::setArg()");
+    err = rayTrace->setArg(2, *treeBuffer);
+    checkErr(err, "Kernel::setArg()");
+    err = rayTrace->setArg(3, *dimsBuffer);
+    checkErr(err, "Kernel::setArg()");
+    //TODO: fix memory leak
+    queue->enqueueWriteBuffer(*treeBuffer, CL_TRUE, 0, sizeof(octNodeCL)*8*HASH_MAP_SIZE, tree->getFlatTree());
+    
+    cl::Event event;
+    int xOffset, yOffset;
+    int xGroups = (image->rows/256 + 1);
+    int yGroups = (image->rows/256 + 1);
+    for(xOffset = 0; xOffset < xGroups; xOffset++) {
+        int xRange = 256;
+        if(image->rows - xRange*xOffset < xRange) {
+            xRange = image->rows % xRange;
+        }
+        for(yOffset = 0; yOffset < yGroups; yOffset++) {
+            
+            int yRange = 256;
+            if(image->cols - yRange*yOffset < yRange) {
+                xRange = image->cols % yRange;
+            } 
+            ROS_INFO("Spawning with workers %d, %d", xRange, yRange);
+            err = queue->enqueueNDRangeKernel(
+                *rayTrace,
+                cl::NDRange(xOffset,yOffset),
+                cl::NDRange(xRange,yRange),
+                cl::NDRange(1,1),
+                NULL,
+                &event
+            );
+            checkErr(err, "running kernel");
+        }
+    }
+    cl_float8 * results = (cl_float8 *) malloc(sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT);
+    event.wait();
+    queue->enqueueReadBuffer(*result,CL_TRUE,0,sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT,results);
+    ROS_INFO("Finished Reading");
+    
     
     cld.reset();
     shared_ptr< pcl::PointCloud< pcl::PointXYZRGB > > newCld(new pcl::PointCloud<pcl::PointXYZRGB> ());
     cld = newCld;
-    //NOTE: this function unfortuantly has to use two cordinate systems
-    //a metric one in meters, and a pixel based one in pixels.
-    int pixelX = -1, pixelY = -1;
-    float metricY, metricZ;
-    float deltaY, deltaZ;
-    //calc this here so it only does the math once, #defines will run this many time
-    const float focalLengthPx = (PX_TO_M/FOCAL_LENGTH_M);
-    #ifdef DEBUG
-        std::cout << "focalLengthPx:" << focalLengthPx << "PZ_TO_M" <<PX_TO_M << std::endl;
-    #endif
-    
-    //we redo this function here as it is dependent on the resolution of the image
-    const float pxToM = SENSOR_DIAG_M/sqrt(pow(image->cols,2) + pow(image->rows,2)) ;
-    //the image co-ordinate system starts in the top right corner, whilst the pcl system starts in the center
-    //we need to add an offset
-    const float metricYOffset = (image->cols/2.0) * pxToM;
-    const float metricZOffset = (image->rows/2.0) * pxToM;
-    //NOTE: this is not the most efficient way to do this
-    //but it is a simpler way.
-    //see: http://docs.opencv.org/2.4/doc/tutorials/core/how_to_scan_images/how_to_scan_images.html
-    //search the image
-    cv::MatConstIterator_<cv::Vec3b> it, end;
-    for(it = image->begin<cv::Vec3b>(), end = image->end<cv::Vec3b>(); it != end; ++it) {
-//     for(pixelX = 0; pixelX < image.cols; pixelX++) {
-        const cv::Point pos = it.pos();
-        pixelX = pos.x;
-        if(pixelY != pos.y) {
-            pixelY = pos.y;
-            metricZ= pixelY * (-pxToM) + metricZOffset;
-            deltaZ = tanh(metricZ/focalLengthPx);
-        }
-        #ifdef DEBUG
-            std::cout << "pixel" << pixelX << "," << pixelY << std::endl;
-        #endif
-        metricY= pixelX * (-pxToM) + metricYOffset;
-        deltaY = tanh(metricY/FOCAL_LENGTH_M);
-//         for(pixelY = 0; pixelY < image.rows; pixelY++) {
-        cv::Vec3b pt = (*it);
-       
-        #ifdef DEBUG
-            std::cout << "pixelY:" << pixelY
-                << "deltaZ:" << deltaZ 
-                <<  "metricZ:" << metricZ
-                << "tanInput:" << metricZ*focalLengthPx << std::endl;
-        #endif
-        //gradient of z is the minimum resolution on the z axis of the point cloud
-        simplePoint target;
-        float dist = 0;
-        //the node retrived
-        octNode node;
-//         node.dimensions.x = 0;
-//         node.dimensions.y = 0;
-//         node.dimensions.z = 0;
-        float incDist = RES;
-        //this is in metric
-        for(dist = FOCAL_LENGTH_M;  //start at the end of the focal length, because of how we calculate everything our z origin is at -f
-            dist < TRACE_RANGE;
-            //use the larger of the dimension of the cell or half the resolution as an increase
-//                 incDist = (RES < (node.dimensions.x/2)) ? (node.dimensions.x/2) : RES, dist+=incDist 
-            dist+=RES
-        ) {
-            target.x = dist - FOCAL_LENGTH_M;
-            target.y = deltaY * dist;
-            target.z = deltaZ * dist;
+    pcl::PointXYZRGB newPt;
+    int i;
+    for(i = 0; i< IMG_MAX_WIDTH*IMG_MAX_HEIGHT; i++) {
+        if(results[i].x != FLOAT_INF) {
+            newPt.x = results[i].x;
+            newPt.y = results[i].y;
+            newPt.z = results[i].z;
+            newPt.r = results[i].s3;
+            newPt.g = results[i].s4;
+            newPt.b = results[i].s5;
             #ifdef DEBUG
-                std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
+                std::cout << newPt << std::endl;
             #endif
-            node = tree->getNode(target);
-            #ifdef DEBUG
-                std::cout << node.orig.x << "," << node.orig.y << "," << node.orig.z << " is found" << std::endl;
-                std::cout << "\t" << node.dimensions.x << "," << node.dimensions.y << "," << node.dimensions.z << " (dims)" << std::endl;
-                std::cout << "\tlocCode:" << node.locationCode << " childMask" << node.childrenMask  << std::endl;
-            #endif
-            
-            //if a point is exists at our resolution then we have a match
-            if(node.dimensions.x <= RES) {
-                //match
-                //NOTE: we have a loss of accuracy by using the target point here
-                //testing should be done to see if it is better to use the laserScan point.
-                #ifdef DEBUG
-                    std::cout << "match on small node" << std::endl;
-                    std::cout << pixelX << "," << pixelY << std::endl;
-                #endif
-                match(target,pt);
-                break;
-            //the next size up, match
-            } else if (node.dimensions.x <= RES * 8) {
-                if(!node.getPointAt(tree->calculateIndex(target, node.orig)).isEmpty()) {
-                    std::cout << "match on smallish node" << std::endl;
-                    match(target,pt);
-                    break;
-                }
-            } else {
-                //check within required accuracy
-                simplePoint existingPoint = node.getPointAt(tree->calculateIndex(target, node.orig));
-                if(existingPoint.isEmpty()) {
-                    #ifdef DEBUG
-                        std::cout << "empty" << std::endl;
-                    #endif
-                    continue;
-                }
-                existingPoint = target-existingPoint;
-                //TODO: test if this works when comparing one cord, it should because the nodes are square
-                if(fabs(existingPoint.x) <= RES && fabs(existingPoint.y) <= RES && fabs(existingPoint.z) <= RES) {
-                    std::cout << target.x << "," << target.y << "," << target.z << " is target" << std::endl;
-                    //obviously this is a realy slow way to do this, but its only for debuging
-                    std::cout << node.getPointAt(tree->calculateIndex(target, node.orig)).x << 
-                        "," << node.getPointAt(tree->calculateIndex(target, node.orig)).y << 
-                        "," << node.getPointAt(tree->calculateIndex(target, node.orig)).z << " is existing" << std::endl;
-                    std::cout << existingPoint.x << "," << existingPoint.y << "," << existingPoint.z << " is diff" << std::endl;
-                    std::cout << "match on comparision" << std::endl;
-                    match(target,pt);
-                    break;
-                }
-            } 
+            cld->push_back(newPt);
         }
-//         }
     }
+
+    
+    
 }
 
 void CLRayTracer::match ( simplePoint pt, cv::Vec3i pixel ) {

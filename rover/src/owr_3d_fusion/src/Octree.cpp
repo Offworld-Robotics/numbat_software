@@ -21,6 +21,15 @@
 
 
 //helper functions
+static inline cl_float3 ptToClFloat(simplePoint rhs) {
+        cl_float3 f;
+        f.x= rhs.x;
+        f.y = rhs.y;
+        f.z = rhs.z;
+        return f;
+}
+
+
 inline simplePoint calculateOrigin(const simplePoint parentDimensions, const simplePoint parentOrigin, const int index) {
     simplePoint dimensions = parentDimensions;
     dimensions.x *= 0.5f;
@@ -305,4 +314,38 @@ simplePoint Octree::getDimensions() {
     return dimensions;
 }
 
-
+octNodeCL * Octree::getFlatTree() {
+    octNodeCL * flatMap = (octNodeCL*) malloc(sizeof(octNodeCL)*8*HASH_MAP_SIZE);
+    int i;
+    for(i=0;i<HASH_MAP_SIZE;i++) {
+        flatMap[i].exists = false;
+    }
+    int target = 0;
+    for(i=0;i<HASH_MAP_SIZE;i++) {
+        //TODO: sort this
+        if(hashMap[i] != NULL) {
+            if(target < i) {
+                target = i;
+            }
+            HashNode current = hashMap[i];
+            while(current != NULL) {
+                while(flatMap[i].exists) {
+                    target+=target%HASH_MAP_SIZE;
+                }
+                flatMap[i].exists = true;
+                flatMap[i].locCode = current->data.locationCode;
+                
+                int indx;
+                for(indx= 0; indx < 8;indx++) {
+                    flatMap[i].simplePoint[indx] = ptToClFloat(current->data.points[indx]);
+                }
+                flatMap[i].orig = ptToClFloat(current->data.orig);
+                flatMap[i].dimensions = ptToClFloat(current->data.dimensions);
+                flatMap[i].childrenMask = current->data.childrenMask;
+                current = current->next;
+            }
+            
+        }
+    }
+    return flatMap;
+}

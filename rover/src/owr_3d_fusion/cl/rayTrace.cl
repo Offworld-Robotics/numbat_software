@@ -1,6 +1,6 @@
-
-#include </home/ros/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/logitechC920.h>
-#include </home/ros/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/OctreeDefines.h>
+#pragma OPENCL EXTENSION cl_khr_fp64 : enable
+#include </home/bluenuc/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/logitechC920.h>
+#include </home/bluenuc/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/OctreeDefines.h>
 //see: http://enja.org/2011/03/30/adventures-in-opencl-part-3-constant-memory-structs/
 //for OpenCL structs
 typedef struct octNode {
@@ -129,7 +129,9 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
     //this means we don't have to assign dist latter
     delta.x = 1;
     float3 target;
+    float8 outcome = INFINITY;
     for(float dist = FOCAL_LENGTH_M; dist < TRACE_RANGE; dist+=RES) {
+        
         target = delta*dist;
         target -= (float)FOCAL_LENGTH_M;
         struct octNode node = getNode(target, tree);
@@ -139,11 +141,11 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
         int index = get_global_id(CV_X_INDEX)*dims[0].z + get_global_id(CV_Y_INDEX);
         if(node.dimensions.x <= (float)RES) {
             
-            result[index] = (target, img[index], 0, 0);
+            outcome = (target, img[index], 0, 0);
             break;
         } else if (node.dimensions.x <= RES*8) {
             //if(!node.getPointAt(tree->calculateIndex(target, node.orig)).isEmpty()) {
-                    result[index] = (target, img[index], 0, 0);
+                    outcome = (target, img[index], 0, 0);
                     break;
             //}
         } else {
@@ -153,11 +155,13 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
             }
             existingPt = target-existingPt;
             if(fabs(existingPt.x) <= RES) {
-                result[index] = (target, img[index], 0, 0);
+                outcome = (target, img[index], 0, 0);
             }
         }
         
     }
+    int index = get_global_id(CV_X_INDEX)*dims[0].z + get_global_id(CV_Y_INDEX);
+    result[index] = outcome;
     
 //     int myY = get_global_id(0);
 //     int myX = get_global_id(1);

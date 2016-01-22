@@ -16,6 +16,18 @@
 
 #include "OctreeDefines.h"
 
+#include <CL/cl.hpp>
+
+//OPEN CL Data point_types
+typedef struct _cloctNode {
+    unsigned long locCode;
+    unsigned char childrenMask;
+    cl_float3 simplePoint[8];
+    cl_float3 orig;
+    cl_float3 dimensions;
+    bool exists;
+} octNodeCL;
+
 const float FLOAT_INF = std::numeric_limits<float>::infinity();
 
 typedef struct _simplePoint {
@@ -29,6 +41,9 @@ typedef struct _simplePoint {
         lhs.z-=z;
         return (lhs);
     }
+    
+    
+    
     inline bool isEmpty() const {
         if(x == FLOAT_INF) {
             return true;
@@ -37,6 +52,8 @@ typedef struct _simplePoint {
         }
     }
 } simplePoint;
+
+
 
 const simplePoint EMPTY_POINT = {
         FLOAT_INF,
@@ -90,9 +107,12 @@ class Octree {
         octNode getNode(simplePoint pt);
         simplePoint getDimensions();
         int calculateIndex (  simplePoint const& point, simplePoint const& orig );
-    private:
-
+        octNodeCL * getFlatTree();
+    protected:
         HashNode hashMap[HASH_MAP_SIZE];
+    private:
+        
+       
         //this makes it more efficent
         HashNode root;
         
@@ -111,5 +131,9 @@ class Octree {
         
 
 };
+
+
+
+
 
 #endif // OCTREE_H

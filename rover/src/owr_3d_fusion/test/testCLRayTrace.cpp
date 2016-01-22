@@ -46,7 +46,7 @@ TEST(CLRayTraceTest, testConstructor) {
     CLRayTracer tracer2;
     tracer2.setOctree(&oct);
     //TODO: fix this path
-    cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/10sq.jpg", CV_LOAD_IMAGE_COLOR);
+    cv::Mat image = cv::imread("/home/bluenuc/owr_software/rover/src/owr_3d_fusion/test/10sq.jpg", CV_LOAD_IMAGE_COLOR);
     if(!image.data) {
         std::cout << "no data" << std::endl;
     }
@@ -61,7 +61,7 @@ TEST(CLRayTraceTest, testConstructor) {
     }
     std::cout << cld->points.size() << std::endl;
     EXPECT_EQ(true, cld->points.size() > 0);
-    image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/100sq.jpg", CV_LOAD_IMAGE_COLOR);
+    image = cv::imread("/home/bluenuc/owr_software/rover/src/owr_3d_fusion/test/100sq.jpg", CV_LOAD_IMAGE_COLOR);
     if(!image.data) {
         std::cout << "no data" << std::endl;
     }
@@ -2064,7 +2064,7 @@ TEST(OctreeTest, testLargeTree) {
     CLRayTracer tracer2;
     tracer2.setOctree(&oct);
     //TODO: fix this path
-    cv::Mat image = cv::imread("/home/ros/owr_software/rover/src/owr_3d_fusion/test/10sq.jpg", CV_LOAD_IMAGE_COLOR);
+    cv::Mat image = cv::imread("/home/bluenuc/owr_software/rover/src/owr_3d_fusion/test/10sq.jpg", CV_LOAD_IMAGE_COLOR);
     if(!image.data) {
         std::cout << "no data" << std::endl;
     }
