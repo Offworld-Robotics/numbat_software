@@ -1594,9 +1594,9 @@
         xyz="-1 0 0" />
     </joint>
 
-    <include filename="$(find hector_sensors_description)/urdf/hokuyo_utm30lx.urdf.xacro" /> 
+    <xacro:include filename="$(find hector_sensors_description)/urdf/hokuyo_utm30lx.urdf.xacro" /> 
     <xacro:hokuyo_utm30lx_gpu name="laser" ros_topic="/laser/scan" update_rate="40" ray_count="1440" min_angle="-2.35619" max_angle="2.35619" parent="laser_tilt_tilt">
-        <origin xyz="0.02 0.1 0" rpy="-1.6708 0 0"/>
+        <origin xyz="0.02 0.1 0" rpy="-1.6708 1.571 0"/>
     </xacro:hokuyo_utm30lx_gpu>
     <!--<joint name="hokuyo_joint" type="fixed">
         <axis xyz="0 0 0" />
@@ -1745,57 +1745,57 @@
     <!-- Camera -->
     <joint name="camera0_joint" type="fixed">
         <axis xyz="0 0 0" />
-        <origin xyz="1.9 0.1 0.12" rpy="${90 * (PI/180)} ${180 * (PI/180)} 0"/>
+        <origin xyz="0.2 0.2 0.12" rpy="0 0 0"/>
         <parent link="robot_base"/>
         <child link="camera0"/>
     </joint>
 
 
-    <link
-        name="camera0">
-        <inertial>
-        <origin
-            xyz="-0.00054683 0.001771 -0.0050465"
-            rpy="0 0 0" />
-        <mass
-            value="0.10277" />
-        <inertia
-            ixx="6.55247596255939E-05"
-            ixy="1.44592890004105E-05"
-            ixz="-1.9743090338811E-12"
-            iyy="1.49262113028713E-12"
-            iyz="-4.87402177304733E-05"
-            izz="-1.49262112259026E-12" />
-        </inertial>
-        <visual>
-        <origin
-            xyz="1.5707963267949 0 0"
-            rpy="0 0 0" />
-        <geometry>
-            <mesh
-            filename="package://owr_bluetounge_tf/meshes/camera.STL" />
-        </geometry>
-        <material
-            name="">
-            <color
-            rgba="0.79216 0.81961 0.93333 1" />
-        </material>
-        </visual>
-        <collision>
-        <origin
-            xyz="0 0 0"
-            rpy="1.5707963267949 0 0" />
-        <geometry>
-            <mesh
-            filename="package://owr_bluetounge_tf/meshes/camera.STL" />
-        </geometry>
-        </collision>
-    </link>
+   <link
+    name="camera0">
+    <inertial>
+      <origin
+        xyz="-0.02197 6.91E-10 -0.0094535"
+        rpy="0 0 0" />
+      <mass
+        value="0.10277" />
+      <inertia
+        ixx="6.5525E-05"
+        ixy="-1.9743E-12"
+        ixz="1.4459E-05"
+        iyy="4.874E-05"
+        iyz="-1.4926E-12"
+        izz="7.6963E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/camera.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/camera.STL" />
+      </geometry>
+    </collision>
+  </link>
 
     <gazebo reference="camera0">
         <sensor type="camera" name="camera0">
         <update_rate>30.0</update_rate>
-        <camera name="head">
+        <camera name="camera0">
             <!-- source for fov: http://therandomlab.blogspot.com.au/2013/03/logitech-c920-and-c910-fields-of-view.html -->
             <horizontal_fov>1.2290609</horizontal_fov>
             <image>
