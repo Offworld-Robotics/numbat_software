@@ -115,8 +115,12 @@ bool Bluetongue::connect() {
 }
 
 Bluetongue::Bluetongue(const char* port) {
-    lidarTFPublisher = nh.advertise<sensor_msgs::JointState>("laser_tilt_joint", 10);
+    lidarTFPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", 10);
     timeSeq = 0;
+    
+    testLidar = 1330;
+    testDirection = 0;
+    
     // Open serial port
     bluetongue_port = port;
     isConnected = connect();	
@@ -203,7 +207,20 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.cameraTopTilt = cameraTopTilt;
     
     //mesg.lidarTilt = (lidarTilt * 500) + 1500; // Use this line when reading lidar from a joystick
-    mesg.lidarTilt = 1295; //Testing Lidar positioning.
+    //mesg.lidarTilt = 1295;
+    
+    mesg.lidarTilt = testLidar; //Testing Lidar positioning.
+    
+    if(testLidar == 2060){
+        testDirection = BACKWARDS; // change direction
+        testLidar -= PWM_SHIFT;
+    } else if (testLidar == 900){
+        testDirection = FORWARDS; //change direction
+        testLidar += PWM_SHIFT;
+    } else {
+        testLidar += PWM_SHIFT * (1 - (2 * testDirection)); // equivalent of, if(forward), increment, if(backward) decrement
+    }
+    
     
     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
 	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
@@ -242,8 +259,37 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
+        
+    jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
+    jointMsg.header.stamp.sec += SECONDS_DELAY;
+    jointMsg.header.seq = timeSeq; // sequence ID
+    timeSeq++;
+        
+    jointMsg.velocity.resize(NUM_JOINTS);
+    jointMsg.position.resize(NUM_JOINTS);
+    jointMsg.name.resize(NUM_JOINTS);
+    
+    publish_joint("a", 0, 0, 0,  LEFT_MOT_JOINT);
+    publish_joint("b", 0, 0, 0, RIGHT_MOT_JOINT);
+    publish_joint("c", 0, 0, 0, ARM_TOP_JOINT);
+    publish_joint("d", 0, 0, 0, ARM_BOT_JOINT);
+    publish_joint("e", 0, 0, 0, ARM_ROT_JOINT);
+    publish_joint("f", 0, 0, 0, CLAW_ROT_JOINT);
+    publish_joint("g", 0, 0, 0, CLAW_GRIP_JOINT);
+    publish_joint("h", 0, 0, 0, CAM_BOT_ROTATE_JOINT);
+    publish_joint("i", 0, 0, 0, CAM_BOT_TILT_JOINT);
+    publish_joint("j", 0, 0, 0, CAM_TOP_ROT_JOINT);
+    publish_joint("k", 0, 0, 0, CAM_TOP_TILT_JOINT);
+    publish_joint("l", 0, 0, 0, EXTRA_1);
+    publish_joint("m", 0, 0, 0, EXTRA_2);
+    publish_joint("n", 0, 0, 0, EXTRA_3);
+    publish_joint("o", 0, 0, 0, EXTRA_4);
+    
     
     tf_lidar(mesg.lidarTilt); 
+    
+    lidarTFPublisher.publish(jointMsg);
+    
     return stat;
 }
 
@@ -253,20 +299,26 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
 // the opposite direction as negative.
 void Bluetongue::tf_lidar(int16_t pwm){
     double lidarRads;
-    sensor_msgs::JointState jointMsg;
+    double lidarVel;
     
     lidarRads = pwm - LIDAR_HORIZ;
 
     lidarRads = lidarRads * DEG_PER_PWM;//Find angle in degrees
-    
     lidarRads = lidarRads * M_PI/180;//Convert to radians
     
-    jointMsg.position[0] = lidarRads;
-    jointMsg.name[0] = "laser_tilt_joint";
-    jointMsg.header.stamp = ros::Time::now(); // timestamp for joint position
-    jointMsg.header.seq = timeSeq; // sequence ID
-    timeSeq++;
+    lidarVel = (PWM_SHIFT * LIDAR_FREQ) * DEG_PER_PWM * (M_PI/180); // find velocity in rad/s
     
-    lidarTFPublisher.publish(jointMsg);
-    ROS_INFO("Rads : %f ",lidarRads); // Print radians info to terminal
+    if(testDirection){
+        lidarVel = lidarVel * (-1);
+    }
+    
+    publish_joint("laser_tilt_joint", lidarRads, lidarVel, 0, LIDAR_JOINT);
 }
+
+void Bluetongue::publish_joint(std::string name, double position, double velocity, double effort, int jointNo){
+    jointMsg.name[jointNo] = name;
+    jointMsg.position[jointNo] = position;
+    jointMsg.velocity[jointNo] = velocity;
+    jointMsg.effort[jointNo] = effort;
+}
+    

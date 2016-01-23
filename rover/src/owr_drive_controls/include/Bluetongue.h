@@ -9,8 +9,33 @@
 
 #define GPS_FLOAT_OFFSET 1000000
 
-#define LIDAR_HORIZ 1330
+#define LIDAR_HORIZ 1330.0
 #define DEG_PER_PWM 0.12328767123
+#define SECONDS_DELAY 0.02876707662
+
+#define PWM_SHIFT 10.0
+#define LIDAR_FREQ 5.0
+#define FORWARDS 0
+#define BACKWARDS 1
+
+#define NUM_JOINTS 16
+#define LIDAR_JOINT 0
+#define LEFT_MOT_JOINT 1
+#define RIGHT_MOT_JOINT 2
+#define ARM_TOP_JOINT 3
+#define ARM_BOT_JOINT 4
+#define ARM_ROT_JOINT 5
+#define CLAW_ROT_JOINT 6
+#define CLAW_GRIP_JOINT 7
+#define CAM_BOT_ROTATE_JOINT 8
+#define CAM_BOT_TILT_JOINT 9
+#define CAM_TOP_ROT_JOINT 10
+#define CAM_TOP_TILT_JOINT 11
+#define EXTRA_1 12
+#define EXTRA_2 13
+#define EXTRA_3 14
+#define EXTRA_4 15
+
 
 struct gpsData {
     uint16_t time;
@@ -51,12 +76,18 @@ class Bluetongue {
 		bool comm(bool forBattery, void *message, int message_len, void *resp, 
 				int resp_len);
         bool connect();
+        void publish_joint(std::string name, double position, double velocity, double effort, int jointNo);
+        
         bool isConnected;
 		int port_fd;
         std::string bluetongue_port;
         fd_set uart_set;
         struct timeval timeout;
         double timeSeq;
+        
+        double testLidar;
+        bool testDirection;
+        sensor_msgs::JointState jointMsg;
 	
 	public:
 		Bluetongue(const char* port);
