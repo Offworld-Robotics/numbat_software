@@ -5,6 +5,7 @@
 #include <string>
 //#include <cstdint>
 #include <vector>
+#include <sensor_msgs/JointState.h>
 
 #define GPS_FLOAT_OFFSET 1000000
 
@@ -55,9 +56,7 @@ class Bluetongue {
         std::string bluetongue_port;
         fd_set uart_set;
         struct timeval timeout;
-        
-        ros::NodeHandle nh;
-        ros::Publisher lidarTFPublisher;
+        double timeSeq;
 	
 	public:
 		Bluetongue(const char* port);
@@ -69,5 +68,7 @@ class Bluetongue {
                 int cameraTopTilt, int lidarTilt);
         void tf_lidar(int16_t pwm);
         bool reconnect(void);
+        ros::Publisher lidarTFPublisher;
+        ros::NodeHandle nh;
 };
 #endif

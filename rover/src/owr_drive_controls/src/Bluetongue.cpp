@@ -13,7 +13,6 @@
 #include <math.h>
 #include "Bluetongue.h"
 #include <ros/ros.h>
-#include <std_msgs/Float64.h>
 
 using namespace std;
 
@@ -116,11 +115,11 @@ bool Bluetongue::connect() {
 }
 
 Bluetongue::Bluetongue(const char* port) {
+    lidarTFPublisher = nh.advertise<sensor_msgs::JointState>("laser_tilt_joint", 10);
+    timeSeq = 0;
     // Open serial port
     bluetongue_port = port;
     isConnected = connect();	
-    
-    lidarTFPublisher = nh.advertise<sensor_msgs::joint_state>("laser_tilt_joint", 10);
     ROS_INFO("Finished initalizing bluetongue");
 }
 
@@ -252,14 +251,22 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
 // gimbal. Angle is measured from horizontal (1330:pwm = 0 rads), with tilting
 // towards the front of the rover measured as positive radians, and tilting in
 // the opposite direction as negative.
-void tf_lidar(int16_t pwm){
+void Bluetongue::tf_lidar(int16_t pwm){
     double lidarRads;
+    sensor_msgs::JointState jointMsg;
+    
     lidarRads = pwm - LIDAR_HORIZ;
 
     lidarRads = lidarRads * DEG_PER_PWM;//Find angle in degrees
     
     lidarRads = lidarRads * M_PI/180;//Convert to radians
     
-    lidarTFPublisher.publish(lidarRads);
+    jointMsg.position[0] = lidarRads;
+    jointMsg.name[0] = "laser_tilt_joint";
+    jointMsg.header.stamp = ros::Time::now(); // timestamp for joint position
+    jointMsg.header.seq = timeSeq; // sequence ID
+    timeSeq++;
+    
+    lidarTFPublisher.publish(jointMsg);
     ROS_INFO("Rads : %f ",lidarRads); // Print radians info to terminal
 }
