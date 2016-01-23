@@ -85,25 +85,47 @@ CLRayTracer::CLRayTracer() : RayTracer(), cld(new pcl::PointCloud<pcl::PointXYZR
 
     cl_int err;    
     rayTrace = new cl::Kernel(program, "rayTrace", &err);
-    size_t wgSize;
-    rayTrace->getWorkGroupInfo(default_device, CL_KERNEL_WORK_GROUP_SIZE, &wgSize);
-    ROS_INFO("Max Workgroups %lu", wgSize);
+    defaultDevice = default_device;
+    
     checkErr(err, "cl::Kernel");
     
     
     //NOTE: we can't create the image buffer here because we don't know how big it is going to be
     result = new cl::Buffer(*context, CL_MEM_READ_WRITE,sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT);
-    treeBuffer = new cl::Buffer(*context, CL_MEM_READ_ONLY,sizeof(octNodeCL)*8*HASH_MAP_SIZE);
-    dimsBuffer = new cl::Buffer(*context, CL_MEM_READ_ONLY,sizeof(cl_float3));
+    
+    //NOTE: this is a very large buffer, intel recomends doing it this way rather then copying it around
+    //se page 31 of the intel guide
+    int cachelineSize = defaultDevice.getInfo<CL_DEVICE_GLOBAL_MEM_CACHELINE_SIZE>(&err);
+    checkErr(err, "Get GLOBAL_MEM_CACHELINE");
+    size_t arraySizeAligned = cachelineSize*(1+(sizeof(octNodeCL)*8*HASH_MAP_SIZE-1)/cachelineSize);//aligned
+    checkErr(err, "load flatTree");
+    //void* inputArray;
+    /*err = posix_memalign(&inputArray, 4096, arraySizeAligned);
+    if(!result) {
+        ROS_ERROR("failed to allocate flatTree. Error %d", err);
+        exit(0);
+    }*/
+    treeBuffer =  new cl::Buffer(*context, CL_MEM_READ_ONLY| CL_MEM_ALLOC_HOST_PTR,arraySizeAligned);
+    //treeBuffer = new cl::Buffer(*context,CL_MEM_READ_ONLY | CL_MEM_ALLOC_HOST_PTR,arraySizeAligned,inputArray,&err);
+    //treeBuffer = new cl::Buffer(*context,CL_MEM_READ_ONLY |CL_MEM_USE_HOST_PTR ,arraySizeAligned,inputArray,&err);
+    //flatTree = (octNodeCL *) inputArray;
+    dimsBuffer = new cl::Buffer(*context, CL_MEM_READ_ONLY,sizeof(cl_float4));
     
 
     queue = new cl::CommandQueue(*context,default_device);
-    
+    flatTree = (octNodeCL *) queue->enqueueMapBuffer(*treeBuffer, CL_TRUE, CL_MAP_READ,0, arraySizeAligned,NULL,NULL, &err);
+    checkErr(err, "map buffer");
     
 }
 
 CLRayTracer::~CLRayTracer() {
     cld.reset();
+    queue->enqueueUnmapMemObject(*treeBuffer, flatTree, NULL,NULL);
+    delete queue;
+    delete treeBuffer;
+    
+    //free(flatTree);
+    delete dimsBuffer;
 }
 
 void CLRayTracer::loadImage(const cv::Mat * image) {
@@ -117,7 +139,7 @@ void CLRayTracer::loadImage(const cv::Mat * image) {
     rayTrace = new cl::KernelFunctor(cl::Kernel(program,"rayTrace"),queue,cl::NullRange,cl::NDRange(image->rows,image->cols),cl::NullRange);*/
     const size_t imgSize = sizeof(cl_uchar3)*image->rows*image->cols;
     imgBuffer = new cl::Buffer(*context, CL_MEM_READ_ONLY,imgSize);
-    cl_float3 dims;
+    cl_float4 dims;
     dims.y = image->cols;
     dims.z = image->rows;
     cl::Event dimsWriteEvent;
@@ -147,6 +169,12 @@ void CLRayTracer::runTraces() {
      * 
      * This function uses floats not double as ROSs co-ordinate system is in M and our maximum resolution is currently 1cm.
      */
+    size_t wgSize;
+    
+    rayTrace->getWorkGroupInfo(defaultDevice, CL_KERNEL_WORK_GROUP_SIZE, &wgSize);
+    ROS_INFO("Max Workgroups %lu", wgSize);
+     
+    ROS_INFO("Setting args");
     cl_int err;
     err = rayTrace->setArg(0, *result);
     checkErr(err, "Kernel::setArg()");
@@ -156,24 +184,33 @@ void CLRayTracer::runTraces() {
     checkErr(err, "Kernel::setArg()");
     err = rayTrace->setArg(3, *dimsBuffer);
     checkErr(err, "Kernel::setArg()");
-    
-    octNodeCL* flatTree = tree->getFlatTree();
-    queue->enqueueWriteBuffer(*treeBuffer, CL_TRUE, 0, sizeof(octNodeCL)*8*HASH_MAP_SIZE, flatTree);
-    
+
+    ROS_INFO("Write flatTree");    
+    flatTree = tree->getFlatTree(flatTree);
+    int cachelineSize = defaultDevice.getInfo<CL_DEVICE_GLOBAL_MEM_CACHELINE_SIZE>(&err);
+    checkErr(err, "Get GLOBAL_MEM_CACHELINE");
+    size_t arraySizeAligned = cachelineSize*(1+(sizeof(octNodeCL)*8*HASH_MAP_SIZE-1)/cachelineSize);//aligned
+    //queue->enqueueMapBuffer(*treeBuffer, CL_TRUE, CL_MAP_READ,0, arraySizeAligned,NULL,NULL, &err);
+    ROS_INFO("FlatTree[1], dims %f, locCode %lu", flatTree[1].dimensions, flatTree[1].locCode);
+    //std::vector<cl::Event> writeEvents;
+    //cl::Event writeEvent;
+    //queue->enqueueWriteBuffer(*treeBuffer, CL_TRUE, 0, sizeof(octNodeCL)*8*HASH_MAP_SIZE, flatTree, &writeEvents, &writeEvent);
+
     std::vector<cl::Event> events;
     int xOffset, yOffset;
-    int xGroups = (image->rows/256 + 1);
-    int yGroups = (image->rows/256 + 1);
+    int xGroups = (image->rows/wgSize + 1);
+    int yGroups = (image->rows/wgSize + 1);
+    ROS_INFO("Begin Spawning");
     for(xOffset = 0; xOffset < xGroups; xOffset++) {
-        int xRange = 256;
+        int xRange = wgSize;
         if(image->rows - xRange*xOffset < xRange) {
             xRange = image->rows % xRange;
         }
         for(yOffset = 0; yOffset < yGroups; yOffset++) {
             
-            int yRange = 256;
+            int yRange = wgSize;
             if(image->cols - yRange*yOffset < yRange) {
-                xRange = image->cols % yRange;
+                yRange = image->cols % yRange;
             } 
             ROS_INFO("Spawning with workers %d, %d", xRange, yRange);
             cl::Event event;
@@ -218,7 +255,7 @@ void CLRayTracer::runTraces() {
     }
 
     free(results);
-    free(flatTree);
+    
     
 }
 

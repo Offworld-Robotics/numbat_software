@@ -35,12 +35,26 @@ TEST(CLRayTraceTest, testConstructor) {
     tracer.loadImage(&testMat);
     tracer.runTraces();
     shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > cld =  tracer.getResult();
-    for (size_t i = 0; i < cld->points.size (); ++i) {
-        std::cout <<  cld->points[i].x << "," <<  cld->points[i].y << ","
-            <<  cld->points[i].z << "," << std::endl;
-        std::cout << "RGB:" <<  (uint8_t) cld->points[i].r << "," << (uint8_t) cld->points[i].g << ","
-            << (uint8_t) cld->points[i].b << "," << std::endl;    
+    size_t i;
+    int sameCount = 1;
+    for (i = 1; i < cld->points.size (); ++i) {
+    
+        if(cld->points[i].x == cld->points[i-1].x && cld->points[i].y == cld->points[i-1].y && cld->points[i].z == cld->points[i-1].z) {
+            sameCount++;
+        } else {
+            std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
+                <<  cld->points[i-sameCount].z << "," << std::endl;
+            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
+                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "x" << sameCount << std::endl;
+            sameCount = 1;  
+        }
     }
+    std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
+                <<  cld->points[i-sameCount].z << "," << std::endl;
+    std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
+        << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+    std::cout << "x" << sameCount << std::endl;
     //TODO: write none visual tests here
     std::cout << "actual image" << std::endl;
     CLRayTracer tracer2;
@@ -53,12 +67,26 @@ TEST(CLRayTraceTest, testConstructor) {
     tracer2.loadImage(&image);
     tracer2.runTraces();
     cld =  tracer2.getResult();
-    for (size_t i = 0; i < cld->points.size (); ++i) {
-        std::cout <<  cld->points[i].x << "," <<  cld->points[i].y << ","
-            <<  cld->points[i].z << "," << std::endl;
-        std::cout << "RGB:" <<  (uint8_t) cld->points[i].r << "," << (uint8_t) cld->points[i].g << ","
-            << (uint8_t) cld->points[i].b << "," << std::endl;    
+    sameCount = 1;
+
+    for (i = 1; i < cld->points.size (); ++i) {
+    
+        if(cld->points[i].x == cld->points[i-1].x && cld->points[i].y == cld->points[i-1].y && cld->points[i].z == cld->points[i-1].z) {
+            sameCount++;
+        } else {
+            std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
+                <<  cld->points[i-sameCount].z << "," << std::endl;
+            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
+                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "x" << sameCount << std::endl;
+            sameCount = 1;  
+        }
     }
+    std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
+                <<  cld->points[i-sameCount].z << "," << std::endl;
+    std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
+        << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+    std::cout << "x" << sameCount << std::endl;
     std::cout << cld->points.size() << std::endl;
     EXPECT_EQ(true, cld->points.size() > 0);
     image = cv::imread("/home/bluenuc/owr_software/rover/src/owr_3d_fusion/test/100sq.jpg", CV_LOAD_IMAGE_COLOR);
@@ -68,11 +96,19 @@ TEST(CLRayTraceTest, testConstructor) {
     tracer2.loadImage(&image);
     tracer2.runTraces();
     cld =  tracer2.getResult();
-    for (size_t i = 0; i < cld->points.size (); ++i) {
-        std::cout <<  cld->points[i].x << "," <<  cld->points[i].y << ","
-            <<  cld->points[i].z << "," << std::endl;
-        std::cout << "RGB:" <<  (uint8_t) cld->points[i].r << "," << (uint8_t) cld->points[i].g << ","
-            << (uint8_t) cld->points[i].b << "," << std::endl;    
+    sameCount = 1;
+    for (size_t i = 1; i < cld->points.size (); ++i) {
+    
+        if(cld->points[i].x == cld->points[i-1].x && cld->points[i].y == cld->points[i-1].y && cld->points[i].z == cld->points[i-1].z) {
+            sameCount++;
+        } else {
+            std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
+                <<  cld->points[i-sameCount].z << "," << std::endl;
+            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
+                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "x" << sameCount << std::endl;
+            sameCount = 1;  
+        }
     }
     std::cout << cld->points.size() << std::endl;
     EXPECT_EQ(true, cld->points.size() > 0);
@@ -2071,12 +2107,26 @@ TEST(OctreeTest, testLargeTree) {
     tracer2.loadImage(&image);
     tracer2.runTraces();
     shared_ptr<pcl::PointCloud<pcl::PointXYZRGB> > cld =  tracer2.getResult();
-    for (size_t i = 0; i < cld->points.size (); ++i) {
-        std::cout <<  cld->points[i].x << "," <<  cld->points[i].y << ","
-            <<  cld->points[i].z << "," << std::endl;
-        std::cout << "RGB:" <<  (uint8_t) cld->points[i].r << "," << (uint8_t) cld->points[i].g << ","
-            << (uint8_t) cld->points[i].b << "," << std::endl;    
+    size_t i;
+    int sameCount = 1;
+    for (i = 1; i < cld->points.size (); ++i) {
+    
+        if(cld->points[i].x == cld->points[i-1].x && cld->points[i].y == cld->points[i-1].y && cld->points[i].z == cld->points[i-1].z) {
+            sameCount++;
+        } else {
+            std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
+                <<  cld->points[i-sameCount].z << "," << std::endl;
+            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
+                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "x" << sameCount << std::endl;
+            sameCount = 1;  
+        }
     }
+    std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
+                <<  cld->points[i-sameCount].z << "," << std::endl;
+    std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
+        << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+    std::cout << "x" << sameCount << std::endl;
     std::cout << cld->points.size() << std::endl;
     EXPECT_EQ(true, cld->points.size() > 0);
      image = cv::imread("/home/bluenuc/owr_software/rover/src/owr_3d_fusion/test/1080pGradient.png", CV_LOAD_IMAGE_COLOR);
@@ -2086,12 +2136,25 @@ TEST(OctreeTest, testLargeTree) {
     tracer2.loadImage(&image);
     tracer2.runTraces();
     cld =  tracer2.getResult();
-    for (size_t i = 0; i < cld->points.size (); ++i) {
-        std::cout <<  cld->points[i].x << "," <<  cld->points[i].y << ","
-            <<  cld->points[i].z << "," << std::endl;
-        std::cout << "RGB:" <<  (uint8_t) cld->points[i].r << "," << (uint8_t) cld->points[i].g << ","
-            << (uint8_t) cld->points[i].b << "," << std::endl;    
+    sameCount = 1;
+    for (i = 1; i < cld->points.size (); ++i) {
+    
+        if(cld->points[i].x == cld->points[i-1].x && cld->points[i].y == cld->points[i-1].y && cld->points[i].z == cld->points[i-1].z) {
+            sameCount++;
+        } else {
+            std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
+                <<  cld->points[i-sameCount].z << "," << std::endl;
+            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
+                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "x" << sameCount << std::endl;
+            sameCount = 1;  
+        }
     }
+    std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
+                <<  cld->points[i-sameCount].z << "," << std::endl;
+    std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
+        << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+    std::cout << "x" << sameCount << std::endl;
     std::cout << cld->points.size() << std::endl;
     EXPECT_EQ(true, cld->points.size() > 0);
 }

@@ -20,12 +20,16 @@
 
 //OPEN CL Data point_types
 typedef struct _cloctNode {
-    unsigned long locCode;
-    unsigned char childrenMask;
-    cl_float3 simplePoint[8];
-    cl_float3 orig;
-    cl_float3 dimensions;
-    bool exists;
+    cl_float4 simplePoint[8];
+    cl_float4 orig;
+    cl_ulong locCode;
+    cl_float dimensions;
+    cl_uchar childrenMask;
+    cl_uchar exists;
+    cl_long8 padding1;
+    cl_int8 pading2;
+    cl_uchar padding3;
+    cl_uchar padding4;
 } octNodeCL;
 
 const float FLOAT_INF = std::numeric_limits<float>::infinity();
@@ -107,7 +111,7 @@ class Octree {
         octNode getNode(simplePoint pt);
         simplePoint getDimensions();
         int calculateIndex (  simplePoint const& point, simplePoint const& orig );
-        octNodeCL * getFlatTree();
+        octNodeCL * getFlatTree(octNodeCL * flatMap);
     protected:
         HashNode hashMap[HASH_MAP_SIZE];
     private:

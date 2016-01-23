@@ -14,6 +14,7 @@
 #include <boost/iterator/iterator_concepts.hpp>
 #include <string.h>
 #include <limits>
+#include <ros/ros.h>
 
 // #define DEBUG
 #define ROOT_LOC_CODE 1
@@ -21,8 +22,8 @@
 
 
 //helper functions
-static inline cl_float3 ptToClFloat(simplePoint rhs) {
-        cl_float3 f;
+static inline cl_float4 ptToClFloat(simplePoint rhs) {
+        cl_float4 f;
         f.x= rhs.x;
         f.y = rhs.y;
         f.z = rhs.z;
@@ -314,38 +315,50 @@ simplePoint Octree::getDimensions() {
     return dimensions;
 }
 
-octNodeCL * Octree::getFlatTree() {
-    octNodeCL * flatMap = (octNodeCL*) malloc(sizeof(octNodeCL)*8*HASH_MAP_SIZE);
+octNodeCL * Octree::getFlatTree(octNodeCL * flatMap) {
+    //octNodeCL * flatMap = (octNodeCL*) malloc(sizeof(octNodeCL)*8*HASH_MAP_SIZE);
     int i;
     for(i=0;i<HASH_MAP_SIZE;i++) {
         flatMap[i].exists = false;
     }
     int target = 0;
     for(i=0;i<HASH_MAP_SIZE;i++) {
+        
         //TODO: sort this
         if(hashMap[i] != NULL) {
+            //ROS_INFO("Hashmap insert %d",i);
             if(target < i) {
                 target = i;
             }
             HashNode current = hashMap[i];
             while(current != NULL) {
-                while(flatMap[i].exists) {
-                    target+=target%HASH_MAP_SIZE;
+                int escapeCheck = 0;
+                while(flatMap[target].exists && escapeCheck < HASH_MAP_SIZE) {
+                    //ROS_INFO("Target exists %d",target);
+                    target=(target+1)%HASH_MAP_SIZE;
+                    escapeCheck++;
                 }
-                flatMap[i].exists = true;
-                flatMap[i].locCode = current->data.locationCode;
+                if(escapeCheck == HASH_MAP_SIZE) {
+                    ROS_ERROR("Ran out of space, locCode %d",current->data.locationCode);
+                    continue;
+                }
+                flatMap[target].exists = true;
+                flatMap[target].locCode = current->locationCode;
+                
                 
                 int indx;
                 for(indx= 0; indx < 8;indx++) {
-                    flatMap[i].simplePoint[indx] = ptToClFloat(current->data.points[indx]);
+                    flatMap[target].simplePoint[indx] = ptToClFloat(current->data.points[indx]);
                 }
-                flatMap[i].orig = ptToClFloat(current->data.orig);
-                flatMap[i].dimensions = ptToClFloat(current->data.dimensions);
-                flatMap[i].childrenMask = current->data.childrenMask;
+                flatMap[target].orig = ptToClFloat(current->data.orig);
+                flatMap[target].dimensions = current->data.dimensions.x;
+                flatMap[target].childrenMask = current->data.childrenMask;
                 current = current->next;
             }
             
         }
     }
+    ROS_INFO("0 has locCode %lu", flatMap[0].locCode);
+    ROS_INFO("1 has locCode %lu", flatMap[1].locCode);
     return flatMap;
 }

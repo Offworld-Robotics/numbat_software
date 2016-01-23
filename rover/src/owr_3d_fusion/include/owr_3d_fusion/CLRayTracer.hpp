@@ -29,6 +29,8 @@ class CLRayTracer: public RayTracer {
         cl::Buffer * dimsBuffer = NULL;
         cl::CommandQueue * queue;
         std::vector<cl::Device> device;
+        cl::Device defaultDevice;
         cl::Kernel * rayTrace = NULL; 
+        octNodeCL * flatTree = NULL;
 };
 #endif
