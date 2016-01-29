@@ -1,4 +1,4 @@
-#pragma OPENCL EXTENSION cl_khr_fp64 : enable
+//#pragma OPENCL EXTENSION cl_khr_fp64 : enable
 #include </home/bluenuc/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/logitechC920.h>
 #include </home/bluenuc/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/OctreeDefines.h>
 //see: http://enja.org/2011/03/30/adventures-in-opencl-part-3-constant-memory-structs/
@@ -117,31 +117,42 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
     __local float4 metricOffset;
     
     //TODO: need a more efficient way to do this, see page 37 of intel guide
-    if(!get_local_id(0) && !get_local_id(1)) { //in the first of each work group load constants
+    //if(!get_local_id(0) && !get_local_id(1)) { //in the first of each work group load constants
         pxToM = SENSOR_DIAG_M/sqrt(pow(dims[0].y,2) + pow(dims[0].z,2)) ;
         metricOffset = dims[0] * (2 / pxToM);
-    }
-    barrier(CLK_LOCAL_MEM_FENCE);
+    //}
+    //barrier(CLK_LOCAL_MEM_FENCE);
     //Start of actual code
-    float4 metric = (
-        0,
-        get_global_id(CV_Y_INDEX),
-        get_global_id(CV_Y_INDEX), 0);
-    metric = metric*(-pxToM) + metricOffset;
+    float4 metric;
+    metric.x = 0;
+    metric.y = get_global_id(CV_X_INDEX);
+    metric.z = get_global_id(CV_Y_INDEX);
+    float4 target;
+    float8 outcome;
+   
+    
+    metric = metric*(-pxToM);// + metricOffset;
     metric.x = 0;
     //TODO: check if this is px or M, we seem to be different things for y and z
     float4 delta = tanh(metric/(float)FOCAL_LENGTH_M);
     //this means we don't have to assign dist latter
     delta.x = 1;
-    float4 target;
-    float8 outcome = INFINITY;
+    
+    outcome.x = INFINITY;
+    outcome.y = INFINITY;
+    outcome.z = INFINITY;
+    outcome.s3 = metric.x;
+    outcome.s4 = metric.y;
+    outcome.s5 = metric.z;
+    
+    int index = get_global_id(CV_X_INDEX)*dims[0].z + get_global_id(CV_Y_INDEX);
     for(float dist = FOCAL_LENGTH_M; dist < TRACE_RANGE; dist+=RES) {
         
         target = delta*dist;
         target -= (float)FOCAL_LENGTH_M;
         constant const struct octNode * node = getNode(target, tree);
 
-        int index = get_global_id(CV_X_INDEX)*dims[0].z + get_global_id(CV_Y_INDEX);
+        
         if(node->dimensions <= (float)RES) {
             
             /*outcome = (target.x,
@@ -152,8 +163,11 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
                                img[index].z,
                                0, 0
                               );*/
+             outcome.x = target.x;
+             outcome.y = target.y;
+             outcome.z = target.z;
              // outcome = (tree[1].locCode, tree[1].childrenMask, tree[1].simplePoint[0].x,tree[1].simplePoint[0].y, tree[1].simplePoint[0].z);
-             outcome =2;
+             //outcome =2;
             break;
         } else if (node->dimensions <= RES*8) {
             //if(!node.getPointAt(tree->calculateIndex(target, node.orig)).isEmpty()) {
@@ -165,8 +179,13 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
                                img[index].z,
                                0, 0
                               );*/
-                      outcome  =3;
-                      //outcome = (node.dimensions, node.locCode, node.childrenMask, getNodeAt(tree,1).locCode,getNodeAt(tree,1).childrenMask);
+                      outcome.x = target.x;
+                      outcome.y = target.y;
+                      outcome.z = target.z;
+                      //outcome  =3;
+
+                      
+                      //outcome = (0,index,0,1);
                     break;
             //}
         } else {
@@ -184,12 +203,13 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
                                img[index].z,
                                0, 0
                               );*/
-                outcome=8;
+                outcome.x = target.x;
+                outcome.y = target.y;
+                outcome.z = target.z; 
             }
         }
         
     }
-    int index = get_global_id(CV_X_INDEX)*dims[0].z + get_global_id(CV_Y_INDEX);
     result[index] = outcome;
     
 //     int myY = get_global_id(0);

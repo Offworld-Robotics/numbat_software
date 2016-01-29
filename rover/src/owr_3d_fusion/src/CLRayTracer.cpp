@@ -91,7 +91,7 @@ CLRayTracer::CLRayTracer() : RayTracer(), cld(new pcl::PointCloud<pcl::PointXYZR
     
     
     //NOTE: we can't create the image buffer here because we don't know how big it is going to be
-    result = new cl::Buffer(*context, CL_MEM_READ_WRITE,sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT);
+    result = new cl::Buffer(*context, CL_MEM_READ_WRITE,sizeof(cl_float8)*IMG_MAX_WIDTH*IMG_MAX_HEIGHT);
     
     //NOTE: this is a very large buffer, intel recomends doing it this way rather then copying it around
     //se page 31 of the intel guide
@@ -226,10 +226,10 @@ void CLRayTracer::runTraces() {
             checkErr(err, "running kernel");
         }
     }
-    cl_float8 * results = (cl_float8 *) malloc(sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT);
+    cl_float8 * results = (cl_float8 *) malloc(sizeof(cl_float8)*IMG_MAX_WIDTH*IMG_MAX_HEIGHT);
 //     event.wait();
     cl::Event readEvent;
-    err =queue->enqueueReadBuffer(*result,CL_TRUE,0,sizeof(float)*8*IMG_MAX_WIDTH*IMG_MAX_HEIGHT,results,&events,&readEvent);
+    err =queue->enqueueReadBuffer(*result,CL_TRUE,0,sizeof(cl_float8)*IMG_MAX_WIDTH*IMG_MAX_HEIGHT,results,&events,&readEvent);
     checkErr(err, "enque read");
     ROS_INFO("Finished Reading");
     readEvent.wait();

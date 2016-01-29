@@ -44,16 +44,16 @@ TEST(CLRayTraceTest, testConstructor) {
         } else {
             std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
                 <<  cld->points[i-sameCount].z << "," << std::endl;
-            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
-                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "RGB:" <<  (uint32_t) cld->points[i-sameCount].r << "," << (uint32_t) cld->points[i-sameCount].g << ","
+                << (uint32_t) cld->points[i-sameCount].b << "," << std::endl;  
             std::cout << "x" << sameCount << std::endl;
             sameCount = 1;  
         }
     }
     std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
                 <<  cld->points[i-sameCount].z << "," << std::endl;
-    std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
-        << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+    std::cout << "RGB:" <<  (uint32_t) cld->points[i-sameCount].r << "," << (uint32_t) cld->points[i-sameCount].g << ","
+        << (uint32_t) cld->points[i-sameCount].b << "," << std::endl;  
     std::cout << "x" << sameCount << std::endl;
     //TODO: write none visual tests here
     std::cout << "actual image" << std::endl;
@@ -76,16 +76,16 @@ TEST(CLRayTraceTest, testConstructor) {
         } else {
             std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
                 <<  cld->points[i-sameCount].z << "," << std::endl;
-            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
-                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "RGB:" <<  (uint32_t) cld->points[i-sameCount].r << "," << (uint32_t) cld->points[i-sameCount].g << ","
+                << (uint32_t) cld->points[i-sameCount].b << "," << std::endl;  
             std::cout << "x" << sameCount << std::endl;
             sameCount = 1;  
         }
     }
     std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
                 <<  cld->points[i-sameCount].z << "," << std::endl;
-    std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
-        << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+    std::cout << "RGB:" <<  (uint32_t) cld->points[i-sameCount].r << "," << (uint32_t) cld->points[i-sameCount].g << ","
+        << (uint32_t) cld->points[i-sameCount].b << "," << std::endl;  
     std::cout << "x" << sameCount << std::endl;
     std::cout << cld->points.size() << std::endl;
     EXPECT_EQ(true, cld->points.size() > 0);
@@ -104,8 +104,8 @@ TEST(CLRayTraceTest, testConstructor) {
         } else {
             std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
                 <<  cld->points[i-sameCount].z << "," << std::endl;
-            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
-                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "RGB:" <<  (uint32_t) cld->points[i-sameCount].r << "," << (uint32_t) cld->points[i-sameCount].g << ","
+                << (uint32_t) cld->points[i-sameCount].b << "," << std::endl;  
             std::cout << "x" << sameCount << std::endl;
             sameCount = 1;  
         }
@@ -2116,16 +2116,16 @@ TEST(OctreeTest, testLargeTree) {
         } else {
             std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
                 <<  cld->points[i-sameCount].z << "," << std::endl;
-            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
-                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "RGB:" <<  (uint32_t) cld->points[i-sameCount].r << "," << (uint32_t) cld->points[i-sameCount].g << ","
+                << (uint32_t) cld->points[i-sameCount].b << "," << std::endl;  
             std::cout << "x" << sameCount << std::endl;
             sameCount = 1;  
         }
     }
     std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
                 <<  cld->points[i-sameCount].z << "," << std::endl;
-    std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
-        << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+    std::cout << "RGB:" <<  (uint32_t) cld->points[i-sameCount].r << "," << (uint32_t) cld->points[i-sameCount].g << ","
+        << (uint32_t) cld->points[i-sameCount].b << "," << std::endl;  
     std::cout << "x" << sameCount << std::endl;
     std::cout << cld->points.size() << std::endl;
     EXPECT_EQ(true, cld->points.size() > 0);
@@ -2144,16 +2144,16 @@ TEST(OctreeTest, testLargeTree) {
         } else {
             std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
                 <<  cld->points[i-sameCount].z << "," << std::endl;
-            std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
-                << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+            std::cout << "RGB:" <<  (uint32_t) cld->points[i-sameCount].r << "," << (uint32_t) cld->points[i-sameCount].g << ","
+                << (uint32_t) cld->points[i-sameCount].b << "," << std::endl;  
             std::cout << "x" << sameCount << std::endl;
             sameCount = 1;  
         }
     }
     std::cout <<  cld->points[i-sameCount].x << "," <<  cld->points[i-sameCount].y << ","
                 <<  cld->points[i-sameCount].z << "," << std::endl;
-    std::cout << "RGB:" <<  (uint8_t) cld->points[i-sameCount].r << "," << (uint8_t) cld->points[i-sameCount].g << ","
-        << (uint8_t) cld->points[i-sameCount].b << "," << std::endl;  
+    std::cout << "RGB:" <<  (uint32_t) cld->points[i-sameCount].r << "," << (uint32_t) cld->points[i-sameCount].g << ","
+        << (uint32_t) cld->points[i-sameCount].b << "," << std::endl;  
     std::cout << "x" << sameCount << std::endl;
     std::cout << cld->points.size() << std::endl;
     EXPECT_EQ(true, cld->points.size() > 0);
