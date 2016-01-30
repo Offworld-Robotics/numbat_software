@@ -211,10 +211,10 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     
     mesg.lidarTilt = testLidar; //Testing Lidar positioning.
     
-    if(testLidar == 2060){
+    if(testLidar >= 1700){
         testDirection = BACKWARDS; // change direction
         testLidar -= PWM_SHIFT;
-    } else if (testLidar == 900){
+    } else if (testLidar <= 960){
         testDirection = FORWARDS; //change direction
         testLidar += PWM_SHIFT;
     } else {
@@ -261,23 +261,24 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     stat.imuData = resp.imuData;
         
     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
-    jointMsg.header.stamp.sec += SECONDS_DELAY;
+    jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
     jointMsg.header.seq = timeSeq; // sequence ID
-    timeSeq++;
-          ROS_INFO("TEST8");  
+    timeSeq++; //Adjust seq-id
+
+    //Resize the joint arrays to fit the number of joints being used
     jointMsg.velocity.resize(NUM_JOINTS);
     jointMsg.position.resize(NUM_JOINTS);
     jointMsg.effort.resize(NUM_JOINTS);
     jointMsg.name.resize(NUM_JOINTS);
-        ROS_INFO("TEST9");
-    publish_joint("a", 0, 0, 0,  LEFT_MOT_JOINT);
+
+    //Publish all joints to rviz, currently a placeholder for joints
+    publish_joint("a", 0, 0, 0, LEFT_MOT_JOINT);
     publish_joint("b", 0, 0, 0, RIGHT_MOT_JOINT);
     publish_joint("c", 0, 0, 0, ARM_TOP_JOINT);
     publish_joint("d", 0, 0, 0, ARM_BOT_JOINT);
     publish_joint("e", 0, 0, 0, ARM_ROT_JOINT);
     publish_joint("f", 0, 0, 0, CLAW_ROT_JOINT);
     publish_joint("g", 0, 0, 0, CLAW_GRIP_JOINT);
-        ROS_INFO("TEST9.5");
     publish_joint("h", 0, 0, 0, CAM_BOT_ROTATE_JOINT);
     publish_joint("i", 0, 0, 0, CAM_BOT_TILT_JOINT);
     publish_joint("j", 0, 0, 0, CAM_TOP_ROT_JOINT);
@@ -286,7 +287,6 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     publish_joint("m", 0, 0, 0, EXTRA_2);
     publish_joint("n", 0, 0, 0, EXTRA_3);
     publish_joint("o", 0, 0, 0, EXTRA_4);
-        ROS_INFO("TEST10");
     
     tf_lidar(mesg.lidarTilt); 
     
@@ -313,9 +313,7 @@ void Bluetongue::tf_lidar(int16_t pwm){
     if(testDirection){
         lidarVel = lidarVel * (-1);
     }
-    ROS_INFO("TEST1");
     publish_joint("laser_tilt_joint", lidarRads, lidarVel, 0, LIDAR_JOINT);
-    ROS_INFO("TEST2");
 }
 
 void Bluetongue::publish_joint(std::string name, double position, double velocity, double effort, int jointNo){
