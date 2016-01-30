@@ -119,7 +119,7 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
     //TODO: need a more efficient way to do this, see page 37 of intel guide
     //if(!get_local_id(0) && !get_local_id(1)) { //in the first of each work group load constants
         pxToM = SENSOR_DIAG_M/sqrt(pow(dims[0].y,2) + pow(dims[0].z,2)) ;
-        metricOffset = dims[0] * (2 / pxToM);
+        metricOffset = (dims[0] / 2) * pxToM;
     //}
     //barrier(CLK_LOCAL_MEM_FENCE);
     //Start of actual code
@@ -131,19 +131,19 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
     float8 outcome;
    
     
-    metric = metric*(-pxToM);// + metricOffset;
+    metric = metric*(-pxToM) + metricOffset;
     metric.x = 0;
     //TODO: check if this is px or M, we seem to be different things for y and z
-    float4 delta = tanh(metric/(float)FOCAL_LENGTH_M);
+    float4 delta = atan(metric/(float)FOCAL_LENGTH_M);
     //this means we don't have to assign dist latter
     delta.x = 1;
     
     outcome.x = INFINITY;
     outcome.y = INFINITY;
     outcome.z = INFINITY;
-    outcome.s3 = metric.x;
-    outcome.s4 = metric.y;
-    outcome.s5 = metric.z;
+    //outcome.s3 = metric.x;
+    //outcome.s4 = metric.y;
+    //outcome.s5 = metric.z;
     
     int index = get_global_id(CV_X_INDEX)*dims[0].z + get_global_id(CV_Y_INDEX);
     for(float dist = FOCAL_LENGTH_M; dist < TRACE_RANGE; dist+=RES) {
