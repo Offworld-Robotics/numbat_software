@@ -211,11 +211,12 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     
     mesg.lidarTilt = testLidar; //Testing Lidar positioning.
     
+    //Test constraints for osciallting lidar. Ignores function inputs
     if(testLidar >= 1700){
-        testDirection = BACKWARDS; // change direction
+        testDirection = BACKWARDS; // change direction at 45 degrees from oriz.
         testLidar -= PWM_SHIFT;
     } else if (testLidar <= 960){
-        testDirection = FORWARDS; //change direction
+        testDirection = FORWARDS; //change direction at 45 degrees from horiz.
         testLidar += PWM_SHIFT;
     } else {
         testLidar += PWM_SHIFT * (1 - (2 * testDirection)); // equivalent of, if(forward), increment, if(backward) decrement
