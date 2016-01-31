@@ -16,7 +16,7 @@
 
 //the dimensions of the sensor in meters
 //source: https://forums.logitech.com/t5/Webcams/Logitech-HD-Pro-Webcam-C920-optical-sensor-size/td-p/807013
-#define SENSOR_DIAG_M ((1.0/3.0)*0.0244)
+#define SENSOR_DIAG_M ((1.0f/3.0f)*0.0244f)
 
 
 

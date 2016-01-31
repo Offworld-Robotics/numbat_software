@@ -1,4 +1,4 @@
-//#pragma OPENCL EXTENSION cl_khr_fp64 : enable
+#pragma OPENCL EXTENSION cl_khr_fp64 : enable
 #include </home/bluenuc/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/logitechC920.h>
 #include </home/bluenuc/owr_software/rover/src/owr_3d_fusion/include/owr_3d_fusion/OctreeDefines.h>
 //see: http://enja.org/2011/03/30/adventures-in-opencl-part-3-constant-memory-structs/
@@ -107,7 +107,7 @@ constant const struct octNode * getNode(float4 pt, constant const struct octNode
     }
     return parent;
 }
-
+constant const float SENSOR_DIAG_M_C = SENSOR_DIAG_M;
 //I think we need a 2D kernel with each worker doing a trace on one part of the image
 //otherwise we can't get if there were earlier colissions on the ray
 //NOTE: dims is a float4 because it is never used in an integer context. the last dim should be zero
@@ -118,7 +118,7 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
     
     //TODO: need a more efficient way to do this, see page 37 of intel guide
     //if(!get_local_id(0) && !get_local_id(1)) { //in the first of each work group load constants
-        pxToM = SENSOR_DIAG_M/sqrt(pow(dims[0].y,2) + pow(dims[0].z,2)) ;
+        pxToM = SENSOR_DIAG_M_C/sqrt(pow(dims[0].y,2) + pow(dims[0].z,2)) ;
         metricOffset = dims[0] * (2 / pxToM);
     //}
     //barrier(CLK_LOCAL_MEM_FENCE);
@@ -141,9 +141,9 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
     outcome.x = INFINITY;
     outcome.y = INFINITY;
     outcome.z = INFINITY;
-    outcome.s3 = metric.x;
-    outcome.s4 = metric.y;
-    outcome.s5 = metric.z;
+    //
+    
+    //outcome.s5 = metric.z;
     
     int index = get_global_id(CV_X_INDEX)*dims[0].z + get_global_id(CV_Y_INDEX);
     for(float dist = FOCAL_LENGTH_M; dist < TRACE_RANGE; dist+=RES) {
@@ -152,7 +152,10 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
         target -= (float)FOCAL_LENGTH_M;
         constant const struct octNode * node = getNode(target, tree);
 
-        
+        if(!node->exists) {
+            outcome.s3 = -1;
+            continue;
+        }
         if(node->dimensions <= (float)RES) {
             
             /*outcome = (target.x,
@@ -166,11 +169,12 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
              outcome.x = target.x;
              outcome.y = target.y;
              outcome.z = target.z;
+             outcome.s3 = 1;
              // outcome = (tree[1].locCode, tree[1].childrenMask, tree[1].simplePoint[0].x,tree[1].simplePoint[0].y, tree[1].simplePoint[0].z);
              //outcome =2;
             break;
-        } else if (node->dimensions <= RES*8) {
-            //if(!node.getPointAt(tree->calculateIndex(target, node.orig)).isEmpty()) {
+        } else if (node->dimensions <= RES*8.0f) {
+            if(getPointAt(node,calculateIndex(target, node->orig)).x != INFINITY) {
                     /*outcome = (target.x,
                                target.y,
                                target.z,
@@ -182,12 +186,13 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
                       outcome.x = target.x;
                       outcome.y = target.y;
                       outcome.z = target.z;
+                      outcome.s3 = 2;
                       //outcome  =3;
 
                       
                       //outcome = (0,index,0,1);
                     break;
-            //}
+            }
         } else {
             float4 existingPt = getPointAt(node, calculateIndex(target, node->orig));
             if(existingPt.x == INFINITY) {
@@ -206,10 +211,14 @@ void kernel rayTrace(global float8 * result, constant const uchar3 * img, consta
                 outcome.x = target.x;
                 outcome.y = target.y;
                 outcome.z = target.z; 
+                outcome.s3 = 3;
             }
         }
         
     }
+    //outcome.s3 = pxToM;
+    //outcome.s4 = sqrt(pow(dims[0].y,2) + pow(dims[0].z,2));
+    //outcome.s5 = SENSOR_DIAG_M_C;
     result[index] = outcome;
     
 //     int myY = get_global_id(0);
