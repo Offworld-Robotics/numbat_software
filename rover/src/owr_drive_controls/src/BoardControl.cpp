@@ -146,7 +146,7 @@ void BoardControl::run() {
                 armTop, armBottom, armRotate, clawRotScale(clawRotate),
                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
                 cameraRotScale(cameraBottomTilt), 
-                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
             if (!s.isConnected) break;
 
             publishGPS(s.gpsData);
@@ -176,7 +176,7 @@ void BoardControl::run() {
             armTop, armBottom, armRotate, clawRotScale(clawRotate),
             clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
             cameraRotScale(cameraBottomTilt), 
-            cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+            cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
