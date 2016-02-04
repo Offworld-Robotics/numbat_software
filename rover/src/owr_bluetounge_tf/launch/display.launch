@@ -6,7 +6,7 @@
     default="True" />
   <param
     name="robot_description"
-    textfile="$(find owr_bluetounge_tf)/robots/owr_bluetounge_tf.URDF" />
+    command="$(find xacro)/xacro '$(find owr_bluetounge_tf)/robots/owr_bluetounge_tf.URDF'" />
   <param
     name="use_gui"
     value="$(arg gui)" />
