@@ -1,0 +1,2714 @@
+<robot
+  name="owr_bluetounge2_tf">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.00030609 0.00050274 0.055331"
+        rpy="0 0 0" />
+      <mass
+        value="6.5755" />
+      <inertia
+        ixx="0.13034"
+        ixy="0.00098529"
+        ixz="-0.00010585"
+        iyy="0.25341"
+        iyz="0.000103"
+        izz="0.35216" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.89804 0.91765 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="laser_tilt">
+    <inertial>
+      <origin
+        xyz="-0.032667 0.00044924 0.015473"
+        rpy="0 0 0" />
+      <mass
+        value="0.060913" />
+      <inertia
+        ixx="2.0036E-05"
+        ixy="-5.204E-07"
+        ixz="1.6777E-06"
+        iyy="5.6809E-05"
+        iyz="-4.0311E-08"
+        izz="5.8754E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/laser_tilt.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/laser_tilt.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="laser_tilt_base"
+    type="fixed">
+    <origin
+      xyz="0.26214 0.16581 0.116"
+      rpy="-4.0766E-16 -2.7114E-15 -7.1421E-19" />
+    <parent
+      link="base_link" />
+    <child
+      link="laser_tilt" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="laser_tilt_tilt">
+    <inertial>
+      <origin
+        xyz="-0.0207354942246256 -0.0110062171521322 0.0363962516011186"
+        rpy="0 0 0" />
+      <mass
+        value="0.063245803268312" />
+      <inertia
+        ixx="3.67872840111064E-05"
+        ixy="2.45249846765993E-06"
+        ixz="1.33088294535402E-06"
+        iyy="4.06730444934804E-05"
+        iyz="6.96179679390717E-07"
+        izz="4.48239101958926E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/laser_tilt_tilt.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/laser_tilt_tilt.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="laser_tilt_joint"
+    type="revolute">
+    <origin
+      xyz="-0.0069285 -0.01905 0.029"
+      rpy="-1.5708 1.0852 0" />
+    <parent
+      link="laser_tilt" />
+    <child
+      link="laser_tilt_tilt" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.5708"
+      upper="0.785298"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="lidar_frame">
+    <inertial>
+      <origin
+        xyz="-0.000639925729432167 0.000662656077548368 -0.0176677612707938"
+        rpy="0 0 0" />
+      <mass
+        value="0.229160254803044" />
+      <inertia
+        ixx="0.000208997482925673"
+        ixy="4.81938834051271E-07"
+        ixz="1.12379058761029E-06"
+        iyy="0.000213298877696199"
+        iyz="1.24374624615714E-07"
+        izz="0.000112442329412222" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/lidar_frame.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/lidar_frame.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lidar_frame_base"
+    type="fixed">
+    <origin
+      xyz="-0.092214 -0.039413 0.034656"
+      rpy="1.5708 0.11022 -1.0852" />
+    <parent
+      link="laser_tilt_tilt" />
+    <child
+      link="lidar_frame" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_left_leg_base">
+    <inertial>
+      <origin
+        xyz="-3.46944695195361E-18 0.0279401508439631 0.000428758424439107"
+        rpy="0 0 0" />
+      <mass
+        value="0.0851788397766331" />
+      <inertia
+        ixx="4.20226124478786E-05"
+        ixy="3.98902444201243E-22"
+        ixz="-7.84394947653835E-22"
+        iyy="3.11208969345462E-05"
+        iyz="7.80560663932165E-07"
+        izz="4.6053508611717E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_leg_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_leg_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_leg_base_joint"
+    type="fixed">
+    <origin
+      xyz="0.27104 0.20081 0.086"
+      rpy="1.3878E-17 3.6902E-18 -1.1844E-31" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_left_leg_base" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_left_leg_top">
+    <inertial>
+      <origin
+        xyz="0.00189848233337822 0.0736626916160733 0.01726345253545"
+        rpy="0 0 0" />
+      <mass
+        value="0.21598270894823" />
+      <inertia
+        ixx="0.000790912964197712"
+        ixy="-9.2569889582589E-06"
+        ixz="-2.16864065061573E-06"
+        iyy="0.000420136935638628"
+        iyz="0.000148208631360228"
+        izz="0.00107164604206241" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_leg_top.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_leg_top.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_leg_top_suspension"
+    type="continuous">
+    <origin
+      xyz="-0.0013183 0.03 0"
+      rpy="0 3.0107E-34 0" />
+    <parent
+      link="front_left_leg_base" />
+    <child
+      link="front_left_leg_top" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="front_left_swerve_top">
+    <inertial>
+      <origin
+        xyz="0.00579106512736005 -0.0190503342420131 -0.0544162570868618"
+        rpy="0 0 0" />
+      <mass
+        value="0.106275788707863" />
+      <inertia
+        ixx="0.000384207493948846"
+        ixy="8.31400403842303E-10"
+        ixz="-2.53474601873917E-05"
+        iyy="0.000312868634094906"
+        iyz="-2.35726551253119E-09"
+        izz="0.000111979641603733" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_swerve_top.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_swerve_top.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_swerve_to_suspension"
+    type="continuous">
+    <origin
+      xyz="-0.017732 0.17122 0.036156"
+      rpy="-1.9013E-16 0.089436 1.5708" />
+    <parent
+      link="front_left_leg_top" />
+    <child
+      link="front_left_swerve_top" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="front_left_swerve_axel">
+    <inertial>
+      <origin
+        xyz="0.0799583398916557 0.0493805695532753 -1.53687472317574E-06"
+        rpy="0 0 0" />
+      <mass
+        value="2.36761790939096" />
+      <inertia
+        ixx="0.0114180394512722"
+        ixy="-0.0013752489652813"
+        ixz="1.65099953943736E-07"
+        iyy="0.00616871388104345"
+        iyz="9.24836621994142E-08"
+        izz="0.016168223679751" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_swerve_axel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_swerve_axel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_swerve"
+    type="continuous">
+    <origin
+      xyz="0.012974 -0.01905 -0.14468"
+      rpy="1.5168 1.4814 -1.9309E-15" />
+    <parent
+      link="front_left_swerve_top" />
+    <child
+      link="front_left_swerve_axel" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="front_left_wheel">
+    <inertial>
+      <origin
+        xyz="-0.0663813744814109 -1.95940016274876E-05 -2.2209140066648E-05"
+        rpy="0 0 0" />
+      <mass
+        value="2.15472811624945" />
+      <inertia
+        ixx="0.0180021390861626"
+        ixy="6.42530610883978E-07"
+        ixz="7.28286779066068E-07"
+        iyy="0.0154652772226983"
+        iyz="-1.72296508626196E-07"
+        izz="0.0154653205064802" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.294117647058824 0.294117647058824 0.294117647058824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_wheel_axel"
+    type="continuous">
+    <origin
+      xyz="0.22226 -0.064 0"
+      rpy="-2.5103 -1.3901E-12 -1.5708" />
+    <parent
+      link="front_left_swerve_axel" />
+    <child
+      link="front_left_wheel" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="front_left_springs">
+    <inertial>
+      <origin
+        xyz="-6.34422720691141E-07 0.0316858507419693 0.0150051402890246"
+        rpy="0 0 0" />
+      <mass
+        value="0.07147587467537" />
+      <inertia
+        ixx="5.51663922922966E-05"
+        ixy="-2.21242713266869E-08"
+        ixz="2.57904841214848E-10"
+        iyy="1.84882201034392E-05"
+        iyz="7.80545040587949E-09"
+        izz="3.91068937564176E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_springs.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.619607843137255 0.411764705882353 0.2 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_springs.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_spring_joint"
+    type="fixed">
+    <origin
+      xyz="-0.01502 0.11542 -0.10397"
+      rpy="1.5708 -0.61842 1.5708" />
+    <parent
+      link="front_left_leg_base" />
+    <child
+      link="front_left_springs" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_left_suspension">
+    <inertial>
+      <origin
+        xyz="-0.0116167533649651 0.00132967364811812 0.0489941917398175"
+        rpy="0 0 0" />
+      <mass
+        value="0.220510802496233" />
+      <inertia
+        ixx="0.000391574230086317"
+        ixy="2.97557272333014E-06"
+        ixz="-8.70096652989384E-06"
+        iyy="0.00110669473892757"
+        iyz="-1.33980482025625E-06"
+        izz="0.000792853472152206" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_suspension.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_suspension.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_suspension_joint"
+    type="continuous">
+    <origin
+      xyz="0.0059835 0.0080794 -0.03308"
+      rpy="0 0 -0.41031" />
+    <parent
+      link="front_left_springs" />
+    <child
+      link="front_left_suspension" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="front_left_back_to_rover">
+    <inertial>
+      <origin
+        xyz="1.13665757361936E-10 -0.0110053367071424 0.0171856026082578"
+        rpy="0 0 0" />
+      <mass
+        value="0.108052469834526" />
+      <inertia
+        ixx="8.16035762454322E-05"
+        ixy="-6.66003426775099E-13"
+        ixz="-2.41891307995251E-13"
+        iyy="4.43362317667963E-05"
+        iyz="1.26211383778294E-05"
+        izz="8.19573500045417E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_back_to_rover.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_left_back_to_rover.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_back_to_rover_joint"
+    type="continuous">
+    <origin
+      xyz="-0.090706 0.021118 0.0481"
+      rpy="1.7789 1.5708 0" />
+    <parent
+      link="front_left_suspension" />
+    <child
+      link="front_left_back_to_rover" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="back_left_leg_base">
+    <inertial>
+      <origin
+        xyz="0 0.00294015084396301 0.0195712415755609"
+        rpy="0 0 0" />
+      <mass
+        value="0.0851788397766333" />
+      <inertia
+        ixx="4.20226124478787E-05"
+        ixy="-5.43722365684476E-22"
+        ixz="3.58022537720829E-21"
+        iyy="3.11208969345463E-05"
+        iyz="-7.80560663932145E-07"
+        izz="4.60535086117172E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_leg_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_leg_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_leg_base_joint"
+    type="fixed">
+    <origin
+      xyz="-0.27096 0.22581 0.106"
+      rpy="3.1416 -7.4529E-17 3.1416" />
+    <parent
+      link="base_link" />
+    <child
+      link="back_left_leg_base" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="back_left_leg_top">
+    <inertial>
+      <origin
+        xyz="0.0018672 0.074475 0.016515"
+        rpy="0 0 0" />
+      <mass
+        value="0.22831" />
+      <inertia
+        ixx="0.00079614"
+        ixy="-9.3588E-06"
+        ixz="-2.0749E-06"
+        iyy="0.00042824"
+        iyz="0.00014578"
+        izz="0.0010802" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_leg_top.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.10196 0.10196 0.10196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_leg_top.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_leg_top_suspension"
+    type="continuous">
+    <origin
+      xyz="0.0013183 0.005 0.02"
+      rpy="3.1416 7.0838E-17 3.1416" />
+    <parent
+      link="back_left_leg_base" />
+    <child
+      link="back_left_leg_top" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="back_left_swerve_top">
+    <inertial>
+      <origin
+        xyz="0.019049650835913 0.0181018716824013 -0.0350197808493304"
+        rpy="0 0 0" />
+      <mass
+        value="0.101733926431314" />
+      <inertia
+        ixx="0.000296891505221715"
+        ixy="-6.18972323801672E-10"
+        ixz="-2.3991472285428E-09"
+        iyy="0.00037057703900718"
+        iyz="7.87905207653047E-07"
+        izz="0.000108204880075918" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_swerve_top.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_swerve_top.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_swerve_to_suspension"
+    type="continuous">
+    <origin
+      xyz="0.020368 0.19027 0.017106"
+      rpy="-5.0134E-16 1.0263E-16 3.1416" />
+    <parent
+      link="back_left_leg_top" />
+    <child
+      link="back_left_swerve_top" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="back_left_swerve_axel">
+    <inertial>
+      <origin
+        xyz="7.1952E-11 -0.049821 -0.042365"
+        rpy="0 0 0" />
+      <mass
+        value="2.3439" />
+      <inertia
+        ixx="0.016835"
+        ixy="8.6048E-10"
+        ixz="2.7827E-11"
+        iyy="0.006682"
+        iyz="-0.0018559"
+        izz="0.011564" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_swerve_axel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.89804 0.92157 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_swerve_axel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_swerve"
+    type="continuous">
+    <origin
+      xyz="0.01905 0.01905 -0.166471215818396"
+      rpy="6.88199027360824E-16 -1.24047364670461E-16 0.0539793695678587" />
+    <parent
+      link="back_left_swerve_top" />
+    <child
+      link="back_left_swerve_axel" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="back_left_wheel">
+    <inertial>
+      <origin
+        xyz="-0.0663813744814109 -1.95940016275431E-05 -2.22091400667868E-05"
+        rpy="0 0 0" />
+      <mass
+        value="2.15472811624945" />
+      <inertia
+        ixx="0.0180021390861626"
+        ixy="6.42530610878774E-07"
+        ixz="7.28286779060159E-07"
+        iyy="0.0154652772226983"
+        iyz="-1.72296508623235E-07"
+        izz="0.0154653205064802" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.294117647058824 0.294117647058824 0.294117647058824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_wheel_axel"
+    type="continuous">
+    <origin
+      xyz="0 0.064 -0.182"
+      rpy="2.2021 7.7022E-16 1.5708" />
+    <parent
+      link="back_left_swerve_axel" />
+    <child
+      link="back_left_wheel" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="back_left_springs">
+    <inertial>
+      <origin
+        xyz="-6.30600931847414E-06 0.0148626589856348 0.058234488067157"
+        rpy="0 0 0" />
+      <mass
+        value="0.0721610801823068" />
+      <inertia
+        ixx="5.76521055619965E-05"
+        ixy="6.34071281322075E-09"
+        ixz="4.57978611154779E-08"
+        iyy="4.14371498185917E-05"
+        iyz="5.86483957747535E-07"
+        izz="1.86743574660706E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_springs.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_springs.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_spring_joint"
+    type="fixed">
+    <origin
+      xyz="0.01502 0.037969 0.050256"
+      rpy="-1.0645E-16 0.61842 1.5708" />
+    <parent
+      link="back_left_leg_base" />
+    <child
+      link="back_left_springs" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="back_left_suspension">
+    <inertial>
+      <origin
+        xyz="-0.00993956116482878 -0.0165027609959398 0.000651802123213252"
+        rpy="0 0 0" />
+      <mass
+        value="0.198286979880301" />
+      <inertia
+        ixx="0.000997362802202282"
+        ixy="-0.000193403615901097"
+        ixz="2.74722792889628E-06"
+        iyy="0.000437847659019844"
+        iyz="-8.98211930016478E-06"
+        izz="0.000747942603429789" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_suspension.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.894117647058823 0.913725490196078 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_suspension.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_suspension_joint"
+    type="continuous">
+    <origin
+      xyz="0 0.015 0.09615"
+      rpy="1.5708 -0.85597 3.1416" />
+    <parent
+      link="back_left_springs" />
+    <child
+      link="back_left_suspension" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="back_left_to_rover">
+    <inertial>
+      <origin
+        xyz="1.13665632461846E-10 -0.0110053367071424 0.0171856026082578"
+        rpy="0 0 0" />
+      <mass
+        value="0.108052469834526" />
+      <inertia
+        ixx="8.1603576245432E-05"
+        ixy="-6.66003538970905E-13"
+        ixz="-2.41891348149477E-13"
+        iyy="4.43362317667963E-05"
+        iyz="1.26211383778294E-05"
+        izz="8.19573500045416E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_to_rover.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_left_to_rover.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_to_rover_joint"
+    type="continuous">
+    <origin
+      xyz="-0.0072603 -0.097363 2E-05"
+      rpy="0.096406 1.5708 0" />
+    <parent
+      link="back_left_suspension" />
+    <child
+      link="back_left_to_rover" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="front_right_leg_base">
+    <inertial>
+      <origin
+        xyz="0 0.02794 0.00042876"
+        rpy="0 0 0" />
+      <mass
+        value="0.085179" />
+      <inertia
+        ixx="4.2023E-05"
+        ixy="-9.0559E-22"
+        ixz="7.0959E-22"
+        iyy="3.1121E-05"
+        iyz="7.8056E-07"
+        izz="4.6054E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_leg_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.10196 0.10196 0.10196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_leg_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_leg_base_joint"
+    type="fixed">
+    <origin
+      xyz="0.27104 -0.19919 0.086"
+      rpy="2.2031E-16 -4.6674E-17 -3.1416" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_right_leg_base" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_right_leg_top">
+    <inertial>
+      <origin
+        xyz="0.00186715765354702 0.0744751317042501 0.0165150993796676"
+        rpy="0 0 0" />
+      <mass
+        value="0.228308259818507" />
+      <inertia
+        ixx="0.000796144386061545"
+        ixy="-9.35880407293576E-06"
+        ixz="-2.07485691999526E-06"
+        iyy="0.000428242224762155"
+        iyz="0.000145776246966025"
+        izz="0.00108015150542691" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_leg_top.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_leg_top.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_leg_top_suspension"
+    type="continuous">
+    <origin
+      xyz="-0.0013183 0.03 0"
+      rpy="0 -1.3381E-34 0" />
+    <parent
+      link="front_right_leg_base" />
+    <child
+      link="front_right_leg_top" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="front_right_swerve_axel">
+    <inertial>
+      <origin
+        xyz="1.48448894407571E-06 -0.0478348037669296 -0.0419346754576931"
+        rpy="0 0 0" />
+      <mass
+        value="2.39661383258398" />
+      <inertia
+        ixx="0.0175344222264241"
+        ixy="8.45593804643609E-08"
+        ixz="1.66156894693714E-07"
+        iyy="0.00687378211776298"
+        iyz="-0.00192388332949361"
+        izz="0.0120933679250739" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_swerve_axel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_swerve_axel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_swerve"
+    type="continuous">
+    <origin
+      xyz="0.0013183 0.17122 -0.14937"
+      rpy="-1.9025E-16 -4.8688E-17 -3.0876" />
+    <parent
+      link="front_right_leg_top" />
+    <child
+      link="front_right_swerve_axel" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="front_right_wheel">
+    <inertial>
+      <origin
+        xyz="-0.066381374481411 -1.95940016275431E-05 -2.2209140066648E-05"
+        rpy="0 0 0" />
+      <mass
+        value="2.15472811624945" />
+      <inertia
+        ixx="0.0180021390861626"
+        ixy="6.42530610879479E-07"
+        ixz="7.28286779066284E-07"
+        iyy="0.0154652772226982"
+        iyz="-1.72296508625811E-07"
+        izz="0.0154653205064802" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.294117647058824 0.294117647058824 0.294117647058824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_wheel_axel"
+    type="continuous">
+    <origin
+      xyz="0 0.064 -0.182"
+      rpy="2.2021 1.9325E-15 1.5708" />
+    <parent
+      link="front_right_swerve_axel" />
+    <child
+      link="front_right_wheel" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="front_right_springs">
+    <inertial>
+      <origin
+        xyz="-1.18708999517492E-05 0.0327836528481927 0.0150050435880243"
+        rpy="0 0 0" />
+      <mass
+        value="0.0728462856892433" />
+      <inertia
+        ixx="6.00970581301089E-05"
+        ixy="-6.90264221156387E-08"
+        ixz="2.62033197751879E-10"
+        iyy="1.88632088165928E-05"
+        iyz="7.40211060704416E-09"
+        izz="4.37239220811648E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_springs.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.619607843137255 0.411764705882353 0.2 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_springs.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_spring_joint"
+    type="fixed">
+    <origin
+      xyz="-0.01502 0.11542 -0.10397"
+      rpy="1.5708 -0.61842 1.5708" />
+    <parent
+      link="front_right_leg_base" />
+    <child
+      link="front_right_springs" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="front_right_suspension">
+    <inertial>
+      <origin
+        xyz="-0.00603449184340332 0.00108839617956263 0.0486309703678901"
+        rpy="0 0 0" />
+      <mass
+        value="0.235941857530821" />
+      <inertia
+        ixx="0.000413465403175823"
+        ixy="1.11910137739803E-06"
+        ixz="-1.02355557397758E-05"
+        iyy="0.0012486554203498"
+        iyz="-1.35461377079536E-07"
+        izz="0.000916060072494879" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_suspension.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_suspension.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_suspension_joint"
+    type="continuous">
+    <origin
+      xyz="0.0059835 0.0080794 -0.03308"
+      rpy="0 -3.4694E-16 -0.41031" />
+    <parent
+      link="front_right_springs" />
+    <child
+      link="front_right_suspension" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="front_right_to_rover">
+    <inertial>
+      <origin
+        xyz="1.13665753892489E-10 -0.0110053367071423 0.0171856026082578"
+        rpy="0 0 0" />
+      <mass
+        value="0.108052469834526" />
+      <inertia
+        ixx="8.16035762454321E-05"
+        ixy="-6.66003441142896E-13"
+        ixz="-2.41891310343734E-13"
+        iyy="4.43362317667963E-05"
+        iyz="1.26211383778295E-05"
+        izz="8.19573500045416E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_to_rover.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/front_right_to_rover.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_to_rover_joint"
+    type="continuous">
+    <origin
+      xyz="-0.090706 0.021118 0.0481"
+      rpy="1.7789 1.5708 0" />
+    <parent
+      link="front_right_suspension" />
+    <child
+      link="front_right_to_rover" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="back_right_leg_base">
+    <inertial>
+      <origin
+        xyz="0 0.0279401508439631 0.000428758424439131"
+        rpy="0 0 0" />
+      <mass
+        value="0.0851788397766333" />
+      <inertia
+        ixx="4.20226124478788E-05"
+        ixy="-3.31665761127969E-21"
+        ixz="4.60146747653448E-21"
+        iyy="3.11208969345462E-05"
+        iyz="7.8056066393216E-07"
+        izz="4.60535086117172E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_leg_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_leg_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_right_leg_base_joint"
+    type="fixed">
+    <origin
+      xyz="-0.27096 -0.19919 0.086"
+      rpy="-7.2858E-17 2.7761E-17 -3.1416" />
+    <parent
+      link="base_link" />
+    <child
+      link="back_right_leg_base" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="back_right_leg_top">
+    <inertial>
+      <origin
+        xyz="0.00186715765354706 0.07447513170425 0.0165150993796676"
+        rpy="0 0 0" />
+      <mass
+        value="0.228308259818507" />
+      <inertia
+        ixx="0.000796144386061546"
+        ixy="-9.35880407293519E-06"
+        ixz="-2.07485691999505E-06"
+        iyy="0.000428242224762157"
+        iyz="0.000145776246966025"
+        izz="0.00108015150542691" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_leg_top.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_leg_top.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_right_leg_top_suspension"
+    type="continuous">
+    <origin
+      xyz="-0.0013183 0.03 0"
+      rpy="0 -3.9435E-34 0" />
+    <parent
+      link="back_right_leg_base" />
+    <child
+      link="back_right_leg_top" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="back_right_swerve_axel">
+    <inertial>
+      <origin
+        xyz="0.0329170616646706 -0.0745870457337233 -0.0807185957131064"
+        rpy="0 0 0" />
+      <mass
+        value="2.39145632608747" />
+      <inertia
+        ixx="0.0172392408851921"
+        ixy="-5.03325813393384E-06"
+        ixz="3.21563516693931E-06"
+        iyy="0.00664756469466656"
+        iyz="-0.00194251953068347"
+        izz="0.0120230174562031" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_swerve_axel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.776470588235294 0.756862745098039 0.737254901960784 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_swerve_axel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_right_swerve"
+    type="continuous">
+    <origin
+      xyz="0.027573 0.2952 -0.27143"
+      rpy="-3.1416 4.1456E-17 -3.0876" />
+    <parent
+      link="back_right_leg_top" />
+    <child
+      link="back_right_swerve_axel" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="back_right_wheel">
+    <inertial>
+      <origin
+        xyz="-0.0663813744814109 -1.95940016276541E-05 -2.22091400667312E-05"
+        rpy="0 0 0" />
+      <mass
+        value="2.15472811624945" />
+      <inertia
+        ixx="0.0180021390861626"
+        ixy="6.4253061087769E-07"
+        ixz="7.28286779060267E-07"
+        iyy="0.0154652772226982"
+        iyz="-1.72296508625374E-07"
+        izz="0.0154653205064802" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.294117647058824 0.294117647058824 0.294117647058824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_right_wheel_axel"
+    type="continuous">
+    <origin
+      xyz="0.032905 -0.18638 0.059933"
+      rpy="-0.93954 -1.1869E-14 -1.5708" />
+    <parent
+      link="back_right_swerve_axel" />
+    <child
+      link="back_right_wheel" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="back_right_springs">
+    <inertial>
+      <origin
+        xyz="-1.18708999516659E-05 -0.0149949564119757 0.0576907991037673"
+        rpy="0 0 0" />
+      <mass
+        value="0.0728462856892432" />
+      <inertia
+        ixx="6.0097058130109E-05"
+        ixy="2.62033197705257E-10"
+        ixz="6.90264221156996E-08"
+        iyy="4.37239220811648E-05"
+        iyz="-7.40211060711956E-09"
+        izz="1.88632088165929E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_springs.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_springs.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_right_spring_joint"
+    type="fixed">
+    <origin
+      xyz="0.01498 0.062969 -0.030256"
+      rpy="3.1416 -0.61842 1.5708" />
+    <parent
+      link="back_right_leg_base" />
+    <child
+      link="back_right_springs" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="back_right_suspension">
+    <inertial>
+      <origin
+        xyz="-0.0114902738387503 -0.00115188134063249 0.0475380586125842"
+        rpy="0 0 0" />
+      <mass
+        value="0.222938081620854" />
+      <inertia
+        ixx="0.000394551830605387"
+        ixy="-2.52013646251628E-06"
+        ixz="9.55206554700923E-06"
+        iyy="0.00110935612499406"
+        iyz="-1.43414679652556E-07"
+        izz="0.00079387963496782" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_suspension.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_suspension.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_right_suspension_joint"
+    type="continuous">
+    <origin
+      xyz="0.0059835 0.03312 0.082395"
+      rpy="1.5708 -0.41031 0" />
+    <parent
+      link="back_right_springs" />
+    <child
+      link="back_right_suspension" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="back_right_to_rover">
+    <inertial>
+      <origin
+        xyz="1.13665743484148E-10 -0.0110053367071424 0.0171856026082578"
+        rpy="0 0 0" />
+      <mass
+        value="0.108052469834526" />
+      <inertia
+        ixx="8.16035762454319E-05"
+        ixy="-6.66003376172473E-13"
+        ixz="-2.41891298194832E-13"
+        iyy="4.43362317667963E-05"
+        iyz="1.26211383778294E-05"
+        izz="8.19573500045415E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_to_rover.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/back_right_to_rover.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_right_to_rover_joint"
+    type="continuous">
+    <origin
+      xyz="-0.090706 -0.021118 0.0481"
+      rpy="1.7789 -1.5708 0" />
+    <parent
+      link="back_right_suspension" />
+    <child
+      link="back_right_to_rover" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="arm_base">
+    <inertial>
+      <origin
+        xyz="-0.00577800660165681 4.17841682296E-05 0.136866703717242"
+        rpy="0 0 0" />
+      <mass
+        value="1.97025617277148" />
+      <inertia
+        ixx="0.0111631361256287"
+        ixy="3.89200111280356E-07"
+        ixz="-0.00169119197006604"
+        iyy="0.0116407591577356"
+        iyz="-6.56640255771576E-07"
+        izz="0.0127422376535343" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_base_rotation"
+    type="continuous">
+    <origin
+      xyz="0.17255 -0.072487 0"
+      rpy="5.7819E-16 -1.0312E-15 -0.088075" />
+    <parent
+      link="base_link" />
+    <child
+      link="arm_base" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="arm_top_actuator_base">
+    <inertial>
+      <origin
+        xyz="-0.0199928794992749 0.106614805051896 0.0339996193050101"
+        rpy="0 0 0" />
+      <mass
+        value="0.505108099842088" />
+      <inertia
+        ixx="0.00350331852549601"
+        ixy="-0.00125167583908014"
+        ixz="2.41543818637908E-10"
+        iyy="0.000780139361989179"
+        iyz="-1.03652760691046E-09"
+        izz="0.00415524008974245" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_actuator_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_actuator_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_top_actuator_rotate"
+    type="continuous">
+    <origin
+      xyz="-0.08984 -0.034 0.33328"
+      rpy="1.5708 2.4976E-11 -3.1416" />
+    <parent
+      link="arm_base" />
+    <child
+      link="arm_top_actuator_base" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="arm_top_actuator_shaft">
+    <inertial>
+      <origin
+        xyz="-6.51369874704599E-09 0.14128156768123 1.00420845250415E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.707194769757717" />
+      <inertia
+        ixx="0.00473421939242273"
+        ixy="-5.22922261868308E-10"
+        ixz="-3.86661180233182E-11"
+        iyy="3.53245823064578E-05"
+        iyz="7.71321411352975E-10"
+        izz="0.00473445881104613" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_actuator_shaft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_actuator_shaft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_top_actuator"
+    type="prismatic">
+    <origin
+      xyz="-0.017673 0.058705 0.034"
+      rpy="-8.9165E-16 -1.3323E-15 0.29241" />
+    <parent
+      link="arm_top_actuator_base" />
+    <child
+      link="arm_top_actuator_shaft" />
+    <axis
+      xyz="-0.087908 0.99613 0" />
+    <limit
+      lower="0"
+      upper="0.26"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="arm_top_plates">
+    <inertial>
+      <origin
+        xyz="0.309460607313114 0.0699553415882536 -0.0420000000027689"
+        rpy="0 0 0" />
+      <mass
+        value="0.632836443083173" />
+      <inertia
+        ixx="0.00302215766594858"
+        ixy="0.00205816194485727"
+        ixz="-1.95410148565861E-13"
+        iyy="0.0161974172609628"
+        iyz="-1.69525309588747E-13"
+        izz="0.0168233830266037" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_plates.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_plates.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_top_actuator_top_rotate"
+    type="continuous">
+    <origin
+      xyz="-0.1005 -0.17895 -0.042"
+      rpy="-3.1416 -4.2327E-16 1.7037" />
+    <parent
+      link="arm_top_actuator_shaft" />
+    <child
+      link="arm_top_plates" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="arm_top_plate_base_link">
+    <inertial>
+      <origin
+        xyz="-0.0320000005481141 -6.89630852424017E-11 2.85284268430885E-10"
+        rpy="0 0 0" />
+      <mass
+        value="0.00799266011357944" />
+      <inertia
+        ixx="3.97963532135044E-08"
+        ixy="4.92527358194675E-14"
+        ixz="-2.03747110880855E-13"
+        iyy="1.29764556422128E-05"
+        iyz="-1.07037171264362E-21"
+        izz="1.29764556422128E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_plate_base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_plate_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_top_plate_base_link"
+    type="continuous">
+    <origin
+      xyz="0 0 -0.01"
+      rpy="1.7589 -1.5708 0" />
+    <parent
+      link="arm_top_plates" />
+    <child
+      link="arm_top_plate_base_link" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="arm_bottom_plates">
+    <inertial>
+      <origin
+        xyz="0.213559150713086 0.0328810358414256 -0.026000000000336"
+        rpy="0 0 0" />
+      <mass
+        value="0.523833534252721" />
+      <inertia
+        ixx="0.000841855836256225"
+        ixy="-0.001442006431404"
+        ixz="-4.87766971994999E-15"
+        iyy="0.0172834626970349"
+        iyz="-2.0643209364124E-16"
+        izz="0.0173128299262027" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_bottom_plates.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_bottom_plates.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_bottom_plates_rotate"
+    type="continuous">
+    <origin
+      xyz="0.027518 -0.026 0.15313"
+      rpy="1.5708 -1.1407 1.3825E-13" />
+    <parent
+      link="arm_base" />
+    <child
+      link="arm_bottom_plates" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="arm_bottom_actuator_base">
+    <inertial>
+      <origin
+        xyz="0.0320003871069485 0.104575355406995 -0.0702153584999154"
+        rpy="0 0 0" />
+      <mass
+        value="0.529218580973689" />
+      <inertia
+        ixx="0.00602555553236807"
+        ixy="5.6428275716341E-10"
+        ixz="-5.24965655608655E-10"
+        iyy="0.00124306355705372"
+        iyz="-0.0020995140202179"
+        izz="0.00490031550571489" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_bottom_actuator_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_bottom_actuator_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_bottom_actuator_base_rotate"
+    type="continuous">
+    <origin
+      xyz="0 0.088 -0.058"
+      rpy="2.0009 -1.5708 0" />
+    <parent
+      link="arm_bottom_plates" />
+    <child
+      link="arm_bottom_actuator_base" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="arm_bottom_actuator_shaft">
+    <inertial>
+      <origin
+        xyz="-6.97318219833321E-09 0.166668234316583 9.31636348622256E-09"
+        rpy="0 0 0" />
+      <mass
+        value="0.834414953724233" />
+      <inertia
+        ixx="0.00776037768009462"
+        ixy="-7.36052308551131E-10"
+        ixz="-4.04210900861735E-11"
+        iyy="4.16629664849725E-05"
+        iyz="1.0026361439019E-09"
+        izz="0.00776061710222156" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_bottom_actuator_shaft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_bottom_actuator_shaft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_bottom_actuator"
+    type="prismatic">
+    <origin
+      xyz="0.032 0.080892 -0.044834"
+      rpy="-1.5708 -1.0647 1.5708" />
+    <parent
+      link="arm_bottom_actuator_base" />
+    <child
+      link="arm_bottom_actuator_shaft" />
+    <axis
+      xyz="-0.088036 0.99612 0" />
+    <limit
+      lower="0"
+      upper="0.31"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="arm_lower_bottom_plates">
+    <inertial>
+      <origin
+        xyz="-0.116987073448478 -0.0117851650083901 0.0220000000133645"
+        rpy="0 0 0" />
+      <mass
+        value="0.421175783744302" />
+      <inertia
+        ixx="0.000351596704215839"
+        ixy="-0.00055574239184127"
+        ixz="1.33395355376401E-12"
+        iyy="0.00986604507218355"
+        iyz="-1.86958142110033E-13"
+        izz="0.00988021585824204" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_lower_bottom_plates.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_lower_bottom_plates.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_lower_bottom_plates_rotate"
+    type="continuous">
+    <origin
+      xyz="-0.04722 0.44668 -0.022"
+      rpy="-1.8388E-16 -3.3307E-16 -0.83469" />
+    <parent
+      link="arm_bottom_actuator_shaft" />
+    <child
+      link="arm_lower_bottom_plates" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="arm_sync_plate_lower">
+    <inertial>
+      <origin
+        xyz="0.0400000030454582 1.99903760211839E-10 -1.08040738577841E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.0201536396119193" />
+      <inertia
+        ixx="1.01091490191227E-07"
+        ixy="1.59538331447092E-21"
+        ixz="5.18807680193259E-21"
+        iyy="1.07580809356551E-05"
+        iyz="6.58276836460481E-35"
+        izz="1.07580809356551E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_sync_plate_lower.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_sync_plate_lower.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_sync_plate_lower"
+    type="continuous">
+    <origin
+      xyz="0 0 0.062"
+      rpy="0.3286 1.5708 0" />
+    <parent
+      link="arm_lower_bottom_plates" />
+    <child
+      link="arm_sync_plate_lower" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="claw_base">
+    <inertial>
+      <origin
+        xyz="-0.0277171033205891 0.0175578017250562 -0.0146145479255485"
+        rpy="0 0 0" />
+      <mass
+        value="0.0771754639307836" />
+      <inertia
+        ixx="5.79421751386072E-05"
+        ixy="1.42709543625877E-05"
+        ixz="2.17406488345E-06"
+        iyy="8.35747112122449E-05"
+        iyz="9.62259555738613E-06"
+        izz="0.000112583869992904" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="claw_base"
+    type="continuous">
+    <origin
+      xyz="-0.43763 -0.035324 0.022"
+      rpy="1.5708 -2.6368E-16 -2.315" />
+    <parent
+      link="arm_lower_bottom_plates" />
+    <child
+      link="claw_base" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="claw_wrist">
+    <inertial>
+      <origin
+        xyz="0.000838231640491502 0.106171660682902 -0.00050374223529015"
+        rpy="0 0 0" />
+      <mass
+        value="0.0918795943669827" />
+      <inertia
+        ixx="0.000210708869550163"
+        ixy="-2.62470647209216E-06"
+        ixz="1.66502378304192E-05"
+        iyy="5.23027625063E-05"
+        iyz="-3.00031837963786E-06"
+        izz="0.000182589549876571" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_wrist.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_wrist.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="claw_wrist_joint"
+    type="continuous">
+    <origin
+      xyz="-0.055635 0 -0.04687"
+      rpy="-5.5546E-09 0.088988 -1.5708" />
+    <parent
+      link="claw_base" />
+    <child
+      link="claw_wrist" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="claw_right">
+    <inertial>
+      <origin
+        xyz="-0.0219697111862381 0.00199999374423981 -0.0295223392217762"
+        rpy="0 0 0" />
+      <mass
+        value="0.019697229996406" />
+      <inertia
+        ixx="7.16643640649636E-06"
+        ixy="-4.01382202519821E-14"
+        ixz="-1.61957084855336E-06"
+        iyy="1.04568129091315E-05"
+        iyz="1.7630581648421E-13"
+        izz="3.34290244929224E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_right.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_right.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="claw_right_close"
+    type="continuous">
+    <origin
+      xyz="0.0059347 0.17002 0.017524"
+      rpy="-1.5708 1.1362 3.1416" />
+    <parent
+      link="claw_wrist" />
+    <child
+      link="claw_right" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="claw_left">
+    <inertial>
+      <origin
+        xyz="-0.0219696920044842 0.00200000055102795 -0.0295227727269913"
+        rpy="0 0 0" />
+      <mass
+        value="0.0196972369456184" />
+      <inertia
+        ixx="7.16697637743459E-06"
+        ixy="3.53372023550774E-15"
+        ixz="-1.61974574070916E-06"
+        iyy="1.04573560728631E-05"
+        iyz="-1.55212865235862E-14"
+        izz="3.34290566061681E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_left.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.92156862745098 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_left.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="claw_left_close"
+    type="continuous">
+    <origin
+      xyz="-0.0059305 0.17002 -0.017536"
+      rpy="1.5708 -1.1362 -1.338E-07" />
+    <parent
+      link="claw_wrist" />
+    <child
+      link="claw_left" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="claw_upper_link">
+    <inertial>
+      <origin
+        xyz="0.0480000009351714 1.90505156094645E-09 -7.52907569623318E-09"
+        rpy="0 0 0" />
+      <mass
+        value="0.0242072994446992" />
+      <inertia
+        ixx="1.21523202517135E-07"
+        ixy="2.34219119109755E-20"
+        ixz="-5.61548102443874E-20"
+        iyy="1.85519155970028E-05"
+        iyz="-6.65800000305744E-35"
+        izz="1.85519155970028E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_upper_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/claw_upper_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="claw_upper_link_joint"
+    type="continuous">
+    <origin
+      xyz="-0.0072725 -0.048 0.023024"
+      rpy="1.0728 2.3453E-15 1.5708" />
+    <parent
+      link="claw_base" />
+    <child
+      link="claw_upper_link" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="arm_sync_plates">
+    <inertial>
+      <origin
+        xyz="0.0400000018683305 0.025698019025897 0.00182876791607223"
+        rpy="0 0 0" />
+      <mass
+        value="0.12928420888469" />
+      <inertia
+        ixx="0.000206138452610821"
+        ixy="9.37117281555196E-14"
+        ixz="-2.12264188227695E-13"
+        iyy="0.000299757953229057"
+        iyz="-6.35188566897998E-06"
+        izz="0.000210953020951538" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_sync_plates.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_sync_plates.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_sync_plates_rotate"
+    type="continuous">
+    <origin
+      xyz="0.53402 0 -0.066"
+      rpy="2.0009 -1.5708 0" />
+    <parent
+      link="arm_bottom_plates" />
+    <child
+      link="arm_sync_plates" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="arm_lower_top_plates">
+    <inertial>
+      <origin
+        xyz="0.04800000000068 0.0379640134419111 0.168599338422196"
+        rpy="0 0 0" />
+      <mass
+        value="0.222440263368328" />
+      <inertia
+        ixx="0.00384135135861348"
+        ixy="-5.76361874893294E-15"
+        ixz="-2.56002935050768E-14"
+        iyy="0.0040412743491404"
+        iyz="0.000815048513075659"
+        izz="0.000605145975013978" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_lower_top_plates.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge2_tf/meshes/arm_lower_top_plates.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_lower_top_plates_rotate"
+    type="continuous">
+    <origin
+      xyz="0.088 0.046297 -0.051844"
+      rpy="3.1416 -1.3878E-17 -3.1416" />
+    <parent
+      link="arm_sync_plates" />
+    <child
+      link="arm_lower_top_plates" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+</robot>
