@@ -8,10 +8,6 @@ front_left_wheel_axel_controller:
     type: velocity_controllers/JointVelocityController
     joint: front_left_wheel_axel
     pid: {p: 100.0, i: 0.01, d: 10.0}
-middle_left_wheel_axel_controller:
-    type: velocity_controllers/JointVelocityController
-    joint: middle_left_wheel_axel
-    pid: {p: 100.0, i: 0.01, d: 10.0}
 back_left_wheel_axel_controller:
     type: velocity_controllers/JointVelocityController
     joint: back_left_wheel_axel
@@ -19,10 +15,6 @@ back_left_wheel_axel_controller:
 front_right_wheel_axel_controller:
     type: velocity_controllers/JointVelocityController
     joint: front_right_wheel_axel
-    pid: {p: 100.0, i: 0.01, d: 10.0}
-middle_right_wheel_axel_controller:
-    type: velocity_controllers/JointVelocityController
-    joint: middle_right_wheel_axel
     pid: {p: 100.0, i: 0.01, d: 10.0}
 back_right_wheel_axel_controller:
     type: velocity_controllers/JointVelocityController
