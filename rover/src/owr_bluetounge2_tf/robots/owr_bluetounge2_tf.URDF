@@ -1,7 +1,22 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="owr_bluetounge2_tf">
+    <link name="base_link">
+    </link>
+    <joint
+        name="base_link_joint"
+        type="fixed">
+        <origin
+        xyz="0 0 0 "
+        rpy="0 0 0" />
+        <parent
+        link="base_link" />
+        <child
+        link="chassis" />
+        <axis
+        xyz="0 0 0" />
+    </joint>
   <link
-    name="base_link">
+    name="chassis">
     <inertial>
       <origin
         xyz="-0.000306092356492482 0.000502740394013363 0.0553311735203667"
@@ -87,7 +102,7 @@
       xyz="0.26213671627839 0.165813347998531 0.116"
       rpy="-4.0766001685455E-16 -2.71143453751384E-15 -7.14214183115679E-19" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="laser_tilt" />
     <axis
@@ -251,7 +266,7 @@
       xyz="0.271043058686069 0.22581334799853 0.106000000000001"
       rpy="-3.14159265358979 -7.45286116330806E-17 3.14159265358979" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="front_left_leg_base" />
     <axis
@@ -675,7 +690,7 @@
       xyz="-0.27095694131393 0.22581334799853 0.106000000000001"
       rpy="3.14159265358979 -7.45286116330805E-17 3.14159265358979" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="back_left_leg_base" />
     <axis
@@ -1099,7 +1114,7 @@
       xyz="0.27104305868607 -0.22418665200147 0.106000000000001"
       rpy="3.14159265358979 -1.22075621657598E-17 -7.14214183116779E-19" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="front_right_leg_base" />
     <axis
@@ -1523,7 +1538,7 @@
       xyz="-0.27095694131393 -0.22418665200147 0.106000000000001"
       rpy="3.14159265358979 -1.22075621657598E-17 -7.14214183116779E-19" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="back_right_leg_base" />
     <axis
@@ -1947,7 +1962,7 @@
       xyz="0.172554697757751 -0.0724869639786827 0"
       rpy="5.78193091528853E-16 -1.03121787249516E-15 -0.0880750381353883" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="arm_base" />
     <axis
