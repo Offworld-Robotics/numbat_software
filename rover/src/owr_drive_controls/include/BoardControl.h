@@ -8,9 +8,9 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/Twist.h>
+#include <owr_messages/board.h>
 #include <termios.h>
 #include <stdio.h>
-#include "buttons.h"
 #include "Bluetongue.h"
 
 using namespace std; 
@@ -18,10 +18,6 @@ using namespace std;
 
 //serial IO
 #define TTY "/dev/ttyACM0"
-
-#define OPEN  0
-#define STOP  1
-#define CLOSE 2
 
 //the minimum number of satelites required to make the fix valid
 #define MIN_SATELITES 3
@@ -32,8 +28,7 @@ class BoardControl {
         void run();
         
     private:
-        void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
-        void armCallback(const sensor_msgs::Joy::ConstPtr& joy);
+        void controllerCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
         void velCallback(const geometry_msgs::Twist::ConstPtr& vel);
 
@@ -53,6 +48,7 @@ class BoardControl {
         ros::Publisher accPublisher;
         ros::Publisher battVoltPublisher;
         ros::Publisher voltmeterPublisher;
+        ros::Publisher boardStatusPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
         float leftDrive, rightDrive;
@@ -70,9 +66,9 @@ class BoardControl {
         //claw stuff
         int clawState;
         int rotateState;
-        int clawRotate;
+        int clawRotate; // pwm
         int clawGrip;
-        int rotState;
+        int rotState; // On-Off
         //int clawState;
         
         //to keep track of button states. It is possible press could change it

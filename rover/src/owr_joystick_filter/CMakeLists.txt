@@ -1,17 +1,18 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(owr_messages)
+project(owr_joystick_filter)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  message_runtime
-  message_generation
-  roscpp
-  rospy
+  owr_messages
+    roscpp
   sensor_msgs
   std_msgs
   geometry_msgs
+   message_filters
+    laser_geometry
+    tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -48,19 +49,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   activeCameras.msg
-   camera_angle.msg
-   motor.msg
-   status.msg
-   stream.msg
-   position.msg
-   voltage.msg
-   ultrasonic.msg
-   heading.msg
-   board.msg
- )
+# add_message_files(
+#   FILES
+#   Message1.msg
+#   Message2.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -77,12 +70,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   sensor_msgs
-   std_msgs
-   geometry_msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+#   sensor_msgs#   std_msgs
+# )
 
 ###################################
 ## catkin specific configuration ##
@@ -94,10 +85,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES owr_messages
-#  CATKIN_DEPENDS message_runtime roscpp rospy sensor_msgs std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES owr_joystick_filter
+  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry tf
+  DEPENDS system_lib
 )
 
 ###########
@@ -109,22 +100,36 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+   include
 )
 
 ## Declare a cpp library
-# add_library(owr_messages
-#   src/${PROJECT_NAME}/owr_messages.cpp
+# add_library(owr_joystick_filter
+#   src/${PROJECT_NAME}/owr_joystick_filter.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(owr_messages_node src/owr_messages_node.cpp)
+add_executable(owr_joystick_filter_node src/JoystickFilter.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(owr_messages_node owr_messages_generate_messages_cpp)
+add_dependencies(owr_joystick_filter_node owr_messages)
+#add_dependencies(owr_joystick_filter_node owr_messages_gencpp)
+target_link_libraries(owr_joystick_filter_node ${catkin_LIBRARIES})
 
+#add_executable(owr_magnet_node src/MagnetCoverter.cpp)
+#add_dependencies(owr_magnet_node owr_messages_gencpp)
+#target_link_libraries(owr_magnet_node ${catkin_LIBRARIES})
+
+#add_executable(owr_fusion_node src/SensorFusion.cpp)
+#add_dependencies(owr_fusion_node owr_messages_gencpp)
+#target_link_libraries(owr_fusion_node ${catkin_LIBRARIES})
+
+
+#add_executable(owr_object_avoidance src/ObjectAvoidance.cpp)
+#target_link_libraries(owr_object_avoidance ${catkin_LIBRARIES})
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(owr_messages_node
+# target_link_libraries(owr_joystick_filter_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -143,7 +148,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS owr_messages owr_messages_node
+# install(TARGETS owr_positioning owr_positioning_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -168,7 +173,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_owr_messages.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_owr_joystick_filter.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
