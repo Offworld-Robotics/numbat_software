@@ -1639,10 +1639,10 @@
   </link>
   <joint
     name="back_right_swerve_to_suspension"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.102203082302949 0.0225748614789264 0.0290499999999999"
-      rpy="1.36268905861399 -1.5707963267949 0" />
+      rpy="1.72268905861399 -1.5707963267949 0" />
     <parent
       link="back_right_leg_top" />
     <child
