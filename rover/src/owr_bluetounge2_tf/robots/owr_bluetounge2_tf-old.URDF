@@ -1,7 +1,22 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="owr_bluetounge2_tf">
+  <link name="base_link">
+    </link>
+    <joint
+        name="base_link_joint"
+        type="fixed">
+        <origin
+        xyz="0 0 0 "
+        rpy="0 0 0" />
+        <parent
+        link="base_link" />
+        <child
+        link="chassis" />
+        <axis
+        xyz="0 0 0" />
+    </joint>
   <link
-    name="base_link">
+    name="chassis">
     <inertial>
       <origin
         xyz="-0.000306092356492482 0.000502740394013356 0.0553311735203667"
@@ -22,7 +37,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_bluetounge2_tf/meshes/base_link.STL" />
+          filename="package://owr_bluetounge2_tf/meshes/chassis.STL" />
       </geometry>
       <material
         name="">
@@ -36,7 +51,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_bluetounge2_tf/meshes/base_link.STL" />
+          filename="package://owr_bluetounge2_tf/meshes/chassis.STL" />
       </geometry>
     </collision>
   </link>
@@ -87,7 +102,7 @@
       xyz="0.26213671627839 0.165813347998531 0.116"
       rpy="-4.0766001685455E-16 -2.71143453751384E-15 -7.14214183115679E-19" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="laser_tilt" />
     <axis
@@ -251,7 +266,7 @@
       xyz="0.271043058686069 0.20081334799853 0.0860000000000011"
       rpy="1.38777878078144E-17 3.69020456027339E-18 -1.18444691579815E-31" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="front_left_leg_base" />
     <axis
@@ -684,7 +699,7 @@
       xyz="-0.27095694131393 0.22581334799853 0.106000000000001"
       rpy="3.14159265358979 -7.45286116330805E-17 3.14159265358979" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="back_left_leg_base" />
     <axis
@@ -1108,7 +1123,7 @@
       xyz="0.27104 -0.19919 0.086"
       rpy="2.2031E-16 -4.6674E-17 -3.1416" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="front_right_leg_base" />
     <axis
@@ -1479,7 +1494,7 @@
       xyz="-0.27095694131393 -0.19918665200147 0.0860000000000012"
       rpy="-7.28583859910258E-17 2.77607356767723E-17 -3.14159265358979" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="back_right_leg_base" />
     <axis
@@ -1850,7 +1865,7 @@
       xyz="0.172554697757751 -0.0724869639786827 0"
       rpy="5.78193091528853E-16 -1.03121787249516E-15 -0.0880750381353883" />
     <parent
-      link="base_link" />
+      link="chassis" />
     <child
       link="arm_base" />
     <axis
@@ -2021,7 +2036,7 @@
       xyz="0 0 -1" />
   </joint>
   <link
-    name="arm_top_plate_base_link">
+    name="arm_top_plate_chassis">
     <inertial>
       <origin
         xyz="-0.0320000029262278 2.19189943972964E-11 -9.06732744443417E-11"
@@ -2042,7 +2057,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_bluetounge2_tf/meshes/arm_top_plate_base_link.STL" />
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_plate_chassis.STL" />
       </geometry>
       <material
         name="">
@@ -2056,12 +2071,12 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_bluetounge2_tf/meshes/arm_top_plate_base_link.STL" />
+          filename="package://owr_bluetounge2_tf/meshes/arm_top_plate_chassis.STL" />
       </geometry>
     </collision>
   </link>
   <joint
-    name="arm_top_plate_base_link"
+    name="arm_top_plate_chassis"
     type="fixed">
     <origin
       xyz="0 0 -0.0100000028863516"
@@ -2069,7 +2084,7 @@
     <parent
       link="arm_top_plates" />
     <child
-      link="arm_top_plate_base_link" />
+      link="arm_top_plate_chassis" />
     <axis
       xyz="-1 0 0" />
   </joint>
