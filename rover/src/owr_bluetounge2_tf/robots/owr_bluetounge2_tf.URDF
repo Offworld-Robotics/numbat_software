@@ -1639,10 +1639,10 @@
   </link>
   <joint
     name="back_right_swerve_to_suspension"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.102203082302949 0.0225748614789264 0.0290499999999999"
-      rpy="1.36268905861399 -1.5707963267949 0" />
+      rpy="1.72268905861399 -1.5707963267949 0" />
     <parent
       link="back_right_leg_top" />
     <child
@@ -2872,6 +2872,46 @@
         <actuator name="back_right_wheel_motor">
         <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
         <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="back_right_swerve">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="back_right_swerve">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="back_right_swerve_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="front_right_swerve">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="front_right_swerve">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="front_right_swerve_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="back_left_swerve">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="back_left_swerve">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="back_left_swerve_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="front_left_swerve">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="front_left_swerve">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="front_left_swerve_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
         </actuator>
     </transmission>
     <transmission name="laser_tilt_joint">
