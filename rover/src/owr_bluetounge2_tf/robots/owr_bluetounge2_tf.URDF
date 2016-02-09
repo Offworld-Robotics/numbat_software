@@ -1639,7 +1639,7 @@
   </link>
   <joint
     name="back_right_swerve_to_suspension"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="0.102203082302949 0.0225748614789264 0.0290499999999999"
       rpy="1.36268905861399 -1.5707963267949 0" />
@@ -1648,7 +1648,7 @@
     <child
       link="back_right_swerve_top" />
     <axis
-      xyz="0 0 0" />
+      xyz="-1 0 0" />
   </joint>
   <link
     name="back_right_swerve_axel">
