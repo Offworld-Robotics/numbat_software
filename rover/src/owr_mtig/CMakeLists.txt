@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(mtig_driver_node)
+project(owr_mtig)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -82,7 +82,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES mtig_driver
+  LIBRARIES owr_mtig
   CATKIN_DEPENDS owr_messages roscpp rospy std_msgs
   DEPENDS system_lib
 )
@@ -107,8 +107,8 @@ include_directories(
 ## Declare a cpp executable
 
 #Example
-#add_executable(mtig_driver_node src/<mtig_driver>.cpp)
-#target_link_libraries(mtig_driver_node ${catkin_LIBRARIES})
+#add_executable(owr_mtig_node src/<owr_mtig>.cpp)
+#target_link_libraries(owr_mtig_node ${catkin_LIBRARIES})
 
 
 ## Add cmake target dependencies of the executable/library

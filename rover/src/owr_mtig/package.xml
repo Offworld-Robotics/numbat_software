@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>mtig_driver_node</name>
+  <name>owr_mtig</name>
   <version>0.0.0</version>
-  <description>The mtig_driver package</description>
+  <description>The owr_mtig package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -39,7 +39,7 @@
   <!--   <run_depend>message_runtime</run_depend> -->
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
-<!--   <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>catkin</buildtool_depend>
   <build_depend>owr_messages</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
@@ -48,7 +48,7 @@
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
- -->
+ 
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

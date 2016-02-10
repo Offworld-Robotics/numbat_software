@@ -1,0 +1,3 @@
+[submodule "rover/src/mtig_driver"]
+	path = rover/src/mtig_driver
+	url = https://github.com/lukscasanova/mtig_driver.git
