@@ -21,20 +21,57 @@
 #define FRONT_W_2_BACK_W_X 0.54216
 
 #include "cmdVelToJoints.hpp"
-#include "math.h"
+#include <math.h>
 
+#include <std_msgs/Float64.h>
 #include <geometry_msgs/Vector3.h>
 
 int main(int argc, char ** argv) {
-    ros::init(argc, argv, "owr_telop");
+    ros::init(argc, argv, "owr_cmd_vel_2_joints");
     CmdVelToJoints CmdVelToJoints;
-    //CmdVelToJoints.run();
+    CmdVelToJoints.run();
 }
 
 CmdVelToJoints::CmdVelToJoints() {
      ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
      cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToJoints::reciveVelMsg , this, transportHints);
+     
+    frontLeftDrive = nh.advertise<std_msgs::Float64>("/front_left_Drive_controller/command",1,true);
+    frontRightDrive = nh.advertise<std_msgs::Float64>("/front_right_Drive_controller/command",1,true);
+    backLeftDrive = nh.advertise<std_msgs::Float64>("/back_left_Drive_controller/command",1,true);
+    backRightDrive = nh.advertise<std_msgs::Float64>("/back_right_Drive_controller/command",1,true);
+    frontLeftSwerve = nh.advertise<std_msgs::Float64>("/front_left_swerve_controller/command",1,true);
+    frontRightSwerve = nh.advertise<std_msgs::Float64>("/front_right_swerve_controller/command",1,true);
+    backLeftSwerve = nh.advertise<std_msgs::Float64>("/back_left_swerve_controller/command",1,true);
+    backRightSwerve = nh.advertise<std_msgs::Float64>("/back_right_swerve_controller/command",1,true);
+    
+    frontLeftMotorV =0;
+    frontRightMotorV = 0;
+    backLeftMotorV = 0;
+    backRightMotorV = 0;
+    frontLeftAng = 0;
+    frontRightAng = 0;
 }
+
+void CmdVelToJoints::run() {
+    while(ros::ok()) {
+        ros::spinOnce();
+        std_msgs::Float64 msg;
+        msg.data = frontLeftMotorV;
+        frontLeftDrive.publish(msg);
+        msg.data = frontRightMotorV;
+        frontRightDrive.publish(msg);
+        msg.data = backLeftMotorV;
+        backLeftDrive.publish(msg);
+        msg.data = backRightMotorV;
+        backRightDrive.publish(msg);
+        msg.data = frontLeftAng;
+        frontLeftSwerve.publish(msg);
+        msg.data = frontRightAng;
+        frontRightSwerve.publish(msg);
+    }
+}
+
 
 //for a full explanation of this logic please see the scaned notes at
 //https://bluesat.atlassian.net/browse/OWRS-203
@@ -63,8 +100,7 @@ void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
     double closeFrontAng = 90*(2/M_PI)-atan(closeBackR/FRONT_W_2_BACK_W_X);
     double farFrontAng = 90*(2/M_PI)-atan(farBackR/FRONT_W_2_BACK_W_X);
     
-    double frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV;
-    double frontLeftAng, frontRightAng;
+    
     
     //work out which side to favour
     if(0 <= turnAngle && turnAngle <= 180*(2/M_PI)) {

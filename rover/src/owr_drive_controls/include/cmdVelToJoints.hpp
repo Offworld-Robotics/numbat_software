@@ -17,6 +17,7 @@ class CmdVelToJoints {
     
     public:
         CmdVelToJoints();
+        void run();
         
     protected:
         void reciveVelMsg(const geometry_msgs::Twist::ConstPtr& velMsg);
@@ -24,6 +25,18 @@ class CmdVelToJoints {
     private:
         ros::NodeHandle nh;
         ros::Subscriber cmdVelSub;
+        
+        ros::Publisher frontLeftDrive;
+        ros::Publisher frontRightDrive;
+        ros::Publisher backLeftDrive;
+        ros::Publisher backRightDrive;
+        ros::Publisher frontLeftSwerve;
+        ros::Publisher frontRightSwerve;
+        ros::Publisher backLeftSwerve;
+        ros::Publisher backRightSwerve;
+        
+        double frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV;
+        double frontLeftAng, frontRightAng;
         
     
 };
