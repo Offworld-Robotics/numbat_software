@@ -1,7 +1,9 @@
 /*
- * Main class for pbuff relays
- * Author: Harry J.E Day for Bluesat OWR
- * Date: 14/12/14
+ * Filters the Joysticks
+ * Original Author: Sam S
+ * Editors: Harry J.E Day
+ * ROS_NODE:
+ * ros package: 
  */
  
 
@@ -16,6 +18,7 @@
 #include <cmath>
 #include <stdio.h>
 
+#include <geometry_msgs/Twist.h>
 
 
 
@@ -31,6 +34,7 @@
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
 #define SENSITIVITY 1 //CANNOT BE 0
+#define SPEED_CAP 0.83333 // 3 km/h in m/s
  
 int main(int argc, char ** argv) {
     
@@ -54,7 +58,8 @@ JoystickFilter::JoystickFilter(const std::string topic) {
 
 
     //publisher =  node.advertise<owr_messages::position>(topic,10,true);
-    publisher = node.advertise<sensor_msgs::Joy>(topic,10,true);
+    publisher = node.advertise<sensor_msgs::Joy>("/cmd_vel",2,true);
+    velPublisher = node.advertise<geometry_msgs::Twist>(topic,1,true);
     
     //msgsOut.axes = std::vector<float>(20);
     msgsOut.axes.resize(20);
@@ -66,6 +71,8 @@ JoystickFilter::JoystickFilter(const std::string topic) {
 
 // Attempt at single joystick driving
 void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
+    
+    geometry_msgs::Twist cmdVel;
     
     float leftWheelSpeed = 0;
     float rightWheelSpeed = 0;
@@ -89,62 +96,46 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
         // cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
         // cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-    }
-
-    if(STICK_R_LR > 0){
-
-        leftWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;
-        rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;    
-
-    } else if(STICK_R_LR < 0){
-
-        leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
-        rightWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;    
-
     } else {
 
-        // Minus value of LR to get the total value back between {-1..1}
-        leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
-        rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
-
-        // //Divide by 2 so that the max value for left/rightWheelSpeed can never exceed {-1..1} 
-        // leftWheelSpeed = joy->axes[STICK_R_UD]/2;
-        // rightWheelSpeed = joy->axes[STICK_R_UD]/2;
+//         if(STICK_R_LR > 0){
+// 
+//             leftWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;
+//             rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;    
+// 
+//         } else if(STICK_R_LR < 0){
+// 
+//             leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
+//             rightWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;    
+// 
+//         } else {
+// 
+//             // Minus value of LR to get the total value back between {-1..1}
+//             leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
+//             rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
+// 
+//             // //Divide by 2 so that the max value for left/rightWheelSpeed can never exceed {-1..1} 
+//             // leftWheelSpeed = joy->axes[STICK_R_UD]/2;
+//             // rightWheelSpeed = joy->axes[STICK_R_UD]/2;
+// 
+//         }
+        //left stick controls magnitude
+        //right stick controls direction
+        //joystick values are between 1 and -1
+        double magnitude = joy->axes[SPEED_STICK] * SPEED_CAP;
+        cmdVel.linear.x = joy->axes[DIRECTION_STICK_X] * magnitude;
+        cmdVel.linear.y = joy->axes[DIRECTION_STICK_Y] * magnitude;
 
     }
     msgsOut.axes[LEFT_WHEELS] = leftWheelSpeed;
     msgsOut.axes[RIGHT_WHEELS] = rightWheelSpeed;
     
     publisher.publish(msgsOut);
+    velPublisher.publish(cmdVel);
 }
 
 
-// void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
-    
 
-//     // Set sensitivity between 0 and 1: 
-//     //  - 0 makes it output = input 
-//     //  - 1 makes output = input ^3
-//     if (joy->buttons[BUTTON_A]) {
-
-//         msgsOut.axes[CAMERA_BOTTOM_ROTATE] = joy->axes[STICK_L_LR];
-//         msgsOut.axes[CAMERA_BOTTOM_TILT] = joy->axes[STICK_L_UD];
-
-//         // cameraBottomRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
-//         // cameraBottomTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-//     } else if (joy->buttons[BUTTON_B]) {
-
-//         msgsOut.axes[CAMERA_TOP_ROTATE] = joy->axes[STICK_L_LR];
-//         msgsOut.axes[CAMERA_TOP_TILT] = joy->axes[STICK_L_UD];
-
-//         // cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
-//         // cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-//     } else {
-//         msgsOut.axes[LEFT_WHEELS] = joy->axes[STICK_L_UD];
-//         msgsOut.axes[RIGHT_WHEELS] = joy->axes[STICK_R_UD];
-//     }
-//     publisher.publish(msgsOut);
-// }
 
 void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 

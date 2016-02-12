@@ -47,3 +47,8 @@
 #define CAM_FEED_1   BUTTON_B
 #define CAM_FEED_2   BUTTON_X
 #define CAM_FEED_3   BUTTON_Y
+
+//Special Sticks
+#define SPEED_STICK STICK_L_UD
+#define DIRECTION_STICK_X STICK_R_UD
+#define DIRECTION_STICK_Y STICK_R_LR

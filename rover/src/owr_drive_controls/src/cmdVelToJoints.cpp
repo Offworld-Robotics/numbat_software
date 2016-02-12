@@ -81,6 +81,7 @@ void CmdVelToJoints::run() {
  * Casse when linear.y is 0
  *      velocity of all motors = velMsg.x
  *      motor angles all = 0
+ * 
  */
 
 //for a full explanation of this logic please see the scaned notes at
