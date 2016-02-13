@@ -36,6 +36,12 @@ struct status {
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
+    double enc0; // Angular velocities derived from motor encoders
+    double enc1;
+    double enc2;
+    double enc3;
+    double enc4;
+    double enc5;
 };
 	
 class Bluetongue {

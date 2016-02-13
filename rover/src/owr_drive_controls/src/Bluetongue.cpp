@@ -40,6 +40,12 @@ struct toNUCMsg {
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
+    double enc0; // Angular velocities derived from motor encoders
+    double enc1;
+    double enc2;
+    double enc3;
+    double enc4;
+    double enc5;
 } __attribute__((packed));
 
 bool Bluetongue::reconnect(void) {
@@ -197,6 +203,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
             mesg.armBottom, mesg.armRotate);
     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
+            
 	isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
 	
@@ -219,5 +226,6 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
+    ROS_INFO("Encoder speeds %f, %f, %f, %f, %f, %f", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
     return stat;
 }
