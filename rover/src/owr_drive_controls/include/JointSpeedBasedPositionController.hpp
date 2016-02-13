@@ -7,8 +7,25 @@
 
 #include "JointVelocityController.hpp"
 
-class JointSpeedBasedPositionController : public JointVelocityController {
-    JointSpeedBasedPositionController(double wheelRadius, double maxPWM, double minPWM, double motorRPM, double motorBaseVoltage, double motorAmps, double gearRatioIn);
-    int posToPWM(double futurePos, double currentPos, double lastPos, double updateFrequency );
+class JointSpeedBasedPositionController {
+    public:
+        JointSpeedBasedPositionController(double radius, double * gearRatio, int nGears,int minPWM, int maxPWM, int maxRPM);
+        int posToPWM(double futurePos, double currentPos, double updateFrequency);
+    private:
+        double radius;
+        double * gearRatio;
+        int nGears;
+        int minPWM, maxPWM;
+        int maxRPM;
+        
+        int currentPWM;
+        double deltaPWM;
+        
+        double maxVelocity;
+        double deltaVelocity;
+        double lastTargetVelocity;
+        
+        double lastAimPosition, lastKnownPosition;
+        int lastPWM;
     
 }

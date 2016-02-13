@@ -8,14 +8,18 @@
 class JointVelocityController {
     
     public:
-        JointVelocityController(double wheelRadius, double maxPWM, double minPWM, double motorRPM, double motorBaseVoltage, double motorAmps, double gearRatioIn);
-        int velToPWM(double vel);
+        JointVelocityController(int minPWM, int maxPWM, int maxRPM, double wheelRadius);
+        int velToPWM(double targetVel, double currentVel, double currentAngel);
                                 
     private:
         double wheelRadius;
-        double  minPWM, maxPWM;
-        double motorBaseVoltage;
-        double motorAmps;
-        double gearRatioIn;
+        int  minPWM, maxPWM;
+        int maxRPM;
+        int currentPWM;
+        double deltaPWM;
+        double deltaVelocity;
+        
+        double lastAngularVelocity;
+        int lastPWM;
     
 }

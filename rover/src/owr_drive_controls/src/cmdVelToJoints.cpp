@@ -15,13 +15,9 @@
     HALF_ROVER_WIDTH_X := 271.30mm == .27130 (distance from base_link_origin to back_right_wheel shaft)
     FRONT_W_2_BACK_W_X := 542.16mm == 0.54216
 */
-#define ROVER_CENTRE_2_WHEEL_Y 0.40023
-#define BACK_WHEEL_SPAN 0.80273
-#define HALF_ROVER_WIDTH_X .27130
-#define FRONT_W_2_BACK_W_X 0.54216
 
-#define DEG90 1.5708
 
+#include "swerveCommon.hpp"
 #include "cmdVelToJoints.hpp"
 #include <math.h>
 
