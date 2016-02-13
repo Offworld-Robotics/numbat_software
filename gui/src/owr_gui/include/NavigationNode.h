@@ -26,7 +26,7 @@ class NavigationNode {
 		void spin();
 		void receiveFeedsStatus(const owr_messages::activeCameras::ConstPtr &msg);
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
-		void receiveBatteryMsg(const owr_messages::status::ConstPtr& msg);
+		//void receiveBatteryMsg(const owr_messages::status::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
 		
 	private:

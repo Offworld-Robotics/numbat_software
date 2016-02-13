@@ -1,0 +1,583 @@
+<robot
+  name="owr_bluetounge_tf">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.016616375161824 0.0528781229668026 -1.01431182087836E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.684098692441384" />
+      <inertia
+        ixx="0.00455045650818715"
+        ixy="0.00123222889017576"
+        ixz="-2.05591836957564E-17"
+        iyy="0.00308597470213886"
+        iyz="-3.25260651745651E-19"
+        izz="0.00497257421260684" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="top_actuator_base">
+    <inertial>
+      <origin
+        xyz="3.83869171488817E-07 0.108922375109678 0.011703569901285"
+        rpy="0 0 0" />
+      <mass
+        value="0.500146440873382" />
+      <inertia
+        ixx="0.00409615173454293"
+        ixy="8.77601716723506E-10"
+        ixz="4.68609010469363E-11"
+        iyy="0.000312154693900684"
+        iyz="-0.000298261699976126"
+        izz="0.00390712967398551" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/top_actuator_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/top_actuator_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="top_actuator_base_rotate"
+    type="continuous">
+    <origin
+      xyz="0.0898381894927384 0 0.209155716713238"
+      rpy="1.14619501972752 5.59161451734894E-09 1.57079633916291" />
+    <parent
+      link="base_link" />
+    <child
+      link="top_actuator_base" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="top_actuator_shaft">
+    <inertial>
+      <origin
+        xyz="-6.4267451083122E-09 0.141281566918825 -3.89849655712068E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.707194764725094" />
+      <inertia
+        ixx="0.00473421933812624"
+        ixy="-5.20277564889667E-10"
+        ixz="-3.85697240162265E-11"
+        iyy="3.53245822418605E-05"
+        iyz="7.79526323400234E-10"
+        izz="0.00473445875699853" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/top_actuator_shaft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/top_actuator_shaft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="top_actuator_extension"
+    type="prismatic">
+    <origin
+      xyz="0 0.072106 0"
+      rpy="3.1415 -1.5708 -3.1415" />
+    <parent
+      link="top_actuator_base" />
+    <child
+      link="top_actuator_shaft" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-10"
+      upper="10"
+      effort="1000"
+      velocity="1000" />
+  </joint>
+  <link
+    name="sync_main">
+    <inertial>
+      <origin
+        xyz="0.308399703307983 0.0682318196530825 -0.042"
+        rpy="0 0 0" />
+      <mass
+        value="0.648821763310332" />
+      <inertia
+        ixx="0.00312441138952551"
+        ixy="0.00210512847022913"
+        ixz="1.06959673598173E-15"
+        iyy="0.0173867416966367"
+        iyz="-3.00513307438188E-15"
+        izz="0.0180631349574634" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/sync_main.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/sync_main.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="top_actuator_to_sync_main"
+    type="continuous">
+    <origin
+      xyz="-0.115124184387527 -0.175473958284508 -0.0419999999999987"
+      rpy="3.14159265358979 0 1.67149338911123" />
+    <parent
+      link="top_actuator_shaft" />
+    <child
+      link="sync_main" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="structural_main">
+    <inertial>
+      <origin
+        xyz="0.225431734082763 0.0316628590629306 -5.68132656025266E-16"
+        rpy="0 0 0" />
+      <mass
+        value="0.54398717386464" />
+      <inertia
+        ixx="0.000873596024538079"
+        ixy="-0.00164650205345855"
+        ixz="5.00066924067826E-18"
+        iyy="0.0192872741381462"
+        iyz="-6.3071925495731E-20"
+        izz="0.0193269664852361" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/structural_main.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/structural_main.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_to_structural_main"
+    type="continuous">
+    <origin
+      xyz="-0.027519999999994 0 0.0289999999999989"
+      rpy="1.5707963267949 -1.04097774036042 3.14159265358979" />
+    <parent
+      link="base_link" />
+    <child
+      link="structural_main" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="sync_plate">
+    <inertial>
+      <origin
+        xyz="0.0549999999999702 0.0119792194518687 0.0379999999999998"
+        rpy="0 0 0" />
+      <mass
+        value="0.109130569272771" />
+      <inertia
+        ixx="0.000183895963352781"
+        ixy="-9.5325087883999E-18"
+        ixz="-1.82108074524228E-16"
+        iyy="0.000289451897743207"
+        iyz="1.20937718939861E-16"
+        izz="0.000190190410689571" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/sync_plate.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/sync_plate.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="structural_main_to_sync_plate"
+    type="continuous">
+    <origin
+      xyz="0.600097477062089 -0.0215765064114205 -0.038000000000001"
+      rpy="6.88704600198578E-17 1.01259404278687E-16 2.16806796081584" />
+    <parent
+      link="structural_main" />
+    <child
+      link="sync_plate" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="sync_minor">
+    <inertial>
+      <origin
+        xyz="0.193924800000123 -8.80406858527749E-14 -0.0380000000000012"
+        rpy="0 0 0" />
+      <mass
+        value="0.246647562813028" />
+      <inertia
+        ixx="0.000440170999251705"
+        ixy="-1.3834419720915E-16"
+        ixz="-1.56104953451504E-18"
+        iyy="0.00525278378214959"
+        iyz="2.05042989927599E-19"
+        izz="0.0048509035078689" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/sync_minor.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.2 0.4 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/sync_minor.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="sync_plate_to_sync_minor"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="3.14159265358979 0 1.88517119022756" />
+    <parent
+      link="sync_plate" />
+    <child
+      link="sync_minor" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="end_plate">
+    <inertial>
+      <origin
+        xyz="0.0428727282215507 0.0128068845418389 -0.0340000000000008"
+        rpy="0 0 0" />
+      <mass
+        value="0.0752794153885443" />
+      <inertia
+        ixx="0.000111261417750823"
+        ixy="-4.50412524856939E-06"
+        ixz="2.18044340373966E-19"
+        iyy="0.00014901271885592"
+        iyz="1.65568844451897E-19"
+        izz="6.49491468119235E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/end_plate.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.2 0.4 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/end_plate.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="sync_minor_to_end_plate"
+    type="continuous">
+    <origin
+      xyz="0.439282685338782 -0.01788020325798 -0.00399999999999935"
+      rpy="0 0 1.8863672273632" />
+    <parent
+      link="sync_minor" />
+    <child
+      link="end_plate" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="rocker">
+    <inertial>
+      <origin
+        xyz="-0.129180419576857 -0.0112469868220492 -0.0179999999999988"
+        rpy="0 0 0" />
+      <mass
+        value="0.441329423356223" />
+      <inertia
+        ixx="0.000365026101321346"
+        ixy="-0.000616265597877525"
+        ixz="8.60923200431153E-18"
+        iyy="0.0112480592400231"
+        iyz="-5.68897413066996E-19"
+        izz="0.011254244352806" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/rocker.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.2 0.4 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/rocker.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="sync_plate_to_rocker"
+    type="continuous">
+    <origin
+      xyz="0.534024000000002 0 -0.0179999999999996"
+      rpy="3.14159265358979 9.70332217454326E-17 0.914672033584322" />
+    <parent
+      link="structural_main" />
+    <child
+      link="rocker" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="bottom_actuator_base">
+    <inertial>
+      <origin
+        xyz="0.0320003878551581 0.107076218808197 -0.0663391676332811"
+        rpy="0 0 0" />
+      <mass
+        value="0.529218600966516" />
+      <inertia
+        ixx="0.0060255555690891"
+        ixy="6.21000934239989E-10"
+        ixz="-5.42950145997367E-10"
+        iyy="0.00109431938906026"
+        iyz="-0.00196006105573983"
+        izz="0.00504905973351217" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/bottom_actuator_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/bottom_actuator_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="bottom_actuator_base_rotate"
+    type="continuous">
+    <origin
+      xyz="0 0.0879999999999954 -0.0320000000000014"
+      rpy="2.10061491322938 -1.5707963267949 0" />
+    <parent
+      link="structural_main" />
+    <child
+      link="bottom_actuator_base" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="bottom_actuator_shaft">
+    <inertial>
+      <origin
+        xyz="-6.34969773982696E-09 0.166668233337011 -3.90622096564244E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.834414950203527" />
+      <inertia
+        ixx="0.00776037762591339"
+        ixy="-7.15075961354864E-10"
+        ixz="-4.0351482010817E-11"
+        iyy="4.16629664565436E-05"
+        iyz="1.00937170204642E-09"
+        izz="0.0077606170481828" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/bottom_actuator_shaft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.647058823529412 0.619607843137255 0.588235294117647 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://owr_bluetounge_tf/meshes/bottom_actuator_shaft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="bottom_actuator_extension"
+    type="prismatic">
+    <origin
+      xyz="0.032 0.21857 -0.11088"
+      rpy="-1.5708 -1.1013 1.5708" />
+    <parent
+      link="bottom_actuator_base" />
+    <child
+      link="bottom_actuator_shaft" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-10"
+      upper="10"
+      effort="1000"
+      velocity="1000" />
+  </joint>
+</robot>
