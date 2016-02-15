@@ -12,6 +12,9 @@
 #define VEL_INC 0.01
 #define SMALL_INC 0.01
 
+//if this is not defined do it just based on pwm
+#define DO_VEL_ADJUST
+
 static inline caclShortestCircDelta(double a, double b) {
     double ab = (a - b);
     if (ab > M_PI && fabs(ab) < M_2_PI) {
@@ -114,6 +117,27 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     lastTargetVelocity = targetAngularVel;
     
     
-    return 1000;
+    
+    double pwmVelRatio = (velocityRange) / (deltaPWM);
+    
+    double gearAdjustedVel = targetAngularVel;
+    double gearMultiplier = 1;
+    int i;
+    for(i = 0; i < nGears; i++) {
+        gearMultiplier *= gearRatio[i];
+    }
+    gearAdjustedVel *= gearMultiplier;
+    
+    int pwm = (int)(gearAdjustedVel * pwmVelRatio) + minPWM + deltaPWM;
+    
+    #ifdef DO_VEL_ADJUST
+        if(lastAngularVelocity !=  std::numeric_limits< double >::infinity() &&
+            !FLOAT_EQL(currentAngularVel,lastTargetVelocity)) {
+            int error = pwmVelRatio * (currentAngularVel - lastTargetVelocity) * gearMultiplier;
+            pwm += error;
+        }
+    #endif
+    
+    return pwm;
 }
     
