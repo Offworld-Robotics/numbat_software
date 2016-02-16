@@ -1,5 +1,5 @@
 <launch>
      
-    <node pkg="owr_positioning" type="owr_positioning_node" name="positioning_relay" />
-    <node pkg="owr_positioning" type="owr_fusion_node" name="compass" />
+    <node pkg="owr_positioning" type="owr_positioning_node" name="positioning_relay" output="screen"/>
+    <node pkg="owr_positioning" type="owr_fusion_node" name="compass"  output="screen"/>
 </launch>

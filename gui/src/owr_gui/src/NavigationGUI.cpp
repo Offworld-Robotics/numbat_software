@@ -127,15 +127,15 @@ void NavigationGUI::idle() {
 	signal -= 0.01;
 	ultrasonic -= 0.01;
 	if (battery < 0)
-		battery = 10;
-	if (battery > 10)
 		battery = 0;
+	if (battery > 10)
+		battery = 10;
 	if (signal < 0)	
-		signal = 10;
-	if (signal > 10)
 		signal = 0;
+	if (signal > 10)
+		signal = 10;
 	if (ultrasonic < 0)
-		ultrasonic = 10;
+		ultrasonic = 0;
 	#endif
 	
 	// calculate the path rotation angle if possible
@@ -508,7 +508,7 @@ void NavigationGUI::drawSignal() {
 	glTranslated(0, -20, 0);
 	glColor4f(1, 0, 0, ALPHA);
 	char text[30];
-	sprintf(text, "%.2f%%", battery*10);
+	sprintf(text, "%.2f%%", signal*10);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 25, 0);
 
 	glPopMatrix();

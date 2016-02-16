@@ -20,10 +20,11 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	gui = newgui;
 	//a nodehandler is used to communiate with the rest of ros
 	ros::NodeHandle n("~");
+    image_transport::ImageTransport imgTrans(n);
 	
 	//Initialise all the information to be used in by the gui
-	battery = 5;
-	signal = 5;
+	battery = 6;
+	signal = 6;
 	tiltX = 30;
 	tiltY = 30;
 	ultrasonic = 0;
@@ -43,11 +44,16 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// created yet, will wait til it has w/o doing anything
-	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-	videoSub[0] = n.subscribe("/cam0", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
-	videoSub[1] = n.subscribe("/cam1", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
-	videoSub[2] = n.subscribe("/cam2", 1000, &NavigationNode::receiveVideoMsg, this, transportHints);
-	videoSub[3] = n.subscribe("/cam3", 1000, &NavigationNode::receiveVideoMsg, this, transportHints); // Frames of video from camera
+
+	//ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+	//image_transport::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+
+        // Frames of video from camera
+	videoSub[0] = imgTrans.subscribe("/cam0", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
+	videoSub[1] = imgTrans.subscribe("/cam1", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
+	videoSub[2] = imgTrans.subscribe("/cam2", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
+	videoSub[3] = imgTrans.subscribe("/cam3", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
+
 }
 
 // Spin to wait until a message is received
@@ -103,13 +109,13 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 }
 
 
-void NavigationNode::receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg) {
+void NavigationNode::receiveBatteryMsg(const owr_messages::status::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received a message");
 	//ROS_INFO("voltage %f", msg->voltage);
-	battery = msg->voltage;
-	
+	signal = msg->signal;
+	battery = msg->battery;
 	gui->updateInfo(battery, signal, ultrasonic, NULL, target);
 }
 

@@ -24,7 +24,7 @@
 #define CAMERA_ROTATION_MID 90
 #define CAMERA_ROTATION_MAX 180
 #define CAMERA_ROTATION_MIN 0
-#define CAMERA_SCALE 2
+#define CAMERA_SCALE 1
 
 #define MAX_IN 1.0
 #define DIFF 0.25
@@ -62,6 +62,7 @@ BoardControl::BoardControl() {
     gyroPublisher = nh.advertise<geometry_msgs::Vector3>("gyro", 10);
     accPublisher = nh.advertise<geometry_msgs::Vector3>("acc", 10);
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
+    voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
     velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
@@ -108,8 +109,8 @@ void BoardControl::run() {
     int cbr = 0, cbt = 0;
     while (ros::ok()) {
         while(ros::ok()) {
-            cbr = cbr < 120 ? cbr + 5 : 0;
-            cbt = cbt < 70 ? cbt + 5 : 0;
+            //cbr = cbr < 120 ? cbr + 5 : 0;
+            //cbt = cbt < 70 ? cbt + 5 : 0;
             //armTop += armIncRate;
             //cap(&armTop, MOTOR_MIN, MOTOR_MAX);
             
@@ -125,33 +126,34 @@ void BoardControl::run() {
             cameraTopTilt += cameraTopTiltIncRate;
             cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
-            if (clawState == OPEN) {
+            if (rotState == OPEN) {
                 clawRotate += 5;
-            } else if (clawState == CLOSE) {
+            } else if (rotState == CLOSE) {
                 clawRotate-= 5;
             }
             cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);
             
-            if (clawGrip == OPEN) {
+            if (clawState  == OPEN) {
                 clawGrip += 5;
-            } else if (clawGrip == CLOSE) {
+            } else if (clawState  == CLOSE) {
                 clawGrip -=  5;
             }
             cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
-            cameraBottomTilt = cbt;
-            cameraBottomRotate = cbr; 
+            //cameraBottomTilt = cbt;
+            //cameraBottomRotate = cbr; 
             struct status s = steve->update(leftDrive, rightDrive,
                 armTop, armBottom, armRotate, clawRotScale(clawRotate),
                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
                 cameraRotScale(cameraBottomTilt), 
-                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
             if (!s.isConnected) break;
 
             publishGPS(s.gpsData);
             publishMag(s.magData);
             publishIMU(s.imuData);
             publishBattery(s.batteryVoltage);
+            //publishVoltmeter(s.voltmeter);
             printStatus(&s);
             //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
             ros::spinOnce();
@@ -174,7 +176,7 @@ void BoardControl::run() {
             armTop, armBottom, armRotate, clawRotScale(clawRotate),
             clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
             cameraRotScale(cameraBottomTilt), 
-            cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt)); 
+            cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
 
         publishGPS(s.gpsData);
         publishMag(s.magData);
@@ -190,13 +192,15 @@ void BoardControl::run() {
 
 void BoardControl::publishGPS(GPSData gps) {
     sensor_msgs::NavSatFix msg;
-    msg.longitude = ((float)gps.longitude)/GPS_FLOAT_OFFSET;
-    msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) * -1.0; // fix issue with -ve longitude
+    msg.longitude = (((float)gps.longitude)/GPS_FLOAT_OFFSET)* -1.0;
+    msg.latitude = (((float)gps.latitude)/GPS_FLOAT_OFFSET) ; // fix issue with -ve longitude
     msg.altitude = gps.altitude;
     
-    if (gps.fixValid) {
+    if (gps.fixValid && gps.numSatelites >= MIN_SATELITES) {
         msg.status.status = msg.status.STATUS_FIX;
+        ROS_DEBUG("Statelites %d", gps.numSatelites);
     } else {
+        ROS_ERROR("Invalid fix, w/ only %d satelites", gps.numSatelites);
         msg.status.status = msg.status.STATUS_NO_FIX;
     }
     msg.status.service = msg.status.SERVICE_GPS; //NOt sure this is right
@@ -218,6 +222,12 @@ void BoardControl::publishBattery(double batteryVoltage) {
     std_msgs::Float64 msg;
     msg.data = batteryVoltage;
     battVoltPublisher.publish(msg);
+}
+
+void BoardControl::publishVoltmeter(double voltage) {
+    std_msgs::Float64 msg;
+    msg.data = voltage;
+    voltmeterPublisher.publish(msg);
 }
 
 void BoardControl::publishIMU(IMUData imu) {
@@ -249,11 +259,11 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
 	// Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
     if (joy->buttons[BUTTON_A]) {
-        cameraBottomRotateIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-        cameraBottomTiltIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+        cameraBottomRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+        cameraBottomTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
     } else if (joy->buttons[BUTTON_B]) {
-        cameraTopRotateIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-        cameraTopTiltIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+        cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
+        cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
     } else {
         leftDrive = (joy->axes[STICK_L_UD]);
         rightDrive = -joy->axes[DRIVE_AXES_UD];
@@ -326,11 +336,11 @@ void BoardControl::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
     // This set of equations ensure the correct proportional powering of the wheels at varying levels of power and lr
 
     if(lr < 0){
-    	lDrive = power + (2 * lr * power);
+    	lDrive = power + (fabs(lr) * power);
     	rDrive = power;
     } else if (lr > 0){
     	lDrive = power;
-    	rDrive = power - (2 * lr * power);
+    	rDrive = power - (fabs(lr) * power);
     } else {
     	lDrive = power;
     	rDrive = power;
@@ -339,7 +349,7 @@ void BoardControl::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
     lDrive = power;
     rDrive = power;
     leftDrive = lDrive;
-    rightDrive = rDrive;
+    rightDrive = -rDrive;
     //leftDrive = (lDrive * 400) + MOTOR_MID;
     //rightDrive = (rDrive * 400) + MOTOR_MID;
     ROS_ERROR("%f,%f", leftDrive, rightDrive);

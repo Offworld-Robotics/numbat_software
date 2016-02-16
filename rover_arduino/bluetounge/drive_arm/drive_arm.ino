@@ -1,6 +1,6 @@
 // WORKING MANUAL INPUT CODE IN drive_arm_manual_input
 
-/*#include <Servo.h>
+#include <Servo.h>
 #define BAUD_RATE 9600
 #define PIN_TOP 13
 #define PIN_BOTTOM 12
@@ -20,14 +20,14 @@ Servo top, bottom;
 void setup() {
   //pinMode(servopin, OUTPUT);
   //Serial.begin(BUAD_RATE);
-  top.attach(PIN_TOP, MIN, MAX);
+  top.attach(PIN_TOP, 1000, 2000);
   //bottom.attach(PIN_BOTTOM, MIN, MAX);
   
   //default position
-  //top.writeMicroseconds(1500);
+  top.writeMicroseconds(1500);
   //bottom.writeMicroseconds(1500);
   //bottom.writeMicroseconds(2000);
-  Serial.begin(9600);
+  //Serial.begin(9600);
 }
 
 void loop() {
@@ -36,35 +36,8 @@ void loop() {
   //digitalWrite(servopin, LOW);
   //delay(20);
   
-  /*float topNum = Serial.parseFloat();
-  float voidNum = Serial.parseFloat();
-  Serial.println(Serial.parseFloat());
-  float bottomNum = Serial.parseFloat();
-  voidNum = Serial.parseFloat();
-  Serial.println(Serial.parseFloat());
-
-  if(topNum > MAX){
-    topNum = MAX;
-  }
-  if(topNum < MIN){
-    topNum = MIN;
-  }
-  if(bottomNum > MAX){
-    bottomNum = MAX;
-  }
-  if(bottomNum < MIN){
-    bottomNum = MIN;
-  }
-  
-
-  Serial.println(topNum);
-  Serial.println(bottomNum);
-  //topDrive = Serial.parseFloat();  
-  //bottomDrive = Serial.parseFloat();
-  
-  // higher value = more extension
-  bottom.writeMicroseconds(1500);
-  top.writeMicroseconds(topNum);
+  top.writeMicroseconds(1500);
+  //top.writeMicroseconds(topNum);
 
   //top.writeMicroseconds(topDrive);
   //bottom.writeMicroseconds(bottomDrive);
@@ -73,5 +46,5 @@ void loop() {
   //bottom.writeMicroseconds(bottomDrive);
   
   
-}*/
+}
 

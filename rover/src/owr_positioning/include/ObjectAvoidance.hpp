@@ -12,7 +12,8 @@
 #include <message_filters/subscriber.h>
 #include <laser_geometry/laser_geometry.h>
 #include <laser_filters/angular_bounds_filter.h>
-#define ANGLE_LIMIT 0.785398163
+#define ANGLE_LIMIT_L 0.20 
+#define ANGLE_LIMIT_R 0.30 //45
 
 using namespace std; 
 

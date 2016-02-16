@@ -24,36 +24,23 @@ SensorFusion::SensorFusion() {
     allThree = 0;
     subMag = node.subscribe("/mag", 5, &SensorFusion::receiveMag, this);
     
-    subAccel = node.subscribe("/acc", 5, &SensorFusion::receiveAccel, this);
-    subGyro = node.subscribe("/gyro", 5, &SensorFusion::receiveGyro, this);
+//    subAccel = node.subscribe("/acc", 5, &SensorFusion::receiveAccel, this);
+//    subGyro = node.subscribe("/gyro", 5, &SensorFusion::receiveGyro, this);
     pub = node.advertise<owr_messages::heading>("/owr/heading",10);
     
 }
 
-void 
-SensorFusion::receiveMag(const geometry_msgs::Vector3::ConstPtr& _mag) {
-    allThree |= 0x1;
+void SensorFusion::receiveMag(const geometry_msgs::Vector3::ConstPtr& _mag) {
+    lastHeading = heading;
+//    allThree |= 0x1;
     mag.x = _mag->x;
     mag.y = _mag->y;
     mag.z = _mag->z;
-    ROS_INFO("%f %f %f",mag.x,mag.y,mag.z);
-    int16_t tempx = mag.x;
-    int8_t highx = tempx >>8;
-    int8_t lowx = tempx;
-    ROS_INFO("X: %x %x", highx, lowx);
-    int16_t tempy = mag.y;
-    int8_t highy = tempy >>8;
-    int8_t lowy = tempy;
-    ROS_INFO("Y: %x %x", highy, lowy);
-    int16_t tempz = mag.z;
-    int8_t highz = tempz >>8;
-    int8_t lowz = tempz;
-    ROS_INFO("Z: %x %x", highz, lowz);
-    if(allThree == 0x7) fuseData();
+ //   if(allThree == 0x7) fuseData();
+    fuseData();
 }
 
-void 
-SensorFusion::receiveAccel(const geometry_msgs::Vector3::ConstPtr& _acc) {
+void SensorFusion::receiveAccel(const geometry_msgs::Vector3::ConstPtr& _acc) {
     allThree |= 0x2;
     acc.x = _acc->x;
     acc.y = _acc->y;
@@ -70,9 +57,8 @@ SensorFusion::receiveGyro(const geometry_msgs::Vector3::ConstPtr& _gyro) {
     if(allThree == 0x7) fuseData();
 }
 
-void
-SensorFusion::fuseData() {
-    allThree = 0;
+void SensorFusion::fuseData() {
+ /*   allThree = 0;
     // accel and mag
     // normalize data
     vector_normalize(mag);
@@ -95,25 +81,25 @@ SensorFusion::fuseData() {
     pitch = radToDeg(atan2(dcm[2].y, dcm[2].z));
     yaw = radToDeg(atan2(dcm[1].x,dcm[0].x));
     //heading
-
-    heading = radToDeg(atan2(mag.x,mag.y)) - SYDNEY;
-    
+*/
+    vector_normalize(mag); 
+    heading = radToDeg(atan2(mag.x,mag.y)) + POLAND;
+    if ( heading < 0 ) heading += 360; 
     //publish stuff
     owr_messages::heading msg2;
-    msg2.heading = heading;
+    msg2.heading = (heading + lastHeading)/2;
     ROS_INFO("%f", heading);
     pub.publish(msg2);
 
 }
 
-double
-SensorFusion::vector_mod(geometry_msgs::Vector3 v) {
+double SensorFusion::vector_mod(geometry_msgs::Vector3 v) {
     return sqrt( pow(v.x,2) + pow(v.y,2) + pow(v.z,2) );
 }
 
 void 
-SensorFusion::vector_normalize(geometry_msgs::Vector3 v) {
-    double length = vector_mod (v);
+SensorFusion::vector_normalize(geometry_msgs::Vector3& v) {
+    double length = vector_mod (v); 
     v.x /= length;
     v.y /= length;
     v.z /= length;

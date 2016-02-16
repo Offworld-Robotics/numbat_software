@@ -12,12 +12,16 @@
 #include "FineControlGUI.h"
 #include "ListNode.h"
 #include <fstream>
+// Include for the image_trasport pkg which will allow us to use compressed
+// images through magic ros stuff :)
+#include <image_transport/image_transport.h>
 
 FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	ROS_INFO("Starting FineControl Node");
 	gui = newgui;
 	//a nodehandler is used to communiate with the rest of ros
 	ros::NodeHandle n("~");
+    image_transport::ImageTransport imgTrans(n);
 	
 	//Initialise the feeds array
 	for(int i = 0; i < TOTAL_FEEDS; i++)
@@ -42,10 +46,10 @@ FineControlNode::FineControlNode(FineControlGUI *newgui) {
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// created yet, will wait til it has w/o doing anything
-	ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-	videoSub[0] = n.subscribe("/cam0", 1000, &FineControlNode::receiveVideoMsg0, this, transportHints);
-	videoSub[1] = n.subscribe("/cam1", 1000, &FineControlNode::receiveVideoMsg1, this, transportHints);
-	videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this, transportHints);
+	videoSub[0] = imgTrans.subscribe("/cam0", 1, &FineControlNode::receiveVideoMsg0, this, image_transport::TransportHints("compressed"));
+	videoSub[1] = imgTrans.subscribe("/cam1", 1, &FineControlNode::receiveVideoMsg1, this, image_transport::TransportHints("compressed"));
+	videoSub[2] = imgTrans.subscribe("/cam2", 1, &FineControlNode::receiveVideoMsg2, this, image_transport::TransportHints("compressed"));
+	videoSub[3] = imgTrans.subscribe("/cam3", 1, &FineControlNode::receiveVideoMsg3, this, image_transport::TransportHints("compressed"));
 	//videoSub[2] = n.subscribe("/cam2", 1000, &FineControlNode::receiveVideoMsg2, this);
 	//videoSub[3] = n.subscribe("/cam3", 1000, &FineControlNode::receiveVideoMsg3, this);
 }
@@ -123,4 +127,12 @@ void FineControlNode::receiveVideoMsg2(const sensor_msgs::Image::ConstPtr& msg) 
 	//ROS_INFO("received video frame");
 	
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 2);
+}
+
+void FineControlNode::receiveVideoMsg3(const sensor_msgs::Image::ConstPtr& msg) {
+	assert(msg);
+	
+	//ROS_INFO("received video frame");
+	
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, 3);
 }
