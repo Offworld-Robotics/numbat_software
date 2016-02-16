@@ -7,9 +7,7 @@
 #ifndef JOINT_VELOCITY_CONTROLLER_H
 #define JOINT_VELOCITY_CONTROLLER_H
 
-#define SECONDS_IN_MINUTE 60
-#define FLOATING_PT_ERROR 0.001
-#define FLOAT_EQL(x,y) ((fabs(x - y)) > FLOATING_PT_ERROR)
+#include "JointController.hpp
 
 
 class JointVelocityController {
