@@ -15,7 +15,7 @@
 #define DO_VEL_ADJUST
 
 
-JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int maxRPMIn, double wheelRadiusIn) {
+JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int maxRPMIn, double wheelRadiusIn, char * topic, ros::NodeHandle nh) : JointController(topic,nh) {
     wheelRadius = wheelRadiusIn;
     maxPWM = maxPWMIn;
     minPWM = minPWMIn;

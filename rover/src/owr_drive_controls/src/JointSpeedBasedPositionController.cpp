@@ -15,7 +15,7 @@
 //if this is not defined do it just based on pwm
 #define DO_VEL_ADJUST
 
-static inline caclShortestCircDelta(double a, double b) {
+static inline double calcShortestCircDelta(double a, double b) {
     double ab = (a - b);
     if (ab > M_PI && fabs(ab) < M_2_PI) {
         ab = (M_2_PI - ab);
@@ -42,8 +42,8 @@ static inline caclShortestCircDelta(double a, double b) {
     return result;
 }
 
-JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radius, double * gearRatio, int nGears,int minPWM, int maxPWM, int maxRPM) {
-    wheelRadius = wheelRadiusIn;
+JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radiusIn, double * gearRatioIn, int nGearsIn,int minPWMIn, int maxPWMIn, int maxRPMIn, char * topic, ros::NodeHandle nh) : JointController(topic,nh) {
+    radius = radiusIn;
     maxPWM = maxPWMIn;
     minPWM = minPWMIn;
     maxRPM = maxRPMIn;
@@ -53,8 +53,12 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
     
     
     //inital values
-    lastAimPosition = std::numeric_limits< double >::infinity();
-    lastKnownPosition = std::numeric_limits< double >::infinity();
+    lastAimPosition     = std::numeric_limits< double >::infinity();
+    lastKnownPosition   = std::numeric_limits< double >::infinity();
+    lastAngularVelocity = std::numeric_limits< double >::infinity();
+    
+    gearRatio = gearRatioIn;
+    nGears = nGearsIn;
 }
 
 /*
@@ -70,7 +74,7 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
  */
 int JointSpeedBasedPositionController::posToPWM(double futurePos, double currentPos, double updateFrequency) {
     //check for invalid values
-    if(fabs(futurePos) > M_PI_2) {
+    if( std::fabs(futurePos) > M_PI_2) {
         ROS_ERROR("angle %f radians is not a valid position. Positions should be btween %f and %f",futurePos,M_PI_2,-M_PI_2);
         return -1;
     }
@@ -86,11 +90,11 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     
     //Are we going in the right direction
-    if(signbit(radialDistToTarget) == signbit(currentAngVel)) { //compares the sign of the two
+    if(std::signbit(radialDistToTarget) == std::signbit(currentAngVel)) { //compares the sign of the two
         if(targetAngularVel > 0) {
-            targetAngularVel = max(currentAngVel+VEL_INC,maxVelocity);
+            targetAngularVel = std::max(currentAngVel+VEL_INC,maxVelocity);
         } else if (targetAngularVel < 0) {
-            targetAngularVel = min(currentAngVel-VEL_INC,-maxVelocity);
+            targetAngularVel = std::min(currentAngVel-VEL_INC,-maxVelocity);
         }
     } else {
         //this will reverse the sign if it needs to be negative
@@ -102,13 +106,14 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     }
     
     //Step 3: will we pass the point this turn
-    double nextPosGuess = (targetAngularVel * updateFrequency) % M_2_PI;
-    if(fabs(calcShortestCircDelta(nextPosGuess, currentPos)) >= fabs(calcShortestCircDelta(futurePos, currentPos))) {
+    double nextPosGuess = std::fmod((targetAngularVel * updateFrequency), M_2_PI);
+    if(std::fabs(calcShortestCircDelta(nextPosGuess, currentPos)) >= 
+        std::fabs(calcShortestCircDelta(futurePos, currentPos))) {
         //decrease to a value that will get us just before it
         targetAngularVel = (((futurePos - SMALL_INC) - currentPos) / deltaT);
     }
     nextPosGuess = (targetAngularVel * updateFrequency);
-    if(fabs(nextPosGuess) > M_PI_2 ) {
+    if(std::fabs(nextPosGuess) > M_PI_2 ) {
         
         //TODO: this is a danger
     }
@@ -132,8 +137,8 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     #ifdef DO_VEL_ADJUST
         if(lastAngularVelocity !=  std::numeric_limits< double >::infinity() &&
-            !FLOAT_EQL(currentAngularVel,lastTargetVelocity)) {
-            int error = pwmVelRatio * (currentAngularVel - lastTargetVelocity) * gearMultiplier;
+            !FLOAT_EQL(lastAngularVelocity,lastTargetVelocity)) {
+            int error = pwmVelRatio * (lastAngularVelocity - lastTargetVelocity) * gearMultiplier;
             pwm += error;
         }
     #endif

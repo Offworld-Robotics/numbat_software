@@ -7,9 +7,9 @@
 
 #include "JointVelocityController.hpp"
 
-class JointSpeedBasedPositionController {
+class JointSpeedBasedPositionController : public JointController {
     public:
-        JointSpeedBasedPositionController(double radius, double * gearRatio, int nGears,int minPWM, int maxPWM, int maxRPM);
+        JointSpeedBasedPositionController(double radius, double * gearRatio, int nGears,int minPWM, int maxPWM, int maxRPM, char * topic, ros::NodeHandle nh);
         int posToPWM(double futurePos, double currentPos, double updateFrequency);
     private:
         double radius;
@@ -22,10 +22,11 @@ class JointSpeedBasedPositionController {
         double deltaPWM;
         
         double maxVelocity;
-        double deltaVelocity;
+        double velocityRange;
         double lastTargetVelocity;
+        double lastAngularVelocity;
         
         double lastAimPosition, lastKnownPosition;
         int lastPWM;
     
-}
+};

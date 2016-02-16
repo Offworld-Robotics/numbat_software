@@ -8,7 +8,7 @@
 #ifndef JOINT_CONTROLLER_H
 #define JOINT_CONTROLLER_H
 
-#include <string>
+
 
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
@@ -19,13 +19,13 @@
 
 class JointController { 
     public:
-        JointController(char * topic, ros::NodeHadle nh);
-        void callback(const geometry_msgs::Float64::ConstPtr& requestedValue);
+        JointController(char * topic, ros::NodeHandle nh);
+        void callback(const std_msgs::Float64::ConstPtr& requestedValue);
     protected:
         double requestedValue;
         ros::Subscriber sub;
     private:
-        NodeHandle nh;
-}
+        ros::NodeHandle nh;
+};
 
 #endif

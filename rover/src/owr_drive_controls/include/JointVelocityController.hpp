@@ -7,13 +7,15 @@
 #ifndef JOINT_VELOCITY_CONTROLLER_H
 #define JOINT_VELOCITY_CONTROLLER_H
 
-#include "JointController.hpp
+#include <std_msgs/Float64.h>
+
+#include "JointController.hpp"
 
 
-class JointVelocityController {
+class JointVelocityController : public JointController {
     
     public:
-        JointVelocityController(int minPWM, int maxPWM, int maxRPM, double wheelRadius);
+        JointVelocityController(int minPWM, int maxPWM, int maxRPM, double wheelRadius, char * topic, ros::NodeHandle nh);
         int velToPWM(double targetVel, double currentVel, double currentAngel);
                                 
     private:
@@ -22,11 +24,11 @@ class JointVelocityController {
         int maxRPM;
         int currentPWM;
         double deltaPWM;
-        double deltaVelocity;
+        double velocityRange;
         
         double lastAngularVelocity;
         int lastPWM;
     
-}
+};
 
 #endif

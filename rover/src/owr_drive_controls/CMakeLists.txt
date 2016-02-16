@@ -183,6 +183,9 @@ target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
-
+catkin_add_gtest(testJointController test/testJointVelocityController.cpp src/JointController.cpp src/JointVelocityController.cpp)
+target_link_libraries(testJointController ${catkin_LIBRARIES})
+catkin_add_gtest(testJointPosController test/testJointSpeedBasedPositionController.cpp src/JointController.cpp src/JointSpeedBasedPositionController.cpp)
+target_link_libraries(testJointPosController ${catkin_LIBRARIES})
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
