@@ -275,8 +275,8 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     //Publish all joints to rviz, currently a placeholder for joints
     publish_joint("a", 0, 0, 0, LEFT_MOT_JOINT);
     publish_joint("b", 0, 0, 0, RIGHT_MOT_JOINT);
-    publish_joint("c", 0, 0, 0, ARM_TOP_JOINT);
-    publish_joint("d", 0, 0, 0, ARM_BOT_JOINT);
+    publish_joint("arm_top_actuator", 0, 0, mesg.armTop, ARM_TOP_JOINT);
+    publish_joint("arm_bottom_actuator", 0, 0, mesg.armBottom, ARM_BOT_JOINT);
     publish_joint("e", 0, 0, 0, ARM_ROT_JOINT);
     publish_joint("f", 0, 0, 0, CLAW_ROT_JOINT);
     publish_joint("g", 0, 0, 0, CLAW_GRIP_JOINT);

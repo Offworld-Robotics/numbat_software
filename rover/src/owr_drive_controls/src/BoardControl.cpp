@@ -299,7 +299,7 @@ void BoardControl::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     //float leftDrive  = 1.0f;
     //float rightDrive = 1.0f;
-    armTop = joy->axes[STICK_CH_LR];
+    armTop =(top / MAX_IN) * 500 + MOTOR_MID;
  
     //armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
         //armIncRate = top * 25;
