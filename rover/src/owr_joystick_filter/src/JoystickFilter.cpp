@@ -58,8 +58,8 @@ JoystickFilter::JoystickFilter(const std::string topic) {
 
 
     //publisher =  node.advertise<owr_messages::position>(topic,10,true);
-    publisher = node.advertise<sensor_msgs::Joy>("/cmd_vel",2,true);
-    velPublisher = node.advertise<geometry_msgs::Twist>(topic,1,true);
+    publisher = node.advertise<sensor_msgs::Joy>(topic,2,true);
+    velPublisher = node.advertise<geometry_msgs::Twist>("/cmd_vel",1,true);
     
     //msgsOut.axes = std::vector<float>(20);
     msgsOut.axes.resize(20);
