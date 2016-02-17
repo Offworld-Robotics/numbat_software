@@ -17,10 +17,18 @@
 #define FLOATING_PT_ERROR 0.001
 #define FLOAT_EQL(x,y) ((fabs(x - y)) > FLOATING_PT_ERROR)
 
+
+typedef struct _jointInfo {
+    int pwm;
+    double effort, velocity, position;
+    std::string jointName;
+} jointInfo;
+
 class JointController { 
     public:
         JointController(char * topic, ros::NodeHandle nh);
         void callback(const std_msgs::Float64::ConstPtr& requestedValue);
+        virtual jointInfo extrapolateStatus(ros::Time sessionStart, long ros::Time extrapolationTime) = 0;
     protected:
         double requestedValue;
         ros::Subscriber sub;

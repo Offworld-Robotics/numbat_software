@@ -70,16 +70,16 @@ struct status {
     MagData magData;
     IMUData imuData;
 };
-	
+    
 class Bluetongue {
-	private:
-		bool comm(bool forBattery, void *message, int message_len, void *resp, 
-				int resp_len);
+    private:
+        bool comm(bool forBattery, void *message, int message_len, void *resp, 
+                int resp_len);
         bool connect();
         void publish_joint(std::string name, double position, double velocity, double effort, int jointNo);
         
         bool isConnected;
-		int port_fd;
+        int port_fd;
         std::string bluetongue_port;
         fd_set uart_set;
         struct timeval timeout;
@@ -88,11 +88,11 @@ class Bluetongue {
         double testLidar;
         bool testDirection;
         sensor_msgs::JointState jointMsg;
-	
-	public:
-		Bluetongue(const char* port);
-		~Bluetongue();
-		struct status update(double leftMotor, double rightMotor, 
+    
+    public:
+        Bluetongue(const char* port);
+        ~Bluetongue();
+        struct status update(double leftMotor, double rightMotor, 
                 int armTop, int armBottom, double armRotate, 
                 int clawRotate, int clawGrip, int cameraBottomRotate,
                 int cameraBottomTilt, int cameraTopRotate, 

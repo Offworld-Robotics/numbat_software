@@ -317,10 +317,5 @@ void Bluetongue::tf_lidar(int16_t pwm){
     publish_joint("laser_tilt_joint", lidarRads, lidarVel, 0, LIDAR_JOINT);
 }
 
-void Bluetongue::publish_joint(std::string name, double position, double velocity, double effort, int jointNo){
-    jointMsg.name[jointNo] = name;
-    jointMsg.position[jointNo] = position;
-    jointMsg.velocity[jointNo] = velocity;
-    jointMsg.effort[jointNo] = effort;
-}
+
     
