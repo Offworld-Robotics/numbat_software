@@ -15,8 +15,9 @@
 class JointVelocityController : public JointController {
     
     public:
-        JointVelocityController(int minPWM, int maxPWM, int maxRPM, double wheelRadius, char * topic, ros::NodeHandle nh);
+        JointVelocityController(int minPWM, int maxPWM, int maxRPM, double wheelRadius, char * topic, ros::NodeHandle nh, std::string name);
         int velToPWM(double targetVel, double currentVel, double currentAngel);
+        virtual jointInfo extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime);
                                 
     private:
         double wheelRadius;

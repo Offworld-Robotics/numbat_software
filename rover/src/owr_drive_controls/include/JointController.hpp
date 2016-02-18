@@ -26,9 +26,10 @@ typedef struct _jointInfo {
 
 class JointController { 
     public:
-        JointController(char * topic, ros::NodeHandle nh);
+        JointController(char * topic, ros::NodeHandle nh, std::string name);
         void callback(const std_msgs::Float64::ConstPtr& requestedValue);
-        virtual jointInfo extrapolateStatus(ros::Time sessionStart, long ros::Time extrapolationTime) = 0;
+        virtual jointInfo extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime) = 0;
+        std::string name;
     protected:
         double requestedValue;
         ros::Subscriber sub;

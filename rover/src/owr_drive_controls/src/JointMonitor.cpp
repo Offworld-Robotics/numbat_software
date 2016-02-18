@@ -10,10 +10,12 @@
 
 #include "JointsMonitor.hpp"
 
-JointsMonitor::JointsMonitor(ros::NodeHandler nodeHandle) {
+JointsMonitor::JointsMonitor(ros::NodeHandle nodeHandle) {
     nh = nodeHandle;
     statesPub =  nh.advertise<sensor_msgs::JointState>("joint_states", 10);
     debugPub = nh.advertise<sensor_msgs::JointState>("/owr/jointsDebug", 1); //TODO: create a message type for this
+    //start the message sequence at zero
+    currentStateMessage.header.seq = 0;
 }
 
 void JointsMonitor::beginCycle(ros::Time startTime, long updateFrequencyNsecs, long estimateIntervalNsecs, int nEstimates) {
@@ -24,18 +26,25 @@ void JointsMonitor::beginCycle(ros::Time startTime, long updateFrequencyNsecs, l
 }
 
 void JointsMonitor::endCycle(ros::Time endTime) {
-    endCycle = endTime;
+    cycleEnd = endTime;
     
     ros::Time estimateTime = endTime;
-    int i = 0;
+    int i,j;
+    currentStateMessage.velocity.resize(joints.size());
+    currentStateMessage.position.resize(joints.size());
+    currentStateMessage.effort.resize(joints.size());
+    currentStateMessage.name.resize(joints.size());
     for(i =0; i < numEstimates; i++, estimateTime+=updateInterval) {
-        for(std::vector<JointController>::iterator it = joints.begin(); it != joints.end(); ++it) {
-            jointInfo info = it->extrapolateStatus(cycleStart, estimateTime);
-            
-            //TODO: add to message
+        currentStateMessage.header.stamp = estimateTime;
+        currentStateMessage.header.seq +=1;
+        j =0;
+        for(std::vector<JointController*>::iterator it = joints.begin(); it != joints.end(); ++it, j++) {
+            jointInfo info = (*it)->extrapolateStatus(cycleStart, estimateTime);
+            publish_joint(info.jointName, info.position, info.velocity, info.effort, j);
+
+            //TODO: add to debug message
         }
-        
-        //TODO: publish
+        statesPub.publish(currentStateMessage);
     }
     
     

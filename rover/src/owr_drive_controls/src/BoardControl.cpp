@@ -33,6 +33,19 @@
 
 #define RECONNECT_DELAY 1000
 
+#define WHEEL_MOTOR_MAX_PWM 2000
+#define WHEEL_MOTOR_MIN_PWM 1000
+#define WHEEL_MOTOR_RPM 24000 //TODO: confirm this
+#define WHEEL_RADIUS 1.0 //TODO: this is made up!
+
+//this one has to be const because array
+const double SWERVE_GEARS[] = {0.1, 0.2}; //TODO: put in not stupid values here
+#define SWERVE_N_GEARS 2
+#define SWERVE_MOTOR_MAX_PWM 2000
+#define SWERVE_MOTOR_MIN_PWM 1000
+#define SWERVE_MOTOR_RPM 24 //TODO: check this
+#define SWERVE_RADIUS 0.01 //TODO: get this
+
 // Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
 #define SENSITIVITY 1
 
@@ -46,7 +59,86 @@ int main(int argc, char ** argv) {
     BoardControl.run();
 }
 
-BoardControl::BoardControl() {
+BoardControl::BoardControl() : 
+    jMonitor(nh),
+    frontLeftWheel(
+        WHEEL_MOTOR_MIN_PWM,
+        WHEEL_MOTOR_MAX_PWM,
+        WHEEL_MOTOR_RPM,
+        WHEEL_RADIUS,
+        "/front_left_wheel_axel_controller/command",
+        nh,
+        "front_left_wheel_axel"
+    ),
+    frontRightWheel(
+        WHEEL_MOTOR_MIN_PWM,
+        WHEEL_MOTOR_MAX_PWM,
+        WHEEL_MOTOR_RPM,
+        WHEEL_RADIUS,
+        "/front_right_wheel_axel_controller/command",
+        nh,
+        "front_right_wheel_axel"
+    ), backLeftWheel(
+        WHEEL_MOTOR_MIN_PWM,
+        WHEEL_MOTOR_MAX_PWM,
+        WHEEL_MOTOR_RPM,
+        WHEEL_RADIUS,
+        "/back_left_wheel_axel_controller/command",
+        nh,
+        "back_left_wheel_axel"
+    ),
+    backRightWheel(
+        WHEEL_MOTOR_MIN_PWM,
+        WHEEL_MOTOR_MAX_PWM,
+        WHEEL_MOTOR_RPM,
+        WHEEL_RADIUS,
+        "/back_right_wheel_axel_controller/command",
+        nh,
+        "back_right_wheel_axel"
+    ),
+    frontLeftSwerve(
+        SWERVE_RADIUS,
+        SWERVE_GEARS,
+        SWERVE_N_GEARS,
+        SWERVE_MOTOR_MIN_PWM,
+        SWERVE_MOTOR_MAX_PWM,
+        SWERVE_MOTOR_RPM,
+        "/front_left_wheel_axel_controller/command",
+        nh,
+        "front_left_wheel_axel"
+    ),
+    frontRightSwerve(
+       SWERVE_RADIUS,
+        SWERVE_GEARS,
+        SWERVE_N_GEARS,
+        SWERVE_MOTOR_MIN_PWM,
+        SWERVE_MOTOR_MAX_PWM,
+        SWERVE_MOTOR_RPM,
+        "/front_right_swerve_controller/command",
+        nh,
+        "front_right_swerve"
+    ), backLeftSwerve(
+        SWERVE_RADIUS,
+        SWERVE_GEARS,
+        SWERVE_N_GEARS,
+        SWERVE_MOTOR_MIN_PWM,
+        SWERVE_MOTOR_MAX_PWM,
+        SWERVE_MOTOR_RPM,
+        "/back_left_swerve_controller/command",
+        nh,
+        "back_left_swerve"
+    ),
+    backRightSwerve(
+        SWERVE_RADIUS,
+        SWERVE_GEARS,
+        SWERVE_N_GEARS,
+        SWERVE_MOTOR_MIN_PWM,
+        SWERVE_MOTOR_MAX_PWM,
+        SWERVE_MOTOR_RPM,
+        "/back_right_swerve_controller/command",
+        nh,
+        "back_right_swerve"
+    ) {
 
     //init button sates
     cam0Button = 0;
@@ -86,6 +178,9 @@ BoardControl::BoardControl() {
     gpsSequenceNum = 0;
     rotState = STOP;
     clawState = STOP;
+    
+    
+
 }
 
 int clawRotScale(int raw) {

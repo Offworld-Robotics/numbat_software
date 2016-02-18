@@ -8,10 +8,11 @@
 #include "JointController.hpp"
 #include <limits>
 
-JointController::JointController(char * topic, ros::NodeHandle nh) {
+JointController::JointController(char * topic, ros::NodeHandle nh, std::string jointName) {
      sub = nh.subscribe<std_msgs::Float64>("/owr/joysticks",2, &JointController::callback, this);
      this->nh = nh;
      requestedValue = std::numeric_limits<double >::quiet_NaN();
+     name = jointName;
 }
 
 void JointController::callback(const std_msgs::Float64::ConstPtr& msg) {

@@ -15,7 +15,7 @@
 #define DO_VEL_ADJUST
 
 
-JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int maxRPMIn, double wheelRadiusIn, char * topic, ros::NodeHandle nh) : JointController(topic,nh) {
+JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int maxRPMIn, double wheelRadiusIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
     wheelRadius = wheelRadiusIn;
     maxPWM = maxPWMIn;
     minPWM = minPWMIn;
@@ -54,8 +54,20 @@ int JointVelocityController::velToPWM(double targetVel, double currentVel, doubl
             pwm += error;
         }
     #endif
+    lastAngularVelocity = targetAngularVelocity;
+    lastPWM = lastPWM;
     
     return pwm;
+}
+
+
+jointInfo JointVelocityController::extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime) {
+    jointInfo info;
+    info.position = 0.0; //TODO: estimate this
+    info.velocity = lastAngularVelocity; //TODO: extrapolate based on delta
+    info.pwm = lastPWM;
+    info.jointName = name;
+    return info;
 }
 
 

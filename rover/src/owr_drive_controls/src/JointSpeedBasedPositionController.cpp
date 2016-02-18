@@ -42,7 +42,7 @@ static inline double calcShortestCircDelta(double a, double b) {
     return result;
 }
 
-JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radiusIn, double * gearRatioIn, int nGearsIn,int minPWMIn, int maxPWMIn, int maxRPMIn, char * topic, ros::NodeHandle nh) : JointController(topic,nh) {
+JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radiusIn, const double * gearRatioIn, int nGearsIn,int minPWMIn, int maxPWMIn, int maxRPMIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
     radius = radiusIn;
     maxPWM = maxPWMIn;
     minPWM = minPWMIn;
@@ -143,6 +143,24 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
         }
     #endif
     
+    lastPWM = pwm;
+    lastKnownPosition = currentPos;
+    lastAimPosition = futurePos;
+    lastAngularVelocity = currentAngVel;
+    lastDeltaT = deltaT;
+    
     return pwm;
+}
+
+jointInfo JointSpeedBasedPositionController::extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime) {
+    ros::Duration dif = extrapolationTime - sessionStart;
+    double aimVel = calcShortestCircDelta(lastKnownPosition, lastAimPosition)/lastDeltaT; //NOTE: as we are accelerating/deacclerating this is probably wrong
+    
+    jointInfo info;
+    info.position = fmod(aimVel * dif.toSec() + lastKnownPosition, M_2_PI);
+    info.velocity = aimVel; //TODO: extrapolate based on delta
+    info.pwm = lastPWM;
+    info.jointName = name;
+    return info;
 }
     

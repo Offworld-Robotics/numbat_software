@@ -11,7 +11,12 @@
 #include <owr_messages/board.h>
 #include <termios.h>
 #include <stdio.h>
+
 #include "Bluetongue.h"
+
+#include "JointsMonitor.hpp"
+#include "JointController.hpp"
+#include "JointSpeedBasedPositionController.hpp"
 
 using namespace std; 
 
@@ -41,7 +46,7 @@ class BoardControl {
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
 
-	    ros::Subscriber velSubscriber;
+        ros::Subscriber velSubscriber;
         ros::Publisher gpsPublisher;
         ros::Publisher magPublisher;
         ros::Publisher gyroPublisher;
@@ -76,6 +81,13 @@ class BoardControl {
         
         //serial i0
         FILE * fd;
+        
+        //new joints stuff
+        JointsMonitor jMonitor;
+        JointVelocityController frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel;
+        JointSpeedBasedPositionController frontLeftSwerve, frontRightSwerve, backLeftSwerve, backRightSwerve;
+        //TODO: add lidar, actuators here.
+        
 };
 
 #endif

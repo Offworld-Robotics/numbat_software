@@ -107,27 +107,12 @@ include_directories(
 
 ## Declare a cpp executable
 
-add_executable(owr_drive_controls_node src/joyConverter.cpp)
-target_link_libraries(owr_drive_controls_node ${catkin_LIBRARIES})
 
-add_executable(owr_drive_arduino src/arduinoJoy.cpp)
-target_link_libraries(owr_drive_arduino ${catkin_LIBRARIES})
-
-add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp)
+add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp src/JointMonitor.cpp src/JointVelocityController.cpp src/JointSpeedBasedPositionController.cpp src/JointController.cpp)
 target_link_libraries(owr_drive_board ${catkin_LIBRARIES})
 
-add_executable(owr_drive_arm_pos src/clawControl.cpp)
-target_link_libraries(owr_drive_arm_pos ${catkin_LIBRARIES})
-
-add_executable(owr_drive_arm_inc src/armControlIncremental.cpp)
-target_link_libraries(owr_drive_arm_inc ${catkin_LIBRARIES})
-
-add_executable(owr_arduino_mag_node src/ArduinoMagControl.cpp)
-add_dependencies(owr_arduino_mag_node owr_messages_gencpp)
-target_link_libraries(owr_arduino_mag_node ${catkin_LIBRARIES})
-
 add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp)
-add_dependencies(cmd_vel_2_joints owr_messages_gencpp)
+add_dependencies(cmd_vel_2_joints owr_messages)
 target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable/library

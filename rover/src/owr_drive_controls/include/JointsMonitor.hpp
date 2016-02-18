@@ -18,7 +18,7 @@
 
 class JointsMonitor {
     public:
-        JointsMonitor(ros::NodeHandler nodeHandle);
+        JointsMonitor(ros::NodeHandle nodeHandle);
         
         /**
          * functions to triger the start  of the handler
@@ -38,7 +38,7 @@ class JointsMonitor {
         void endCycle(ros::Time endTime);
     private:
         //stores the joint controllers we need to poll for joint states
-        std::vector<JointController> joints;
+        std::vector<JointController*> joints;
         
         //stores the start and end of the most recent cycle
         ros::Time cycleStart, cycleEnd;
