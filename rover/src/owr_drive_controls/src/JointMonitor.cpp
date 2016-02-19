@@ -49,6 +49,10 @@ void JointsMonitor::endCycle(ros::Time endTime) {
     
     
 }
+
+void JointsMonitor::addJoint(JointController * jc) {
+    joints.push_back(jc);
+}
     
     
 void JointsMonitor::publish_joint(std::string name, double position, double velocity, double effort, int jointNo){

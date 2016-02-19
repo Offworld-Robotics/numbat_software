@@ -36,6 +36,11 @@ class JointsMonitor {
          *      endTime - the time the update cycle is considered to end at (the time the instructions are written to the board)
          */
         void endCycle(ros::Time endTime);
+        
+        /**
+         * Adds a joint to the monitor
+         */
+        void addJoint(JointController* joint);
     private:
         //stores the joint controllers we need to poll for joint states
         std::vector<JointController*> joints;

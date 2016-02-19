@@ -180,7 +180,16 @@ BoardControl::BoardControl() :
     clawState = STOP;
     
     
-
+    //swerve setup
+    jMonitor.addJoint(&frontLeftWheel);
+    jMonitor.addJoint(&frontRightWheel);
+    jMonitor.addJoint(&backLeftWheel);
+    jMonitor.addJoint(&backRightWheel);
+    jMonitor.addJoint(&frontLeftSwerve);
+    jMonitor.addJoint(&frontRightSwerve);
+    jMonitor.addJoint(&backLeftSwerve);
+    jMonitor.addJoint(&backRightSwerve);
+    
 }
 
 int clawRotScale(int raw) {
@@ -196,6 +205,12 @@ void cap(int *a, int low, int high) {
     *a = *a > high ? high : *a;
 }
 
+#define UPDATE_RATE 5 //Hz
+#define SECONDS_2_NS 1000000000
+#define UPDATE_RATE_NS ((1/UPDATE_RATE)*SECONDS_2_NS)
+#define ESTIMATE_INTERVAL_NS ((1/30)*SECONDS_2_NS) //30Hz
+#define N_UPDATES 3
+
 void BoardControl::run() {
     std::string board;
     nh.param<std::string>("board_tty", board, TTY);
@@ -203,10 +218,14 @@ void BoardControl::run() {
     Bluetongue* steve = new Bluetongue(board.c_str());
     struct status s;
     s.isConnected = true;
-    ros::Rate r(5);
+    ros::Rate r(UPDATE_RATE);
     int cbr = 0, cbt = 0;
+    
+    //so the first time dosen't fail
+    jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS,0);
     while (ros::ok()) {
         while(ros::ok()) {
+            
             //cbr = cbr < 120 ? cbr + 5 : 0;
             //cbt = cbt < 70 ? cbt + 5 : 0;
             armTop += armIncRate;
@@ -239,12 +258,14 @@ void BoardControl::run() {
             cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
             //cameraBottomTilt = cbt;
-            //cameraBottomRotate = cbr; 
+            //cameraBottomRotate = cbr;
+            jMonitor.endCycle(ros::Time::now());
             struct status s = steve->update(leftDrive, rightDrive,
                 armTop, armBottom, armRotate, clawRotScale(clawRotate),
                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
                 cameraRotScale(cameraBottomTilt), 
                 cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
+            jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS, N_UPDATES);
             owr_messages::board statusMsg;
             statusMsg.leftDrive = leftDrive;
             statusMsg.rightDrive = rightDrive;
@@ -260,6 +281,7 @@ void BoardControl::run() {
             //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
             ros::spinOnce();
             r.sleep();
+            
         }
         ROS_ERROR("Lost usb connection to Bluetongue");
         ROS_ERROR("Trying to reconnect every %d ms", RECONNECT_DELAY);
