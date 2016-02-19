@@ -92,7 +92,8 @@ class Bluetongue {
     public:
         Bluetongue(const char* port);
         ~Bluetongue();
-        struct status update(double leftMotor, double rightMotor, 
+        struct status update(double leftFMotor, double rightFMotor, 
+                double leftBMotor, double rightBMotor, double leftFSwerve, double rightFSwerve,
                 int armTop, int armBottom, double armRotate, 
                 int clawRotate, int clawGrip, int cameraBottomRotate,
                 int cameraBottomTilt, int cameraTopRotate, 

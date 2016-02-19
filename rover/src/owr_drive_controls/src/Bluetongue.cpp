@@ -181,7 +181,8 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
     return true;
 }
 
-struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
+struct status Bluetongue::update(double leftFMotor, double rightFMotor, 
+    double leftBMotor, double rightBMotor, double leftFSwerve, double rightFSwerve, int armTop, 
     int armBottom, double armRotate, int clawRotate, int clawGrip,
     int cameraBottomRotate, int cameraBottomTilt, int cameraTopRotate,
     int cameraTopTilt, int lidarTilt) {
@@ -194,8 +195,8 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     struct toControlMsg mesg;
     struct toNUCMsg resp;
     mesg.magic = MESSAGE_MAGIC;
-    mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
-    mesg.rSpeed = (rightMotor * 500) + 1500;
+//     mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
+//     mesg.rSpeed = (rightMotor * 500) + 1500;
     mesg.armRotate = (armRotate * 500) + 1500;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;

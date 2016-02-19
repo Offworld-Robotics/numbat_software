@@ -8,6 +8,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/Twist.h>
+#include <geometry_msgs/TwistWithCovariance.h>
 #include <owr_messages/board.h>
 #include <termios.h>
 #include <stdio.h>
@@ -35,7 +36,7 @@ class BoardControl {
     private:
         void controllerCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
-        void velCallback(const geometry_msgs::Twist::ConstPtr& vel);
+        void velCallback(const geometry_msgs::TwistWithCovariance::ConstPtr& vel);
 
         void publishGPS(GPSData gps);
         void publishMag(MagData mag);
@@ -82,10 +83,14 @@ class BoardControl {
         //serial i0
         FILE * fd;
         
+        //current velocity from imu
+        geometry_msgs::Twist currentVel;
+        
         //new joints stuff
         JointsMonitor jMonitor;
         JointVelocityController frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel;
         JointSpeedBasedPositionController frontLeftSwerve, frontRightSwerve, backLeftSwerve, backRightSwerve;
+        JointSpeedBasedPositionController armBaseRotate;
         //TODO: add lidar, actuators here.
         
 };

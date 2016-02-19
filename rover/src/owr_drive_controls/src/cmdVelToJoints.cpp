@@ -17,7 +17,7 @@
 */
 
 
-#include "swerveCommon.hpp"
+#include "swerveDrive.hpp"
 #include "cmdVelToJoints.hpp"
 #include <math.h>
 
@@ -83,61 +83,12 @@ void CmdVelToJoints::run() {
 //for a full explanation of this logic please see the scaned notes at
 //https://bluesat.atlassian.net/browse/OWRS-203
 void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
-    //account for the special case where y=0
-    if(velMsg->linear.y != 0) {
-        const double turnAngle = atan2(velMsg->linear.y,velMsg->linear.x);
-        const double rotationRadius = HALF_ROVER_WIDTH_X/sin(turnAngle);
-        geometry_msgs::Vector3 rotationCentre;
-        rotationCentre.x = -HALF_ROVER_WIDTH_X;
-        rotationCentre.y = sqrt(pow(rotationRadius,2)+pow(HALF_ROVER_WIDTH_X,2));
-        const double angularVelocity = velMsg->linear.x / rotationRadius;
-        ROS_INFO("turnAngle %lf, rotationRadius %lf, rotationCenter  %lf, %lf, %lf",turnAngle, rotationRadius, rotationCentre.x, rotationCentre.y, rotationCentre.z);
-        //calculate the radiuses of each wheel about the rotation center
-        //NOTE: if necisary this could be optimised
-        double closeBackR = fabs(rotationCentre.y - ROVER_CENTRE_2_WHEEL_Y);
-        double farBackR = fabs(rotationCentre.y + ROVER_CENTRE_2_WHEEL_Y);
-        double closeFrontR = sqrt(pow(closeBackR,2) + pow(FRONT_W_2_BACK_W_X,2));
-        double farFrontR = sqrt(pow(farBackR,2) + pow(FRONT_W_2_BACK_W_X,2));
-        
-        //V = wr
-        double closeBackV = closeBackR * angularVelocity;
-        double farBackV = farBackR * angularVelocity;
-        double closeFrontV = closeFrontR * angularVelocity;
-        double farFrontV = farFrontR * angularVelocity;
-        
-        //work out the front wheel angles
-        double closeFrontAng = DEG90-atan2(closeBackR,FRONT_W_2_BACK_W_X);
-        double farFrontAng = DEG90-atan2(farBackR,FRONT_W_2_BACK_W_X);
-        
-        //work out which side to favour
-        if(0 <= turnAngle && turnAngle <= DEG90*2) {
-            frontLeftMotorV = closeFrontV;
-            backLeftMotorV = closeBackV;
-            frontRightMotorV = farFrontV;
-            backRightMotorV = farBackV;
-            frontLeftAng = closeFrontAng;
-            frontRightAng = farFrontAng;
-        } else {
-            frontRightMotorV = closeFrontV;
-            backRightMotorV = closeBackV;
-            frontLeftMotorV = farFrontV;
-            backLeftMotorV = farBackV;
-            frontLeftAng = farFrontAng;
-            frontRightAng = closeFrontAng;
-        }
-    } else {
-        //y = 0
-        frontLeftMotorV = backLeftMotorV = frontRightMotorV = backRightMotorV = velMsg->linear.x;
-        frontRightAng = frontLeftAng = 0;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    swerveMotorVels vels = doVelTranslation(velMsg.get());
+    frontLeftMotorV = vels.frontLeftMotorV;
+    frontRightMotorV = vels.frontRightMotorV;
+    backLeftMotorV = vels.backLeftMotorV;
+    backRightMotorV = vels.backRightMotorV;
+    frontLeftAng = vels.frontLeftAng;
+    frontRightAng = vels.frontRightAng;
 }
 

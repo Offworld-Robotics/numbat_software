@@ -11,6 +11,7 @@ class JointSpeedBasedPositionController : public JointController {
     public:
         JointSpeedBasedPositionController(double radius, const double * gearRatio, int nGears,int minPWM, int maxPWM, int maxRPM, char * topic, ros::NodeHandle nh, std::string name);
         int posToPWM(double futurePos, double currentPos, double updateFrequency);
+        int posToPWM(double currentPos, double updateFrequency);
         virtual jointInfo extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime);
     private:
         double radius;

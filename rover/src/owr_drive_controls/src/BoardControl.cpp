@@ -8,11 +8,15 @@
 #include "Bluetongue.h"
 #include "RoverDefs.h"
 #include "ButtonDefs.h"
+#include "swerveDrive.hpp"
+
+
 #include <assert.h>
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <geometry_msgs/Vector3.h>
 #include <std_msgs/Float64.h>
+#include <limits>
 
 #define MOTOR_MID 1500.0
 #define MOTOR_MAX 1900.0
@@ -45,6 +49,13 @@ const double SWERVE_GEARS[] = {0.1, 0.2}; //TODO: put in not stupid values here
 #define SWERVE_MOTOR_MIN_PWM 1000
 #define SWERVE_MOTOR_RPM 24 //TODO: check this
 #define SWERVE_RADIUS 0.01 //TODO: get this
+
+const double ARM_BASE_ROTATE_GEARS[] = {0.2}; //TODO: put not stupid values here
+#define ARM_BASE_ROTATE_N_GEARS 1
+#define ARM_BASE_ROTATE_MOTOR_MAX_PWM 2000
+#define ARM_BASE_ROTATE_MOTOR_MIN_PWM 1000
+#define ARM_BASE_ROTATE_MOTOR_RPM 24 //TODO: check this
+#define ARM_BASE_ROTATE_RADIUS 0.01 //TODO: get this
 
 // Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
 #define SENSITIVITY 1
@@ -92,7 +103,7 @@ BoardControl::BoardControl() :
         WHEEL_MOTOR_MAX_PWM,
         WHEEL_MOTOR_RPM,
         WHEEL_RADIUS,
-        "/back_right_wheel_axel_controller/command",
+        "/back_right_swerve_controller/command",
         nh,
         "back_right_wheel_axel"
     ),
@@ -103,7 +114,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
-        "/front_left_wheel_axel_controller/command",
+        "/front_left_swerve_controller/command",
         nh,
         "front_left_wheel_axel"
     ),
@@ -138,6 +149,17 @@ BoardControl::BoardControl() :
         "/back_right_swerve_controller/command",
         nh,
         "back_right_swerve"
+    ),
+    armBaseRotate(
+        ARM_BASE_ROTATE_RADIUS,
+        ARM_BASE_ROTATE_GEARS,
+        ARM_BASE_ROTATE_N_GEARS,
+        ARM_BASE_ROTATE_MOTOR_MIN_PWM,
+        ARM_BASE_ROTATE_MOTOR_MAX_PWM,
+        ARM_BASE_ROTATE_MOTOR_RPM,
+        "/arm_base_rotate_controller/command",
+        nh,
+        "arm_base_rotation"
     ) {
 
     //init button sates
@@ -158,7 +180,7 @@ BoardControl::BoardControl() :
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
     voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
     boardStatusPublisher = nh.advertise<owr_messages::board>("/owr/board_status",10);
-    velSubscriber = nh.subscribe<geometry_msgs::Twist>("/owr/auton_twist", 2, &BoardControl::velCallback, this, transportHints);
+    velSubscriber = nh.subscribe<geometry_msgs::TwistWithCovariance>("/xsens/velocity", 1, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
@@ -189,7 +211,10 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&frontRightSwerve);
     jMonitor.addJoint(&backLeftSwerve);
     jMonitor.addJoint(&backRightSwerve);
+    jMonitor.addJoint(&armBaseRotate);
     
+    //velocity setup
+    currentVel.linear.x = std::numeric_limits<double >::quiet_NaN();
 }
 
 int clawRotScale(int raw) {
@@ -220,10 +245,18 @@ void BoardControl::run() {
     s.isConnected = true;
     ros::Rate r(UPDATE_RATE);
     int cbr = 0, cbt = 0;
+    int pwmFLW, pwmFRW, pwmBLW, pwmBRW, pwmFLS, pwmFRS, pwmBLS, pwmBRS;
+    int pwmArmTop, pwmArmBottom, pwmArmRot;
+    int pwmClawRotate, pwmClawGrip;
+    int pwmLIDAR;
+    int pwmCamBTilt, pwmCamBRot, pwmCAMTTilt, pwmCAMTRot;
     
-    //so the first time dosen't fail
-    jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS,0);
+    
+    
+    //initialise but don't publish untill we have data
     while (ros::ok()) {
+        //so the first time dosen't fail
+        jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS,0); 
         while(ros::ok()) {
             
             //cbr = cbr < 120 ? cbr + 5 : 0;
@@ -260,28 +293,43 @@ void BoardControl::run() {
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr;
             jMonitor.endCycle(ros::Time::now());
-            struct status s = steve->update(leftDrive, rightDrive,
-                armTop, armBottom, armRotate, clawRotScale(clawRotate),
-                clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
-                cameraRotScale(cameraBottomTilt), 
-                cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
-            jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS, N_UPDATES);
-            owr_messages::board statusMsg;
-            statusMsg.leftDrive = leftDrive;
-            statusMsg.rightDrive = rightDrive;
-            boardStatusPublisher.publish(statusMsg);
+//             s = steve->update(leftDrive, rightDrive,
+//                 armTop, armBottom, armRotate, clawRotScale(clawRotate),
+//                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
+//                 cameraRotScale(cameraBottomTilt), 
+//                 cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
+            s = steve->update(
+                pwmFLW, pwmFRW, pwmBLW, pwmBRW, pwmFLS, pwmFRS,
+                pwmArmTop, pwmArmBottom,pwmArmRot,
+                pwmClawRotate, pwmClawGrip,
+                pwmCamBRot, pwmCamBTilt, pwmCAMTRot, pwmCAMTTilt,
+                pwmLIDAR
+            );
             if (!s.isConnected) break;
+            
+            jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS, N_UPDATES);
+            
+            //do joint calculations
+            //TODO: check if empty
+            swerveMotorVels swerveState = doVelTranslation(&(currentVel));
+            pwmFLW = frontLeftWheel.velToPWM(swerveState.frontLeftMotorV);
+            pwmFRW = frontRightWheel.velToPWM(swerveState.frontRightMotorV);
+            pwmBLW = backLeftWheel.velToPWM(swerveState.backLeftMotorV);
+            pwmBRW = backRightWheel.velToPWM(swerveState.backRightMotorV);
+            pwmFRS = frontRightSwerve.posToPWM(swerveState.frontRightAng, UPDATE_RATE);
+            pwmFLS =  frontLeftSwerve.posToPWM(swerveState.frontLeftAng, UPDATE_RATE);
 
+            //publish sensors data
             publishGPS(s.gpsData);
             publishMag(s.magData);
             publishIMU(s.imuData);
             publishBattery(s.batteryVoltage);
             //publishVoltmeter(s.voltmeter);
             printStatus(&s);
-            //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
+            
+            //ros and timing stuff
             ros::spinOnce();
             r.sleep();
-            
         }
         ROS_ERROR("Lost usb connection to Bluetongue");
         ROS_ERROR("Trying to reconnect every %d ms", RECONNECT_DELAY);
@@ -292,21 +340,21 @@ void BoardControl::run() {
             if (success) ROS_INFO("Bluetongue reconnected!");
             else ROS_WARN("Bluetongue reconnection failed. Trying again soon...");
         }
-        cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
+//         cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
         
         
 
-        struct status s = steve->update(leftDrive, rightDrive,
-            armTop, armBottom, armRotate, clawRotScale(clawRotate),
-            clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
-            cameraRotScale(cameraBottomTilt), 
-            cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
-
-        publishGPS(s.gpsData);
-        publishMag(s.magData);
-        publishIMU(s.imuData);
-        
-        printStatus(&s);
+//         struct status s = steve->update(leftDrive, rightDrive,
+//             armTop, armBottom, armRotate, clawRotScale(clawRotate),
+//             clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
+//             cameraRotScale(cameraBottomTilt), 
+//             cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
+// 
+//         publishGPS(s.gpsData);
+//         publishMag(s.magData);
+//         publishIMU(s.imuData);
+//         
+//         printStatus(&s);
         //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
         ros::spinOnce();
         r.sleep();
@@ -416,39 +464,6 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 }
 
 
-// Convert subscribed Twist input to motor vectors for arduino output
-void BoardControl::velCallback(const geometry_msgs::Twist::ConstPtr& vel) {
-
-    float power = vel->linear.x;
-    float lr = vel->linear.y;
-
-    float lDrive;
-    float rDrive;
-
-    // This set of equations ensure the correct proportional powering of the wheels at varying levels of power and lr
-
-    if(lr < 0){
-    	lDrive = power + (fabs(lr) * power);
-    	rDrive = power;
-    } else if (lr > 0){
-    	lDrive = power;
-    	rDrive = power - (fabs(lr) * power);
-    } else {
-    	lDrive = power;
-    	rDrive = power;
-    }
-    
-    lDrive = power;
-    rDrive = power;
-    leftDrive = lDrive;
-    rightDrive = -rDrive;
-    //leftDrive = (lDrive * 400) + MOTOR_MID;
-    //rightDrive = (rDrive * 400) + MOTOR_MID;
-    ROS_ERROR("%f,%f", leftDrive, rightDrive);
-
-    // The formula in use i: output = (ax^3 + (1-a)x) * 500 + 1500
-    // Where a = SENSITIVITY
-
-    //leftDrive = (SENSITIVITY * pow(lDrive, 3) + (1 - SENSITIVITY) * lDrive);
-    //rightDrive = (SENSITIVITY * pow(rDrive, 3) + (1 - SENSITIVITY) * rDrive);
+void BoardControl::velCallback(const geometry_msgs::TwistWithCovariance::ConstPtr& vel) {
+    currentVel = (vel->twist);
 }

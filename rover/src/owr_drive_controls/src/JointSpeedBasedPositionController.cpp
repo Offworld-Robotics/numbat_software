@@ -152,6 +152,11 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     return pwm;
 }
 
+int JointSpeedBasedPositionController::posToPWM ( double currentPos, double updateFrequency ) {
+    return posToPWM(requestedValue, currentPos, updateFrequency);
+}
+
+
 jointInfo JointSpeedBasedPositionController::extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime) {
     ros::Duration dif = extrapolationTime - sessionStart;
     double aimVel = calcShortestCircDelta(lastKnownPosition, lastAimPosition)/lastDeltaT; //NOTE: as we are accelerating/deacclerating this is probably wrong

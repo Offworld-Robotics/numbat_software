@@ -35,7 +35,7 @@ JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int
  *        - currentAngle - the angle of the rover to the ground (incline)
  * 
  */
-int JointVelocityController::velToPWM(double targetVel, double currentVel, double currentAngel) {
+int JointVelocityController::velToPWM(double targetVel, double currentVel) {
     int pwm;
     
     //w=v/r
@@ -58,6 +58,11 @@ int JointVelocityController::velToPWM(double targetVel, double currentVel, doubl
     lastPWM = lastPWM;
     
     return pwm;
+}
+
+
+int JointVelocityController::velToPWM ( double currentVel ) {
+    return velToPWM(requestedValue, currentVel);
 }
 
 
