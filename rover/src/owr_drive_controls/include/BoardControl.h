@@ -60,7 +60,8 @@ class BoardControl {
         float leftDrive, rightDrive;
         //arm top, bottom
         int armTop, armBottom;
-        float armRotate;
+        float armRotateAngle;
+        float armRotateRate;
         int armIncRate;
         int cameraBottomRotate, cameraBottomTilt, cameraTopRotate,
             cameraTopTilt;

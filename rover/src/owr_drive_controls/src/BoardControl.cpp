@@ -56,6 +56,7 @@ const double ARM_BASE_ROTATE_GEARS[] = {0.2}; //TODO: put not stupid values here
 #define ARM_BASE_ROTATE_MOTOR_MIN_PWM 1000
 #define ARM_BASE_ROTATE_MOTOR_RPM 24 //TODO: check this
 #define ARM_BASE_ROTATE_RADIUS 0.01 //TODO: get this
+#define ARM_INCE_RATE_MULTIPLIER 0.1
 
 // Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
 #define SENSITIVITY 1
@@ -185,7 +186,6 @@ BoardControl::BoardControl() :
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
     armBottom = MOTOR_MID;
-    armRotate = ROTATION_MID;
     clawRotate = CLAW_ROTATION_MID;
     clawGrip = CLAW_ROTATION_MID;
     cameraBottomRotate = CAMERA_ROTATION_MID;
@@ -249,9 +249,32 @@ void BoardControl::run() {
     int pwmArmTop, pwmArmBottom, pwmArmRot;
     int pwmClawRotate, pwmClawGrip;
     int pwmLIDAR;
-    int pwmCamBTilt, pwmCamBRot, pwmCAMTTilt, pwmCAMTRot;
+    int pwmCamBTilt, pwmCamBRot, pwmCamTTilt, pwmCamTRot;
     
-    
+    //make sure we don't send the rover crazy when we start
+    //this prevents garbage be thrown at the rover :P
+    pwmFLW = MOTOR_MID;
+    pwmFRW = MOTOR_MID;
+    pwmBLW = MOTOR_MID;
+    pwmBRW = MOTOR_MID;
+    pwmFLS = MOTOR_MID;
+    pwmFRS = MOTOR_MID;
+    pwmBLS = MOTOR_MID;
+    pwmBRS = MOTOR_MID;
+
+    pwmArmTop = MOTOR_MID;
+    pwmArmBottom = MOTOR_MID;
+    pwmArmRot = MOTOR_MID;
+
+    pwmClawRotate = MOTOR_MID;
+    pwmClawGrip = MOTOR_MID;
+
+    pwmLIDAR = MOTOR_MID;
+
+    pwmCamBTilt = MOTOR_MID;
+    pwmCamBRot = MOTOR_MID;
+    pwmCamTTilt = MOTOR_MID;
+    pwmCamTRot = MOTOR_MID;
     
     //initialise but don't publish untill we have data
     while (ros::ok()) {
@@ -302,7 +325,7 @@ void BoardControl::run() {
                 pwmFLW, pwmFRW, pwmBLW, pwmBRW, pwmFLS, pwmFRS,
                 pwmArmTop, pwmArmBottom,pwmArmRot,
                 pwmClawRotate, pwmClawGrip,
-                pwmCamBRot, pwmCamBTilt, pwmCAMTRot, pwmCAMTTilt,
+                pwmCamBRot, pwmCamBTilt, pwmCamTRot, pwmCamTTilt,
                 pwmLIDAR
             );
             if (!s.isConnected) break;
@@ -316,15 +339,34 @@ void BoardControl::run() {
             pwmFRW = frontRightWheel.velToPWM(swerveState.frontRightMotorV);
             pwmBLW = backLeftWheel.velToPWM(swerveState.backLeftMotorV);
             pwmBRW = backRightWheel.velToPWM(swerveState.backRightMotorV);
+            //TODO: this should actually be the angle from the encoders
             pwmFRS = frontRightSwerve.posToPWM(swerveState.frontRightAng, UPDATE_RATE);
             pwmFLS =  frontLeftSwerve.posToPWM(swerveState.frontLeftAng, UPDATE_RATE);
+            
+            //adjust the arm position
+            armRotateAngle += armRotateRate;
+            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, 1.95, UPDATE_RATE); //TODO: add in actual current position
+            
+            //for now do this for actuators
+            pwmArmTop = armTop;
+            pwmArmBottom = armBottom;
+            
+            //and keep everything else the same
+            pwmClawRotate = clawRotScale(clawRotate);
+            pwmClawGrip   = clawRotScale(clawGrip);
+            pwmCamBRot    = cameraRotScale(cameraBottomRotate);
+            pwmCamBTilt   = cameraRotScale(cameraBottomTilt);
+            pwmCamTRot    = cameraRotScale(cameraTopRotate);
+            pwmCamTTilt   = cameraRotScale(cameraTopTilt);
 
             //publish sensors data
             publishGPS(s.gpsData);
             publishMag(s.magData);
             publishIMU(s.imuData);
             publishBattery(s.batteryVoltage);
-            //publishVoltmeter(s.voltmeter);
+            #ifdef VOLTMETER_ON
+            publishVoltmeter(s.voltmeter);
+            #endif
             printStatus(&s);
             
             //ros and timing stuff
@@ -456,7 +498,7 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     rotState = joy->axes[CLAW_ROTATE];
 
     //Handle arm rotation
-    armRotate = joy->axes[ARM_ROTATE];
+    armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
     //armRotate = joy->axes[STICK_CH_LR];
     armIncRate = top * 5;
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;

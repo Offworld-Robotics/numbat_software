@@ -22,8 +22,12 @@ using namespace std;
 // All structs are multiples of 32 bits, so this works on x86
 struct toControlMsg {
     uint16_t magic;
-    int16_t lSpeed;
-    int16_t rSpeed;
+    int16_t frSpeed;
+    int16_t flSpeed;
+    int16_t brSpeed;
+    int16_t blSpeed;
+    int16_t flAng;
+    int16_t frAng;
     int16_t armRotate;
     int16_t armTop;
     int16_t armBottom;
@@ -61,12 +65,12 @@ bool Bluetongue::reconnect(void) {
 
 bool Bluetongue::connect() {
     port_fd = open(bluetongue_port.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
-	if (port_fd == -1) {
-	    ROS_ERROR("Error in open uart port");
+    if (port_fd == -1) {
+        ROS_ERROR("Error in open uart port");
             return false;
-	} else {
-	    ROS_DEBUG("Opened uart port");
-	}
+    } else {
+        ROS_DEBUG("Opened uart port");
+    }
     // Set up stuff for select so we can timeout on reads
     FD_ZERO(&uart_set); /* clear the set */
     FD_SET(port_fd, &uart_set); /* add our file descriptor to the set */
@@ -123,7 +127,7 @@ Bluetongue::Bluetongue(const char* port) {
     
     // Open serial port
     bluetongue_port = port;
-    isConnected = connect();	
+    isConnected = connect();    
     ROS_INFO("Finished initalizing bluetongue");
 }
 
@@ -133,16 +137,16 @@ Bluetongue::~Bluetongue(void) {
 
 bool Bluetongue::comm(bool forBattery, void *message, int message_len, 
     void *resp, int resp_len) {
-	ROS_DEBUG("Writing message: ");
-	for (int i = 0; i < message_len; i++) {
-		ROS_DEBUG("%d: %02x\n", i, *((char *) message + i));
-	}
+    ROS_DEBUG("Writing message: ");
+    for (int i = 0; i < message_len; i++) {
+        ROS_DEBUG("%d: %02x\n", i, *((char *) message + i));
+    }
     int written = 0;
     timeout.tv_sec = 0;
     timeout.tv_usec = 400000;
     int empty_writes = 0;
     do {
-	int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
+    int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
         if (write_amount == -1) {
             ROS_ERROR("USB write error");
             return false;
@@ -174,7 +178,7 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
                 ROS_ERROR("Dodgy usb connection detected");
                 return false;
             }
-	}
+    }
         ROS_DEBUG("reading... %d", readCount);
     } while (readCount < resp_len);
     ROS_DEBUG("Read packet");
@@ -197,7 +201,13 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     mesg.magic = MESSAGE_MAGIC;
 //     mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
 //     mesg.rSpeed = (rightMotor * 500) + 1500;
-    mesg.armRotate = (armRotate * 500) + 1500;
+    mesg.frSpeed = rightFMotor;
+    mesg.flSpeed = leftFMotor;
+    mesg.blSpeed = leftBMotor;
+    mesg.brSpeed = rightBMotor;
+    mesg.flAng = leftFSwerve;
+    mesg.frAng = rightFSwerve;
+    mesg.armRotate = armRotate;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
     mesg.clawRotate = clawRotate;
@@ -225,9 +235,9 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     
     
     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
-	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
-	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
-	ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
+    ROS_INFO("Speeds %d %d %d %d", mesg.flSpeed, mesg.frSpeed, mesg.blSpeed, mesg.brSpeed);
+    ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
+    ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
             mesg.clawRotate);
     ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
             mesg.armBottom, mesg.armRotate);
@@ -236,9 +246,9 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     
     ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
     
-	isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
+    isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
-	
+    
     if (!isConnected) {
         stat.isConnected = false;
         stat.roverOk = false;
@@ -248,10 +258,10 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     }
     
     if (resp.magic != MESSAGE_MAGIC) {
-		ROS_INFO("Update Bluetongue had a error");
+        ROS_INFO("Update Bluetongue had a error");
         stat.roverOk = false;    
         return stat;
-	} else {
+    } else {
         stat.roverOk = true;
     }
     stat.batteryVoltage = ((resp.vbat / 1024.0) * 3.3) * 5.7;
