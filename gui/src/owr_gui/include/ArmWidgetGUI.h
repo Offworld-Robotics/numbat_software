@@ -5,12 +5,9 @@
 #ifndef ARMWIDGETGUI_H
 #define ARMWIDGETGUI_H
 
-#include <list>
 #include <ros/ros.h>
-//#include <sensor_msgs/NavSatFix.h>
+#include <tf/transform_listener.h>
 #include "GLUTWindow.h"
-
-#define SCALE 40000
 
 class ArmWidgetGUI : public GLUTWindow {
 	public:
@@ -19,12 +16,16 @@ class ArmWidgetGUI : public GLUTWindow {
 		void idle();
 		void display();
 		void keydown(unsigned char key, int x, int y);
-		void special_keydown(int keycode, int x, int y);
+		void special_keydown(int key, int x, int y);
+		void special_keyup(int key, int x, int y);
 		
-		// pointer to the ROS handler
-		void *armWidgetNode;
+		void refreshTransforms();
 		
-		ros::Publisher tfPublisher;
+		tf::TransformListener tfListener;
+		tf::StampedTransform tfs[10];
+		
+		double scale;
+		bool arrow_keys[4];
 };
 
 #endif // ARMWIDGETGUI_H

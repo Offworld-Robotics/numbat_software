@@ -1,9 +1,0 @@
-<launch>
-    <param name="robot_description" textfile="$(find owr_bluetounge_tf)/robots/bluetounge.URDF" />
-    <param name="/robot_description" textfile="$(find owr_bluetounge_tf)/robots/bluetounge.URDF" />
-    <node pkg="robot_state_publisher" type="robot_state_publisher" name="bluetounge_state"/>
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
-    <!--<include file="$(find owr_bluetounge_tf)/launch/localisation.launch"/>-->
-    
-
-</launch>
