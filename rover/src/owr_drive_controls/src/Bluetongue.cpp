@@ -40,7 +40,7 @@ struct toNUCMsg {
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
-    uint16_t enc0; // Angular velocities derived from motor encoders
+    uint16_t enc0; // Angular velocities derived from motor encoders, devide by 1000 to get value sent
     uint16_t enc1;
     uint16_t enc2;
     uint16_t enc3;
