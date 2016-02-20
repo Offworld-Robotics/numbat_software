@@ -50,6 +50,12 @@ struct toNUCMsg {
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
+    uint16_t enc0; // Angular velocities derived from motor encoders, devide by 1000 to get value sent
+    uint16_t enc1;
+    uint16_t enc2;
+    uint16_t enc3;
+    uint16_t enc4;
+    uint16_t enc5;
     #ifdef VOLTMETER_ON
     uint16_t padding;
     #endif
@@ -146,7 +152,7 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
     timeout.tv_usec = 400000;
     int empty_writes = 0;
     do {
-    int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
+       int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
         if (write_amount == -1) {
             ROS_ERROR("USB write error");
             return false;
@@ -271,6 +277,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
+    ROS_INFO("Encoder speeds %f, %f, %f, %f, %f, %f", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
         
     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
