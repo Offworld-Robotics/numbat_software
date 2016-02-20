@@ -1,4 +1,4 @@
-#include <Servo.h> 
+/*#include <Servo.h> 
 #define BAUD_RATE 9600
 #define MIN_BYTES_AVAILABLE_TO_READ 5
 
@@ -27,4 +27,4 @@ void loop() {
     }
   }
 } 
-
+*/

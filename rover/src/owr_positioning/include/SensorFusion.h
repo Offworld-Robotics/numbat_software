@@ -2,6 +2,8 @@
 #include <geometry_msgs/Vector3.h>
 #include <ros/ros.h>
 #include "owr_messages/heading.h"
+
+#define NO_HEADING -1
 class SensorFusion{
     public:
         SensorFusion();
@@ -27,13 +29,14 @@ class SensorFusion{
         double pitch;
         double yaw;
         double heading;
+        double lastHeading;
 
         unsigned char allThree; 
     private:
         
         
         double vector_mod(geometry_msgs::Vector3);
-        void vector_normalize(geometry_msgs::Vector3);
+        void vector_normalize(geometry_msgs::Vector3&);
         void vector_cross(geometry_msgs::Vector3, geometry_msgs::Vector3, geometry_msgs::Vector3);
         double vector_dot(geometry_msgs::Vector3, geometry_msgs::Vector3); 
         void vector_scale(double ,geometry_msgs::Vector3, geometry_msgs::Vector3);

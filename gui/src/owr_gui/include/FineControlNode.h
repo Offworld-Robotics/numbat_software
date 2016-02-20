@@ -11,6 +11,7 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>
 #include "FineControlGUI.h"
+#include <image_transport/image_transport.h>
 
 // The message structs needed for availableFeeds
 #include "owr_messages/activeCameras.h"
@@ -26,11 +27,12 @@ class FineControlNode {
 		void receiveVideoMsg0(const sensor_msgs::Image::ConstPtr& msg);
 		void receiveVideoMsg1(const sensor_msgs::Image::ConstPtr& msg);
 		void receiveVideoMsg2(const sensor_msgs::Image::ConstPtr& msg);
+		void receiveVideoMsg3(const sensor_msgs::Image::ConstPtr& msg);
 		
 	private:
 		FineControlGUI *gui;
 		ros::Subscriber gpsSub;
-		ros::Subscriber videoSub[TOTAL_FEEDS];
+		image_transport::Subscriber videoSub[TOTAL_FEEDS];
 		ros::Subscriber feedsSub;
 		
 		float voltage;

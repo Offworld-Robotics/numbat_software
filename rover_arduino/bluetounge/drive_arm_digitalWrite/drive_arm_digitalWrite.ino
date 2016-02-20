@@ -3,22 +3,21 @@
 
 void setup() {
    pinMode(TOP, OUTPUT);
-   pinMode(BOTTOM, OUTPUT);
+   //pinMode(BOTTOM, OUTPUT);
 }
 
 void loop() {
 
-   topMode = Serial.parseFloat();  
-   bottomMode = Serial.parseFloat();
+   topMode = 2000;
+   //topMode = Serial.parseFloat();  
+   //bottomMode = Serial.parseFloat();
    
-   if(topMode > 1500) {
-     turnOn(top);
-   }  
+   digitalWrite(port, HIGHT);
    
 
 }
 
-void turnOn(int port) {
+/*void turnOn(int port) {
   digitalWrite(port, HIGHT);
   
 }
@@ -26,4 +25,4 @@ void turnOn(int port) {
 void turnOff(int port) {
   digitalWrite(port, LOW);
   
-}
+}*/
