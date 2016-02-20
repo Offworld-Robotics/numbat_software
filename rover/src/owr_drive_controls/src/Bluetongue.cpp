@@ -199,8 +199,14 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     struct toControlMsg mesg;
     struct toNUCMsg resp;
     mesg.magic = MESSAGE_MAGIC;
-    mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
-    mesg.rSpeed = (rightMotor * 500) + 1500;
+    
+    //mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
+    //mesg.rSpeed = (rightMotor * 500) + 1500;
+    
+    mesg.lSpeed = 1500;
+    mesg.rSpeed = 1500;
+    
+    
     mesg.armRotate = (armRotate * 500) + 1500;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
@@ -228,17 +234,17 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     }
     
     
-    ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
-	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
-	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
-	ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
-            mesg.clawRotate);
-    ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
-            mesg.armBottom, mesg.armRotate);
-    ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
-            cameraBottomTilt, cameraTopRotate, cameraTopTilt);
+    //ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
+	//ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
+	//ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
+	//ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
+    //        mesg.clawRotate);
+    //ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
+    //        mesg.armBottom, mesg.armRotate);
+    //ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
+    //        cameraBottomTilt, cameraTopRotate, cameraTopTilt);
     
-    ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
+    //ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
     
 	isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
@@ -265,7 +271,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
-    ROS_INFO("Encoder speeds %f, %f, %f, %f, %f, %f", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
+    ROS_INFO("Encoder speeds %d, %d, %d, %d, %d, %d", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
 
         
     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
