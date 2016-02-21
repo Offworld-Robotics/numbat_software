@@ -44,6 +44,7 @@
 
 //this one has to be const because array
 const double SWERVE_GEARS[] = {0.1, 0.2}; //TODO: put in not stupid values here
+// const std::vector < double > SWERVE_GEARS_VECTOR = {0.1, 0.2};
 #define SWERVE_N_GEARS 2
 #define SWERVE_MOTOR_MAX_PWM 2000
 #define SWERVE_MOTOR_MIN_PWM 1000
@@ -51,6 +52,7 @@ const double SWERVE_GEARS[] = {0.1, 0.2}; //TODO: put in not stupid values here
 #define SWERVE_RADIUS 0.01 //TODO: get this
 
 const double ARM_BASE_ROTATE_GEARS[] = {0.2}; //TODO: put not stupid values here
+// const std::vector < double > ARM_BASE_GEARS_VECTOR {0.1};
 #define ARM_BASE_ROTATE_N_GEARS 1
 #define ARM_BASE_ROTATE_MOTOR_MAX_PWM 2000
 #define ARM_BASE_ROTATE_MOTOR_MIN_PWM 1000
@@ -161,7 +163,13 @@ BoardControl::BoardControl() :
         "/arm_base_rotate_controller/command",
         nh,
         "arm_base_rotation"
-    ) {
+    ),
+    frontLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
+    frontRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
+    backLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
+    backRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
+    armRotationBaseGear(ARM_BASE_ROTATE_GEARS, ARM_BASE_ROTATE_N_GEARS)
+    {
 
     //init button sates
     cam0Button = 0;
@@ -331,6 +339,9 @@ void BoardControl::run() {
             if (!s.isConnected) break;
             
             jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS, N_UPDATES);
+            armRotationBaseGear.updatePos(s.enc0);
+            frontLeftSwerveGears.updatePos(s.enc1);
+            frontRightSwerveGears.updatePos(s.enc2);
             
             //do joint calculations
             //TODO: check if empty
@@ -340,12 +351,12 @@ void BoardControl::run() {
             pwmBLW = backLeftWheel.velToPWM(swerveState.backLeftMotorV);
             pwmBRW = backRightWheel.velToPWM(swerveState.backRightMotorV);
             //TODO: this should actually be the angle from the encoders
-            pwmFRS = frontRightSwerve.posToPWM(swerveState.frontRightAng, UPDATE_RATE);
-            pwmFLS =  frontLeftSwerve.posToPWM(swerveState.frontLeftAng, UPDATE_RATE);
+            pwmFRS = frontRightSwerve.posToPWM(frontRightSwerveGears.getPosition(), UPDATE_RATE);
+            pwmFLS =  frontLeftSwerve.posToPWM(frontLeftSwerveGears.getPosition(), UPDATE_RATE);
             
             //adjust the arm position
             armRotateAngle += armRotateRate;
-            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, 1.95, UPDATE_RATE); //TODO: add in actual current position
+            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, armRotationBaseGear.getPosition(), UPDATE_RATE); //TODO: add in actual current position
             
             //for now do this for actuators
             pwmArmTop = armTop;

@@ -41,6 +41,8 @@ struct toControlMsg {
     int16_t padding;
 } __attribute__((packed));
 
+#define ENC_MULTIPLIER 1000
+
 struct toNUCMsg {
     uint16_t magic;
     uint16_t vbat;
@@ -277,6 +279,12 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
+    stat.enc0 = resp.enc0 * ENC_MULTIPLIER;
+    stat.enc1 = resp.enc1 * ENC_MULTIPLIER;
+    stat.enc2 = resp.enc2 * ENC_MULTIPLIER;
+    stat.enc3 = resp.enc3 * ENC_MULTIPLIER;
+    stat.enc4 = resp.enc4 * ENC_MULTIPLIER;
+    
     ROS_INFO("Encoder speeds %f, %f, %f, %f, %f, %f", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
         
     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
