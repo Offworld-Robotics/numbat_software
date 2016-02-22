@@ -9,12 +9,12 @@
 
 class GearPositionTracker {
     public:
-        GearPositionTracker(std::vector< double > gears);
+        GearPositionTracker(const std::vector< double > & gears);
         GearPositionTracker(const double * gears,const int nGears);
         void updatePos(double speed);
         double getPosition();
     private:
-        std::vector< const double > gears;
+        const std::vector< double > gears;
         std::vector < double > velocities;
         std::vector < double > positions;
         std::vector < ros::Time > times;

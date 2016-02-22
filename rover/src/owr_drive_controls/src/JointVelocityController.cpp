@@ -15,16 +15,19 @@
 #define DO_VEL_ADJUST
 
 
-JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int maxRPMIn, double wheelRadiusIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
+JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int maxRPMIn, double wheelRadiusIn,const double * gearsIn,const int nGearsIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
     wheelRadius = wheelRadiusIn;
     maxPWM = maxPWMIn;
     minPWM = minPWMIn;
     maxRPM = maxRPMIn;
     deltaPWM = maxPWMIn - minPWMIn;
-    velocityRange = (maxRPMIn * M_PI_2/SECONDS_IN_MINUTE) * 2;
+    velocityRange = (maxRPMIn * M_2_PI/SECONDS_IN_MINUTE) * 2;
     
     //inital values
     lastAngularVelocity = std::numeric_limits< double >::infinity();
+    
+    gears = gearsIn;
+    nGears = nGearsIn;
 }
 
 /*
@@ -37,6 +40,12 @@ JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int
  */
 int JointVelocityController::velToPWM(double targetVel, double currentVel) {
     int pwm;
+//     printf("nGears %d", nGears);
+    for(int i = 0; i < nGears; i++) {
+        printf("i = %d", i);
+        targetVel /= gears[i];
+        currentVel /= gears[i];
+    }
     
     //w=v/r
     double targetAngularVelocity = targetVel/wheelRadius;
@@ -45,7 +54,9 @@ int JointVelocityController::velToPWM(double targetVel, double currentVel) {
     //ratio of velocity to pwm 
     //delta velocity / delta pwm
     double pwmVelRatio = (velocityRange) / (deltaPWM);
-    pwm = (int)(targetAngularVelocity * pwmVelRatio) + minPWM + deltaPWM;
+//     printf("pwmVelRatio %f, velocityRange %f\n", pwmVelRatio, velocityRange);
+//     printf("minPWM %d, deltaPWM %d\n", minPWM, deltaPWM);
+    pwm = (int)(targetAngularVelocity * pwmVelRatio) + minPWM + (deltaPWM/2);
     
     #ifdef DO_VEL_ADJUST
         if(lastAngularVelocity !=  std::numeric_limits< double >::infinity() &&

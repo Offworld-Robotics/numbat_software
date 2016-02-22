@@ -15,7 +15,7 @@
 class JointVelocityController : public JointController {
     
     public:
-        JointVelocityController(int minPWM, int maxPWM, int maxRPM, double wheelRadius, char * topic, ros::NodeHandle nh, std::string name);
+        JointVelocityController(int minPWM, int maxPWM, int maxRPM, double wheelRadius, const double * gears, const int nGears, char * topic, ros::NodeHandle nh, std::string name);
         int velToPWM(double targetVel, double currentVel);
         int velToPWM(double currentVel);
         virtual jointInfo extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime);
@@ -25,8 +25,10 @@ class JointVelocityController : public JointController {
         int  minPWM, maxPWM;
         int maxRPM;
         int currentPWM;
-        double deltaPWM;
+        int deltaPWM;
         double velocityRange;
+        const double * gears;
+        int nGears;
         
         double lastAngularVelocity;
         int lastPWM;
