@@ -13,7 +13,7 @@
 #define SMALL_INC 0.01
 
 //if this is not defined do it just based on pwm
-#define DO_VEL_ADJUST
+// #define DO_VEL_ADJUST
 
 static inline double calcShortestCircDelta(double a, double b) {
     double ab = (a - b);

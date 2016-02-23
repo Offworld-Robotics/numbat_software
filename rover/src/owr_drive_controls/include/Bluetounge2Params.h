@@ -15,7 +15,7 @@ const double SWERVE_GEARS[] = {1.0/455.0, -1.0/4.75};
 #define SWERVE_N_GEARS 2
 #define SWERVE_MOTOR_MAX_PWM 2000
 #define SWERVE_MOTOR_MIN_PWM 1000
-#define SWERVE_MOTOR_RPM 24 //TODO: check this
+#define SWERVE_MOTOR_RPM (26*455) //TODO: check this
 #define SWERVE_RADIUS 0.01 //TODO: get this
 
 const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid values here
@@ -23,7 +23,7 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 #define ARM_BASE_ROTATE_N_GEARS 2
 #define ARM_BASE_ROTATE_MOTOR_MAX_PWM 2000
 #define ARM_BASE_ROTATE_MOTOR_MIN_PWM 1000
-#define ARM_BASE_ROTATE_MOTOR_RPM 26 //TODO: check this
+#define ARM_BASE_ROTATE_MOTOR_RPM (26*455) //TODO: check this
 #define ARM_BASE_ROTATE_RADIUS 0.01 //TODO: get this
 #define ARM_INCE_RATE_MULTIPLIER 0.1
 
