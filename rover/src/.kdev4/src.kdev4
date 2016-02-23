@@ -8,11 +8,11 @@ ProjectRootRelative=./
 
 [CMake][CMake Build Directory 0]
 Build Directory Path=file:///home/ros/owr_software/rover/build/
-Build Type=Debug
+Build Type=
 CMake Binary=file:///usr/bin/cmake
 Environment Profile=
 Extra Arguments=-DCATKIN_DEVEL_PREFIX=../devel -DCMAKE_INSTALL_PREFIX=../install
-Install Directory=
+Install Directory=file:///home/ros/owr_software/rover/install
 
 [Defines And Includes][Compiler]
 Name=GCC

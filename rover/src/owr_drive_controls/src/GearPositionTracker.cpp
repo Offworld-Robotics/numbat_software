@@ -10,13 +10,9 @@
 #include "GearPositionTracker.hpp"
 
 GearPositionTracker::GearPositionTracker ( const std::vector< double > & gearsIn ) : gears (gearsIn) {
-//     gears = gearsIn;
 }
 
 GearPositionTracker::GearPositionTracker (const double* gears,const int nGears ) : gears(gears, gears + nGears) {
-//     for(int i =0; i < nGears; i++) {
-//         gears.push_back(gears[i]);
-//     }
 }
 
 
