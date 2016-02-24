@@ -21,7 +21,7 @@ class JointSpeedBasedPositionController : public JointController {
         int maxRPM;
         
         int currentPWM;
-        double deltaPWM;
+        int deltaPWM;
         
         double maxVelocity;
         double velocityRange;
