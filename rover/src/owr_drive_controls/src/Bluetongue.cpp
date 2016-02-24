@@ -41,9 +41,9 @@ struct toNUCMsg {
     uint16_t magic;
     uint16_t vbat;
     #ifdef VOLTMETER_ON
-    uint16_t voltmeter;
+        uint16_t voltmeter;
     #else
-    uint16_t padding;
+        uint16_t padding;
     #endif
     GPSData gpsData;
     MagData magData;
