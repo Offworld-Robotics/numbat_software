@@ -265,8 +265,8 @@ void BoardControl::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
         cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
     } else {
-        leftDrive = (joy->axes[STICK_L_UD]);
-        rightDrive = -joy->axes[DRIVE_AXES_UD];
+        leftDrive = -(joy->axes[STICK_L_UD]);
+        rightDrive = joy->axes[DRIVE_AXES_UD];
         //leftDrive = rightDrive;
     }
     /*
