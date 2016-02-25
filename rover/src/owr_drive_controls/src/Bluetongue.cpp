@@ -192,10 +192,12 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
     return true;
 }
 
-struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
-    int armBottom, double armRotate, int clawRotate, int clawGrip,
-    int cameraBottomRotate, int cameraBottomTilt, int cameraTopRotate,
-    int cameraTopTilt, int lidarTilt) {
+struct status Bluetongue::update(double leftFMotor, double rightFMotor, 
+                double leftBMotor, double rightBMotor, double leftFSwerve, double rightFSwerve,
+                int armTop, int armBottom, double armRotate, 
+                int clawRotate, int clawGrip, int cameraBottomRotate,
+                int cameraBottomTilt, int cameraTopRotate, 
+                int cameraTopTilt, int lidarTilt) {
     struct status stat;
     if (!isConnected) {
         stat.isConnected = false;

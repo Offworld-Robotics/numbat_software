@@ -165,7 +165,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     
     
-    printf("pwmVelRatio %f, targetAngularVel %f\n", pwmVelRatio, targetAngularVel);
+    printf(" targetAngularVel %f\n",  targetAngularVel);
     double gearAdjustedVel = targetAngularVel;
     double gearMultiplier = 1;
     int i;
