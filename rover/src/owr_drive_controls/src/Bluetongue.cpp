@@ -47,7 +47,9 @@ struct toNUCMsg {
     uint16_t magic;
     uint16_t vbat;
     #ifdef VOLTMETER_ON
-    uint16_t voltmeter;
+        uint16_t voltmeter;
+    #else
+        uint16_t padding;
     #endif
     GPSData gpsData;
     MagData magData;
@@ -58,9 +60,6 @@ struct toNUCMsg {
     uint16_t enc3;
     uint16_t enc4;
     uint16_t enc5;
-    #ifdef VOLTMETER_ON
-    uint16_t padding;
-    #endif
 } __attribute__((packed));
 
 bool Bluetongue::reconnect(void) {
@@ -135,7 +134,7 @@ Bluetongue::Bluetongue(const char* port) {
     
     // Open serial port
     bluetongue_port = port;
-    isConnected = connect();    
+    isConnected = connect();	
     ROS_INFO("Finished initalizing bluetongue");
 }
 
@@ -145,16 +144,16 @@ Bluetongue::~Bluetongue(void) {
 
 bool Bluetongue::comm(bool forBattery, void *message, int message_len, 
     void *resp, int resp_len) {
-    ROS_DEBUG("Writing message: ");
-    for (int i = 0; i < message_len; i++) {
-        ROS_DEBUG("%d: %02x\n", i, *((char *) message + i));
-    }
+	ROS_DEBUG("Writing message: ");
+	for (int i = 0; i < message_len; i++) {
+		ROS_DEBUG("%d: %02x\n", i, *((char *) message + i));
+	}
     int written = 0;
     timeout.tv_sec = 0;
     timeout.tv_usec = 400000;
     int empty_writes = 0;
     do {
-       int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
+	int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
         if (write_amount == -1) {
             ROS_ERROR("USB write error");
             return false;
@@ -186,15 +185,14 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
                 ROS_ERROR("Dodgy usb connection detected");
                 return false;
             }
-    }
+	}
         ROS_DEBUG("reading... %d", readCount);
     } while (readCount < resp_len);
     ROS_DEBUG("Read packet");
     return true;
 }
 
-struct status Bluetongue::update(double leftFMotor, double rightFMotor, 
-    double leftBMotor, double rightBMotor, double leftFSwerve, double rightFSwerve, int armTop, 
+struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
     int armBottom, double armRotate, int clawRotate, int clawGrip,
     int cameraBottomRotate, int cameraBottomTilt, int cameraTopRotate,
     int cameraTopTilt, int lidarTilt) {
