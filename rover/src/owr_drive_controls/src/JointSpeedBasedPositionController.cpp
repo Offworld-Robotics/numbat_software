@@ -10,7 +10,7 @@
 #include <ros/ros.h>
 
 #define VEL_INC 0.01
-#define SMALL_INC 0.01
+#define SMALL_INC 0.001
 
 //if this is not defined do it just based on pwm
 // #define DO_VEL_ADJUST
@@ -145,10 +145,13 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     double nextPosDelta = calcShortestCircDelta(nextPosGuess, currentPos);
     printf("nextPosGuess %f nextPosDelta %f\n", nextPosGuess, nextPosDelta);
-//     if(std::fabs(nextPosDelta) >= std::fabs(posDelta)) {
-//         //decrease to a value that will get us just before it
-//         targetAngularVel = (((futurePos - SMALL_INC) - currentPos) / deltaT);
-//     }
+    //step back the speed to a more sensible one if we are going to miss the point
+    if(std::fabs(nextPosDelta) > std::fabs(posDelta)) {
+        //decrease to a value that will get us just before it
+        targetAngularVel = (calcShortestCircDelta((futurePos - SMALL_INC) , currentPos) / deltaT);
+        nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
+        nextPosDelta = calcShortestCircDelta(nextPosGuess, currentPos);
+    }
     //TODO: correctly implement the above
     nextPosGuess = (targetAngularVel * updateFrequency);
     if(std::fabs(nextPosGuess) > (M_PI * 2) ) {
@@ -161,13 +164,13 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     
     
-    double pwmVelRatio = (deltaPWM) / (velocityRange);
+    
     printf("pwmVelRatio %f, targetAngularVel %f\n", pwmVelRatio, targetAngularVel);
     double gearAdjustedVel = targetAngularVel;
     double gearMultiplier = 1;
     int i;
     for(i = 0; i < nGears; i++) {
-        gearMultiplier *= gearRatio[i];
+        gearMultiplier /= gearRatio[i];
     }
     gearAdjustedVel *= gearMultiplier;
     printf("gearAdjustedVel %f\n", gearAdjustedVel);
@@ -178,6 +181,9 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
         gearAdjustedVel = std::max<double>(gearAdjustedVel, -maxVelocity);
          printf("gearAdjustedVel min %f\n", gearAdjustedVel);
     }
+    
+    
+    double pwmVelRatio = (deltaPWM) / (velocityRange);
     int pwm = (int)(gearAdjustedVel * pwmVelRatio) + minPWM + (deltaPWM/2);
     printf("pwm %d, gearAdjustedVel %f, multi %f\n", pwm, gearAdjustedVel, gearAdjustedVel * pwmVelRatio);
     
