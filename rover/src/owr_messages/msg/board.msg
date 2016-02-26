@@ -1,2 +1,2 @@
-float32 leftDrive
-float32 rightDrive
+pwm[] joints
+Header header

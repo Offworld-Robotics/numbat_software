@@ -176,7 +176,7 @@ BoardControl::BoardControl() :
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
     voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
     boardStatusPublisher = nh.advertise<owr_messages::board>("/owr/board_status",10);
-    velSubscriber = nh.subscribe<geometry_msgs::TwistWithCovariance>("/xsens/velocity", 1, &BoardControl::velCallback, this, transportHints);
+    velSubscriber = nh.subscribe<nav_msgs::Odometry>("/odometry/filtered", 1, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
@@ -504,6 +504,6 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 }
 
 
-void BoardControl::velCallback(const geometry_msgs::TwistWithCovariance::ConstPtr& vel) {
-    currentVel = (vel->twist);
+void BoardControl::velCallback(const nav_msgs::Odometry::ConstPtr& vel) {
+    currentVel = (vel->twist.twist);
 }

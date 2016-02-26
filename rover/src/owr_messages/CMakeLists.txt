@@ -59,6 +59,7 @@ find_package(catkin REQUIRED COMPONENTS
    voltage.msg
    ultrasonic.msg
    heading.msg
+   pwm.msg
    board.msg
  )
 

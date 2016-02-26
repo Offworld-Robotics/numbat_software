@@ -73,6 +73,8 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
     
     gearRatio = gearRatioIn;
     nGears = nGearsIn;
+    
+    lastPWM = minPWMIn + deltaPWM;
 }
 
 /*

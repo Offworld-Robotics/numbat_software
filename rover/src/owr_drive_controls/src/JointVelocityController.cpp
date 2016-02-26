@@ -28,6 +28,7 @@ JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int
     
     gears = gearsIn;
     nGears = nGearsIn;
+    lastPWM = minPWMIn + deltaPWM;
 }
 
 /*
@@ -73,6 +74,10 @@ int JointVelocityController::velToPWM(double targetVel, double currentVel) {
 
 
 int JointVelocityController::velToPWM ( double currentVel ) {
+    //safe value
+    if (isnan(requestedValue)) {
+            return minPWM + deltaPWM;
+    }
     return velToPWM(requestedValue, currentVel);
 }
 

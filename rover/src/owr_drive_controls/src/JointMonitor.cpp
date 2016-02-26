@@ -9,11 +9,13 @@
  */
 
 #include "JointsMonitor.hpp"
+#include "owr_messages/board.h"
+#include "owr_messages/pwm.h"
 
 JointsMonitor::JointsMonitor(ros::NodeHandle nodeHandle) {
     nh = nodeHandle;
     statesPub =  nh.advertise<sensor_msgs::JointState>("joint_states", 10);
-    debugPub = nh.advertise<sensor_msgs::JointState>("/owr/jointsDebug", 1); //TODO: create a message type for this
+    debugPub = nh.advertise<owr_messages::board>("/owr/jointsDebug", 1); //TODO: create a message type for this
     //start the message sequence at zero
     currentStateMessage.header.seq = 0;
 }
@@ -27,7 +29,8 @@ void JointsMonitor::beginCycle(ros::Time startTime, long updateFrequencyNsecs, l
 
 void JointsMonitor::endCycle(ros::Time endTime) {
     cycleEnd = endTime;
-    
+    owr_messages::board statusMsg;
+    statusMsg.header.stamp = endTime;
     ros::Time estimateTime = endTime;
     int i,j;
     currentStateMessage.velocity.resize(joints.size());
@@ -46,6 +49,18 @@ void JointsMonitor::endCycle(ros::Time endTime) {
         }
         statesPub.publish(currentStateMessage);
     }
+    for(std::vector<JointController*>::iterator it = joints.begin(); it != joints.end(); ++it, j++) {
+            jointInfo info = (*it)->extrapolateStatus(cycleStart, endTime);
+	    owr_messages::pwm pwmMsg;
+	    pwmMsg.joint = info.jointName;
+	    pwmMsg.pwm = info.pwm;
+	    pwmMsg.currentVel = info.velocity;
+	    pwmMsg.currentPos = info.position;
+            statusMsg.joints.push_back(pwmMsg);
+
+            //TODO: add to debug message
+    }
+    debugPub.publish(statusMsg);  
     
     
 }
