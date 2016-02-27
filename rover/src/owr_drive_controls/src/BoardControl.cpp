@@ -328,7 +328,7 @@ void BoardControl::run() {
             jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS, N_UPDATES);
             armRotationBaseGear.updatePos(s.enc0);
             frontLeftSwerveGears.updatePos(s.enc1);
-            frontRightSwerveGears.updatePos(s.enc2);
+            frontRightSwerveGears.updatePos(s.enc4);
             
             //do joint calculations
             //TODO: check if empty
