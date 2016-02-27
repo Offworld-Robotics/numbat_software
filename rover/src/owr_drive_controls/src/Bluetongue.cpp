@@ -41,7 +41,7 @@ struct toControlMsg {
     int16_t padding;
 } __attribute__((packed));
 
-#define ENC_MULTIPLIER 1
+#define ENC_MULTIPLIER 0.12768151
 
 struct toNUCMsg {
     uint16_t magic;
@@ -242,15 +242,15 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     }
     
     
-    ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
-    ROS_INFO("Speeds %d %d %d %d", mesg.flSpeed, mesg.frSpeed, mesg.blSpeed, mesg.brSpeed);
-    ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
-    ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
-            mesg.clawRotate);
-    ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
-            mesg.armBottom, mesg.armRotate);
-    ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
-            cameraBottomTilt, cameraTopRotate, cameraTopTilt);
+//     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
+//     ROS_INFO("Speeds %d %d %d %d", mesg.flSpeed, mesg.frSpeed, mesg.blSpeed, mesg.brSpeed);
+//     ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
+//     ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
+//             mesg.clawRotate);
+//     ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
+//             mesg.armBottom, mesg.armRotate);
+//     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
+//             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
     
     ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
     
@@ -285,7 +285,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.enc3 = resp.enc3 * ENC_MULTIPLIER;
     stat.enc4 = resp.enc4 * ENC_MULTIPLIER;
     
-    ROS_INFO("Encoder speeds %f, %f, %f, %f, %f, %f", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
+    ROS_INFO("Encoder speeds %d, %d, %d, %d, %d, %d", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
         
     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing

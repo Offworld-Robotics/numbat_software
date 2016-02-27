@@ -25,7 +25,11 @@ void GearPositionTracker::updatePos ( double speed ) {
         for(int i = 0; i < gears.size(); i++) {
             distance *= gears[i];
         }
-        double pos = fmod(positions.back() + distance, M_PI);
+        double pos = positions.back() + distance;
+        while (pos < 0) {
+            pos = 2*M_PI + pos;
+        }
+        pos = fmod(pos, 2*M_PI);
         positions.push_back(pos);
         times.push_back(current);
         velocities.push_back(speed);

@@ -15,7 +15,7 @@
 
 #define SECONDS_IN_MINUTE 60.0
 #define FLOATING_PT_ERROR 0.001
-#define FLOAT_EQL(x,y) ((fabs(x - y)) > FLOATING_PT_ERROR)
+#define FLOAT_EQL(x,y) ((fabs(x - y))< FLOATING_PT_ERROR)
 
 
 typedef struct _jointInfo {

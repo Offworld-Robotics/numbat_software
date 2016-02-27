@@ -45,7 +45,7 @@ static inline double calcShortestCircDelta(double a, double b) {
     ab = signFMod(ab + M_PI,(M_PI * 2)) - M_PI;
     double ba = (b - a);
     ba = signFMod(ba + M_PI,(M_PI * 2)) - M_PI;
-    printf("ab %f, ba %f\n", ab, ba);
+//     printf("ab %f, ba %f\n", ab, ba);
     double result = 0;
     if(fabs(ba) >= fabs(ab)) {
         result  = ab;
@@ -90,6 +90,7 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
  */
 int JointSpeedBasedPositionController::posToPWM(double futurePos, double currentPos, double updateFrequency) {
     printf("future %f, current %f, update %f\n", futurePos, currentPos, updateFrequency);
+    
     //check for invalid values
     if( std::fabs(futurePos) + FLOATING_PT_ERROR > (M_PI * 2)) {
         ROS_ERROR("angle %f radians is not a valid position. Positions should be btween %f and %f",futurePos,(M_PI * 2),-(M_PI * 2));
@@ -98,6 +99,18 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     }
     
     double deltaT = 1.0/updateFrequency;
+    
+    //escape if we are close enought
+    if(fabs(futurePos - currentPos) < 2.5) {
+        int pwm = deltaPWM + minPWM; 
+//         nextPosGuess = currentPos;
+        lastPWM = pwm;
+        lastKnownPosition = currentPos;
+        lastAimPosition = futurePos;
+        lastAngularVelocity = 0.0;
+        lastDeltaT = deltaT;
+        return pwm;
+    }
     
     //Step 1: Calculate the angular velocity currently
     double currentAngVel = 0.0;
@@ -110,7 +123,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     //Step 2: Calculate the direction to reach the desired position fastest (CW, CCW)
     double radialDistToTarget =  calcShortestCircDelta(futurePos, currentPos);
     
-    printf("updateFrequency %f, deltaT %f, currentAngVel %f, targetAngularVel %f, radialDistToTarget %f\n", updateFrequency, deltaT, currentAngVel, targetAngularVel, radialDistToTarget);
+//     printf("updateFrequency %f, deltaT %f, currentAngVel %f, targetAngularVel %f, radialDistToTarget %f\n", updateFrequency, deltaT, currentAngVel, targetAngularVel, radialDistToTarget);
     
     //TODO: check limits and efficiencies here
     
@@ -140,7 +153,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
         }
         //NOTE: if radialDistToTarget == 0 we don't want to increase_
     }
-    printf("targetAngularVel %f\n", targetAngularVel);
+
     
     //Step 3: will we pass the point this turn
     double nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
@@ -167,7 +180,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     
     
-    printf(" targetAngularVel %f\n",  targetAngularVel);
+//     printf(" targetAngularVel %f\n",  targetAngularVel);
     double gearAdjustedVel = targetAngularVel;
     double gearMultiplier = 1;
     int i;
@@ -175,19 +188,19 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
         gearMultiplier /= gearRatio[i];
     }
     gearAdjustedVel *= gearMultiplier;
-    printf("gearAdjustedVel %f\n", gearAdjustedVel);
+//     printf("gearAdjustedVel %f\n", gearAdjustedVel);
     if (gearAdjustedVel > 0.0) {
         gearAdjustedVel = std::min<double>(gearAdjustedVel, maxVelocity);
-        printf("gearAdjustedVel max %f\n", gearAdjustedVel);
+//         printf("gearAdjustedVel max %f\n", gearAdjustedVel);
     } else {
         gearAdjustedVel = std::max<double>(gearAdjustedVel, -maxVelocity);
-         printf("gearAdjustedVel min %f\n", gearAdjustedVel);
+//          printf("gearAdjustedVel min %f\n", gearAdjustedVel);
     }
     
     
     double pwmVelRatio = (deltaPWM) / (velocityRange);
     int pwm = (int)(gearAdjustedVel * pwmVelRatio) + minPWM + (deltaPWM/2);
-    printf("pwm %d, gearAdjustedVel %f, multi %f\n", pwm, gearAdjustedVel, gearAdjustedVel * pwmVelRatio);
+//     printf("pwm %d, gearAdjustedVel %f, multi %f\n", pwm, gearAdjustedVel, gearAdjustedVel * pwmVelRatio);
     
     #ifdef DO_VEL_ADJUST
         if(lastAngularVelocity !=  std::numeric_limits< double >::infinity() &&

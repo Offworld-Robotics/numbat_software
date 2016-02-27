@@ -225,7 +225,7 @@ void cap(int *a, int low, int high) {
     *a = *a > high ? high : *a;
 }
 
-#define UPDATE_RATE 5 //Hz
+#define UPDATE_RATE 10 //Hz
 #define SECONDS_2_NS 1000000000
 #define UPDATE_RATE_NS ((1/UPDATE_RATE)*SECONDS_2_NS)
 #define ESTIMATE_INTERVAL_NS ((1/30)*SECONDS_2_NS) //30Hz
@@ -327,7 +327,7 @@ void BoardControl::run() {
             
             jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS, N_UPDATES);
             armRotationBaseGear.updatePos(s.enc0);
-            frontLeftSwerveGears.updatePos(s.enc1);
+            frontLeftSwerveGears.updatePos(s.enc5);
             frontRightSwerveGears.updatePos(s.enc4);
             
             //do joint calculations
