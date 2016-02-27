@@ -106,7 +106,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_RPM,
         "/front_left_swerve_controller/command",
         nh,
-        "front_left_wheel_axel"
+        "front_left_swerve"
     ),
     frontRightSwerve(
        SWERVE_RADIUS,
@@ -204,8 +204,8 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&backRightWheel);
     jMonitor.addJoint(&frontLeftSwerve);
     jMonitor.addJoint(&frontRightSwerve);
-    jMonitor.addJoint(&backLeftSwerve);
-    jMonitor.addJoint(&backRightSwerve);
+//     jMonitor.addJoint(&backLeftSwerve);
+//     jMonitor.addJoint(&backRightSwerve);
     jMonitor.addJoint(&armBaseRotate);
     
     //velocity setup

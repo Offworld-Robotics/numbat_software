@@ -216,7 +216,8 @@ jointInfo JointSpeedBasedPositionController::extrapolateStatus(ros::Time session
     double aimVel = calcShortestCircDelta(lastKnownPosition, lastAimPosition)/lastDeltaT; //NOTE: as we are accelerating/deacclerating this is probably wrong
     
     jointInfo info;
-    info.position = fmod(aimVel * dif.toSec() + lastKnownPosition, (M_PI * 2));
+//     info.position = fmod(aimVel * dif.toSec() + lastKnownPosition, (M_PI * 2));
+    info.position = lastKnownPosition;
     info.velocity = aimVel; //TODO: extrapolate based on delta
     info.pwm = lastPWM;
     info.jointName = name;
