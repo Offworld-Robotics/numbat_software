@@ -54,12 +54,12 @@ struct toNUCMsg {
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
-    uint16_t enc0; // Angular velocities derived from motor encoders, devide by 1000 to get value sent
-    uint16_t enc1;
-    uint16_t enc2;
-    uint16_t enc3;
-    uint16_t enc4;
-    uint16_t enc5;
+    int16_t enc0; // Angular velocities derived from motor encoders, devide by 1000 to get value sent
+    int16_t enc1;
+    int16_t enc2;
+    int16_t enc3;
+    int16_t enc4;
+    int16_t enc5;
 } __attribute__((packed));
 
 bool Bluetongue::reconnect(void) {
