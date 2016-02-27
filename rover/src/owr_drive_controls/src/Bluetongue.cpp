@@ -200,11 +200,11 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     struct toNUCMsg resp;
     mesg.magic = MESSAGE_MAGIC;
     
-    //mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
-    //mesg.rSpeed = (rightMotor * 500) + 1500;
+    mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
+    mesg.rSpeed = (rightMotor * 500) + 1500;
     
-    mesg.lSpeed = 1500;
-    mesg.rSpeed = 1500;
+    //mesg.lSpeed = 1500;
+    //mesg.rSpeed = 1500;
     
     
     mesg.armRotate = (armRotate * 500) + 1500;
