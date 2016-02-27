@@ -29,7 +29,7 @@ def run():
     data_dict = json.loads(data)
     print data_dict['signal']
     message = status()
-    message.battery = 5
+    #message.battery = 5
     message.signal = (data_dict['signal'] + 100)/10.0
     print message.signal
     return message

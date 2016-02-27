@@ -24,7 +24,7 @@
 #define CAMERA_ROTATION_MID 90
 #define CAMERA_ROTATION_MAX 180
 #define CAMERA_ROTATION_MIN 0
-#define CAMERA_SCALE 1
+#define CAMERA_SCALE 1F
 
 #define MAX_IN 1.0
 #define DIFF 0.25
