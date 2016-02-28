@@ -44,3 +44,10 @@ double GearPositionTracker::getPosition () {
     //TODO: move based on time
     return positions.back();
 }
+
+
+void GearPositionTracker::resetPos() {
+    positions.clear();
+    velocities.clear();
+    times.clear();
+}

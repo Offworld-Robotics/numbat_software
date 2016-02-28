@@ -15,10 +15,25 @@
 //if this is not defined do it just based on pwm
 // #define DO_VEL_ADJUST
 
+//coverts a radian postion so that -PI <= pos <= PI
+static inline double posRangeConvert(double pos) {
+//     printf("start pos %f\n", pos);
+    while (pos > M_PI) {
+        pos = -(2*M_PI - pos);
+//         printf("pos %f\n",pos);
+    } 
+    while (pos < -M_PI) {
+       pos = 2*M_PI + pos;
+    }
+    return pos;
+}
+
 static inline double signFMod(double v, double mod) {
     return v - floor(v/mod) * mod;
 }
 
+
+//Condition: -2/PI <= a <= 2/PI, -2/PI <= b <= 2/PI
 static inline double calcShortestCircDelta(double a, double b) {
     
 //     double ab = (a - b);
@@ -41,18 +56,19 @@ static inline double calcShortestCircDelta(double a, double b) {
 // //         printf("error\n");
 // //     }
     
-    double ab = (a - b);
-    ab = signFMod(ab + M_PI,(M_PI * 2)) - M_PI;
-    double ba = (b - a);
-    ba = signFMod(ba + M_PI,(M_PI * 2)) - M_PI;
-//     printf("ab %f, ba %f\n", ab, ba);
-    double result = 0;
-    if(fabs(ba) >= fabs(ab)) {
-        result  = ab;
-    } else {
-        result = ba;
-    }
-    return result;
+//     double ab = (a - b);
+//     ab = signFMod(ab + M_PI,(M_PI * 2)) - M_PI;
+//     double ba = (b - a);
+//     ba = signFMod(ba + M_PI,(M_PI * 2)) - M_PI;
+// //     printf("ab %f, ba %f\n", ab, ba);
+//     double result = 0;
+//     if(fabs(ba) >= fabs(ab)) {
+//         result  = ab;
+//     } else {
+//         result = ba;
+//     }
+//     return result;
+    return b - a;
 }
 
 JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radiusIn, const double * gearRatioIn, int nGearsIn,int minPWMIn, int maxPWMIn, int maxRPMIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
@@ -61,7 +77,7 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
     minPWM = minPWMIn;
     maxRPM = maxRPMIn;
     deltaPWM = maxPWMIn - minPWMIn;
-    maxVelocity = (maxRPMIn * M_2_PI/SECONDS_IN_MINUTE) ;
+    maxVelocity = (maxRPMIn * 2*M_PI/SECONDS_IN_MINUTE) ;
     velocityRange = maxVelocity * 2.0;
     printf("deltaPWM %d, maxVelocity %f velocityRange %f\n", deltaPWM, maxVelocity, velocityRange);
     
@@ -89,7 +105,7 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
  * The co-ordinate system is such that the angal is 0 when the wheel is facing forward
  */
 int JointSpeedBasedPositionController::posToPWM(double futurePos, double currentPos, double updateFrequency) {
-    printf("future %f, current %f, update %f\n", futurePos, currentPos, updateFrequency);
+    
     
     //check for invalid values
     if( std::fabs(futurePos) + FLOATING_PT_ERROR > (M_PI * 2)) {
@@ -98,11 +114,18 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
         return -1;
     }
     
-    double deltaT = 1.0/updateFrequency;
+    //place the two angles in our range
+    futurePos = posRangeConvert(futurePos);
+    currentPos = posRangeConvert(currentPos);
+    printf("future %f, current %f, update %f\n", futurePos, currentPos, updateFrequency);
     
-    //escape if we are close enought
-    if(fabs(futurePos - currentPos) < 2.5) {
-        int pwm = deltaPWM + minPWM; 
+    double deltaT = 1.0/updateFrequency;
+    double aimPosDelta = calcShortestCircDelta(currentPos, futurePos);
+    
+    //escape if we are close enough
+    if(fabs(aimPosDelta) < (0.3)) {
+        int pwm = deltaPWM/2 + minPWM; 
+        printf("mid pwm %d, posDelta %f\n", pwm, aimPosDelta);
 //         nextPosGuess = currentPos;
         lastPWM = pwm;
         lastKnownPosition = currentPos;
@@ -220,6 +243,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
 }
 
 int JointSpeedBasedPositionController::posToPWM ( double currentPos, double updateFrequency ) {
+    printf("requested %f\n", requestedValue);
     return posToPWM(requestedValue, currentPos, updateFrequency);
 }
 

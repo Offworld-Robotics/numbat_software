@@ -44,13 +44,13 @@ TEST(TestJointSpeedController, testIncrementing) {
     double gearRatio[1] = {1};
     
     JointSpeedBasedPositionController contrl1(0.5,gearRatio, 1, 1000, 2000, 1,  "/test", nh, "test_joint");
-    int max = contrl1.posToPWM(M_PI, 0, 5.0); //rotate the maximum possible distance from 0, should require full power
+    int max = contrl1.posToPWM(M_PI_2, 0, 5.0); //rotate the maximum possible distance from 0, should require full power
     EXPECT_GE(2000,max );
     EXPECT_LE(1900, max);
     printf("max pwm %d\n", max);
     
    //but lets say we only got half way 
-    max = contrl1.posToPWM(M_PI, M_PI_2, 5.0); //rotate the maximum possible distance from 0, should require full power
+    max = contrl1.posToPWM(M_PI_2, M_PI/3, 5.0); //rotate the maximum possible distance from 0, should require full power
     EXPECT_GE(2000,max );
     EXPECT_LE(1900, max);
     printf("max pwm %d\n", max);

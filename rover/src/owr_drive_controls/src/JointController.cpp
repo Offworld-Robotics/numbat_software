@@ -16,5 +16,6 @@ JointController::JointController(char * topic, ros::NodeHandle nh, std::string j
 }
 
 void JointController::callback(const std_msgs::Float64::ConstPtr& msg) {
+//     printf("recived %f\n", msg->data);
     requestedValue = msg->data;
 }

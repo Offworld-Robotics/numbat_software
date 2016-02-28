@@ -12,6 +12,7 @@ class GearPositionTracker {
         GearPositionTracker(const std::vector< double > & gears);
         GearPositionTracker(const double * gears,const int nGears);
         void updatePos(double speed);
+        void resetPos();
         double getPosition();
     private:
         const std::vector< double > gears;

@@ -59,6 +59,7 @@ class BoardControl {
         ros::Publisher boardStatusPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
+        
         float leftDrive, rightDrive;
         //arm top, bottom
         int armTop, armBottom;

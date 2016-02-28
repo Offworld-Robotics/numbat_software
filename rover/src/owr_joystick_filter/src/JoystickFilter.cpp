@@ -63,6 +63,10 @@ JoystickFilter::JoystickFilter(const std::string topic) {
     
     //msgsOut.axes = std::vector<float>(20);
     msgsOut.axes.resize(20);
+    msgsOut.buttons.resize(2);
+    for(int i = 0; i < msgsOut.buttons.size(); i++) {
+        msgsOut.buttons[i] = 0;
+    }
     joySubscriber = node.subscribe<sensor_msgs::Joy>("joy",2, &JoystickFilter::joyCallback, this);
     armSubscriber = node.subscribe<sensor_msgs::Joy>("arm_joy", 2, &JoystickFilter::armCallback, this);
 
@@ -127,6 +131,8 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         cmdVel.linear.y = joy->axes[DIRECTION_STICK_Y] * magnitude;
 
     }
+    msgsOut.buttons[FL_SWERVE_RESET] = joy->buttons[BUTTON_STICK_L];
+    msgsOut.buttons[FL_SWERVE_RESET] = joy->buttons[BUTTON_STICK_R];
     msgsOut.axes[LEFT_WHEELS] = leftWheelSpeed;
     msgsOut.axes[RIGHT_WHEELS] = rightWheelSpeed;
     

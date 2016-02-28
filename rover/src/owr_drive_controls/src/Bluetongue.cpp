@@ -41,7 +41,7 @@ struct toControlMsg {
     int16_t padding;
 } __attribute__((packed));
 
-#define ENC_MULTIPLIER 0.12768151
+#define ENC_MULTIPLIER -0.12768151
 
 struct toNUCMsg {
     uint16_t magic;

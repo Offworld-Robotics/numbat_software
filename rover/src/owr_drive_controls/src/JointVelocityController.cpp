@@ -12,7 +12,7 @@
 
 
 //if this is not defined do it just based on pwm
-#define DO_VEL_ADJUST
+// #define DO_VEL_ADJUST
 
 
 JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int maxRPMIn, double wheelRadiusIn,const double * gearsIn,const int nGearsIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
@@ -41,6 +41,7 @@ JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int
  */
 int JointVelocityController::velToPWM(double targetVel, double currentVel) {
     int pwm;
+    printf("Current vel  %f, aimVel %f\n", targetVel, currentVel);
 //     printf("nGears %d", nGears);
     for(int i = 0; i < nGears; i++) {
         printf("i = %d", i);
@@ -68,7 +69,7 @@ int JointVelocityController::velToPWM(double targetVel, double currentVel) {
     #endif
     lastAngularVelocity = targetAngularVelocity;
     lastPWM = lastPWM;
-    
+    printf("pwm %d\n", pwm);
     return pwm;
 }
 

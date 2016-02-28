@@ -53,6 +53,7 @@ int main(int argc, char ** argv) {
 }
 
 BoardControl::BoardControl() : 
+    nh(),
     jMonitor(nh),
     frontLeftWheel(
         WHEEL_MOTOR_MIN_PWM,
@@ -501,6 +502,12 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armIncRate = top * 5;
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
     
+    if(joy->buttons[FL_SWERVE_RESET]) {
+        frontLeftSwerveGears.resetPos();
+    }
+    if (joy->buttons[FR_SWERVE_RESET]) {
+        frontRightSwerveGears.resetPos();
+    }
 }
 
 

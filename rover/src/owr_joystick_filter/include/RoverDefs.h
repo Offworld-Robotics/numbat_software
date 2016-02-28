@@ -5,14 +5,18 @@
 // Rover control array indexes
 #define RIGHT_WHEELS 				0
 #define LEFT_WHEELS 				1
-#define ARM_ROTATE 					2
-#define CLAW_STATE 					3
-#define CAMERA_BOTTOM_ROTATE		4
+#define ARM_ROTATE 				2
+#define CLAW_STATE 				3
+#define CAMERA_BOTTOM_ROTATE		        4
 #define CAMERA_TOP_ROTATE			5
 #define CAMERA_BOTTOM_TILT			6
 #define CAMERA_TOP_TILT				7
-#define CLAW_ROTATE					8
+#define CLAW_ROTATE				8
 
+//BUTTONS 
+//SWERVE POSTION RESETS
+#define FL_SWERVE_RESET                         0
+#define FR_SWERVE_RESET                         1
 
 //Common for most rover inputs
 #define STOP 						0
@@ -28,6 +32,7 @@
 //Used for arm rotation
 #define CLOCKWISE 					1
 #define ANTICLOCKWISE 				-1
+
 
 
 

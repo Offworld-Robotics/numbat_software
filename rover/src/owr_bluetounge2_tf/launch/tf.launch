@@ -2,10 +2,10 @@
     <param
     name="robot_description"
     command="$(find xacro)/xacro '$(find owr_bluetounge2_tf)/robots/owr_bluetounge2_tf.URDF'" />
-    <node
+    <!--<node
     name="joint_state_publisher"
     pkg="joint_state_publisher"
-    type="joint_state_publisher" />
+    type="joint_state_publisher" />-->
   <node
     name="robot_state_publisher"
     pkg="robot_state_publisher"

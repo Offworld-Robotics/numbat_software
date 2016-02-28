@@ -13,7 +13,7 @@
 #define HALF_ROVER_WIDTH_X .27130
 #define FRONT_W_2_BACK_W_X 0.54216
 
-#define DEG90 1.5708
+#define DEG90 M_PI_2
 
 
 swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
@@ -24,8 +24,9 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
         const double rotationRadius = HALF_ROVER_WIDTH_X/sin(turnAngle);
         geometry_msgs::Vector3 rotationCentre;
         rotationCentre.x = -HALF_ROVER_WIDTH_X;
-        rotationCentre.y = sqrt(pow(rotationRadius,2)+pow(HALF_ROVER_WIDTH_X,2));
-        const double angularVelocity = velMsg->linear.x / rotationRadius;
+        rotationCentre.y = sqrt(pow(rotationRadius,2)-pow(HALF_ROVER_WIDTH_X,2));
+        //magnitude velocity over rotation radius
+        const double angularVelocity = (velMsg->linear.y / cos(turnAngle)) / rotationRadius;
         ROS_INFO("turnAngle %lf, rotationRadius %lf, rotationCenter  %lf, %lf, %lf",turnAngle, rotationRadius, rotationCentre.x, rotationCentre.y, rotationCentre.z);
         //calculate the radiuses of each wheel about the rotation center
         //NOTE: if necisary this could be optimised
@@ -45,7 +46,7 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
         double farFrontAng = DEG90-atan2(farBackR,FRONT_W_2_BACK_W_X);
         
         //work out which side to favour
-        if(0 <= turnAngle && turnAngle <= DEG90*2) {
+        if(0 <= turnAngle && turnAngle <= M_PI) {
             output.frontLeftMotorV = closeFrontV;
             output.backLeftMotorV = closeBackV;
             output.frontRightMotorV = farFrontV;
@@ -57,8 +58,8 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
             output.backRightMotorV = closeBackV;
             output.frontLeftMotorV = farFrontV;
             output.backLeftMotorV = farBackV;
-            output.frontLeftAng = farFrontAng;
-            output.frontRightAng = closeFrontAng;
+            output.frontLeftAng = -farFrontAng;
+            output.frontRightAng = -closeFrontAng;
         }
     } else {
         //y = 0
