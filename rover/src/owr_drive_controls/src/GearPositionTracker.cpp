@@ -18,7 +18,12 @@ GearPositionTracker::GearPositionTracker (const double* gears,const int nGears )
 
 void GearPositionTracker::updatePos ( double speed ) {
     ros::Time current = ros::Time::now();
+    updatePos(speed, current);
+}
+
+void GearPositionTracker::updatePos(double speed, ros::Time current) {
     //TODO: do error checking, etc
+    mutext.lock();
     if (positions.size() != 0) {
         double distance = (speed * (current - times.back()).toSec());
         //do gear ratios
@@ -38,6 +43,7 @@ void GearPositionTracker::updatePos ( double speed ) {
         positions.push_back(0.0);
         times.push_back(current);
     }
+    mutext.unlock();
 }
 
 double GearPositionTracker::getPosition () {
@@ -47,7 +53,9 @@ double GearPositionTracker::getPosition () {
 
 
 void GearPositionTracker::resetPos() {
+    mutext.lock();
     positions.clear();
     velocities.clear();
     times.clear();
+    mutext.unlock();
 }

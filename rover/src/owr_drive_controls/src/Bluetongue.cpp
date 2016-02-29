@@ -252,7 +252,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
 //     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
 //             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
     
-    ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
+//     ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
     
     isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
@@ -287,16 +287,16 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     
     ROS_INFO("Encoder speeds %d, %d, %d, %d, %d, %d", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
         
-    jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
-    jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
-    jointMsg.header.seq = timeSeq; // sequence ID
-    timeSeq++; //Adjust seq-id
-
-    //Resize the joint arrays to fit the number of joints being used
-    jointMsg.velocity.resize(NUM_JOINTS);
-    jointMsg.position.resize(NUM_JOINTS);
-    jointMsg.effort.resize(NUM_JOINTS);
-    jointMsg.name.resize(NUM_JOINTS);
+//     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
+//     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
+//     jointMsg.header.seq = timeSeq; // sequence ID
+//     timeSeq++; //Adjust seq-id
+// 
+//     //Resize the joint arrays to fit the number of joints being used
+//     jointMsg.velocity.resize(NUM_JOINTS);
+//     jointMsg.position.resize(NUM_JOINTS);
+//     jointMsg.effort.resize(NUM_JOINTS);
+//     jointMsg.name.resize(NUM_JOINTS);
 
     //Publish all joints to rviz, currently a placeholder for joints
 //     publish_joint("a", 0, 0, 0, LEFT_MOT_JOINT);
@@ -317,7 +317,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     
     tf_lidar(mesg.lidarTilt); 
     
-    lidarTFPublisher.publish(jointMsg);
+//     lidarTFPublisher.publish(jointMsg);
     
     return stat;
 }

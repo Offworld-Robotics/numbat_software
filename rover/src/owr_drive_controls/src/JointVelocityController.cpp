@@ -41,10 +41,10 @@ JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int
  */
 int JointVelocityController::velToPWM(double targetVel, double currentVel) {
     int pwm;
-    printf("Current vel  %f, aimVel %f\n", targetVel, currentVel);
+//     printf("Current vel  %f, aimVel %f\n", targetVel, currentVel);
 //     printf("nGears %d", nGears);
     for(int i = 0; i < nGears; i++) {
-        printf("i = %d", i);
+//         printf("i = %d", i);
         targetVel /= gears[i];
         currentVel /= gears[i];
     }
@@ -69,7 +69,7 @@ int JointVelocityController::velToPWM(double targetVel, double currentVel) {
     #endif
     lastAngularVelocity = targetAngularVelocity;
     lastPWM = lastPWM;
-    printf("pwm %d\n", pwm);
+//     printf("pwm %d\n", pwm);
     return pwm;
 }
 

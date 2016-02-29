@@ -132,7 +132,7 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
     }
     msgsOut.buttons[FL_SWERVE_RESET] = joy->buttons[BUTTON_STICK_L];
-    msgsOut.buttons[FL_SWERVE_RESET] = joy->buttons[BUTTON_STICK_R];
+    msgsOut.buttons[FR_SWERVE_RESET] = joy->buttons[BUTTON_STICK_R];
     msgsOut.axes[LEFT_WHEELS] = leftWheelSpeed;
     msgsOut.axes[RIGHT_WHEELS] = rightWheelSpeed;
     

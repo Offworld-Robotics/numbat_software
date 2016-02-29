@@ -37,12 +37,12 @@
 
 #define RECONNECT_DELAY 1000
 
-
+#define SPINNER_THREADS 4
 
 // Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
 #define SENSITIVITY 1
 
-static void printStatus(struct status *s) {
+static inline void printStatus(struct status *s) {
     ROS_INFO("Battery voltage: %f", s->batteryVoltage);
 }
 
@@ -156,7 +156,8 @@ BoardControl::BoardControl() :
     frontRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
     backLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
     backRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
-    armRotationBaseGear(ARM_BASE_ROTATE_GEARS, ARM_BASE_ROTATE_N_GEARS)
+    armRotationBaseGear(ARM_BASE_ROTATE_GEARS, ARM_BASE_ROTATE_N_GEARS),
+    asyncSpinner(SPINNER_THREADS)
     {
 
     //init button sates
@@ -271,7 +272,8 @@ void BoardControl::run() {
     pwmCamBRot = MOTOR_MID;
     pwmCamTTilt = MOTOR_MID;
     pwmCamTRot = MOTOR_MID;
-    
+    asyncSpinner.start();
+    ros::Time lastUpdate = ros::Time::now();
     //initialise but don't publish untill we have data
     while (ros::ok()) {
         //so the first time dosen't fail
@@ -325,11 +327,15 @@ void BoardControl::run() {
                 pwmLIDAR
             );
             if (!s.isConnected) break;
+            double updateRateNSec = (ros::Time::now() - lastUpdate).toNSec();
+            double updateRateHZ = 1.0/( updateRateNSec / SECONDS_2_NS);
+            ROS_INFO("Update Rate NSec: %f, HZ: %f", updateRateNSec, updateRateHZ);
+            lastUpdate = ros::Time::now();
             
-            jMonitor.beginCycle(ros::Time::now(), UPDATE_RATE_NS, ESTIMATE_INTERVAL_NS, N_UPDATES);
-            armRotationBaseGear.updatePos(s.enc0);
-            frontLeftSwerveGears.updatePos(s.enc5);
-            frontRightSwerveGears.updatePos(s.enc4);
+            jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
+            armRotationBaseGear.updatePos(s.enc0, lastUpdate);
+            frontLeftSwerveGears.updatePos(s.enc5, lastUpdate);
+            frontRightSwerveGears.updatePos(s.enc4, lastUpdate);
             
             //do joint calculations
             //TODO: check if empty
@@ -339,12 +345,12 @@ void BoardControl::run() {
             pwmBLW = backLeftWheel.velToPWM(swerveState.backLeftMotorV);
             pwmBRW = backRightWheel.velToPWM(swerveState.backRightMotorV);
             //TODO: this should actually be the angle from the encoders
-            pwmFRS = frontRightSwerve.posToPWM(frontRightSwerveGears.getPosition(), UPDATE_RATE);
-            pwmFLS =  frontLeftSwerve.posToPWM(frontLeftSwerveGears.getPosition(), UPDATE_RATE);
+            pwmFRS = frontRightSwerve.posToPWM(frontRightSwerveGears.getPosition(), updateRateHZ);
+            pwmFLS =  frontLeftSwerve.posToPWM(frontLeftSwerveGears.getPosition(), updateRateHZ);
             
             //adjust the arm position
             armRotateAngle += armRotateRate;
-            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, armRotationBaseGear.getPosition(), UPDATE_RATE); //TODO: add in actual current position
+            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
             
             //for now do this for actuators
             pwmArmTop = armTop;
@@ -366,11 +372,11 @@ void BoardControl::run() {
             #ifdef VOLTMETER_ON
             publishVoltmeter(s.voltmeter);
             #endif
-            printStatus(&s);
+//             printStatus(&s);
             
             //ros and timing stuff
-            ros::spinOnce();
-            r.sleep();
+//             ros::spinOnce();
+//             r.sleep();
         }
         ROS_ERROR("Lost usb connection to Bluetongue");
         ROS_ERROR("Trying to reconnect every %d ms", RECONNECT_DELAY);
@@ -397,8 +403,8 @@ void BoardControl::run() {
 //         
 //         printStatus(&s);
         //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
-        ros::spinOnce();
-        r.sleep();
+//         ros::spinOnce();
+//         r.sleep();
     }
     delete steve;
 }
@@ -472,10 +478,10 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     float top = joy->axes[ARM_STICK_TOP] ;//* 0.2;
     float bottom = joy->axes[ARM_STICK_BOTTOM];//* 0.2;
-    cameraBottomRotateIncRate = 0;
-    cameraBottomTiltIncRate = 0;
-    cameraTopRotateIncRate = 0;
-    cameraTopTiltIncRate = 0;
+//     cameraBottomRotateIncRate = 0;
+//     cameraBottomTiltIncRate = 0;
+//     cameraTopRotateIncRate = 0;
+//     cameraTopTiltIncRate = 0;
 
 
 
@@ -504,9 +510,11 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     if(joy->buttons[FL_SWERVE_RESET]) {
         frontLeftSwerveGears.resetPos();
+        ROS_INFO("Reset Front left Swerve");
     }
     if (joy->buttons[FR_SWERVE_RESET]) {
         frontRightSwerveGears.resetPos();
+        ROS_INFO("Reset Front right Swerve");
     }
 }
 

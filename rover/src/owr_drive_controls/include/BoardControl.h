@@ -59,6 +59,7 @@ class BoardControl {
         ros::Publisher boardStatusPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
+        ros::AsyncSpinner asyncSpinner;
         
         float leftDrive, rightDrive;
         //arm top, bottom
