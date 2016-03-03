@@ -42,7 +42,7 @@ struct toControlMsg {
 } __attribute__((packed));
 
 //expect RPM is 6/m = 2.513274123rads/s
-#define ENC_MULTIPLIER -0.12768151
+#define ENC_MULTIPLIER -0.5
 
 struct toNUCMsg {
     uint16_t magic;

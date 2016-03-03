@@ -198,6 +198,9 @@ BoardControl::BoardControl() :
     rotState = STOP;
     clawState = STOP;
     
+    currentVel.linear.x = 0;
+    currentVel.linear.y = 0;
+    currentVel.linear.z = 0;
     
     //swerve setup
     jMonitor.addJoint(&frontLeftWheel);
