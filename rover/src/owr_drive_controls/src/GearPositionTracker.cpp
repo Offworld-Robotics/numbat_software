@@ -25,7 +25,12 @@ void GearPositionTracker::updatePos(double speed, ros::Time current) {
     //TODO: do error checking, etc
     mutext.lock();
     if (positions.size() != 0) {
-        double distance = (speed * (current - times.back()).toSec());
+        double distance;
+        if(positions.size() == 1) {
+            distance = (speed * (current - times.back()).toSec());
+        }  else {
+            distance = (speed * (current - times.back()).toSec());
+        }
         //do gear ratios
         for(int i = 0; i < gears.size(); i++) {
             distance *= gears[i];

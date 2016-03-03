@@ -41,6 +41,7 @@ struct toControlMsg {
     int16_t padding;
 } __attribute__((packed));
 
+//expect RPM is 6/m = 2.513274123rads/s
 #define ENC_MULTIPLIER -0.12768151
 
 struct toNUCMsg {
@@ -253,9 +254,10 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
 //             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
     
 //     ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
-    
+//     ros::Time testTime = ros::Time::now();
     isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
+//     ROS_INFO("Time diff %f", (ros::Time::now() - testTime).toSec());
     
     if (!isConnected) {
         stat.isConnected = false;
