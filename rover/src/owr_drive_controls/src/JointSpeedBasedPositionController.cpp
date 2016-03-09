@@ -68,7 +68,8 @@ static inline double calcShortestCircDelta(double a, double b) {
 //         result = ba;
 //     }
 //     return result;
-    return b - a;
+    printf("a: %f b: %f\nf: %f\n",a ,b, b-a);
+    return b-a;
 }
 
 JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radiusIn, const double * gearRatioIn, int nGearsIn,int minPWMIn, int maxPWMIn, int maxRPMIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
@@ -132,6 +133,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
         lastAimPosition = futurePos;
         lastAngularVelocity = 0.0;
         lastDeltaT = deltaT;
+        printf("close enoug\n");
         return pwm;
     }
     
@@ -152,6 +154,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     //are we at zero?
     if(fabs(currentAngVel) > VEL_INC) {
+        printf("zero vel\n");
         //Are we going in the right direction
         if(std::signbit(radialDistToTarget) == std::signbit(currentAngVel)) { //compares the sign of the two
             if(targetAngularVel > 0) {
@@ -169,6 +172,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
             
         }
     } else {
+        printf("non zero vel\n");
         if(radialDistToTarget > 0 + SMALL_INC) {
             targetAngularVel = VEL_INC;
         } else if (radialDistToTarget < 0 -  SMALL_INC) {

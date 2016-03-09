@@ -286,6 +286,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.enc2 = resp.enc2 * ENC_MULTIPLIER;
     stat.enc3 = resp.enc3 * ENC_MULTIPLIER;
     stat.enc4 = resp.enc4 * ENC_MULTIPLIER;
+    stat.enc5 = resp.enc5 * ENC_MULTIPLIER;
     
     ROS_INFO("Encoder speeds %d, %d, %d, %d, %d, %d", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
         

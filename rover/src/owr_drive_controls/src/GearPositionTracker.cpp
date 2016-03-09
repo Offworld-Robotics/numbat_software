@@ -29,17 +29,23 @@ void GearPositionTracker::updatePos(double speed, ros::Time current) {
         if(positions.size() == 1) {
             distance = (speed * (current - times.back()).toSec());
         }  else {
-            distance = (speed * (current - times.back()).toSec());
+            distance = ((speed+velocities.back())/2.0 * (current - times.back()).toSec());
         }
         //do gear ratios
         for(int i = 0; i < gears.size(); i++) {
             distance *= gears[i];
         }
         double pos = positions.back() + distance;
-        while (pos < 0) {
-            pos = 2*M_PI + pos;
+//         while (pos < 0) {
+//             pos = 2*M_PI + pos;
+//         }
+//         pos = fmod(pos, 2*M_PI);
+        while (pos > M_PI) {
+        pos = -(2*M_PI - pos);
+        } 
+        while (pos < -M_PI) {
+           pos = 2*M_PI + pos;
         }
-        pos = fmod(pos, 2*M_PI);
         positions.push_back(pos);
         times.push_back(current);
         velocities.push_back(speed);
