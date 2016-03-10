@@ -12,14 +12,20 @@
 #define BACK_WHEEL_SPAN 0.80273
 #define HALF_ROVER_WIDTH_X .27130
 #define FRONT_W_2_BACK_W_X 0.54216
+#define VEL_ERROR 0.01
 
 #define DEG90 M_PI_2
 
 
 swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
+    
     swerveMotorVels output;
+    //santity check, if the magnitude is close to zero stop
+    if(fabs(sqrt(pow(velMsg->linear.x, 2) + pow(velMsg->linear.x, 2))) < VEL_ERROR) {
+        output.frontLeftMotorV = output.backLeftMotorV = output.frontRightMotorV = output.backRightMotorV = 0;
+        output.frontRightAng = output.frontLeftAng = 0;
      //account for the special case where y=0
-    if(velMsg->linear.y != 0) {
+    } else if(velMsg->linear.y != 0) {
         const double turnAngle = atan2(velMsg->linear.y,velMsg->linear.x);
         const double rotationRadius = HALF_ROVER_WIDTH_X/sin(turnAngle);
         geometry_msgs::Vector3 rotationCentre;

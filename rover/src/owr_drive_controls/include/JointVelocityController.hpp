@@ -27,6 +27,7 @@ class JointVelocityController : public JointController {
         int currentPWM;
         int deltaPWM;
         double velocityRange;
+        double maxVelocity;
         const double * gears;
         int nGears;
         

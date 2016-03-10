@@ -21,7 +21,8 @@ JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int
     minPWM = minPWMIn;
     maxRPM = maxRPMIn;
     deltaPWM = maxPWMIn - minPWMIn;
-    velocityRange = (maxRPMIn * M_2_PI/SECONDS_IN_MINUTE) * 2;
+    maxVelocity = (maxRPMIn * M_2_PI/SECONDS_IN_MINUTE);
+    velocityRange = maxVelocity * 2;
     
     //inital values
     lastAngularVelocity = std::numeric_limits< double >::infinity();
@@ -41,23 +42,28 @@ JointVelocityController::JointVelocityController(int minPWMIn, int maxPWMIn, int
  */
 int JointVelocityController::velToPWM(double targetVel, double currentVel) {
     int pwm;
-    printf("Vel Current vel  %f, aimVel %f\n", targetVel, currentVel);
+    printf("Vel target vel  %f, current vel %f\n", targetVel, currentVel);
 //     printf("nGears %d", nGears);
-    for(int i = 0; i < nGears; i++) {
-//         printf("i = %d", i);
-        targetVel /= gears[i];
-        currentVel /= gears[i];
-    }
+    
     
     //w=v/r
     double targetAngularVelocity = targetVel/wheelRadius;
     double currentAngularVelocity = currentVel/wheelRadius;
     
+    for(int i = 0; i < nGears; i++) {
+        //TODO: optimise this
+//         printf("i = %d", i);
+        targetAngularVelocity /= gears[i];
+        currentAngularVelocity /= gears[i];
+    }
     //ratio of velocity to pwm 
     //delta velocity / delta pwm
-    double pwmVelRatio = (velocityRange) / (deltaPWM);
-//     printf("pwmVelRatio %f, velocityRange %f\n", pwmVelRatio, velocityRange);
+    double pwmVelRatio =  (deltaPWM) / (velocityRange);
+    printf("pwmVelRatio %f, velocityRange %f\n", pwmVelRatio, velocityRange);
 //     printf("minPWM %d, deltaPWM %d\n", minPWM, deltaPWM);
+    //correct for maximums
+    targetAngularVelocity =  std::min(targetAngularVelocity, maxVelocity);
+    targetAngularVelocity =  std::max(targetAngularVelocity, -maxVelocity);
     pwm = (int)(targetAngularVelocity * pwmVelRatio) + minPWM + (deltaPWM/2);
     
     #ifdef DO_VEL_ADJUST
@@ -77,7 +83,8 @@ int JointVelocityController::velToPWM(double targetVel, double currentVel) {
 int JointVelocityController::velToPWM ( double currentVel ) {
     //safe value
     if (isnan(requestedValue)) {
-            return minPWM + deltaPWM/2;
+            lastPWM =  minPWM + deltaPWM/2;
+            return lastPWM;
     }
     return velToPWM(requestedValue, currentVel);
 }
