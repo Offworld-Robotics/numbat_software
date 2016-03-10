@@ -64,7 +64,7 @@ void CmdVelToJoints::run() {
         backLeftDrive.publish(msg);
         msg.data = -backRightMotorV;
         backRightDrive.publish(msg);
-        msg.data = frontLeftAng;
+        msg.data = frontLeftAng*-1.0;
         frontLeftSwerve.publish(msg);
         msg.data = frontRightAng;
         frontRightSwerve.publish(msg);
