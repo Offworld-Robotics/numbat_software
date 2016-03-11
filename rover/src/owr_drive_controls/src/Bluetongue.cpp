@@ -127,11 +127,10 @@ bool Bluetongue::connect() {
 }
 
 Bluetongue::Bluetongue(const char* port) {
-    lidarTFPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", 10);
-    timeSeq = 0;
+    //lidarTFPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", 10);
+    //timeSeq = 0;
     
-    testLidar = 1330;
-    testDirection = 0;
+    
     
     // Open serial port
     bluetongue_port = port;
@@ -229,18 +228,9 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     //mesg.lidarTilt = (lidarTilt * 500) + 1500; // Use this line when reading lidar from a joystick
     //mesg.lidarTilt = 1295;
     
-    mesg.lidarTilt = testLidar; //Testing Lidar positioning.
+    mesg.lidarTilt = lidarTilt; //Testing Lidar positioning.
     
-    //Test constraints for osciallting lidar. Ignores function inputs
-    if(testLidar >= 1700){
-        testDirection = BACKWARDS; // change direction at 45 degrees from oriz.
-        testLidar -= PWM_SHIFT;
-    } else if (testLidar <= 960){
-        testDirection = FORWARDS; //change direction at 45 degrees from horiz.
-        testLidar += PWM_SHIFT;
-    } else {
-        testLidar += PWM_SHIFT * (1 - (2 * testDirection)); // equivalent of, if(forward), increment, if(backward) decrement
-    }
+    
     
     
 //     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
@@ -318,33 +308,14 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
 //     publish_joint("n", 0, 0, 0, EXTRA_3);
 //     publish_joint("o", 0, 0, 0, EXTRA_4);
     
-    tf_lidar(mesg.lidarTilt); 
+    //tf_lidar(mesg.lidarTilt); 
     
 //     lidarTFPublisher.publish(jointMsg);
     
     return stat;
 }
 
-// Sends rviz an angle (radians) representing the current position of the lidar
-// gimbal. Angle is measured from horizontal (1330:pwm = 0 rads), with tilting
-// towards the front of the rover measured as positive radians, and tilting in
-// the opposite direction as negative.
-void Bluetongue::tf_lidar(int16_t pwm){
-    double lidarRads;
-    double lidarVel;
-    
-    lidarRads = pwm - LIDAR_HORIZ;
 
-    lidarRads = lidarRads * DEG_PER_PWM;//Find angle in degrees
-    lidarRads = lidarRads * M_PI/180;//Convert to radians
-    
-    lidarVel = (PWM_SHIFT * LIDAR_FREQ) * DEG_PER_PWM * (M_PI/180); // find velocity in rad/s
-    
-    if(testDirection){
-        lidarVel = lidarVel * (-1);
-    }
-//     publish_joint("laser_tilt_joint", lidarRads, lidarVel, 0, LIDAR_JOINT);
-}
 
 
     

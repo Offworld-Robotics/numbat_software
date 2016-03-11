@@ -152,6 +152,12 @@ BoardControl::BoardControl() :
         nh,
         "arm_base_rotation"
     ),
+    lidar(
+        CONTINUOUS,
+        "/lidar_tilt_tilt_controller/command",
+        nh,
+        "lidar_tilt_tilt"
+    ),
     frontLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
     frontRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
     backLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
@@ -209,6 +215,7 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&backRightWheel);
     jMonitor.addJoint(&frontLeftSwerve);
     jMonitor.addJoint(&frontRightSwerve);
+    jMonitor.addJoint(&lidar);
 //     jMonitor.addJoint(&backLeftSwerve);
 //     jMonitor.addJoint(&backRightSwerve);
     jMonitor.addJoint(&armBaseRotate);
@@ -350,6 +357,7 @@ void BoardControl::run() {
             //TODO: this should actually be the angle from the encoders
             pwmFRS = frontRightSwerve.posToPWM(frontRightSwerveGears.getPosition(), updateRateHZ);
             pwmFLS =  frontLeftSwerve.posToPWM(frontLeftSwerveGears.getPosition(), updateRateHZ);
+            pwmLIDAR = lidar.velToPWM();
             
             //adjust the arm position
             armRotateAngle += armRotateRate;
