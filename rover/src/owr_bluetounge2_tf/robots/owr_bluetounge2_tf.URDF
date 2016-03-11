@@ -429,7 +429,7 @@
     <child
       link="front_left_swerve_axel" />
     <axis
-      xyz="-1 0 0" />
+      xyz="1 0 0" />
   </joint>
   <link
     name="front_left_wheel">

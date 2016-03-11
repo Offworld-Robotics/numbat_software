@@ -25,7 +25,7 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
         output.frontLeftMotorV = output.backLeftMotorV = output.frontRightMotorV = output.backRightMotorV = 0;
         output.frontRightAng = output.frontLeftAng = 0;
      //account for the special case where y=0
-    } else if(velMsg->linear.y != 0) {
+    } else if(fabs(velMsg->linear.y) >= VEL_ERROR) {
         const double turnAngle = atan2(velMsg->linear.y,velMsg->linear.x);
         const double rotationRadius = HALF_ROVER_WIDTH_X/sin(turnAngle);
         geometry_msgs::Vector3 rotationCentre;
@@ -59,6 +59,7 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
             output.backRightMotorV = farBackV;
             output.frontLeftAng = closeFrontAng;
             output.frontRightAng = farFrontAng;
+            ROS_INFO("right");
         } else {
             output.frontRightMotorV = closeFrontV;
             output.backRightMotorV = closeBackV;
@@ -66,9 +67,11 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
             output.backLeftMotorV = farBackV;
             output.frontLeftAng = -farFrontAng;
             output.frontRightAng = -closeFrontAng;
+            ROS_INFO("left");
         }
     } else {
         //y = 0
+        ROS_INFO("drive straight");
         output.frontLeftMotorV = output.backLeftMotorV = output.frontRightMotorV = output.backRightMotorV = velMsg->linear.x;
         output.frontRightAng = output.frontLeftAng = 0;
     }
