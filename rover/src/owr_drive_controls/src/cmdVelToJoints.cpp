@@ -56,13 +56,13 @@ void CmdVelToJoints::run() {
         
         std_msgs::Float64 msg;
         //one side needs to be fliped so the joint velocity is relevant to the point velocity
-        msg.data = frontLeftMotorV;
+        msg.data = -1.0* frontLeftMotorV;
         frontLeftDrive.publish(msg);
-        msg.data = -1.0* frontRightMotorV;
+        msg.data =  frontRightMotorV;
         frontRightDrive.publish(msg);
-        msg.data = backLeftMotorV;
+        msg.data = -1.0 * backLeftMotorV;
         backLeftDrive.publish(msg);
-        msg.data = -1.0 * backRightMotorV;
+        msg.data =  backRightMotorV;
         backRightDrive.publish(msg);
         msg.data = frontLeftAng*-1.0;
         frontLeftSwerve.publish(msg);

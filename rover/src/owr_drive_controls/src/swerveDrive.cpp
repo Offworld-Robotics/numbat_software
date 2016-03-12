@@ -62,10 +62,10 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
             output.frontRightAng = farFrontAng;
             ROS_INFO("right");
         } else {
-            output.frontRightMotorV = closeFrontV;
-            output.backRightMotorV = closeBackV;
-            output.frontLeftMotorV = farFrontV;
-            output.backLeftMotorV = farBackV;
+            output.frontRightMotorV = -closeFrontV;
+            output.backRightMotorV = -closeBackV;
+            output.frontLeftMotorV = -farFrontV;
+            output.backLeftMotorV = -farBackV;
             output.frontLeftAng = -farFrontAng;
             output.frontRightAng = -closeFrontAng;
             ROS_INFO("left");
