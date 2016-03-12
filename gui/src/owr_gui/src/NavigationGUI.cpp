@@ -13,6 +13,8 @@
 	Compile using: catkin_make
 	Setup environment using: source devel/setup.bash
 	Run using: rosrun owr_gui navigation
+
+	Updated 12/MAR/2016 by Johnson Shi shijohnson@outlook.com to subcribe to the imu, and constantly update tiltX and tiltY values.
 */
 
 #include "NavigationGUI.h"
@@ -85,10 +87,11 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 	//ROS_INFO("Updated info");
 }
 
-void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
+void NavigationGUI::updateVideo(unsigned char *frame, int width, int height, float tiltX, float tiltY) {
 	// use the Video_Feed_Frame object method
 	videoScreen->setNewStreamFrame(frame, width, height);
-	
+	this->tiltX = tiltX; //this constantly updates the tiltX value
+	this->tiltY = tiltY; //this constantly updates the tiltY value
 	//ROS_INFO("Updated video");
 }
 

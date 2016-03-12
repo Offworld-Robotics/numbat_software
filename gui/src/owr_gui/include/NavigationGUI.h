@@ -1,5 +1,7 @@
 /*
 	Class header for NavigationGUI
+
+	Updated Johnson Shi shijohnson@outlook.com to include tiltX and tiltY in updateVideo function.
 */
  
 #ifndef NAVIGATIONGUI_H
@@ -59,7 +61,9 @@ class NavigationGUI : public GLUTWindow {
 	public:
 		NavigationGUI(int width, int height, int *argc, char **argv);
 		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, vector3D target);
-		void updateVideo(unsigned char *frame, int width, int height);
+		void updateVideo(unsigned char *frame, int width, int height, float tiltX, float tiltY);
+		//updates video information constantly through subscription to imu data
+
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 		
 	private:

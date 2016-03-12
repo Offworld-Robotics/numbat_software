@@ -6,6 +6,9 @@
 	
 	
 	Updated 30/5/15 by Simon Ireland to detect and pass to gui the active/inactive/offline cameras
+
+	Updated 12/MAR/2016 by Johnson Shi shijohnson@outlook.com to subscribe to the imu, and update
+						the tiltX and tiltY values for the false horizon
 */
 
 #include "NavigationNode.h"
@@ -39,9 +42,12 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	// 
 	
 	gpsSub = n.subscribe("/gps/fix", 1000, &NavigationNode::receiveGpsMsg, this); // GPS related data
-	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
+	//batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
-	
+
+	imuSub = n.subscribe("sensor_msgs/imu", 1000, &NavigationNode::imuUpdate, this);
+	//this subscription is for the imu.
+
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// created yet, will wait til it has w/o doing anything
 
@@ -108,8 +114,8 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	gui->updateInfo(battery, signal, ultrasonic, l, target);
 }
 
-void NavigationNode::receiveBatterySignal(const std_msgs::Float64
-
+//void NavigationNode::receiveBatterySignal(const std_msgs::Float64
+/*
 void NavigationNode::receiveWifiSigMsg(const owr_messages::status::ConstPtr& msg) {
 	assert(msg);
 	
@@ -119,11 +125,17 @@ void NavigationNode::receiveWifiSigMsg(const owr_messages::status::ConstPtr& msg
 	battery = msg->battery;
 	gui->updateInfo(battery, signal, ultrasonic, NULL, target);
 }
-
+*/
 void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received video frame");
 	
-	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
+	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height, tiltX, tiltY);
+}
+
+//this function constantly updates the value of tiltX and tiltY by obtaining the messages from msg->orientation
+void NavigationNode::imuUpdate(const sensor_msgs::Imu::ConstPtr& msg) {
+	this->tiltX = msg->orientation.x;
+	this->tiltY = msg->orientation.y;
 }

@@ -2,6 +2,8 @@
 	Class header for NavigationNode
 	The node manages input into the Navigation GUI from ROS
 	By Harry J.E Day for Bluesat OWR <Harry@dayfamilyweb.com>
+
+	Updated 12/MAR/2016 by Johnson Shi shijohnson@outlook.com to subscribe to the imu.
 */
  
 #ifndef NAVIGATIONNODE_H
@@ -12,6 +14,7 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>
 #include "owr_messages/status.h"
+#include <sensor_msgs/Imu.h>
 #include "NavigationGUI.h"
 #include <image_transport/image_transport.h>
 
@@ -35,6 +38,9 @@ class NavigationNode {
 		ros::Subscriber batterySub;
 		image_transport::Subscriber videoSub[TOTAL_FEEDS];
 		ros::Subscriber feedsSub;
+
+		ros::Subscriber imuSub;
+		void imuUpdate(const sensor_msgs::Imu::ConstPtr& msg);
 		
 		float battery;
 		float signal;
