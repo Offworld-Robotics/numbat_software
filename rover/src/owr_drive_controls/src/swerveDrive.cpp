@@ -21,7 +21,7 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
     
     swerveMotorVels output;
     //santity check, if the magnitude is close to zero stop
-    if(fabs(sqrt(pow(velMsg->linear.x, 2) + pow(velMsg->linear.x, 2))) < VEL_ERROR) {
+    if(fabs(sqrt(pow(velMsg->linear.x, 2) + pow(velMsg->linear.y, 2))) < VEL_ERROR) {
         output.frontLeftMotorV = output.backLeftMotorV = output.frontRightMotorV = output.backRightMotorV = 0;
         output.frontRightAng = output.frontLeftAng = 0;
      //account for the special case where y=0
@@ -32,7 +32,8 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
         rotationCentre.x = -HALF_ROVER_WIDTH_X;
         rotationCentre.y = sqrt(pow(rotationRadius,2)-pow(HALF_ROVER_WIDTH_X,2));
         //magnitude velocity over rotation radius
-        const double angularVelocity = (velMsg->linear.y / cos(turnAngle)) / rotationRadius;
+        //const double angularVelocity = (velMsg->linear.y / cos(turnAngle)) / rotationRadius;
+        const double angularVelocity = fabs(sqrt(pow(velMsg->linear.x, 2) + pow(velMsg->linear.y, 2))) / rotationRadius;
         ROS_INFO("turnAngle %lf, rotationRadius %lf, rotationCenter  %lf, %lf, %lf",turnAngle, rotationRadius, rotationCentre.x, rotationCentre.y, rotationCentre.z);
         //calculate the radiuses of each wheel about the rotation center
         //NOTE: if necisary this could be optimised

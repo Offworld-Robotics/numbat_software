@@ -94,7 +94,7 @@ BoardControl::BoardControl() :
         WHEEL_RADIUS,
         WHEEL_GEARS,
         WHEEL_N_GEARS,
-        "/back_right_swerve_controller/command",
+        "/back_right_wheel_axel_controller/command",
         nh,
         "back_right_wheel_axel"
     ),

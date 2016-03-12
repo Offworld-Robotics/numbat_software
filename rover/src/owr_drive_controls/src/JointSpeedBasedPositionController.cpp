@@ -125,7 +125,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     double aimPosDelta = calcShortestCircDelta(currentPos, futurePos);
     
     //escape if we are close enough
-    if(fabs(aimPosDelta) < (0.1)) {
+    if(fabs(aimPosDelta) < (0.15)) {
         int pwm = deltaPWM/2 + minPWM; 
         printf("mid pwm %d, posDelta %f\n", pwm, aimPosDelta);
 //         nextPosGuess = currentPos;
