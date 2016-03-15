@@ -1,21 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(hector_geotiff)
+project(hector_imu_tools)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS cmake_modules hector_map_tools hector_nav_msgs nav_msgs pluginlib roscpp std_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs geometry_msgs nav_msgs tf)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
-find_package(Qt4 4.6 COMPONENTS QtCore QtGui REQUIRED)
-
-find_package(Eigen REQUIRED)
-include_directories(${Eigen_INCLUDE_DIRS})
-add_definitions(${Eigen_DEFINITIONS})
-
-include(${QT_USE_FILE})
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -57,10 +49,10 @@ include(${QT_USE_FILE})
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES geotiff_writer
-  CATKIN_DEPENDS hector_map_tools hector_nav_msgs nav_msgs pluginlib roscpp std_msgs
-  DEPENDS Eigen QT
+#  INCLUDE_DIRS include
+#  LIBRARIES hector_imu_attitude_to_tf
+#  CATKIN_DEPENDS roscpp sensor_msgs tf
+#  DEPENDS
 )
 
 ###########
@@ -69,22 +61,27 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include include/hector_geotiff)
+# include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(geotiff_writer src/geotiff_writer/geotiff_writer.cpp)
-target_link_libraries(geotiff_writer ${catkin_LIBRARIES} ${QT_LIBRARIES})
-add_dependencies(geotiff_writer ${catkin_EXPORTED_TARGETS})
+## Declare a cpp library
+# add_library(hector_imu_attitude_to_tf
+#   src/${PROJECT_NAME}/hector_imu_attitude_to_tf.cpp
+# )
 
-add_executable(geotiff_saver src/geotiff_saver.cpp)
-target_link_libraries(geotiff_saver geotiff_writer)
-add_dependencies(geotiff_saver ${catkin_EXPORTED_TARGETS})
+## Declare a cpp executable
+add_executable(pose_and_orientation_to_imu_node src/pose_and_orientation_to_imu_node.cpp)
 
-add_executable(geotiff_node src/geotiff_node.cpp)
-target_link_libraries(geotiff_node geotiff_writer)
-add_dependencies(geotiff_node ${catkin_EXPORTED_TARGETS})
+## Add cmake target dependencies of the executable/library
+## as an example, message headers may need to be generated before nodes
+# add_dependencies(hector_imu_attitude_to_tf_node hector_imu_attitude_to_tf_generate_messages_cpp)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(pose_and_orientation_to_imu_node
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
@@ -101,18 +98,18 @@ add_dependencies(geotiff_node ${catkin_EXPORTED_TARGETS})
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS geotiff_writer geotiff_saver geotiff_node
+install(TARGETS pose_and_orientation_to_imu_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 ## Mark cpp header files for installation
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.h"
-  PATTERN ".svn" EXCLUDE
-)
+# install(DIRECTORY include/${PROJECT_NAME}/
+#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#   FILES_MATCHING PATTERN "*.h"
+#   PATTERN ".svn" EXCLUDE
+# )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES
@@ -130,7 +127,7 @@ install(DIRECTORY launch/
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_hector_geotiff.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_hector_imu_attitude_to_tf.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
