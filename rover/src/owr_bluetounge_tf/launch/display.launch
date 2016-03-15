@@ -1,19 +1,15 @@
 <launch>
   <arg
-    name="bluetounge" />
+    name="model" />
   <arg
     name="gui"
-    default="False" />
+    default="True" />
   <param
     name="robot_description"
-    textfile="$(find owr_bluetounge_tf)/robots/bluetounge.URDF" />
+    command="$(find xacro)/xacro '$(find owr_bluetounge_tf)/robots/owr_bluetounge_tf.URDF'" />
   <param
     name="use_gui"
     value="$(arg gui)" />
-  <node
-    name="joint_state_publisher"
-    pkg="joint_state_publisher"
-    type="joint_state_publisher" />
   <node
     name="robot_state_publisher"
     pkg="robot_state_publisher"

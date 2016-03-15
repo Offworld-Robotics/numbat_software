@@ -9,7 +9,6 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   gscam
-  message_generation
   owr_messages
 )
 
@@ -86,7 +85,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
   LIBRARIES owr_camera_control
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime gscam
+  CATKIN_DEPENDS roscpp rospy std_msgs gscam
   DEPENDS system_lib
 )
 
