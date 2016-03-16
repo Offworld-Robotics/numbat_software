@@ -154,9 +154,9 @@ BoardControl::BoardControl() :
     ),
     lidar(
         CONTINUOUS,
-        "/lidar_tilt_tilt_controller/command",
+        "/laser_tilt_joint_controller/command",
         nh,
-        "lidar_tilt_tilt"
+        "laser_tilt_joint"
     ),
     frontLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
     frontRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
