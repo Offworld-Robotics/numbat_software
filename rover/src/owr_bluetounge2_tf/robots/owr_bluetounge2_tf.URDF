@@ -1,5 +1,19 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="owr_bluetounge2_tf">
+	 <link name="base_stabalized_frame"></link>
+	 <joint
+        name="base_footprint_joint"
+        type="fixed">
+        <origin
+        xyz="0 0 0 "
+        rpy="0 0 0" />
+        <parent
+        link="base_footprint" />
+        <child
+        link="base_link" />
+        <axis
+        xyz="0 0 0" />
+    </joint>
     <link name="base_link">
     </link>
     <joint
