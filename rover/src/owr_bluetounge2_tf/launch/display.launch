@@ -1,0 +1,18 @@
+<launch>
+  <arg
+    name="model" />
+  <arg
+    name="gui"
+    default="True" />
+  
+  <param
+    name="use_gui"
+    value="$(arg gui)" />
+  <include
+    file="$(find owr_bluetounge2_tf)/launch/tf.launch" />
+  <node
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    args="-d $(find owr_bluetounge2_tf)/urdf.rviz" />
+</launch>

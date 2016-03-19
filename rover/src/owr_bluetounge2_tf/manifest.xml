@@ -1,0 +1,6 @@
+<package>
+  <description brief="owr_bluetounge2_tf">owr_bluetounge2_tf</description>
+  <depend package="gazebo" />
+  <author>me</author>
+  <license>BSD</license>
+</package>
