@@ -126,9 +126,9 @@ add_dependencies(auto bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(auto bluesat_owr_protobuf)
 target_link_libraries(auto ${catkin_LIBRARIES} GL GLU glut)
 
-add_executable(armwidget src/ArmWidgetGUI.cpp src/GLUTWindow.cpp) 
-add_dependencies(armwidget ${catkin_EXPORTED_TARGETS})
-target_link_libraries(armwidget ${catkin_LIBRARIES} GL GLU glut)
+add_executable(arm src/ArmWidgetGUI.cpp src/GLUTWindow.cpp) 
+add_dependencies(arm ${catkin_EXPORTED_TARGETS})
+target_link_libraries(arm ${catkin_LIBRARIES} GL GLU glut)
 
 ## Declare a cpp library
 # add_library(owr_gui

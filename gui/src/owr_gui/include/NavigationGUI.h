@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include "owr_messages/stream.h"
 #include <list>
+#include <tf/transform_listener.h>
 #include "Video_Feed_Frame.hpp"
 
 #define PI 3.1415926535897932384626433832795
@@ -53,6 +54,8 @@
 
 #define ALPHA 1.0 // transparency factor
 #define TEXTBOX_ALPHA 0.001
+
+#define NUM_ARM_JOINTS 11
 
 class NavigationGUI : public GLUTWindow {
 
@@ -129,6 +132,12 @@ class NavigationGUI : public GLUTWindow {
 		void toggleStream(int feed);
 		
 		Video_Feed_Frame *videoScreen;
+		
+		void refreshArmTFs();
+		void drawArmModel();
+		
+		tf::TransformListener armTFListener;
+		tf::StampedTransform armTFs[NUM_ARM_JOINTS];
 };
 
 

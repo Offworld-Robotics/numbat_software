@@ -15,8 +15,7 @@
         <axis
         xyz="0 0 0" />
     </joint>
-  <link
-    name="chassis">
+  <link    name="chassis">
     <inertial>
       <origin
         xyz="-0.000306092356492482 0.000502740394013363 0.0553311735203667"
@@ -55,8 +54,7 @@
       </geometry>
     </collision>
   </link>
-  <link
-    name="laser_tilt">
+  <link    name="laser_tilt">
     <inertial>
       <origin
         xyz="-0.0326669331300311 0.000449239090195036 0.0154731252391825"
@@ -108,8 +106,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="laser_tilt_tilt">
+  <link    name="laser_tilt_tilt">
     <inertial>
       <origin
         xyz="-0.0207354942246256 -0.0110062171521322 0.0363962516011186"
@@ -166,8 +163,7 @@
       effort="0"
       velocity="0" />
   </joint>
-  <link
-    name="lidar_frame">
+  <link    name="lidar_frame">
     <inertial>
       <origin
         xyz="-0.000639925729432167 0.000662656077548368 -0.0176677612707939"
@@ -219,8 +215,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="front_left_leg_base">
+  <link    name="front_left_leg_base">
     <inertial>
       <origin
         xyz="0 0.00294015084396301 0.0195712415755609"
@@ -272,8 +267,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="front_left_leg_top">
+  <link    name="front_left_leg_top">
     <inertial>
       <origin
         xyz="-0.0118602854136348 -0.0016720264699957 0.0475197676666218"
@@ -325,8 +319,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="front_left_swerve_top">
+  <link    name="front_left_swerve_top">
     <inertial>
       <origin
         xyz="0.00579106512736 -0.0190503342420132 -0.0544162570868618"
@@ -378,8 +371,7 @@
     <axis
       xyz="0 -1 0" />
   </joint>
-  <link
-    name="front_left_swerve_axel">
+  <link    name="front_left_swerve_axel">
     <inertial>
       <origin
         xyz="0.0799583398916556 0.0493805695532939 -1.53687481296849E-06"
@@ -431,8 +423,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="front_left_wheel">
+  <link    name="front_left_wheel">
     <inertial>
       <origin
         xyz="-0.0663813744814108 -1.95940016273766E-05 -2.22091400667035E-05"
@@ -484,8 +475,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="front_left_springs">
+  <link    name="front_left_springs">
     <inertial>
       <origin
         xyz="-6.34422720663386E-07 0.0316858507419693 0.0150051402890246"
@@ -537,8 +527,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="front_left_suspension">
+  <link    name="front_left_suspension">
     <inertial>
       <origin
         xyz="-0.0116167533649652 0.00132967364811817 0.0489941917398175"
@@ -590,8 +579,7 @@
     <axis
       xyz="0 0 -1" />
   </joint>
-  <link
-    name="front_left_back_to_rover">
+  <link    name="front_left_back_to_rover">
     <inertial>
       <origin
         xyz="1.1366576430083E-10 -0.0110053367071424 0.0171856026082578"
@@ -643,8 +631,7 @@
     <axis
       xyz="1 0 0" />
   </joint>
-  <link
-    name="back_left_leg_base">
+  <link    name="back_left_leg_base">
     <inertial>
       <origin
         xyz="0 0.00294015084396301 0.0195712415755609"
@@ -696,8 +683,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="back_left_leg_top">
+  <link    name="back_left_leg_top">
     <inertial>
       <origin
         xyz="-0.0112199907904004 0.000771963062171949 0.0486489076535467"
@@ -749,8 +735,7 @@
     <axis
       xyz="0 0 -1" />
   </joint>
-  <link
-    name="back_left_swerve_top">
+  <link    name="back_left_swerve_top">
     <inertial>
       <origin
         xyz="0.0190496508359126 0.0181018716824016 -0.0350197808493304"
@@ -802,8 +787,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="back_left_swerve_axel">
+  <link    name="back_left_swerve_axel">
     <inertial>
       <origin
         xyz="7.19512227576047E-11 -0.0498207928462409 -0.0423647942792511"
@@ -855,8 +839,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="back_left_wheel">
+  <link    name="back_left_wheel">
     <inertial>
       <origin
         xyz="-0.0663813744814109 -1.95940016275431E-05 -2.22091400667868E-05"
@@ -908,8 +891,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="back_left_springs">
+  <link    name="back_left_springs">
     <inertial>
       <origin
         xyz="-6.30600931861292E-06 0.0148626589856348 0.0582344880671569"
@@ -961,8 +943,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="back_left_suspension">
+  <link    name="back_left_suspension">
     <inertial>
       <origin
         xyz="-0.00993956116482878 -0.0165027609959398 0.000651802123213252"
@@ -1014,8 +995,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="back_left_to_rover">
+  <link    name="back_left_to_rover">
     <inertial>
       <origin
         xyz="1.13665632461846E-10 -0.0110053367071424 0.0171856026082578"
@@ -1067,8 +1047,7 @@
     <axis
       xyz="1 0 0" />
   </joint>
-  <link
-    name="front_right_leg_base">
+  <link    name="front_right_leg_base">
     <inertial>
       <origin
         xyz="3.46944695195361E-18 0.00294015084396307 0.0195712415755609"
@@ -1120,8 +1099,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="front_right_leg_top">
+  <link    name="front_right_leg_top">
     <inertial>
       <origin
         xyz="0.0762803933912035 0.034376092346453 0.000771578880568294"
@@ -1173,8 +1151,7 @@
     <axis
       xyz="0 1 0" />
   </joint>
-  <link
-    name="front_right_swerve_top">
+  <link    name="front_right_swerve_top">
     <inertial>
       <origin
         xyz="-0.000934279116028947 -0.00762686801808265 -0.0290327080939286"
@@ -1226,8 +1203,7 @@
     <axis
       xyz="0 0 -1" />
   </joint>
-  <link
-    name="front_right_swerve_axel">
+  <link    name="front_right_swerve_axel">
     <inertial>
       <origin
         xyz="1.48448894354142E-06 -0.0478348037669294 -0.0419346754576931"
@@ -1279,8 +1255,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="front_right_wheel">
+  <link    name="front_right_wheel">
     <inertial>
       <origin
         xyz="-0.0663813744814108 -1.95940016275431E-05 -2.2209140066648E-05"
@@ -1332,8 +1307,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="front_right_springs">
+  <link    name="front_right_springs">
     <inertial>
       <origin
         xyz="-1.18708999517214E-05 0.0327836528481927 0.0150050435880243"
@@ -1385,8 +1359,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="front_right_suspension">
+  <link    name="front_right_suspension">
     <inertial>
       <origin
         xyz="-0.00603449184340332 0.00108839617956266 0.0486309703678901"
@@ -1438,8 +1411,7 @@
     <axis
       xyz="0 0 -1" />
   </joint>
-  <link
-    name="front_right_to_rover">
+  <link    name="front_right_to_rover">
     <inertial>
       <origin
         xyz="1.13665753892489E-10 -0.0110053367071423 0.0171856026082578"
@@ -1491,8 +1463,7 @@
     <axis
       xyz="1 0 0" />
   </joint>
-  <link
-    name="back_right_leg_base">
+  <link    name="back_right_leg_base">
     <inertial>
       <origin
         xyz="0 0.00294015084396307 0.0195712415755609"
@@ -1544,8 +1515,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="back_right_leg_top">
+  <link    name="back_right_leg_top">
     <inertial>
       <origin
         xyz="-0.0112199907904005 -0.000771963062172087 0.0475510923464529"
@@ -1597,8 +1567,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="back_right_swerve_top">
+  <link    name="back_right_swerve_top">
     <inertial>
       <origin
         xyz="0.0190495417284672 0.0180064663449653 -0.0493202140614411"
@@ -1650,8 +1619,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="back_right_swerve_axel">
+  <link    name="back_right_swerve_axel">
     <inertial>
       <origin
         xyz="7.19512227576047E-11 -0.0498207928462409 -0.0423647942792511"
@@ -1703,8 +1671,7 @@
     <axis
       xyz="0 0 -1" />
   </joint>
-  <link
-    name="back_right_wheel">
+  <link    name="back_right_wheel">
     <inertial>
       <origin
         xyz="-0.0663813744814109 -1.95940016275431E-05 -2.22091400667868E-05"
@@ -1756,8 +1723,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="back_right_springs">
+  <link    name="back_right_springs">
     <inertial>
       <origin
         xyz="-1.18708999515826E-05 -0.0149949564119756 0.0576907991037673"
@@ -1809,8 +1775,7 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="back_right_suspension">
+  <link    name="back_right_suspension">
     <inertial>
       <origin
         xyz="-0.0114902738387502 -0.00115188134063246 0.047538058612584"
@@ -1862,8 +1827,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="back_right_to_rover">
+  <link    name="back_right_to_rover">
     <inertial>
       <origin
         xyz="1.13665743484148E-10 -0.0110053367071424 0.0171856026082578"
@@ -1915,8 +1879,7 @@
     <axis
       xyz="1 0 0" />
   </joint>
-  <link
-    name="arm_base">
+  <link    name="arm_base">
     <inertial>
       <origin
         xyz="-0.00577800660165687 4.17841682295306E-05 0.136866703717242"
@@ -1968,8 +1931,7 @@
     <axis
       xyz="0 0 -1" />
   </joint>
-  <link
-    name="arm_top_actuator_base">
+  <link    name="arm_top_actuator_base">
     <inertial>
       <origin
         xyz="-0.0199928804547402 0.106614805768208 0.0339996193086286"
@@ -2021,8 +1983,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="arm_top_actuator_shaft">
+  <link    name="arm_top_actuator_shaft">
     <inertial>
       <origin
         xyz="1.26496016439326E-08 0.141281564051618 1.00420822213287E-08"
@@ -2079,8 +2040,7 @@
       effort="0"
       velocity="0" />
   </joint>
-  <link
-    name="arm_top_plates">
+  <link    name="arm_top_plates">
     <inertial>
       <origin
         xyz="0.309460599938482 0.0699553674781654 -0.0419999999999997"
@@ -2132,8 +2092,7 @@
     <axis
       xyz="0 0 -1" />
   </joint>
-  <link
-    name="arm_top_plate_base_link">
+  <link    name="arm_top_plate_base_link">
     <inertial>
       <origin
         xyz="-0.0319999997488061 -6.03117764064187E-11 2.49496479032274E-10"
@@ -2185,8 +2144,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="arm_bottom_plates">
+  <link    name="arm_bottom_plates">
     <inertial>
       <origin
         xyz="0.213559152071814 0.0328810534532391 -0.025999999999998"
@@ -2238,8 +2196,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="arm_bottom_actuator_base">
+  <link    name="arm_bottom_actuator_base">
     <inertial>
       <origin
         xyz="0.0320003841319003 0.104575352005021 -0.0702153368949235"
@@ -2291,8 +2248,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="arm_bottom_actuator_shaft">
+  <link    name="arm_bottom_actuator_shaft">
     <inertial>
       <origin
         xyz="1.69515020076449E-08 0.166668235423207 1.20563901639947E-08"
@@ -2349,8 +2305,7 @@
       effort="0"
       velocity="0" />
   </joint>
-  <link
-    name="arm_lower_bottom_plates">
+  <link    name="arm_lower_bottom_plates">
     <inertial>
       <origin
         xyz="-0.116987046396621 -0.0117851282028598 0.0219999953477101"
@@ -2402,8 +2357,7 @@
     <axis
       xyz="0 0 1" />
   </joint>
-  <link
-    name="arm_sync_plate_lower">
+  <link    name="arm_sync_plate_lower">
     <inertial>
       <origin
         xyz="0.0400000000000004 1.85748495473703E-08 4.04874333503891E-08"
@@ -2455,8 +2409,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="claw_base">
+  <link    name="claw_base">
     <inertial>
       <origin
         xyz="-0.0277171001001676 0.0175578017668822 -0.0146145490965356"
@@ -2508,8 +2461,7 @@
     <axis
       xyz="0 -1 0" />
   </joint>
-  <link
-    name="claw_wrist">
+  <link    name="claw_wrist">
     <inertial>
       <origin
         xyz="0.000838226385520766 0.106171608821904 -0.000503683338309968"
@@ -2561,8 +2513,7 @@
     <axis
       xyz="0 0.999999999998984 0" />
   </joint>
-  <link
-    name="claw_right">
+  <link    name="claw_right">
     <inertial>
       <origin
         xyz="-0.0219697875013496 0.00199994968369344 -0.0295222751643468"
@@ -2614,8 +2565,7 @@
     <axis
       xyz="0 -0.999999999999744 0" />
   </joint>
-  <link
-    name="claw_left">
+  <link    name="claw_left">
     <inertial>
       <origin
         xyz="-0.0219696013554269 0.002000052887282 -0.0295227352466975"
@@ -2667,8 +2617,7 @@
     <axis
       xyz="0 0.999999999999737 0" />
   </joint>
-  <link
-    name="claw_upper_link">
+  <link    name="claw_upper_link">
     <inertial>
       <origin
         xyz="0.0479999999999978 7.82630262818884E-08 -5.3292095403279E-08"
@@ -2720,8 +2669,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="arm_sync_plates">
+  <link    name="arm_sync_plates">
     <inertial>
       <origin
         xyz="0.0399999999517592 0.0256980370864562 0.00182881496444195"
@@ -2773,8 +2721,7 @@
     <axis
       xyz="-1 0 0" />
   </joint>
-  <link
-    name="arm_lower_top_plates">
+  <link    name="arm_lower_top_plates">
     <inertial>
       <origin
         xyz="0.0480000005095059 0.0379639515356004 0.168599314143766"

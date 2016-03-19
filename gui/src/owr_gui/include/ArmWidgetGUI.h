@@ -9,6 +9,8 @@
 #include <tf/transform_listener.h>
 #include "GLUTWindow.h"
 
+#define NUM_ARM_JOINTS 11
+
 class ArmWidgetGUI : public GLUTWindow {
 	public:
 		ArmWidgetGUI(int width, int height, int *argc, char *argv[]);
@@ -21,8 +23,8 @@ class ArmWidgetGUI : public GLUTWindow {
 		
 		void refreshTransforms();
 		
-		tf::TransformListener tfListener;
-		tf::StampedTransform tfs[10];
+		tf::TransformListener armTFListener;
+		tf::StampedTransform armTFs[NUM_ARM_JOINTS];
 		
 		double scale;
 		bool arrow_keys[4];

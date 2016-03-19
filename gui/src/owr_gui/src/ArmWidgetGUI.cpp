@@ -13,34 +13,45 @@ void ArmWidgetGUI::refreshTransforms() {
 	try {
 		//listener.lookupTransform("/from_frame", "/to_frame", ros::Time(0), transform);
 		
-		//top_actuator_base
-		//	top_actuator_shaft
-		//		sync_main
-		//structural_main
-		//	sync_plate
-		//		sync_minor
-		//			end_plate
-		//	rocker
-		//	bottom_actuator_base
-		//		bottom_actuator_shaft
+		/*
+		base_link
+		arm_base
+		arm_top_actuator_base
+		arm_top_actuator_shaft
+		arm_top_plates
+		arm_top_plate_base_link
+		arm_bottom_plates
+		arm_bottom_actuator_base
+		arm_bottom_actuator_shaft
+		arm_lower_bottom_plates
+		arm_sync_plate_lower
+		claw_base
+		claw_wrist
+		claw_right
+		claw_left
+		claw_upper_link
+		arm_sync_plates
+		arm_lower_top_plates
+		*/
 		
-		tfListener.lookupTransform("/base_link", "/top_actuator_base", ros::Time(0), tfs[0]);
-		tfListener.lookupTransform("/base_link", "/top_actuator_shaft", ros::Time(0), tfs[1]);
-		tfListener.lookupTransform("/base_link", "/sync_main", ros::Time(0), tfs[2]);
-		tfListener.lookupTransform("/base_link", "/structural_main", ros::Time(0), tfs[3]);
-		tfListener.lookupTransform("/base_link", "/sync_plate", ros::Time(0), tfs[4]);
-		tfListener.lookupTransform("/base_link", "/sync_minor", ros::Time(0), tfs[5]);
-		tfListener.lookupTransform("/base_link", "/end_plate", ros::Time(0), tfs[6]);
-		tfListener.lookupTransform("/base_link", "/rocker", ros::Time(0), tfs[7]);
-		tfListener.lookupTransform("/base_link", "/bottom_actuator_base", ros::Time(0), tfs[8]);
-		tfListener.lookupTransform("/base_link", "/bottom_actuator_shaft", ros::Time(0), tfs[9]);
+		armTFListener.lookupTransform("/arm_base", "/arm_top_actuator_base", ros::Time(0), armTFs[0]);
+		armTFListener.lookupTransform("/arm_base", "/arm_top_actuator_shaft", ros::Time(0), armTFs[1]);
+		armTFListener.lookupTransform("/arm_base", "/arm_top_plates", ros::Time(0), armTFs[2]);
+		armTFListener.lookupTransform("/arm_base", "/arm_top_plate_base_link", ros::Time(0), armTFs[3]);
+		armTFListener.lookupTransform("/arm_base", "/arm_bottom_plates", ros::Time(0), armTFs[4]);
+		armTFListener.lookupTransform("/arm_base", "/arm_bottom_actuator_base", ros::Time(0), armTFs[5]);
+		armTFListener.lookupTransform("/arm_base", "/arm_bottom_actuator_shaft", ros::Time(0), armTFs[6]);
+		armTFListener.lookupTransform("/arm_base", "/arm_lower_bottom_plates", ros::Time(0), armTFs[7]);
+		armTFListener.lookupTransform("/arm_base", "/arm_sync_plate_lower", ros::Time(0), armTFs[8]);
+		armTFListener.lookupTransform("/arm_base", "/arm_sync_plates", ros::Time(0), armTFs[9]);
+		armTFListener.lookupTransform("/arm_base", "/arm_lower_top_plates", ros::Time(0), armTFs[10]);
 		
-		for (int i = 0;i < 10;i++) {
+		for (int i = 0;i < NUM_ARM_JOINTS;i++) {
 			cout << "tfs[" << i << "]: "
-			<< tfs[i].stamp_ << ": "
-			<< tfs[i].getOrigin().x() << ","
-			<< tfs[i].getOrigin().y() << ","
-			<< tfs[i].getOrigin().z() << endl << endl;
+			<< armTFs[i].stamp_ << ": "
+			<< armTFs[i].getOrigin().x() << ","
+			<< armTFs[i].getOrigin().y() << ","
+			<< armTFs[i].getOrigin().z() << endl << endl;
 		}
 	} catch (tf::TransformException &ex) {
 		ROS_ERROR("%s",ex.what());
@@ -59,6 +70,7 @@ void ArmWidgetGUI::idle() {
 	}
 	//cout << scale << endl;
 	refreshTransforms();
+	cout << "scale = " << scale << endl;
 	display();
 	usleep(15000);
 }
@@ -70,21 +82,13 @@ void ArmWidgetGUI::display() {
 	glTranslated(currWinW/2.0, -currWinH/2.0, 0);
 	glColor3f(1,0,0);
 	
-	/*glBegin(GL_TRIANGLES);
-	glVertex3d(0,0,0);
-	glVertex3d(100,100,0);
-	glVertex3d(-100,100,0);
-	glEnd();*/
-	
-	glPointSize(100);
-	glScaled(scale, scale, 0);
+	glScaled(scale, scale, 1);
 	glBegin(GL_LINES);
-	for(int i = 0;i < 10;i++) {
+	for(int i = 0;i < NUM_ARM_JOINTS;i++) {
 		glVertex3d(0,0,0);
-		glVertex3d(tfs[i].getOrigin().x(), tfs[i].getOrigin().z(), 0);
+		glVertex3d(armTFs[i].getOrigin().x(), armTFs[i].getOrigin().z(), 0);
 	}
 	glEnd();
-	glPointSize(1);
 	
 	glPopMatrix();
 	glutSwapBuffers();
