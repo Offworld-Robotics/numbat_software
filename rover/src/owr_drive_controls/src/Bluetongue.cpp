@@ -54,6 +54,10 @@ struct toNUCMsg {
     int16_t enc3;
     int16_t enc4;
     int16_t enc5;
+    
+    int16_t leftMag;
+    int16_t rightMag;
+    
 } __attribute__((packed));
 
 bool Bluetongue::reconnect(void) {
@@ -243,7 +247,8 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     //        mesg.armBottom, mesg.armRotate);
     //ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
     //        cameraBottomTilt, cameraTopRotate, cameraTopTilt);
-    
+    ROS_INFO("left magnet bit value %d", leftMag);
+    ROS_INFO("right magnet bit value %d", rightMag);
     //ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
     
 	isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
