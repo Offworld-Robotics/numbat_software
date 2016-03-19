@@ -22,12 +22,8 @@ using namespace std;
 // All structs are multiples of 32 bits, so this works on x86
 struct toControlMsg {
     uint16_t magic;
-    int16_t frSpeed;
-    int16_t flSpeed;
-    int16_t brSpeed;
-    int16_t blSpeed;
-    int16_t flAng;
-    int16_t frAng;
+    int16_t lSpeed;
+    int16_t rSpeed;
     int16_t armRotate;
     int16_t armTop;
     int16_t armBottom;
@@ -41,26 +37,18 @@ struct toControlMsg {
     int16_t padding;
 } __attribute__((packed));
 
-//expect RPM is 6/m = 2.513274123rads/s
-#define ENC_MULTIPLIER -0.5
-
 struct toNUCMsg {
     uint16_t magic;
     uint16_t vbat;
     #ifdef VOLTMETER_ON
-        uint16_t voltmeter;
-    #else
-        uint16_t padding;
+    uint16_t voltmeter;
     #endif
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
-    int16_t enc0; // Angular velocities derived from motor encoders, devide by 1000 to get value sent
-    int16_t enc1;
-    int16_t enc2;
-    int16_t enc3;
-    int16_t enc4;
-    int16_t enc5;
+    #ifdef VOLTMETER_ON
+    uint16_t padding;
+    #endif
 } __attribute__((packed));
 
 bool Bluetongue::reconnect(void) {
@@ -127,10 +115,11 @@ bool Bluetongue::connect() {
 }
 
 Bluetongue::Bluetongue(const char* port) {
-    //lidarTFPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", 10);
-    //timeSeq = 0;
+    lidarTFPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", 10);
+    timeSeq = 0;
     
-    
+    testLidar = 1330;
+    testDirection = 0;
     
     // Open serial port
     bluetongue_port = port;
@@ -192,12 +181,10 @@ bool Bluetongue::comm(bool forBattery, void *message, int message_len,
     return true;
 }
 
-struct status Bluetongue::update(double leftFMotor, double rightFMotor, 
-                double leftBMotor, double rightBMotor, double leftFSwerve, double rightFSwerve,
-                int armTop, int armBottom, double armRotate, 
-                int clawRotate, int clawGrip, int cameraBottomRotate,
-                int cameraBottomTilt, int cameraTopRotate, 
-                int cameraTopTilt, int lidarTilt) {
+struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop, 
+    int armBottom, double armRotate, int clawRotate, int clawGrip,
+    int cameraBottomRotate, int cameraBottomTilt, int cameraTopRotate,
+    int cameraTopTilt, int lidarTilt) {
     struct status stat;
     if (!isConnected) {
         stat.isConnected = false;
@@ -207,15 +194,9 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     struct toControlMsg mesg;
     struct toNUCMsg resp;
     mesg.magic = MESSAGE_MAGIC;
-//     mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
-//     mesg.rSpeed = (rightMotor * 500) + 1500;
-    mesg.frSpeed = rightFMotor;
-    mesg.flSpeed = leftFMotor;
-    mesg.blSpeed = leftBMotor;
-    mesg.brSpeed = rightBMotor;
-    mesg.flAng = leftFSwerve;
-    mesg.frAng = rightFSwerve;
-    mesg.armRotate = armRotate;
+    mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
+    mesg.rSpeed = (rightMotor * 500) + 1500;
+    mesg.armRotate = (armRotate * 500) + 1500;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
     mesg.clawRotate = clawRotate;
@@ -228,7 +209,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     //mesg.lidarTilt = (lidarTilt * 500) + 1500; // Use this line when reading lidar from a joystick
     //mesg.lidarTilt = 1295;
     
-    mesg.lidarTilt = lidarTilt; //Testing Lidar positioning.
+    mesg.lidarTilt = testLidar; //Testing Lidar positioning.
     
     //Test constraints for osciallting lidar. Ignores function inputs
     if(testLidar >= 1700){
@@ -252,22 +233,11 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
     
-//     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
-//     ROS_INFO("Speeds %d %d %d %d", mesg.flSpeed, mesg.frSpeed, mesg.blSpeed, mesg.brSpeed);
-//     ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
-//     ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
-//             mesg.clawRotate);
-//     ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
-//             mesg.armBottom, mesg.armRotate);
-//     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
-//             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
+    ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
     
-//     ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
-//     ros::Time testTime = ros::Time::now();
-    isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
+	isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
-//     ROS_INFO("Time diff %f", (ros::Time::now() - testTime).toSec());
-    
+	
     if (!isConnected) {
         stat.isConnected = false;
         stat.roverOk = false;
@@ -277,7 +247,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     }
     
     if (resp.magic != MESSAGE_MAGIC) {
-        ROS_INFO("Update Bluetongue had a error");
+		ROS_INFO("Update Bluetongue had a error");
         stat.roverOk = false;    
         return stat;
 	} else {
@@ -290,42 +260,34 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
-    stat.enc0 = resp.enc0 * ENC_MULTIPLIER;
-    stat.enc1 = resp.enc1 * ENC_MULTIPLIER;
-    stat.enc2 = resp.enc2 * ENC_MULTIPLIER;
-    stat.enc3 = resp.enc3 * ENC_MULTIPLIER;
-    stat.enc4 = resp.enc4 * ENC_MULTIPLIER;
-    stat.enc5 = resp.enc5 * ENC_MULTIPLIER;
-    
-    ROS_INFO("Encoder speeds %d, %d, %d, %d, %d, %d", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
         
-//     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
-//     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
-//     jointMsg.header.seq = timeSeq; // sequence ID
-//     timeSeq++; //Adjust seq-id
-// 
-//     //Resize the joint arrays to fit the number of joints being used
-//     jointMsg.velocity.resize(NUM_JOINTS);
-//     jointMsg.position.resize(NUM_JOINTS);
-//     jointMsg.effort.resize(NUM_JOINTS);
-//     jointMsg.name.resize(NUM_JOINTS);
+    jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
+    jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
+    jointMsg.header.seq = timeSeq; // sequence ID
+    timeSeq++; //Adjust seq-id
+
+    //Resize the joint arrays to fit the number of joints being used
+    jointMsg.velocity.resize(NUM_JOINTS);
+    jointMsg.position.resize(NUM_JOINTS);
+    jointMsg.effort.resize(NUM_JOINTS);
+    jointMsg.name.resize(NUM_JOINTS);
 
     //Publish all joints to rviz, currently a placeholder for joints
-//     publish_joint("a", 0, 0, 0, LEFT_MOT_JOINT);
-//     publish_joint("b", 0, 0, 0, RIGHT_MOT_JOINT);
-//     publish_joint("c", 0, 0, 0, ARM_TOP_JOINT);
-//     publish_joint("d", 0, 0, 0, ARM_BOT_JOINT);
-//     publish_joint("e", 0, 0, 0, ARM_ROT_JOINT);
-//     publish_joint("f", 0, 0, 0, CLAW_ROT_JOINT);
-//     publish_joint("g", 0, 0, 0, CLAW_GRIP_JOINT);
-//     publish_joint("h", 0, 0, 0, CAM_BOT_ROTATE_JOINT);
-//     publish_joint("i", 0, 0, 0, CAM_BOT_TILT_JOINT);
-//     publish_joint("j", 0, 0, 0, CAM_TOP_ROT_JOINT);
-//     publish_joint("k", 0, 0, 0, CAM_TOP_TILT_JOINT);
-//     publish_joint("l", 0, 0, 0, EXTRA_1);
-//     publish_joint("m", 0, 0, 0, EXTRA_2);
-//     publish_joint("n", 0, 0, 0, EXTRA_3);
-//     publish_joint("o", 0, 0, 0, EXTRA_4);
+    publish_joint("a", 0, 0, 0, LEFT_MOT_JOINT);
+    publish_joint("b", 0, 0, 0, RIGHT_MOT_JOINT);
+    publish_joint("arm_top_actuator", 0, 0, mesg.armTop, ARM_TOP_JOINT);
+    publish_joint("arm_bottom_actuator", 0, 0, mesg.armBottom, ARM_BOT_JOINT);
+    publish_joint("e", 0, 0, 0, ARM_ROT_JOINT);
+    publish_joint("f", 0, 0, 0, CLAW_ROT_JOINT);
+    publish_joint("g", 0, 0, 0, CLAW_GRIP_JOINT);
+    publish_joint("h", 0, 0, 0, CAM_BOT_ROTATE_JOINT);
+    publish_joint("i", 0, 0, 0, CAM_BOT_TILT_JOINT);
+    publish_joint("j", 0, 0, 0, CAM_TOP_ROT_JOINT);
+    publish_joint("k", 0, 0, 0, CAM_TOP_TILT_JOINT);
+    publish_joint("l", 0, 0, 0, EXTRA_1);
+    publish_joint("m", 0, 0, 0, EXTRA_2);
+    publish_joint("n", 0, 0, 0, EXTRA_3);
+    publish_joint("o", 0, 0, 0, EXTRA_4);
     
     tf_lidar(mesg.lidarTilt); 
     

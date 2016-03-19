@@ -81,8 +81,8 @@ void loop() {
       rightBackDrive = Serial.parseFloat();
       //Serial.println(leftDrive);
       //Serial.println(rightDrive);
-      //setSide(leftDrive, leftFront, leftMiddle,leftBack);
-      //setSide(rightDrive, rightFront, rightMiddle,rightBack);
+//      setSide(leftDrive, leftFront, leftMiddle,leftBack);
+//      setSide(rightDrive, rightFront, rightMiddle,rightBack);
       //Servo.refresh();
       
       setMotorSpeed(leftFrontDrive, leftFront);

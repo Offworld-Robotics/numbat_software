@@ -1,5 +1,0 @@
-<launch>
-    <!--<include
-    file="$(find owr_bluetounge_tf)/launch/bluetounge.launch" />-->
-    <node pkg="owr_positioning" type="owr_object_avoidance" name="bluetounge_avoid"/>
-</launch>

@@ -9,6 +9,15 @@
 
 #define GPS_FLOAT_OFFSET 1000000
 
+#define LIDAR_HORIZ 1330.0
+#define DEG_PER_PWM 0.12328767123
+#define SECONDS_DELAY 0.02876707662
+
+#define PWM_SHIFT 10.0
+#define LIDAR_FREQ 5.0
+#define FORWARDS 0
+#define BACKWARDS 1
+
 #define NUM_JOINTS 16
 #define LIDAR_JOINT 0
 #define LEFT_MOT_JOINT 1
@@ -60,41 +69,35 @@ struct status {
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
-    double enc0; // Angular velocities derived from motor encoders
-    double enc1;
-    double enc2;
-    double enc3;
-    double enc4;
-    double enc5;
 };
-    
+	
 class Bluetongue {
-    private:
-        bool comm(bool forBattery, void *message, int message_len, void *resp, 
-                int resp_len);
+	private:
+		bool comm(bool forBattery, void *message, int message_len, void *resp, 
+				int resp_len);
         bool connect();
         void publish_joint(std::string name, double position, double velocity, double effort, int jointNo);
         
         bool isConnected;
-        int port_fd;
+		int port_fd;
         std::string bluetongue_port;
         fd_set uart_set;
         struct timeval timeout;
         double timeSeq;
         
-        
+        double testLidar;
+        bool testDirection;
         sensor_msgs::JointState jointMsg;
-    
-    public:
-        Bluetongue(const char* port);
-        ~Bluetongue();
-        struct status update(double leftFMotor, double rightFMotor, 
-                double leftBMotor, double rightBMotor, double leftFSwerve, double rightFSwerve,
+	
+	public:
+		Bluetongue(const char* port);
+		~Bluetongue();
+		struct status update(double leftMotor, double rightMotor, 
                 int armTop, int armBottom, double armRotate, 
                 int clawRotate, int clawGrip, int cameraBottomRotate,
                 int cameraBottomTilt, int cameraTopRotate, 
                 int cameraTopTilt, int lidarTilt);
-//         void tf_lidar(int16_t pwm);
+        void tf_lidar(int16_t pwm);
         bool reconnect(void);
         ros::Publisher lidarTFPublisher;
         ros::NodeHandle nh;

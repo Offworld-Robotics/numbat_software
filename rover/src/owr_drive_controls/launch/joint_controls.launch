@@ -1,7 +1,0 @@
-<launch>
-	
-	<node pkg="owr_drive_controls" type="cmd_vel_2_joints" name="cmd_vel_2_joints" output="screen">
-	</node>
-
-</launch>
-
