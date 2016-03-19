@@ -49,6 +49,8 @@ struct toNUCMsg {
     #ifdef VOLTMETER_ON
     uint16_t padding;
     #endif
+    uint16_t armBot; // Arm servo displacement measurements
+    uint16_t armTop;
 } __attribute__((packed));
 
 bool Bluetongue::reconnect(void) {
@@ -194,8 +196,12 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     struct toControlMsg mesg;
     struct toNUCMsg resp;
     mesg.magic = MESSAGE_MAGIC;
-    mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
-    mesg.rSpeed = (rightMotor * 500) + 1500;
+    
+    
+    mesg.lSpeed = 1500 //(leftMotor * 500) + 1500; // Scale to 16bit int
+    mesg.rSpeed = 1500 //(rightMotor * 500) + 1500;
+    
+    
     mesg.armRotate = (armRotate * 500) + 1500;
     mesg.armTop = armTop;
     mesg.armBottom = armBottom;
@@ -223,17 +229,16 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     }
     
     
-    ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
-	ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
-	ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
-	ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
-            mesg.clawRotate);
-    ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
-            mesg.armBottom, mesg.armRotate);
-    ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
-            cameraBottomTilt, cameraTopRotate, cameraTopTilt);
+    //ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
+    //ROS_INFO("Speeds %d %d", mesg.lSpeed, mesg.rSpeed);
+    //ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
+    //ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, mesg.clawRotate);
+    //ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);
+    //ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate, cameraBottomTilt, cameraTopRotate, cameraTopTilt);
     
-    ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
+    //ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
+    
+    ROS_INFO(" **** ARM BOTTOM::TOP %d :: %d****", mesg.armBot, mesg.armTop);
     
 	isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
@@ -247,7 +252,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     }
     
     if (resp.magic != MESSAGE_MAGIC) {
-		ROS_INFO("Update Bluetongue had a error");
+        ROS_INFO("Update Bluetongue had a error");
         stat.roverOk = false;    
         return stat;
 	} else {
@@ -255,7 +260,7 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     }
     stat.batteryVoltage = ((resp.vbat / 1024.0) * 3.3) * 5.7;
     #ifdef VOLTMETER_ON
-    stat.voltmeter = (((resp.voltmeter / 1024.0)*3.3) - 1.65) * (37.2 / 2.2);
+        stat.voltmeter = (((resp.voltmeter / 1024.0)*3.3) - 1.65) * (37.2 / 2.2);
     #endif
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
