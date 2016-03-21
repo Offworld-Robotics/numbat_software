@@ -198,8 +198,8 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.magic = MESSAGE_MAGIC;
     
     
-    mesg.lSpeed = 1500 //(leftMotor * 500) + 1500; // Scale to 16bit int
-    mesg.rSpeed = 1500 //(rightMotor * 500) + 1500;
+    mesg.lSpeed = 1500; //(leftMotor * 500) + 1500; // Scale to 16bit int
+    mesg.rSpeed = 1500; //(rightMotor * 500) + 1500;
     
     
     mesg.armRotate = (armRotate * 500) + 1500;
@@ -239,19 +239,6 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     //ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
     
     
-    // ### Arm actuator scaling and actions ### //
-    ROS_INFO(" **** ARM BOTTOM: %d :TOP: %d :****", mesg.armBot, mesg.armTop);
-    
-    double actBot = 0;
-    double actTop = 0;
-    
-    // Comment out if constants undefined:
-    /*actBot = scaleActuator( IN_MIN_BOT, IN_MAX_BOT, OUT_MIN_BOT, IN_MAX_BOT, mesg.armBot);
-    actTOP = scaleActuator( IN_MIN_TOP, IN_MAX_TOP, OUT_MIN_TOP, IN_MAX_TOP, mesg.armTop);
-    
-    ROS_INFO(" **** SCALED ARM BOTTOM: %d : SCALED TOP: %d :****", actBot, actTop);
-    */
-    
 	isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
 	
@@ -277,7 +264,21 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
+    
         
+    // ### Arm actuator scaling and actions ### //
+    ROS_INFO(" **** ARM BOTTOM: %d :TOP: %d :****", resp.armBot, resp.armTop);
+    
+    double actBot = 0;
+    double actTop = 0;
+    
+    // Comment out if constants undefined:
+    /*actBot = scaleActuator( IN_MIN_BOT, IN_MAX_BOT, OUT_MIN_BOT, IN_MAX_BOT, resp.armBot);
+    actTOP = scaleActuator( IN_MIN_TOP, IN_MAX_TOP, OUT_MIN_TOP, IN_MAX_TOP, resp.armTop);
+    
+    ROS_INFO(" **** SCALED ARM BOTTOM: %d : SCALED TOP: %d :****", actBot, actTop);
+    */
+    
     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
     jointMsg.header.seq = timeSeq; // sequence ID
