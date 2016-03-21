@@ -34,7 +34,7 @@ static inline double signFMod(double v, double mod) {
 }
 
 
-//Condition: -2/PI <= a <= 2/PI, -2/PI <= b <= 2/PI
+//Condition: -PI/2 <= a <= PI/2, -PI/2 <= b <= PI/2
 static inline double calcShortestCircDelta(double a, double b) {
     
 //     double ab = (a - b);

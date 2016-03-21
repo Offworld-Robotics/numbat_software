@@ -73,6 +73,9 @@ void JointsMonitor::addJoint(JointController * jc) {
 void JointsMonitor::publish_joint(std::string name, double position, double velocity, double effort, int jointNo){
     currentStateMessage.name[jointNo] = name;
     currentStateMessage.position[jointNo] = position;
+    if(isnan(position)) {
+        currentStateMessage.position[jointNo] = 0;
+    }
     currentStateMessage.velocity[jointNo] = velocity;
     currentStateMessage.effort[jointNo] = effort;
 }

@@ -153,7 +153,7 @@ BoardControl::BoardControl() :
         "arm_base_rotation"
     ),
     lidar(
-        CONTINUOUS,
+        STATIONARY,
         "/laser_tilt_joint_controller/command",
         nh,
         "laser_tilt_joint"
