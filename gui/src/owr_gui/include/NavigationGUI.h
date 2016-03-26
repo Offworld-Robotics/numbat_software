@@ -133,11 +133,15 @@ class NavigationGUI : public GLUTWindow {
 		
 		Video_Feed_Frame *videoScreen;
 		
+		tf::TransformListener tfListener;
+		
 		void refreshArmTFs();
 		void drawArmModel();
 		
-		tf::TransformListener armTFListener;
 		tf::StampedTransform armTFs[NUM_ARM_JOINTS];
+		tf::StampedTransform wheelTFs[2];
+		
+		void drawWheelAngles();
 };
 
 
