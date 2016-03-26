@@ -51,6 +51,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	pathRotation = 90;
 	prevRotation = 90;
 	cursorSpin = 0;
+	
+	wheelPos[0] = wheelPos[1] = 0;
 
 	for (int i = 0;i < NUM_ARROWKEYS;i++)
 		arrowKeys[i] = false;
@@ -96,6 +98,15 @@ void NavigationGUI::updateFeedsStatus(unsigned char *feeds, int numOnline) {
 	memcpy(feedStatus, feeds, TOTAL_FEEDS*sizeof(unsigned char));
 	onlineFeeds = numOnline;
 	ROS_INFO("Navigation: Updating feeds: [%d,%d,%d,%d]", feeds[0], feeds[1], feeds[2], feeds[3]);
+}
+
+void NavigationGUI::updateWheelPos(double *left, double *right) {
+	if(left) {
+		wheelPos[0] = *left;
+	}
+	if(right) {
+		wheelPos[1] = *right;
+	}
 }
 
 void NavigationGUI::idle() {
@@ -175,6 +186,7 @@ void NavigationGUI::display() {
 		drawSignal();
 		drawUltrasonic();
 	}
+	drawWheelPos();
 
 	glutSwapBuffers();
 }
@@ -511,6 +523,28 @@ void NavigationGUI::drawSignal() {
 	sprintf(text, "%.2f%%", signal*10);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 25, 0);
 
+	glPopMatrix();
+}
+
+void NavigationGUI::drawWheelPos() {
+	glPushMatrix();
+	
+	glTranslated(currWinW/2.0, -currWinH/3.0, 0);
+	
+	glColor3f(1,0,0);
+	double r = currWinH/5.0;
+	
+	for(int i = -1;i <= 1;i+=2) {
+		glPushMatrix();
+		glTranslated(i*currWinW/6.0, 0, 0);
+		glRotated(90.0+wheelPos[i]*180.0/PI, 0, 0, 1);
+		glBegin(GL_LINES);
+		glVertex2d(r, 0);
+		glVertex2d(-r, 0);
+		glEnd();
+		glPopMatrix();
+	}
+	
 	glPopMatrix();
 }
 

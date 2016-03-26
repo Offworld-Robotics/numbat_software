@@ -42,6 +42,8 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
 	
+	wheelPosSub = n.subscribe("/joint_states", 1000, &NavigationNode::receiveWheelPosMsg, this);
+	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// created yet, will wait til it has w/o doing anything
 
@@ -108,7 +110,6 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	gui->updateInfo(battery, signal, ultrasonic, l, target);
 }
 
-
 void NavigationNode::receiveBatteryMsg(const owr_messages::status::ConstPtr& msg) {
 	assert(msg);
 	
@@ -125,4 +126,28 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	//ROS_INFO("received video frame");
 	
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
+}
+
+void NavigationNode::receiveWheelPosMsg(const sensor_msgs::JointState::ConstPtr& msg) {
+	assert(msg);
+	
+	//ROS_INFO("received wheel pos");
+	
+	double left = 0, right = 0;
+	bool foundLeft = false, foundRight = false;
+	int jointNo = 0;
+	
+	std::string leftWheelName = "front_left_wheel";
+	std::string rightWheelName = "front_right_wheel";
+	for(jointNo = 0;jointNo < msg->name.size();jointNo++) {
+		if(msg->name[jointNo] == leftWheelName) {
+			left = msg->position[jointNo];
+			foundLeft = true;
+		} else if(msg->name[jointNo] == rightWheelName) {
+			right = msg->position[jointNo];
+			foundRight = true;
+		}
+	}
+	
+	gui->updateWheelPos((foundLeft)? &left : NULL, (foundRight)? &right : NULL);
 }

@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/JointState.h>
 #include "owr_messages/status.h"
 #include "NavigationGUI.h"
 #include <image_transport/image_transport.h>
@@ -28,6 +29,7 @@ class NavigationNode {
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveBatteryMsg(const owr_messages::status::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
+		void receiveWheelPosMsg(const sensor_msgs::JointState::ConstPtr& msg);
 		
 	private:
 		NavigationGUI *gui;
@@ -35,6 +37,7 @@ class NavigationNode {
 		ros::Subscriber batterySub;
 		image_transport::Subscriber videoSub[TOTAL_FEEDS];
 		ros::Subscriber feedsSub;
+		ros::Subscriber wheelPosSub;
 		
 		float battery;
 		float signal;

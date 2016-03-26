@@ -61,6 +61,7 @@ class NavigationGUI : public GLUTWindow {
 		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, vector3D target);
 		void updateVideo(unsigned char *frame, int width, int height);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
+		void updateWheelPos(double *left, double *right);
 		
 	private:
 		// GLUT essential functions
@@ -94,6 +95,7 @@ class NavigationGUI : public GLUTWindow {
 		void drawBattery();
 		void drawSignal();
 		void drawUltrasonic();
+		void drawWheelPos();
 		
 		// pointer to the ROS handler
 		void *navigationNode;
@@ -129,6 +131,8 @@ class NavigationGUI : public GLUTWindow {
 		void toggleStream(int feed);
 		
 		Video_Feed_Frame *videoScreen;
+		
+		double wheelPos[2];
 };
 
 
