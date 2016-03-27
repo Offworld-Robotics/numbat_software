@@ -128,7 +128,7 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         //joystick values are between 1 and -1
         double magnitude = joy->axes[SPEED_STICK] * SPEED_CAP;
         cmdVel.linear.x = joy->axes[DIRECTION_STICK_X] * magnitude;
-        cmdVel.linear.y = joy->axes[DIRECTION_STICK_Y] * magnitude;
+        cmdVel.linear.y = joy->axes[DIRECTION_STICK_Y] * magnitude * -1;
 
     }
     msgsOut.buttons[FL_SWERVE_RESET] = joy->buttons[BUTTON_STICK_L];
