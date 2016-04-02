@@ -108,6 +108,9 @@ include_directories(
 #   src/${PROJECT_NAME}/owr_positioning.cpp
 # )
 
+add_executable(owr_ekf_transform_node src/EKFTransform.cpp)
+target_link_libraries(owr_ekf_transform_node ${catkin_LIBRARIES})
+
 ## Declare a cpp executable
 add_executable(owr_positioning_node src/PositionController.cpp)
 

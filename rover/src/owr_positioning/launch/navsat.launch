@@ -1,0 +1,13 @@
+<launch>
+    <remap from="/xsens/imu" to ="/imu/data"/>
+    <node pkg="xsens_driver" type="mtnode.py" name="mtnode" output="screen">
+      <param name="frame_id" value="base_link"/>
+    </node>
+    <node pkg="robot_localization" type="navsat_transform_node" name="gps" output="screen">
+	<param name="magnetic_declination_radians" value="0.218166156"/>
+	<param name="publish_filtered_gps" value="true"/>
+	<param name="broadcast_utm_transform" value="true"/>
+    </node>
+</launch
+
+
