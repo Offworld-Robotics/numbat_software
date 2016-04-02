@@ -35,6 +35,10 @@
 #define ROTATION_MID 0.5
 #define SENSITIVITY 1 //CANNOT BE 0
 #define SPEED_CAP 0.83333 // 3 km/h in m/s
+
+// DEADZONES for thumbsticks, these will require tuning through testing
+#define DEADZONE_STICK_L 0.1
+#define DEADZONE_STICK_R 0.1
  
 int main(int argc, char ** argv) {
     
@@ -73,20 +77,39 @@ JoystickFilter::JoystickFilter(const std::string topic) {
 }
 
 
-// Attempt at single joystick driving
+// Take Input from the GamePad ie Xbox Controller
 void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     geometry_msgs::Twist cmdVel;
+
+
+    // Get stick values for axes that will be used.
+    
+    // Implement a Scaled Radial Deadzone as in 
+    // http://www.third-helix.com/2013/04/12/doing-thumbstick-dead-zones-right.html 
+    
+    // Implement cubic rescaling of input to give precise input for small deflections
+    //  Testing will be required to see if this feels easier to control than radial deadzone alone'
+    
     
     float leftWheelSpeed = 0;
     float rightWheelSpeed = 0;
     float leftRightMagnitude = std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
 
-    // Set sensitivity between 0 and 1: 
-    //  - 0 makes it output = input 
-    //  - 1 makes output = input ^3
-
+    /*
+     * Control Modes
+     *
+     * Hold Button A
+     *      Thumb Sticks control bottom camera rotation
+     *
+     *  Hold Button B
+     *      Thumb Sticks control top camera rotation
+     *
+     *  Normal Driving Mode
+     *      
+     */
     if (joy->buttons[BUTTON_A]) {
+        // Thumb sticks control camera rotation while A Button is held
 
         msgsOut.axes[CAMERA_BOTTOM_ROTATE] = joy->axes[STICK_L_LR];
         msgsOut.axes[CAMERA_BOTTOM_TILT] = joy->axes[STICK_L_UD];
@@ -94,6 +117,7 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         // cameraBottomRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
         // cameraBottomTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
     } else if (joy->buttons[BUTTON_B]) {
+        // Thumb sticks control top camera rotation while B Button is held
 
         msgsOut.axes[CAMERA_TOP_ROTATE] = joy->axes[STICK_L_LR];
         msgsOut.axes[CAMERA_TOP_TILT] = joy->axes[STICK_L_UD];
@@ -101,28 +125,8 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         // cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
         // cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
     } else {
-
-//         if(STICK_R_LR > 0){
-// 
-//             leftWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;
-//             rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;    
-// 
-//         } else if(STICK_R_LR < 0){
-// 
-//             leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
-//             rightWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;    
-// 
-//         } else {
-// 
-//             // Minus value of LR to get the total value back between {-1..1}
-//             leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
-//             rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
-// 
-//             // //Divide by 2 so that the max value for left/rightWheelSpeed can never exceed {-1..1} 
-//             // leftWheelSpeed = joy->axes[STICK_R_UD]/2;
-//             // rightWheelSpeed = joy->axes[STICK_R_UD]/2;
-// 
-//         }
+        //OLD CODE BELOW 
+        
         //left stick controls magnitude
         //right stick controls direction
         //joystick values are between 1 and -1
