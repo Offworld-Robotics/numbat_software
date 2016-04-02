@@ -198,8 +198,8 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     mesg.magic = MESSAGE_MAGIC;
     
     
-    mesg.lSpeed = 1500 //(leftMotor * 500) + 1500; // Scale to 16bit int
-    mesg.rSpeed = 1500 //(rightMotor * 500) + 1500;
+    mesg.lSpeed = 1500; //(leftMotor * 500) + 1500; // Scale to 16bit int
+    mesg.rSpeed = 1500; //(rightMotor * 500) + 1500;
     
     
     mesg.armRotate = (armRotate * 500) + 1500;
@@ -238,7 +238,6 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     
     //ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
     
-    ROS_INFO(" **** ARM BOTTOM::TOP %d :: %d****", mesg.armBot, mesg.armTop);
     
 	isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
             sizeof(struct toNUCMsg));
@@ -265,7 +264,21 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
+    
         
+    // ### Arm actuator scaling and actions ### //
+    ROS_INFO(" **** ARM BOTTOM: %d :TOP: %d :****", resp.armBot, resp.armTop);
+    
+    double actBot = 0;
+    double actTop = 0;
+    
+    // Comment out if constants undefined:
+    /*actBot = scaleActuator( IN_MIN_BOT, IN_MAX_BOT, OUT_MIN_BOT, IN_MAX_BOT, resp.armBot);
+    actTOP = scaleActuator( IN_MIN_TOP, IN_MAX_TOP, OUT_MIN_TOP, IN_MAX_TOP, resp.armTop);
+    
+    ROS_INFO(" **** SCALED ARM BOTTOM: %d : SCALED TOP: %d :****", actBot, actTop);
+    */
+    
     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
     jointMsg.header.seq = timeSeq; // sequence ID
@@ -280,8 +293,8 @@ struct status Bluetongue::update(double leftMotor, double rightMotor, int armTop
     //Publish all joints to rviz, currently a placeholder for joints
     publish_joint("a", 0, 0, 0, LEFT_MOT_JOINT);
     publish_joint("b", 0, 0, 0, RIGHT_MOT_JOINT);
-    publish_joint("arm_top_actuator", 0, 0, mesg.armTop, ARM_TOP_JOINT);
-    publish_joint("arm_bottom_actuator", 0, 0, mesg.armBottom, ARM_BOT_JOINT);
+    publish_joint("arm_top_actuator", 0, 0, actTop, ARM_TOP_JOINT);
+    publish_joint("arm_bottom_actuator", 0, 0, actBot, ARM_BOT_JOINT);
     publish_joint("e", 0, 0, 0, ARM_ROT_JOINT);
     publish_joint("f", 0, 0, 0, CLAW_ROT_JOINT);
     publish_joint("g", 0, 0, 0, CLAW_GRIP_JOINT);
@@ -328,4 +341,9 @@ void Bluetongue::publish_joint(std::string name, double position, double velocit
     jointMsg.velocity[jointNo] = velocity;
     jointMsg.effort[jointNo] = effort;
 }
-    
+
+// Scaling function for actuators, takes in valus of the range [inMin, inMax] and maps it to a scaled value
+// in the range [outMin, outMax]
+double scaleActuator(double inMin, double inMax, double outMin, double outMax, double input){
+    return ((outMax - outMin)*(input - inMin)/(inMax - inMin)) + outMin;
+}

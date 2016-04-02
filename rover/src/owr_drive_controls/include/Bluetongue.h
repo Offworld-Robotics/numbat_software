@@ -36,6 +36,23 @@
 #define EXTRA_3 14
 #define EXTRA_4 15
 
+// The following definitions are for rescaling the arm actuator potentiometer values to metric lengths
+// to derive values:
+// 1) Comment out rescale function within Bluetongue.cpp
+// 2) Setup and Run rover and allow movement of arms
+// 3) Retract one actuator as far as possible (without damaging arm) and then note the potentiometer reading in terminal
+//      and the entension of the arm (in cm or m), enter these value in IN_MIN and OUT_MIN repectiveley for the actuator
+// 4) Repeat for extending the actuator, and then repeat for the second actuator
+
+#define IN_MIN_BOT 0    // a minimum value from the potentiometer
+#define IN_MAX_BOT 2000 // a maximum value from the potentiometer
+#define OUT_MIN_BOT 0   // a minimum value from the actuator (metric units, either m or cm)
+#define OUT_MAX_BOT 2000// a maximum value from the actuator """
+
+#define IN_MIN_TOP 0    // a minimum value from the potentiometer
+#define IN_MAX_TOP 2000 // a maximum value from the potentiometer
+#define OUT_MIN_TOP 0   // a minimum value from the actuator (metric units, either m or cm)
+#define OUT_MAX_TOP 2000// a maximum value from the actuator """
 
 struct gpsData {
     uint16_t time;
@@ -77,6 +94,9 @@ class Bluetongue {
 				int resp_len);
         bool connect();
         void publish_joint(std::string name, double position, double velocity, double effort, int jointNo);
+        
+        // Function to scale the actuators of the arms from their potentiometer readings to a metric measurement
+        double scaleActuator(double inMin, double inMax, double outMin, double outMax, double input);
         
         bool isConnected;
 		int port_fd;
