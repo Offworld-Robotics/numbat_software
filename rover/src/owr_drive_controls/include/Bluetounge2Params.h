@@ -4,8 +4,8 @@
 const double WHEEL_GEARS[] = {0.01}; 
 // const std::vector < double > SWERVE_GEARS_VECTOR = {0.1, 0.2};
 #define WHEEL_N_GEARS 1
-#define WHEEL_MOTOR_MAX_PWM 2000
-#define WHEEL_MOTOR_MIN_PWM 1000
+#define WHEEL_MOTOR_MAX_PWM 1750
+#define WHEEL_MOTOR_MIN_PWM 1250
 #define WHEEL_MOTOR_RPM 14000 //TODO: confirm this
 #define WHEEL_RADIUS 0.12 //12mm
 

@@ -53,21 +53,22 @@ CmdVelToJoints::CmdVelToJoints() {
 
 void CmdVelToJoints::run() {
     while(ros::ok()) {
-        ros::spinOnce();
+        
         std_msgs::Float64 msg;
         //one side needs to be fliped so the joint velocity is relevant to the point velocity
-        msg.data = frontLeftMotorV;
+        msg.data = -1.0* frontLeftMotorV;
         frontLeftDrive.publish(msg);
-        msg.data = -frontRightMotorV;
+        msg.data =  frontRightMotorV;
         frontRightDrive.publish(msg);
-        msg.data = backLeftMotorV;
+        msg.data = -1.0 * backLeftMotorV;
         backLeftDrive.publish(msg);
-        msg.data = -backRightMotorV;
+        msg.data =  backRightMotorV;
         backRightDrive.publish(msg);
-        msg.data = frontLeftAng;
+        msg.data = frontRightAng*-1.0;
         frontLeftSwerve.publish(msg);
-        msg.data = frontRightAng;
+        msg.data = frontLeftAng;
         frontRightSwerve.publish(msg);
+        ros::spinOnce();
     }
 }
 
@@ -90,5 +91,6 @@ void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
     backRightMotorV = vels.backRightMotorV;
     frontLeftAng = vels.frontLeftAng;
     frontRightAng = vels.frontRightAng;
+    ROS_INFO("target %f,%f,%f. fl %f, fr %f, bl %f, br %f, fls %f, frs %f", velMsg->linear.x, velMsg->linear.y, velMsg->linear.z, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng);
 }
 

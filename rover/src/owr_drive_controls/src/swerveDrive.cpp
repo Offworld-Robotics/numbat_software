@@ -12,21 +12,28 @@
 #define BACK_WHEEL_SPAN 0.80273
 #define HALF_ROVER_WIDTH_X .27130
 #define FRONT_W_2_BACK_W_X 0.54216
+#define VEL_ERROR 0.01
 
 #define DEG90 M_PI_2
 
 
 swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
+    
     swerveMotorVels output;
+    //santity check, if the magnitude is close to zero stop
+    if(fabs(sqrt(pow(velMsg->linear.x, 2) + pow(velMsg->linear.y, 2))) < VEL_ERROR) {
+        output.frontLeftMotorV = output.backLeftMotorV = output.frontRightMotorV = output.backRightMotorV = 0;
+        output.frontRightAng = output.frontLeftAng = 0;
      //account for the special case where y=0
-    if(velMsg->linear.y != 0) {
+    } else if(fabs(velMsg->linear.y) >= VEL_ERROR) {
         const double turnAngle = atan2(velMsg->linear.y,velMsg->linear.x);
         const double rotationRadius = HALF_ROVER_WIDTH_X/sin(turnAngle);
         geometry_msgs::Vector3 rotationCentre;
         rotationCentre.x = -HALF_ROVER_WIDTH_X;
         rotationCentre.y = sqrt(pow(rotationRadius,2)-pow(HALF_ROVER_WIDTH_X,2));
         //magnitude velocity over rotation radius
-        const double angularVelocity = (velMsg->linear.y / cos(turnAngle)) / rotationRadius;
+        //const double angularVelocity = (velMsg->linear.y / cos(turnAngle)) / rotationRadius;
+        const double angularVelocity = fabs(sqrt(pow(velMsg->linear.x, 2) + pow(velMsg->linear.y, 2))) / rotationRadius;
         ROS_INFO("turnAngle %lf, rotationRadius %lf, rotationCenter  %lf, %lf, %lf",turnAngle, rotationRadius, rotationCentre.x, rotationCentre.y, rotationCentre.z);
         //calculate the radiuses of each wheel about the rotation center
         //NOTE: if necisary this could be optimised
@@ -53,16 +60,19 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
             output.backRightMotorV = farBackV;
             output.frontLeftAng = closeFrontAng;
             output.frontRightAng = farFrontAng;
+            ROS_INFO("right");
         } else {
-            output.frontRightMotorV = closeFrontV;
-            output.backRightMotorV = closeBackV;
-            output.frontLeftMotorV = farFrontV;
-            output.backLeftMotorV = farBackV;
+            output.frontRightMotorV = -closeFrontV;
+            output.backRightMotorV = -closeBackV;
+            output.frontLeftMotorV = -farFrontV;
+            output.backLeftMotorV = -farBackV;
             output.frontLeftAng = -farFrontAng;
             output.frontRightAng = -closeFrontAng;
+            ROS_INFO("left");
         }
     } else {
         //y = 0
+        ROS_INFO("drive straight");
         output.frontLeftMotorV = output.backLeftMotorV = output.frontRightMotorV = output.backRightMotorV = velMsg->linear.x;
         output.frontRightAng = output.frontLeftAng = 0;
     }

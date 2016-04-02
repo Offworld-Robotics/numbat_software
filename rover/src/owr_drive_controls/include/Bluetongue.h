@@ -9,15 +9,6 @@
 
 #define GPS_FLOAT_OFFSET 1000000
 
-#define LIDAR_HORIZ 1330.0
-#define DEG_PER_PWM 0.12328767123
-#define SECONDS_DELAY 0.02876707662
-
-#define PWM_SHIFT 10.0
-#define LIDAR_FREQ 5.0
-#define FORWARDS 0
-#define BACKWARDS 1
-
 #define NUM_JOINTS 16
 #define LIDAR_JOINT 0
 #define LEFT_MOT_JOINT 1
@@ -91,8 +82,7 @@ class Bluetongue {
         struct timeval timeout;
         double timeSeq;
         
-        double testLidar;
-        bool testDirection;
+        
         sensor_msgs::JointState jointMsg;
     
     public:
@@ -104,7 +94,7 @@ class Bluetongue {
                 int clawRotate, int clawGrip, int cameraBottomRotate,
                 int cameraBottomTilt, int cameraTopRotate, 
                 int cameraTopTilt, int lidarTilt);
-        void tf_lidar(int16_t pwm);
+//         void tf_lidar(int16_t pwm);
         bool reconnect(void);
         ros::Publisher lidarTFPublisher;
         ros::NodeHandle nh;

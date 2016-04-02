@@ -19,6 +19,7 @@
 #include "JointsMonitor.hpp"
 #include "JointController.hpp"
 #include "JointSpeedBasedPositionController.hpp"
+#include "LIDARTiltJointController.hpp"
 #include "GearPositionTracker.hpp"
 
 using namespace std; 
@@ -96,6 +97,7 @@ class BoardControl {
         JointVelocityController frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel;
         JointSpeedBasedPositionController frontLeftSwerve, frontRightSwerve, backLeftSwerve, backRightSwerve;
         JointSpeedBasedPositionController armBaseRotate;
+        LIDARTiltJointController lidar;
         GearPositionTracker frontLeftSwerveGears, frontRightSwerveGears, backLeftSwerveGears, backRightSwerveGears;
         GearPositionTracker armRotationBaseGear;
         //TODO: add lidar, actuators here.
