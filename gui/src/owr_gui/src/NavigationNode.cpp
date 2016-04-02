@@ -23,8 +23,8 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
     image_transport::ImageTransport imgTrans(n);
 	
 	//Initialise all the information to be used in by the gui
-	battery = 5;
-	signal = 5;
+	battery = 6;
+	signal = 6;
 	tiltX = 30;
 	tiltY = 30;
 	ultrasonic = 0;
@@ -109,13 +109,13 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 }
 
 
-void NavigationNode::receiveBatteryMsg(const bluesat_owr_protobuf::battery_ros::ConstPtr& msg) {
+void NavigationNode::receiveBatteryMsg(const owr_messages::status::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received a message");
 	//ROS_INFO("voltage %f", msg->voltage);
-	battery = msg->voltage;
-	
+	signal = msg->signal;
+	battery = msg->battery;
 	gui->updateInfo(battery, signal, ultrasonic, NULL, target);
 }
 
