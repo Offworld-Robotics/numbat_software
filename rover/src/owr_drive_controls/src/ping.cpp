@@ -19,7 +19,7 @@ int main(int argc, char ** argv) {
     ros::Publisher ping_pub = n.advertise<std_msgs::Bool>("owr/ping",10);
     while (ros::ok()){
         std::msgs::Bool networkStatus;
-        networkStatus.data = true; //for now just constantly claim the network status is good
+        networkStatus.data = true; //TODO:for now just constantly claim the network status is good. 
         ping_pub.publish(networkStatus);
         ros::spinOnce();
     }
