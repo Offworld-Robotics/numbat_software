@@ -185,6 +185,7 @@ BoardControl::BoardControl() :
     voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
     boardStatusPublisher = nh.advertise<owr_messages::board>("/owr/board_status",10);
     velSubscriber = nh.subscribe<nav_msgs::Odometry>("/odometry/filtered", 1, &BoardControl::velCallback, this, transportHints);
+    pingSubsciber = nh.subscribe<std_msgs::bool>("owr/ping",10, &BoardControl::pingCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
@@ -542,4 +543,13 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
 void BoardControl::velCallback(const nav_msgs::Odometry::ConstPtr& vel) {
     currentVel = (vel->twist.twist);
+}
+
+
+void BoardControl::pingCallback(const std_msgs::Bool::ConstPtr& networkStatus) {
+    if (networkStatus->data == true) {
+        //drive as normal
+    } else {
+        //emergency stop
+    }
 }
