@@ -16,6 +16,7 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <geometry_msgs/Vector3.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Bool.h>
 #include <limits>
 
 #define MOTOR_MID 1500.0
@@ -41,6 +42,10 @@
 
 // Set sensitivity between 0 and 1, 0 makes it output = input, 1 makes output = input ^3
 #define SENSITIVITY 1
+
+
+//global variable for the network status
+bool netStatus = true;
 
 static inline void printStatus(struct status *s) {
     ROS_INFO("Battery voltage: %f", s->batteryVoltage);
@@ -185,7 +190,8 @@ BoardControl::BoardControl() :
     voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
     boardStatusPublisher = nh.advertise<owr_messages::board>("/owr/board_status",10);
     velSubscriber = nh.subscribe<nav_msgs::Odometry>("/odometry/filtered", 1, &BoardControl::velCallback, this, transportHints);
-    pingSubsciber = nh.subscribe<std_msgs::bool>("owr/ping",10, &BoardControl::pingCallback, this, transportHints);
+    //subscribe to the ping node
+    pingSubscriber = nh.subscribe<std_msgs::Bool>("owr/ping",10, &BoardControl::pingCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
@@ -330,6 +336,24 @@ void BoardControl::run() {
 //                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
 //                 cameraRotScale(cameraBottomTilt), 
 //                 cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
+            if (!netStatus) {
+                pwmFLW = MOTOR_MID;
+                pwmFRW = MOTOR_MID;
+                pwmBRW = MOTOR_MID;
+                pwmBRW = MOTOR_MID;
+                pwmFLS = MOTOR_MID;
+                pwmFRS = MOTOR_MID;
+                pwmArmTop = MOTOR_MID;
+                pwmArmBottom = MOTOR_MID;
+                pwmArmRot = MOTOR_MID;
+                pwmClawRotate = MOTOR_MID;
+                pwmClawGrip = MOTOR_MID;
+                pwmCamBRot = MOTOR_MID;
+                pwmCamBTilt = MOTOR_MID;
+                pwmCamTRot = MOTOR_MID;
+                pwmCamTTilt = MOTOR_MID;
+                pwmLIDAR = MOTOR_MID;
+            }
             s = steve->update(
                 pwmFLW, pwmFRW, pwmBLW, pwmBRW, pwmFLS, pwmFRS,
                 pwmArmTop, pwmArmBottom,pwmArmRot,
@@ -549,7 +573,9 @@ void BoardControl::velCallback(const nav_msgs::Odometry::ConstPtr& vel) {
 void BoardControl::pingCallback(const std_msgs::Bool::ConstPtr& networkStatus) {
     if (networkStatus->data == true) {
         //drive as normal
+        netStatus = true;
     } else {
         //emergency stop
+        netStatus = false;
     }
 }

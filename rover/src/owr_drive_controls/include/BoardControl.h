@@ -7,6 +7,7 @@
 #define BOARD_CONTROL_H
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
+#include <std_msgs/Bool.h>
 #include <geometry_msgs/Twist.h>
 // #include <geometry_msgs/TwistWithCovariance.h>
 #include <nav_msgs/Odometry.h>
@@ -40,7 +41,7 @@ class BoardControl {
         void controllerCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
         void velCallback(const nav_msgs::Odometry::ConstPtr& vel);
-
+        void pingCallback(const std_msgs::Bool::ConstPtr& networkStatus);
         void publishGPS(GPSData gps);
         void publishMag(MagData mag);
         void publishIMU(IMUData imu);
@@ -51,6 +52,7 @@ class BoardControl {
         ros::Publisher  velPublisher;
 
         ros::Subscriber velSubscriber;
+        ros::Subscriber pingSubscriber;
         ros::Publisher gpsPublisher;
         ros::Publisher magPublisher;
         ros::Publisher gyroPublisher;
