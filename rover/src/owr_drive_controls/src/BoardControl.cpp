@@ -153,10 +153,10 @@ BoardControl::BoardControl() :
         "arm_base_rotation"
     ),
     lidar(
-        CONTINUOUS,
-        "/lidar_tilt_tilt_controller/command",
+        STATIONARY,
+        "/laser_tilt_joint_controller/command",
         nh,
-        "lidar_tilt_tilt"
+        "laser_tilt_joint"
     ),
     frontLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
     frontRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
@@ -292,7 +292,7 @@ void BoardControl::run() {
             
             //cbr = cbr < 120 ? cbr + 5 : 0;
             //cbt = cbt < 70 ? cbt + 5 : 0;
-            armTop += armIncRate;
+            //armTop += armIncRate;
             cap(&armTop, MOTOR_MIN, MOTOR_MAX);
             
             cameraBottomRotate += cameraBottomRotateIncRate;
@@ -307,12 +307,12 @@ void BoardControl::run() {
             cameraTopTilt += cameraTopTiltIncRate;
             cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
-            if (rotState == OPEN) {
+            /*if (rotState == OPEN) {
                 clawRotate += 5;
             } else if (rotState == CLOSE) {
                 clawRotate-= 5;
             }
-            cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);
+            cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);*/
             
             if (clawState  == OPEN) {
                 clawGrip += 5;
@@ -344,8 +344,8 @@ void BoardControl::run() {
             
             jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
             armRotationBaseGear.updatePos(s.enc0, lastUpdate);
-            frontLeftSwerveGears.updatePos(s.enc0, lastUpdate);
-            frontRightSwerveGears.updatePos(s.enc4, lastUpdate);
+            frontLeftSwerveGears.updatePos(-s.enc0, lastUpdate);
+            frontRightSwerveGears.updatePos(s.enc5, lastUpdate);
             
             //do joint calculations
             //TODO: check if empty
@@ -361,14 +361,23 @@ void BoardControl::run() {
             
             //adjust the arm position
             armRotateAngle += armRotateRate;
-            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
+            pwmArmRot = (armRotateRate * 500) + 1500;
+            ROS_INFO("Arm Rotate %d", pwmArmRot);	
+            //pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, 			 armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
             
             //for now do this for actuators
             pwmArmTop = armTop;
             pwmArmBottom = armBottom;
             
             //and keep everything else the same
-            pwmClawRotate = clawRotScale(clawRotate);
+            //pwmClawRotate = clawRotScale(clawRotate);
+            if (rotState == ANTICLOCKWISE) {
+                pwmClawRotate = 1510;
+            } else if (rotState == CLOCKWISE) {
+                pwmClawRotate = 1490;
+            } else { //STOP
+            	pwmClawRotate = 1500;
+            }
             pwmClawGrip   = clawRotScale(clawGrip);
             pwmCamBRot    = cameraRotScale(cameraBottomRotate);
             pwmCamBTilt   = cameraRotScale(cameraBottomTilt);
@@ -514,10 +523,11 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     rotState = joy->axes[CLAW_ROTATE];
 
     //Handle arm rotation
-    armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
-    //armRotate = joy->axes[STICK_CH_LR];
-    armIncRate = top * 5;
+    //armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
+    armRotateRate = joy->axes[ARM_ROTATE];
+    //armIncRate = top * 5;
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
+    armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
     
     if(joy->buttons[FL_SWERVE_RESET]) {
         frontLeftSwerveGears.resetPos();

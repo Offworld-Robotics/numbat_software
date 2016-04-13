@@ -41,7 +41,7 @@ void GearPositionTracker::updatePos(double speed, ros::Time current) {
 //         }
 //         pos = fmod(pos, 2*M_PI);
         while (pos > M_PI) {
-        pos = -(2*M_PI - pos);
+            pos = -(2*M_PI - pos);
         } 
         while (pos < -M_PI) {
            pos = 2*M_PI + pos;
