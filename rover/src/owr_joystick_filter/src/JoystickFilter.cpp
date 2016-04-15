@@ -1,7 +1,7 @@
 /*
  * Filters the Joysticks
  * Original Author: Sam S
- * Editors: Harry J.E Day
+ * Editors: Harry J.E Day, Sean Thompson
  * ROS_NODE:
  * ros package: 
  */
@@ -131,8 +131,11 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         //right stick controls direction
         //joystick values are between 1 and -1
         double magnitude = joy->axes[SPEED_STICK] * SPEED_CAP;
-        cmdVel.linear.x = joy->axes[DIRECTION_STICK_X] * magnitude;
-        cmdVel.linear.y = joy->axes[DIRECTION_STICK_Y] * magnitude * -1;
+        // Add Cubic scaling of direction stick input
+        //  this will reduce sensitivity a lot for small deflections,
+        //      and smoothly increase in sensitivity for larger deflections.
+        cmdVel.linear.x = pow(joy->axes[DIRECTION_STICK_X],3) * magnitude;
+        cmdVel.linear.y = pow(joy->axes[DIRECTION_STICK_Y],3) * magnitude * -1;
 
     }
     msgsOut.buttons[FL_SWERVE_RESET] = joy->buttons[BUTTON_STICK_L];
