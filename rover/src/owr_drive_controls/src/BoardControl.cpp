@@ -16,7 +16,6 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <geometry_msgs/Vector3.h>
 #include <std_msgs/Float64.h>
-#include <std_msgs/Bool.h>
 #include <limits>
 
 #define MOTOR_MID 1500.0
@@ -44,8 +43,6 @@
 #define SENSITIVITY 1
 
 
-//global variable for the network status
-bool netStatus = true;
 
 static inline void printStatus(struct status *s) {
     ROS_INFO("Battery voltage: %f", s->batteryVoltage);

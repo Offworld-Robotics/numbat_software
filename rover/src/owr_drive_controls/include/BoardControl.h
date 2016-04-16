@@ -76,6 +76,7 @@ class BoardControl {
             cameraTopRotateIncRate, cameraTopTiltIncRate;
         //gps sequence number
         int gpsSequenceNum;
+        bool netStatus = true;
         
         //claw stuff
         int clawState;
