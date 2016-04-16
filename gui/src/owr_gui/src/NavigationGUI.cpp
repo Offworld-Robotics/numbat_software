@@ -538,7 +538,7 @@ void NavigationGUI::drawWheelPos() {
 	for(int i = -1;i <= 1;i+=2) {
 		glPushMatrix();
 		glTranslated(i*currWinW/6.0, 0, 0);
-		glRotated(90.0+wheelPos[i]*180.0/PI, 0, 0, 1);
+		glRotated(90.0+wheelPos[(i+1)/2]*180.0/PI, 0, 0, 1);
 		glBegin(GL_LINES);
 		glVertex2d(r, 0);
 		glVertex2d(-r, 0);
