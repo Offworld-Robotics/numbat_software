@@ -101,6 +101,7 @@ void NavigationGUI::updateFeedsStatus(unsigned char *feeds, int numOnline) {
 }
 
 void NavigationGUI::updateWheelPos(double *left, double *right) {
+	ROS_INFO("left is %f, right is %f", *left, *right);
 	if(left) {
 		wheelPos[0] = *left;
 	}

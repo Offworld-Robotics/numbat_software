@@ -152,7 +152,6 @@ void NavigationNode::receiveWheelPosMsg(const sensor_msgs::JointState::ConstPtr&
 		}
 	}
 	
-	ROS_INFO("Got left: %d", foundLeft);
-	ROS_INFO("Got right: %d", foundRight);
+	ROS_INFO("got left: %d, got right: %d", foundLeft, foundRight);
 	gui->updateWheelPos((foundLeft)? &left : NULL, (foundRight)? &right : NULL);
 }
