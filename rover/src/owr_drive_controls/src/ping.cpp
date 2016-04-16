@@ -26,13 +26,16 @@ int main(int argc, char ** argv) {
         std::string groundStation;
         n.getParam("groundStation",groundStation);
         //ping the ground station 3 times waiting for 0.5 seconds each time
-        std::string pingCommand = "ping -c 3 -w 0.5 ";
+        std::string pingCommand = "ping -c 1 -w 0.3 -i 0.2";
         pingCommand = pingCommand + groundStation;
+        //stores the exit status of the system command that pings the given ip address
         int exitStatus = system(pingCommand.c_str());
+        //if the exit status is 0, the ping succeeded and thus a connection to the ip address (ground station) exists
+        //publish that there is a network connection
         if (exitStatus==0) {
             networkStatus.data = true;
         } else {
-            networkStatus.data = false;
+            networkStatus.data = false; //otherwise publish that the network connection has dropped out
         }
         ping_pub.publish(networkStatus);
         ros::spinOnce();

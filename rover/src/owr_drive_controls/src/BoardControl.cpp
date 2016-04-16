@@ -336,7 +336,7 @@ void BoardControl::run() {
             if (!netStatus) {
                 pwmFLW = MOTOR_MID;
                 pwmFRW = MOTOR_MID;
-                pwmBRW = MOTOR_MID;
+                pwmBLW = MOTOR_MID;
                 pwmBRW = MOTOR_MID;
                 pwmFLS = MOTOR_MID;
                 pwmFRS = MOTOR_MID;
