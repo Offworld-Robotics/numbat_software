@@ -131,15 +131,15 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 void NavigationNode::receiveWheelPosMsg(const sensor_msgs::JointState::ConstPtr& msg) {
 	assert(msg);
 	
-	//ROS_INFO("received wheel pos");
+	ROS_INFO("received wheel pos");
 	
 	double left = 0, right = 0;
 	bool foundLeft = false, foundRight = false;
-	int jointNo = 0;
 	
 	std::string leftWheelName = "front_left_swerve";
 	std::string rightWheelName = "front_right_swerve";
-	for(jointNo = 0;jointNo < msg->name.size();jointNo++) {
+	for(int jointNo = 0;jointNo < msg->name.size();jointNo++) {
+		ROS_INFO("%s", msg->name[jointNo].c_str());
 		if(msg->name[jointNo].compare(leftWheelName) == 0) {
 			left = msg->position[jointNo];
 			foundLeft = true;
@@ -152,5 +152,7 @@ void NavigationNode::receiveWheelPosMsg(const sensor_msgs::JointState::ConstPtr&
 		}
 	}
 	
+	ROS_INFO("Got left: %d", foundLeft);
+	ROS_INFO("Got right: %d", foundRight);
 	gui->updateWheelPos((foundLeft)? &left : NULL, (foundRight)? &right : NULL);
 }
