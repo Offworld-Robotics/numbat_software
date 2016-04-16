@@ -137,15 +137,18 @@ void NavigationNode::receiveWheelPosMsg(const sensor_msgs::JointState::ConstPtr&
 	bool foundLeft = false, foundRight = false;
 	int jointNo = 0;
 	
-	std::string leftWheelName = "front_left_wheel";
-	std::string rightWheelName = "front_right_wheel";
+	std::string leftWheelName = "front_left_swerve";
+	std::string rightWheelName = "front_right_swerve";
 	for(jointNo = 0;jointNo < msg->name.size();jointNo++) {
-		if(msg->name[jointNo] == leftWheelName) {
+		if(msg->name[jointNo].compare(leftWheelName) == 0) {
 			left = msg->position[jointNo];
 			foundLeft = true;
-		} else if(msg->name[jointNo] == rightWheelName) {
+		} else if(msg->name[jointNo].compare(rightWheelName) == 0) {
 			right = msg->position[jointNo];
 			foundRight = true;
+		}
+		if(foundLeft && foundRight) {
+			break;
 		}
 	}
 	
