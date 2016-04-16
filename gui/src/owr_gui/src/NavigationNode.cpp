@@ -42,7 +42,7 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
 	
-	wheelPosSub = n.subscribe("/joint_states", 1000, &NavigationNode::receiveWheelPosMsg, this);
+	wheelPosSub = n.subscribe("/joint_states", 1, &NavigationNode::receiveWheelPosMsg, this);
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// created yet, will wait til it has w/o doing anything
