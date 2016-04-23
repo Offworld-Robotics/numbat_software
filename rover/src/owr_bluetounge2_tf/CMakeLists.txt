@@ -68,10 +68,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   sensor_msgs#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   sensor_msgs#   std_msgs
+ )
 
 ###################################
 ## catkin specific configuration ##
@@ -83,10 +83,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES owr_bluetounge2_tf
-#  CATKIN_DEPENDS roscpp rospy sensor_msgs std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include/
+  LIBRARIES owr_bluetounge2_tf
+  CATKIN_DEPENDS roscpp rospy sensor_msgs std_msgs
+  DEPENDS system_lib
 )
 
 ###########
@@ -97,6 +97,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include/
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -106,16 +107,16 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-# add_executable(owr_bluetounge2_tf_node src/owr_bluetounge2_tf_node.cpp)
+ add_executable(owr_bluetounge2_tf_node src/arm_conversion.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(owr_bluetounge2_tf_node owr_bluetounge2_tf_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(owr_bluetounge2_tf_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(owr_bluetounge2_tf_node
+   ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
