@@ -530,21 +530,35 @@ void NavigationGUI::drawSignal() {
 void NavigationGUI::drawWheelPos() {
 	glPushMatrix();
 	
-	glTranslated(currWinW/2.0, -currWinH/3.0, 0);
-	
+	glTranslated(currWinW/12.0, -currWinH*2.0/3.0, 0);
+	double frameRatio = 1.5;
+	double widthHalf = 75;
+	double lengthHalf = widthHalf*frameRatio;
 	glColor3f(1,0,0);
-	double r = currWinH/5.0;
+	glRectd(-widthHalf,-lengthHalf,widthHalf,lengthHalf);
 	
+	double wheelRadius = widthHalf/2;
+	double wheelWidth = wheelRadius/5;
+	glPushMatrix();
+	glTranslated(0, lengthHalf, 0);
 	for(int i = -1;i <= 1;i+=2) {
 		glPushMatrix();
-		glTranslated(i*currWinW/6.0, 0, 0);
-		glRotated(90.0+wheelPos[(i+1)/2]*180.0/PI, 0, 0, 1);
-		glBegin(GL_LINES);
-		glVertex2d(r, 0);
-		glVertex2d(-r, 0);
-		glEnd();
+		glTranslated(i*1.3*widthHalf, 0, 0);
+		glRotated(wheelPos[(i+1)/2]*180.0/PI, 0, 0, 1);
+		glRectd(-wheelWidth/2, -wheelRadius, wheelWidth/2, wheelRadius);
 		glPopMatrix();
 	}
+	glPopMatrix();
+	
+	glPushMatrix();
+	glTranslated(0, -lengthHalf, 0);
+	for(int i = -1;i <= 1;i+=2) {
+		glPushMatrix();
+		glTranslated(i*1.3*widthHalf, 0, 0);
+		glRectd(-wheelWidth/2, -wheelRadius, wheelWidth/2, wheelRadius);
+		glPopMatrix();
+	}
+	glPopMatrix();
 	
 	glPopMatrix();
 }
