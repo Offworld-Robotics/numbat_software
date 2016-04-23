@@ -4,18 +4,64 @@
  * A* path plan based off LIDAR point-cloud
  */
 
-#include <iostream>
-#include <boost/concept_check.hpp>
 #include "Astar.h"
 
-//------------------------test stuff only here
 
+Astar::Astar(const std::string topic) {
+    // shouldn't need to set any values..?
+    
+    // check topic names!
+    aStarSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::aStarCallback, this);
+    goalSubscriber = node.subscribe<geometry_msgs>("point", 2, &Astar::setGoalCallback, this);
+}
+
+void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& data) {
+    
+    // ---------- test only
+    start.isStart = true;
+    start.x = 0;
+    start.y = 0;
+    // --------------
+    
+    if (!goal.isGoal) {
+        ROS_ERROR("Can't find goal!");
+        return;
+    }
+    if (!start.isStart) {
+        ROS_ERROR("Can't find start!");
+        return;
+    }
+    
+    // interpret data and put it in the occupancyGrid
+    makeGrid(data->data, data->info);
+    
+    findPath();         // do aStar algorithm, get the path
+    convertPath();      //convert aStarPath to the path output we need
+    
+    pathPublisher.publish(finalPath);
+}
+
+void Astar::setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint) {
+    goal.isGoal = true;
+    goal.x = 5;
+    goal.y = 5;
+    
+}
+
+//main loop?
+void Astar::spin() {
+    while(ros::ok()) {
+        ros::spinOnce();
+    }
+}
+
+/* //test main
 int main(int argc, char **argv) {
     std::cout << "A* search test" << std::endl;
     
     Astar test;
     
-    test.setGridEndPoints(0,0,9,9);
+    test.setGridEndPoints(0,0,83,83);
     test.setGridStepCosts("middle");
     
     //test.printGrid();
@@ -25,6 +71,42 @@ int main(int argc, char **argv) {
     test.printGrid();
     
     return 0;
+}
+*/
+
+void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
+    
+    if(info.width <= SIZE_OF_GRID && info.height <= SIZE_OF_GRID) {
+        ROS_ERROR("nav_msgs::OccupancyGrid is too big!");
+        return;
+    }
+    
+    //set entire grid to impassable
+    for(unsigned int i = 0; i < occupancyGrid.size(); ++i) {
+        for(unsigned int j = 0; j < occupancyGrid[i].size(); ++j) {
+            occupancyGrid[i][j] = IMPASS;
+        }
+    }
+    
+    int x = 0;
+    int y = 0;
+    char value;
+    
+    for (unsigned int i = 0; i < data.size(); ++i) {
+        value = data[i];
+        if (value < 0) {
+            value = IMPASS;    // set unknowns to impassable
+        }
+        occupancyGrid[x][y] = value;    // set the value
+        
+        x ++;   //always increment x
+        
+        // if we're at a multiple of the width, move to the next line
+        if ((i % (info.width-1)) == 0) {    // need to subtract 1 because the i will be 1 less
+            y ++;
+            x = 0;  // reset x to the start of the row
+        }
+    }
 }
 
 void Astar::setGridEndPoints(int sx, int sy, int gx,int gy) {
@@ -36,7 +118,7 @@ void Astar::setGridEndPoints(int sx, int sy, int gx,int gy) {
     goal.x = gx;
     goal.y = gy;
 }
-
+/* //-------- testing only ------------
 void Astar::setGridStepCosts(char *typeOfObstacle) {
     
     // set initial costs to 1
@@ -84,9 +166,7 @@ void Astar::printGrid(){
             std::cout << "B ";      // B for block
         } else if(std::find(finalPath.begin(), finalPath.end(), printPoint) != finalPath.end()){
             std::cout << "# ";      // # for final path
-        } /*else if (i == currentPos.x && j == currentPos.y) {
-            //std::cout << "C ";      // C for current point (for printing from other functions)
-        } */else {
+        } else {
             std::cout << "- ";      // - for empty (passable) grid square
         }
       }
@@ -94,14 +174,13 @@ void Astar::printGrid(){
     }
     std::cout << std::endl;
 }
-
-//-------------------------end test stuff
+------------------------------------*/
 
 void Astar::findPath() {
     currentPos = start;           // set our current position to the start position
-    //int counter = 0;
+    
     while(currentPos != goal) {
-        //counter ++;
+        
         //std::cout << "whilecounter: " << counter << std::endl;
         closedSet.push_back(currentPos);    // push the current point into closedSet
         computeNeighbors();       // get neighbors of current position
@@ -110,9 +189,9 @@ void Astar::findPath() {
             break;
         }
         
-        //std::cout << "openSet.top() xy = (" << openSet.top().x << ", " << openSet.top().y << ")" << std::endl;
-        std::cout << "  openSet.size()  = " << openSet.size()  << std::endl;
-        //std::cout << "  frontierSet size = " << frontierSet.size() << std::endl;
+        //std::cout << "openSet.top() xy = (" << openSet[0].x << ", " << openSet[0].y << ")" << std::endl;
+        //std::cout << "-------------------------" << std::endl;
+        //std::cout << "  openSet.size()  = " << openSet.size()  << std::endl;
         //std::cout << "  openSet.top().previndex = " << openSet.top().previndex << std::endl;
         
         currentPos = openSet[0];     // set current position to the next in the priority queue
@@ -129,7 +208,6 @@ void Astar::findPath() {
 
 void Astar::computeNeighbors () {
     std::vector<point> neighbors = getNeighbors(currentPos);
-    //std::cout << "no. neighbors = " << neighbors.size() << std::endl;
     point adjacent;
     long index;
     std::vector<point>::iterator it;
@@ -157,8 +235,6 @@ void Astar::computeNeighbors () {
                 getF(openSet[index]);
                 
             } else {
-                
-                //std::cout << "adding this point xy = (" << adjacent.x << ", " << adjacent.y << ")" << std::endl;
                 adjacent.cost = maybeCost;
                 getF(adjacent);                             // get the F cost etc
                 openSet.push_back(adjacent); std::push_heap(openSet.begin(), openSet.end(), comp);        // push it to the openSet for future expansion
@@ -225,6 +301,7 @@ void Astar::getF (point &point1) {
     //point1.cost = currentPos.cost + point1.stepCost;  // get the total cost up to this point (now done in getNeighbors)
     point1.weight =  point1.cost + point1.goalDist;   // f = g + h
     point1.previndex = std::find(closedSet.begin(), closedSet.end(), currentPos) - closedSet.begin(); // returns index of a point matching x,y of currentPos in closedSet
+    //std::cout << " " << std::endl;
     //std::cout << "adjacent xy = (" << point1.x << ", " << point1.y << ")" << std::endl;
     //std::cout << "  currentPos.cost = " << currentPos.cost << std::endl;
     //std::cout << "  cost = " << point1.cost << std::endl;
@@ -240,30 +317,11 @@ double Astar::getDist (point point1, point point2) {
 
 void Astar::getPath() {
     while(currentPos.previndex != -1){
-        finalPath.push_back(currentPos);
+        aStarPath.push_back(currentPos);
         //std::cout << "finalpath xy = (" << currentPos.x << ", " << currentPos.y << ")" << std::endl;
         //std::cout << "  finalpath previndex = " << currentPos.previndex << std::endl;
         currentPos = closedSet[currentPos.previndex];
     }
     //std::cout << "finalpath xy = (" << currentPos.x << ", " << currentPos.y << ")" << std::endl;
     //std::cout << "  finalpath previndex = " << currentPos.previndex << std::endl;
-    //std::cout << "---------------------------" << std::endl;
-}
-
-void Astar::testFuncs() {
-    assert(1==1);   // just in case.
-    //createGrid(3, 3);
-    setGridEndPoints(0,0,2,2);
-    //setGridStepCosts();
-    
-    //createGrid(30, 30);
-    setGridEndPoints(0,0,29,29);
-    
-    
-    //createGrid(300, 300);
-    setGridEndPoints(0,0,299,299);
-    
-    
-    //createGrid(3000, 3000);
-    setGridEndPoints(0,0,2999,2999);
 }

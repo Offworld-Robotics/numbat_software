@@ -1,17 +1,23 @@
 /*
  */
 #ifndef ASTAR_H
+
+#include <ros/ros.h>
+#include <nav_msgs/OccupancyGrid.h>
+#include <nav_msgs/MapMetaData.h>
+#include <geometry_msgs/Point.h>
+#include <nav_msgs/Path.h>
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
+#include <assert.h>
+
 #include <cmath>        // pow and stuff
 #include <vector>       // vector
-#include <queue>        // priority_queue
-#include <set>          // set
 #include <algorithm>        // find
-#include <assert.h>
-#include <boost/concept_check.hpp>
 
-#define SIZE_OF_GRID 10
+#define SIZE_OF_GRID 500
 #define IMPASS 255
 
 class point {
@@ -52,41 +58,6 @@ bool operator!=(const point& lhs, const point& rhs){
     return (lhs.x != rhs.x || lhs.y != rhs.y);
 }
 
-/*
-class pointSet {
-    private:
-        std::vector<point> pointVector;
-    public:
-        void insert(point point1) {
-            unsigned int index = (pointVector.size() / 2);   // gets a middleish element
-            unsigned int indexSize = index;                  // we need to keep track of how many times we've halved it
-            while (indexSize > 0) {
-                indexSize /= 2;
-                if (pointVector[index].weight > point1.weight) {   
-                    index -= indexSize;  
-                } else if (pointVector[index].weight < point1.weight) {
-                    index += indexSize;
-                } else if (pointVector[index].weight == point1.weight) {
-                    break;
-                }
-            }
-            iterator it = std::find(pointVector.begin(), pointVector.end(), pointVector[index]);
-            pointVector.insert(it, point1); // no idea if this will work..
-        }
-        int findIndex(point point1) {
-            long index = std::find(pointVector.begin(), pointVector.end(), point1);
-            if (index != pointVector.end()){  // check if adjacent is in frontierSet 
-                return index - pointVector.begin(); // should return the index of the point...? i guess..?
-            }
-            return -1;
-        }
-        void pop () {
-            
-        }
-        
-};
-*/
-
 class Astar {
     class comparePoints {
       public:
@@ -97,47 +68,62 @@ class Astar {
             return lhs.weight > rhs.weight;
         }
     };
+    protected:
+        ros::Publisher  pathPublisher;
     private:
+        ros::NodeHandle node;         // ros::NodeHandle nh;
+        ros::Subscriber aStarSubscriber;
+        ros::Subscriber goalSubscriber;
+        ros::Subscriber startSubscriber;
+        
+        nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
+        nav_msgs::Path finalPath;               // finalPath for us to publish
+        
         comparePoints comp;
         std::array<std::array <unsigned char, SIZE_OF_GRID>, SIZE_OF_GRID > occupancyGrid; // arrays are faster. 255 = impassable
         std::vector<point> closedSet;
         std::vector<point> openSet;
         std::vector<point> frontierSet;       // gonna use this to keep track of what goes in and out of openSet (can't see it because its an priorityQueue)
-        std::vector<point> finalPath;
+        
+        std::vector<point> aStarPath;
+        
+        
         point goal;
         point start;
         point currentPos;
-    public:
+        
+        void aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& data);
+        void setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint);
+        
         void findPath();                          // main loop
+        
+        void makeGrid(int8_t data[]);
+        
         void getPath();                           // Reconstruct path back to start
+        void convertPath();
         
         void computeNeighbors();              // Computes neighbor of a point; gets their weight, pushes to openSet etc
         std::vector<point> getNeighbors(point point1);    // Gets legal (not impassable, not in closedSet) neighbors of a point, returns them with x,y,stepcost defined
-
+        
         bool canGoDiagonal(point point1, point adjacent); // checks if a diagonal movement is legal by checking passability of adjacent points
         void getF(point &point1);             // Gets all the important stuff for a given point (cost, weight, path...)
         double getDist(point point1, point point2);   // Euclidean distance between 2 points
-
+        
+        
+        
+        
         // ----------- TEsTING-STUFF -------------
         void createGrid(int sizex, int sizey);     // TEsT - for creating an empty occupancyGrid
         void setGridEndPoints(int sx, int sy, int gx,int gy); // TEsT - set start and end point
         void setGridStepCosts(char *typeOfObstacle);          // TEsT - set obstacles
         void printGrid();                 // TEsT print whole grid and any other relevant stuff
-        void testFuncs();
+        
         // ---------------------------------------
-
-        Astar(std::vector<point> _openSet, std::vector<point> _frontierSet, std::vector<point> _closedSet, std::vector<point> _finalPath, point _goal, point _start, point _currentPos) {
-            openSet = _openSet;
-            frontierSet = _frontierSet;
-            closedSet = _closedSet;
-            finalPath = _finalPath;
-            goal = _goal;
-            start = _start;
-            currentPos = _currentPos;
-        }
-        Astar() {
-            
-        }
+        
+    public:
+        
+        Astar::Astar(const std::string topic);
+        void spin();
 };
 
 #endif
