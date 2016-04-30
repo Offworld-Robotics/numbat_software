@@ -28,8 +28,8 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	//Initialise all the information to be used in by the gui
 	battery = 6;
 	signal = 6;
-	tiltX = 30;
-	tiltY = 30;
+	tiltX = 0;
+	tiltY = 0;
 	ultrasonic = 0;
 	
 	//Initialise the feeds array

@@ -535,6 +535,11 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 	} else if (key == 's') {
 		videoScreen->zoom(ZOOM_OUT);
 	}
+
+	//taking a screenshot
+	if (key == 'p') {
+	
+	}
 }
 
 void NavigationGUI::special_keydown(int keycode, int x, int y) {

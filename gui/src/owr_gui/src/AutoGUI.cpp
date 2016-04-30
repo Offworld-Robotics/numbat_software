@@ -244,6 +244,7 @@ void AutoGUI::keydown(unsigned char key, int x, int y) {
 			mapCentre[1] /= NUM_DESTS;
 			haveDests = true;
 			break;
+
 		default:
 			if(keymanager->isEnabled()) {
 				keymanager->input(key);
