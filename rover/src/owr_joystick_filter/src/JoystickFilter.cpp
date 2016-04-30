@@ -16,6 +16,7 @@
 #include <list>
 #include <cmath>
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <stdio.h>
 
 #include <geometry_msgs/Twist.h>
@@ -173,12 +174,18 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         // set cmdVel.linear.y  = x-axis of R stick rescaled input
         // get the sign (positive or negative of the axis)
         double signYAxis = (rescaledRStick(0) > 0.0) ? 1.0: -1.0;
+        //  Magnitude of driveVector is set by rescaledLStick(1);
+        Eigen::Vector2d driveVector(0.0, rescaledLStick(1));
+        //  map direction vector argument ie angle to 
         //  apply squared scaling of the stick input then reset the sign to give
         //      lower sensitivity for small steering angles
-        cmdVel.linear.y = pow(rescaledRStick(0), 2)*signYAxis*-1.0;
-        // set cmdVel.linear.x ie Rover Front-Back (forward=positive)  = y-axis of L stick rescaled input
-        cmdVel.linear.x = rescaledLStick(1);
-        ROS_INFO("\nNEW Sticks cmdVel.linear X:%f Y:%f", cmdVel.linear.x, cmdVel.linear.y);
+        driveVector = Eigen::Rotation2D<double>(M_PI/2 * pow(rescaledRStick(0), 2)*signYAxis) * driveVector;
+
+        //ROS_INFO("\nrotated driveVector (0):%f (1):%f", driveVector(0),driveVector(1));
+        cmdVel.linear.x = driveVector(1);
+        cmdVel.linear.y = driveVector(0);
+        //ROS_INFO("\nNEW Sticks cmdVel.linear X:%f Y:%f", cmdVel.linear.x, cmdVel.linear.y);
+
 
         /*
         //OLD IMPLEMENTATION, MAGNITUDE STICK & DIRECTION STICK BOTH LINEAR WITH NO DEADZONE 
