@@ -181,10 +181,12 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         //      lower sensitivity for small steering angles
         driveVector = Eigen::Rotation2D<double>(M_PI/2 * pow(rescaledRStick(0), 2)*signYAxis) * driveVector;
 
-        //ROS_INFO("\nrotated driveVector (0):%f (1):%f", driveVector(0),driveVector(1));
+        ROS_INFO("\eRstick(0):%f Rstick(1):%f", rescaledRStick(0),rescaledRStick(1));
+        ROS_INFO("\eLstick(0):%f Lstick(1):%f", rescaledLStick(0),rescaledLStick(1));
+        ROS_INFO("\nrotated driveVector (0):%f (1):%f", driveVector(0),driveVector(1));
         cmdVel.linear.x = driveVector(1);
         cmdVel.linear.y = driveVector(0);
-        //ROS_INFO("\nNEW Sticks cmdVel.linear X:%f Y:%f", cmdVel.linear.x, cmdVel.linear.y);
+        ROS_INFO("\nNEW Sticks cmdVel.linear Y:%f X:%f", cmdVel.linear.y, cmdVel.linear.x);
 
 
         /*
