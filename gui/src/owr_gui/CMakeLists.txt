@@ -125,6 +125,12 @@ add_dependencies(auto bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(auto bluesat_owr_protobuf)
 target_link_libraries(auto ${catkin_LIBRARIES} GL GLU glut)
 
+add_executable(automap src/AutoMapGUI.cpp src/AutoMapNode.cpp src/GLUTWindow.cpp) 
+add_dependencies(automap ${catkin_EXPORTED_TARGETS})
+add_dependencies(automap bluesat_owr_protobuf_generate_messages_cpp)
+add_dependencies(automap bluesat_owr_protobuf)
+target_link_libraries(automap ${catkin_LIBRARIES} GL GLU glut)
+
 ## Declare a cpp library
 # add_library(owr_gui
 #   src/${PROJECT_NAME}/owr_gui.cpp
