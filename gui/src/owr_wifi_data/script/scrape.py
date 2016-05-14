@@ -37,7 +37,7 @@ def run():
     
 if __name__ == '__main__':
     message = status()
-    pub = rospy.Publisher("/status/battery", status, latch=True)
+    pub = rospy.Publisher("/status/signal", status, latch=True)
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(10)
     connection = telnetlib.Telnet("192.168.1.20")  #192.168.1.20

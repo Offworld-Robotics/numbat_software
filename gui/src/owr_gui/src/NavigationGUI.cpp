@@ -74,7 +74,9 @@ void NavigationGUI::reshape(int w, int h) {
 }
 
 void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, vector3D t) {
-	battery = bat;
+	//Battery from voltage to percentage
+	battery = (bat - 10)*100/2.5;
+	
 	signal = sig;
 	
 	if (cur != NULL) GPSList.push_front(cur);
@@ -452,7 +454,7 @@ void NavigationGUI::drawBattery() {
 	if (battery < 3)
 		glColor4f(1, 0, 0, ALPHA);
 	else
-		glColor4f(0, 1, 0, ALPHA);
+		glColor4f(0, 0, 1, ALPHA);
 
 	glTranslated(currWinW - 125, -50, 0);
 	glBegin(GL_LINE_LOOP);
@@ -464,8 +466,8 @@ void NavigationGUI::drawBattery() {
 	glBegin(GL_QUADS);
 	glVertex2d(0, 30);
 	glVertex2d(0, -30);
-	glVertex2d(battery * 10, -30);
-	glVertex2d(battery * 10, 30);
+	glVertex2d(battery, -30);
+	glVertex2d(battery, 30);
 	glEnd();
 
 	glBegin(GL_LINE_LOOP);
@@ -478,7 +480,7 @@ void NavigationGUI::drawBattery() {
 	glTranslated(0, -50, 0);
 	glColor4f(1, 0, 0, ALPHA);
 	char text[30];
-	sprintf(text, "%.2f%%", battery*10);
+	sprintf(text, "%.2f%%", battery);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 15, 0);
 
 	glPopMatrix();

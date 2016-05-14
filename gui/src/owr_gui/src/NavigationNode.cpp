@@ -39,7 +39,13 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	// 
 	
 	gpsSub = n.subscribe("/gps/fix", 1000, &NavigationNode::receiveGpsMsg, this); // GPS related data
+
+	//Takes in Signal and updates signal. 
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
+	signalSub = n.subscribe("/status/signal", 1000, &NavigationNode::receiveSignalMsg, this);
+	//Battery 
+
+
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
@@ -109,12 +115,19 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 }
 
 
+void NavigationNode::receiveSignalMsg(const owr_messages::status::ConstPtr& msg) {
+	assert(msg);
+	
+	//ROS_INFO("received a message");
+	signal = msg->signal;
+	gui->updateInfo(battery, signal, ultrasonic, NULL, target);
+}
+
 void NavigationNode::receiveBatteryMsg(const owr_messages::status::ConstPtr& msg) {
 	assert(msg);
 	
 	//ROS_INFO("received a message");
-	//ROS_INFO("voltage %f", msg->voltage);
-	signal = msg->signal;
+	//ROS_INFO("voltage %f", msg->battery);
 	battery = msg->battery;
 	gui->updateInfo(battery, signal, ultrasonic, NULL, target);
 }
