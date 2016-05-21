@@ -6,6 +6,8 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/MapMetaData.h>
 #include <geometry_msgs/Point.h>
+#include <geometry_msgs/Pose.h>
+#include <geometry_msgs/Transform.h>
 #include <nav_msgs/Path.h>
 
 #include <stdio.h>
@@ -15,7 +17,8 @@
 
 #include <cmath>        // pow and stuff
 #include <vector>       // vector
-#include <algorithm>        // find
+#include <algorithm>    // find
+//#include <array>
 
 #define SIZE_OF_GRID 500
 #define IMPASS 255
@@ -35,7 +38,7 @@ class point {
 
         // constructor function; sets default values
         point(int _x=0, int _y=0, bool _isStart=false, bool _isGoal=false, double _weight=0.0f, double _goalDist=0.0f, 
-            double _stepCost=0.0f, double _cost=0.0f, point *_previous=nullptr, long _previndex=-1) {
+            double _stepCost=0.0f, double _cost=0.0f, point *_previous=NULL, long _previndex=-1) {
             x = _x;
             y = _y;
             isStart = _isStart;
@@ -47,6 +50,10 @@ class point {
             previous = _previous;
             previndex = _previndex;
         }
+        
+        /*point() : point(0,0,false, false, 0.0f, 0.0f, 0.0f, 0.0f, NULL, -1) {
+            
+        }*/
         //friend bool operator==(point lhs, point rhs);
         //friend bool operator!=(point lhs, point rhs);
     
@@ -74,30 +81,30 @@ class Astar {
         ros::NodeHandle node;         // ros::NodeHandle nh;
         ros::Subscriber aStarSubscriber;
         ros::Subscriber goalSubscriber;
-        ros::Subscriber startSubscriber;
+        ros::Subscriber tfSubscriber;
         
         nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
         nav_msgs::Path finalPath;               // finalPath for us to publish
         
         comparePoints comp;
-        std::array<std::array <unsigned char, SIZE_OF_GRID>, SIZE_OF_GRID > occupancyGrid; // arrays are faster. 255 = impassable
+        std::vector<std::vector <unsigned char> > occupancyGrid;
         std::vector<point> closedSet;
         std::vector<point> openSet;
         std::vector<point> frontierSet;       // gonna use this to keep track of what goes in and out of openSet (can't see it because its an priorityQueue)
         
         std::vector<point> aStarPath;
         
-        
         point goal;
         point start;
         point currentPos;
         
-        void aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& data);
+        void aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
         void setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint);
+        void setStartCallback(const geometry_msgs::Transform::ConstPtr& theTF);
         
         void findPath();                          // main loop
         
-        void makeGrid(int8_t data[]);
+        void makeGrid(int8_t data[], nav_msgs::MapMetaData info);
         
         void getPath();                           // Reconstruct path back to start
         void convertPath();
@@ -109,20 +116,17 @@ class Astar {
         void getF(point &point1);             // Gets all the important stuff for a given point (cost, weight, path...)
         double getDist(point point1, point point2);   // Euclidean distance between 2 points
         
-        
-        
-        
-        // ----------- TEsTING-STUFF -------------
-        void createGrid(int sizex, int sizey);     // TEsT - for creating an empty occupancyGrid
-        void setGridEndPoints(int sx, int sy, int gx,int gy); // TEsT - set start and end point
-        void setGridStepCosts(char *typeOfObstacle);          // TEsT - set obstacles
-        void printGrid();                 // TEsT print whole grid and any other relevant stuff
+        // ----------- testing stuff -------------
+        void createGrid(int sizex, int sizey);     // test - for creating an empty occupancyGrid
+        void setGridEndPoints(int sx, int sy, int gx,int gy); // test - set start and end point
+        void setGridStepCosts(char *typeOfObstacle);          // test - set obstacles
+        void printGrid();                 // test print whole grid and any other relevant stuff
         
         // ---------------------------------------
         
     public:
+        Astar(const std::string topic);
         
-        Astar::Astar(const std::string topic);
         void spin();
 };
 

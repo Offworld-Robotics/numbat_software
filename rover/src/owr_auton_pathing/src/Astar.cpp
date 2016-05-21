@@ -12,16 +12,19 @@ Astar::Astar(const std::string topic) {
     
     // check topic names!
     aStarSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::aStarCallback, this);
-    goalSubscriber = node.subscribe<geometry_msgs>("point", 2, &Astar::setGoalCallback, this);
+    //goalSubscriber = node.subscribe<geometry_msgs>("goal", 2, &Astar::setGoalCallback, this);
+    //tfSubscriber = node.subscribe<geometry_msgs>("tf", 2, &Astar::setStartCallback, this);
 }
 
-void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& data) {
+void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
-    // ---------- test only
+    goal.isGoal = true;
+    goal.x = 5;
+    goal.y = 5;
+    
     start.isStart = true;
     start.x = 0;
     start.y = 0;
-    // --------------
     
     if (!goal.isGoal) {
         ROS_ERROR("Can't find goal!");
@@ -33,7 +36,7 @@ void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& data) {
     }
     
     // interpret data and put it in the occupancyGrid
-    makeGrid(data->data, data->info);
+    makeGrid((int8_t*)gridData->data.data(), gridData->info);
     
     findPath();         // do aStar algorithm, get the path
     convertPath();      //convert aStarPath to the path output we need
@@ -42,10 +45,21 @@ void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& data) {
 }
 
 void Astar::setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint) {
+    
+    //-------- test data ------
     goal.isGoal = true;
     goal.x = 5;
     goal.y = 5;
+    //-------------------------
     
+}
+
+void Astar::setStartCallback(const geometry_msgs::Transform::ConstPtr& theTF) {
+    // ---------- test only
+    start.isStart = true;
+    start.x = 0;
+    start.y = 0;
+    // ----------------
 }
 
 //main loop?
@@ -92,7 +106,7 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
     int y = 0;
     char value;
     
-    for (unsigned int i = 0; i < data.size(); ++i) {
+    for (unsigned int i = 0; i < sizeof(data)/sizeof(int8_t); ++i) {
         value = data[i];
         if (value < 0) {
             value = IMPASS;    // set unknowns to impassable
@@ -109,6 +123,12 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
     }
 }
 
+void Astar::convertPath() {
+    aStarPath;
+    finalPath;
+}
+
+
 void Astar::setGridEndPoints(int sx, int sy, int gx,int gy) {
     start.isStart = true;
     start.x = sx;
@@ -118,6 +138,7 @@ void Astar::setGridEndPoints(int sx, int sy, int gx,int gy) {
     goal.x = gx;
     goal.y = gy;
 }
+
 /* //-------- testing only ------------
 void Astar::setGridStepCosts(char *typeOfObstacle) {
     
@@ -181,12 +202,12 @@ void Astar::findPath() {
     
     while(currentPos != goal) {
         
-        //std::cout << "whilecounter: " << counter << std::endl;
         closedSet.push_back(currentPos);    // push the current point into closedSet
-        computeNeighbors();       // get neighbors of current position
+        computeNeighbors();                 // get neighbors of current position
         
-        if(openSet.empty()) {        // or if there is no solution (no more valid points)
-            break;
+        if(openSet.empty()) {               // or if there is no solution (no more valid points)
+            ROS_ERROR("No path found!");
+            return;
         }
         
         //std::cout << "openSet.top() xy = (" << openSet[0].x << ", " << openSet[0].y << ")" << std::endl;
