@@ -43,7 +43,10 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	glutSpecialUpFunc(glut_special_keyup);
 	
 	battery = 5;
-	signal = 5;
+	//signal = 5;
+	signal = -68.75;
+	// scales the signal
+	signal = (signal-INPUT_MIN)*(SCALED_MAX-SCALED_MIN)/(INPUT_MAX-INPUT_MIN);
 	tiltX = 0; // tilt of left-right in degrees
 	tiltY = 0; // tilt of forward-back in degrees
 	ultrasonic = 10;
@@ -501,8 +504,8 @@ void NavigationGUI::drawSignal() {
 	glEnd();
 	glBegin(GL_POLYGON);
 	glVertex2d(0, 0);
-	glVertex2d(signal * 10, 0);
-	glVertex2d(signal * 10, 5 * signal);
+	glVertex2d(signal*10, 0);
+	glVertex2d(signal*10, 5*signal);
 	glEnd();
 
 	glTranslated(0, -20, 0);

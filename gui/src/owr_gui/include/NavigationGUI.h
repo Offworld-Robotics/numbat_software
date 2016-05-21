@@ -54,6 +54,12 @@
 #define ALPHA 1.0 // transparency factor
 #define TEXTBOX_ALPHA 0.001
 
+// scaling
+#define INPUT_MAX 25
+#define INPUT_MIN -100
+#define SCALED_MAX 10
+#define SCALED_MIN 0
+
 class NavigationGUI : public GLUTWindow {
 
 	public:
