@@ -25,6 +25,5 @@ void AutoMapNode::receiveOccGridMsg(const nav_msgs::OccupancyGrid::ConstPtr& msg
 	assert(msg);
 	
 	ROS_INFO("received grid message");
-	ROS_INFO("grid width: %d, height: %d", msg->info.width, msg->info.height);
 	gui->updateGrid((char *)msg->data.data(), msg->info.width, msg->info.height);
 }

@@ -32,11 +32,11 @@ class AutoMapGUI : public GLUTWindow {
 		// pointer to the ROS handler
 		void *autoMapNode;
 		
-		char *gridData;
+		GLuint gridTexture;
+		
+		unsigned char *gridData;
 		int gridCols;
 		int gridRows;
-		
-		void drawOccupancyGrid();
 };
 
 

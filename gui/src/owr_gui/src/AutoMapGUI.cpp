@@ -23,33 +23,36 @@ int main(int argc, char **argv) {
 AutoMapGUI::AutoMapGUI(int width, int height, int *argc, char **argv) : GLUTWindow(width, height, argc, argv, "AutoMap") {
 	autoMapNode = new AutoMapNode(this);
 	
-	glClearColor(1, 1, 1, 0);
+	glClearColor(0, 0, 0, 0);
 	glShadeModel(GL_FLAT);
-	glEnable(GL_BLEND); // enables transparency
-	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	glutKeyboardFunc(glut_keydown);
 	
 	gridCols = gridRows = -1;
 	gridData = NULL;
 	
-	srand(time(NULL));
-	gridCols = 100;
-	gridRows = 70;
-	gridData = (char *)malloc(gridCols*gridRows*sizeof(char));
-	for(int i = 0;i < gridCols*gridRows;i++) {
-		gridData[i] = rand();
-	}
+	glGenTextures(1, &gridTexture);
+	glBindTexture(GL_TEXTURE_2D, gridTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-void AutoMapGUI::updateGrid(char *grid, int width, int height) {
+void AutoMapGUI::updateGrid(char *grid, int cols, int rows) {
 	if(grid != NULL) {
 		if(gridData != NULL) {
 			free(gridData);
 		}
-		gridData = (char *)malloc(width*height*sizeof(char));
-		memcpy(gridData, grid, width*height*sizeof(char));
-		gridCols = width;
-		gridRows = height;
+		gridCols = cols;
+		gridRows = rows;
+		ROS_INFO("start copy: %d by %d", cols, rows);
+		gridData = (unsigned char *)malloc(gridCols*gridRows*3*sizeof(unsigned char));
+		for(int i = 0;i < gridCols*gridRows;i++) {
+			gridData[i*3] = gridData[i*3+1] = gridData[i*3+2] = (grid[i] < 0) ? 0 : grid[i] + 155;
+		}
+		glBindTexture(GL_TEXTURE_2D, gridTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, gridCols, gridRows, 0, GL_RGB, GL_UNSIGNED_BYTE, gridData);
+		ROS_INFO("end copy");
 	}
 }
 
@@ -64,28 +67,26 @@ void AutoMapGUI::idle() {
 }
 
 void AutoMapGUI::display() {
-	glClearColor(1, 1, 1, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	drawOccupancyGrid();
-	glutSwapBuffers();
-}
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-void AutoMapGUI::drawOccupancyGrid() {
-	double cellWidth = (double)currWinW/(double)gridCols;
-	double cellHeight = (double)currWinH/(double)gridRows;
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glColor3f(0, 0, 0);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glBindTexture(GL_TEXTURE_2D, gridTexture);
+
+	glBegin(GL_QUADS);
+		glTexCoord2d(0, 1); glVertex2d(0, 0);
+		glTexCoord2d(0, 0); glVertex2d(0, -currWinH);
+		glTexCoord2d(1, 0); glVertex2d(currWinH, -currWinH);
+		glTexCoord2d(1, 1); glVertex2d(currWinH, 0);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
 	
-	for(int i = 0;i < gridRows;i++) {
-		for(int j = 0;j < gridCols;j++) {
-			double data = gridData[i*gridRows+j]/100.0;
-			if(data < 0) {
-				glColor3f(0.5,0,0);
-			} else {
-				glColor3f(data, data, data);
-			}
-			glRectd(j*cellWidth, -i*cellHeight, (j+1)*cellWidth, -(i+1)*cellHeight);
-		}
-	}
+	glutSwapBuffers();
 }
 
 void AutoMapGUI::keydown(unsigned char key, int x, int y) {
