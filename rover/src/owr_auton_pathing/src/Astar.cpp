@@ -6,10 +6,17 @@
 
 #include "Astar.h"
 
+int main (int argc, char *argv[]) {
+    
+    ros::init(argc, argv, "owr_astar");
+    std::cout << "ros init'd" << std::endl;
+    Astar pathFinder("owr_auton_pathing");
+    pathFinder.spin();
+    return 0;
+}
 
 Astar::Astar(const std::string topic) {
     // shouldn't need to set any values..?
-    
     // check topic names!
     aStarSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::aStarCallback, this);
     //goalSubscriber = node.subscribe<geometry_msgs>("goal", 2, &Astar::setGoalCallback, this);
@@ -19,12 +26,12 @@ Astar::Astar(const std::string topic) {
 void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
     goal.isGoal = true;
-    goal.x = 5;
-    goal.y = 5;
+    goal.x = 8;
+    goal.y = 0;
     
     start.isStart = true;
-    start.x = 0;
-    start.y = 0;
+    start.x = 1;
+    start.y = 1;
     
     if (!goal.isGoal) {
         ROS_ERROR("Can't find goal!");
@@ -36,12 +43,18 @@ void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     }
     
     // interpret data and put it in the occupancyGrid
+    //makeGrid((int8_t*)gridData->data.data(), gridData->info);
+    //nav_msgs::OccupancyGrid testData;
+    
     makeGrid((int8_t*)gridData->data.data(), gridData->info);
     
     findPath();         // do aStar algorithm, get the path
-    convertPath();      //convert aStarPath to the path output we need
+    printGrid();
+    // idk
+    //convertPath();      //convert aStarPath to the path output we need
     
-    pathPublisher.publish(finalPath);
+    // no idea how to publish a correct path
+    //pathPublisher.publish(finalPath);
 }
 
 void Astar::setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint) {
@@ -62,8 +75,9 @@ void Astar::setStartCallback(const geometry_msgs::Transform::ConstPtr& theTF) {
     // ----------------
 }
 
-//main loop?
+//ros's main loop thing?
 void Astar::spin() {
+    std::cout << "spinning" << std::endl;
     while(ros::ok()) {
         ros::spinOnce();
     }
@@ -90,13 +104,14 @@ int main(int argc, char **argv) {
 
 void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
     
-    if(info.width <= SIZE_OF_GRID && info.height <= SIZE_OF_GRID) {
+    if((info.width >= SIZE_OF_GRID) || (info.height >= SIZE_OF_GRID)) {
         ROS_ERROR("nav_msgs::OccupancyGrid is too big!");
         return;
     }
-    
+    occupancyGrid.resize(SIZE_OF_GRID);
     //set entire grid to impassable
     for(unsigned int i = 0; i < occupancyGrid.size(); ++i) {
+        occupancyGrid[i].resize(SIZE_OF_GRID);
         for(unsigned int j = 0; j < occupancyGrid[i].size(); ++j) {
             occupancyGrid[i][j] = IMPASS;
         }
@@ -172,11 +187,11 @@ void Astar::setGridStepCosts(char *typeOfObstacle) {
     }
     
 }
-
+*/
 void Astar::printGrid(){
     std::cout << std::endl;
     // this is how these loops should be set up for correct indexing (pretty sure) i = x; j = y
-    for(unsigned int j = 0; j < occupancyGrid[0].size(); ++j) {
+    /*for(unsigned int j = 0; j < occupancyGrid[0].size(); ++j) {
       for(unsigned int i = 0; i < occupancyGrid.size(); ++i) {
         point printPoint(i,j);
         if (start.x == i && start.y == j) {
@@ -185,7 +200,7 @@ void Astar::printGrid(){
             std::cout << "G ";      // G for goal
         } else if (occupancyGrid[i][j] == IMPASS) {
             std::cout << "B ";      // B for block
-        } else if(std::find(finalPath.begin(), finalPath.end(), printPoint) != finalPath.end()){
+        } else if(std::find(aStarPath.begin(), aStarPath.end(), printPoint) != aStarPath.end()){
             std::cout << "# ";      // # for final path
         } else {
             std::cout << "- ";      // - for empty (passable) grid square
@@ -194,8 +209,18 @@ void Astar::printGrid(){
       std::cout << std::endl;
     }
     std::cout << std::endl;
+    */
+    // print out the actual path
+    std::cout << "aStarPath = [";
+    for (unsigned int i = 0; i < aStarPath.size(); ++i) {
+        std::cout << "(" << aStarPath[i].x << "," << aStarPath[i].y << ")";
+        if (i < aStarPath.size() - 1) {
+            std::cout << ", ";
+        }
+    }
+    std::cout << "]";
 }
-------------------------------------*/
+/*------------------------------------*/
 
 void Astar::findPath() {
     currentPos = start;           // set our current position to the start position

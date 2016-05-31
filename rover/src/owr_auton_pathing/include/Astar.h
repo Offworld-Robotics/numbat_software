@@ -20,7 +20,7 @@
 #include <algorithm>    // find
 //#include <array>
 
-#define SIZE_OF_GRID 500
+#define SIZE_OF_GRID 5000
 #define IMPASS 255
 
 class point {
@@ -83,7 +83,7 @@ class Astar {
         ros::Subscriber goalSubscriber;
         ros::Subscriber tfSubscriber;
         
-        nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
+        //nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
         nav_msgs::Path finalPath;               // finalPath for us to publish
         
         comparePoints comp;
