@@ -19,14 +19,14 @@ int main(int argc, char ** argv) {
     //init ros
     ros::init(argc, argv, "owr_ping_node");
     ros::NodeHandle n;
-    n.setParam("groundStation","127.0.0.1");
+    n.setParam("groundStation","192.168.1.12");
     ros::Publisher ping_pub = n.advertise<std_msgs::Bool>("owr/ping",10);
     while (ros::ok()){
         std_msgs::Bool networkStatus;
         std::string groundStation;
         n.getParam("groundStation",groundStation);
         //ping the ground station 3 times waiting for 0.5 seconds each time
-        std::string pingCommand = "ping -c 1 -w 0.3 -i 0.2";
+        std::string pingCommand = "ping -c 1 -w 0.3 -i 0.2 ";
         pingCommand = pingCommand + groundStation;
         //stores the exit status of the system command that pings the given ip address
         int exitStatus = system(pingCommand.c_str());
