@@ -45,5 +45,5 @@ if __name__ == '__main__':
         message = run()
         pub.publish(message)
         rate.sleep()
-        time.sleep(30)
+        time.sleep(5)
         
