@@ -1971,7 +1971,7 @@
   </link>
   <joint
     name="arm_base_rotation"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="0.172554697757751 -0.0724869639786827 0"
       rpy="5.78193091528853E-16 -1.03121787249516E-15 -0.0880750381353883" />
@@ -2924,6 +2924,16 @@
             <hardwareInterface>PositionJointInterface</hardwareInterface>
         </joint>
         <actuator name="front_left_swerve_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="arm_base_rotation">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="arm_base_rotation">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="arm_base_rotation_motor">
         <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
         <hardwareInterface>PositionJointInterface</hardwareInterface>
         </actuator>

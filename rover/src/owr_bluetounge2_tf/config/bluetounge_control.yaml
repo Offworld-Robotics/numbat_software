@@ -42,3 +42,8 @@ laser_tilt_joint_controller:
     type: position_controllers/JointPositionController
     joint: laser_tilt_joint
     pid: {p: 100.0, i: 0.01, d: 10.0}
+
+arm_base_rotate_controller:
+    type: position_controllers/JointPositionController
+    joint: arm_base_rotation
+    pid: {p: 100.0, i: 0.01, d: 10.0}
