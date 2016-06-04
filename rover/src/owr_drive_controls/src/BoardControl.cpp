@@ -361,6 +361,7 @@ void BoardControl::run() {
             if (!s.isConnected){
                 ROS_DEBUG("Emergency Stop");
                 break;
+            }
             double updateRateNSec = (ros::Time::now() - lastUpdate).toNSec();
             double updateRateHZ = 1.0/( updateRateNSec / SECONDS_2_NS);
             ROS_INFO("Update Rate NSec: %f, HZ: %f", updateRateNSec, updateRateHZ);

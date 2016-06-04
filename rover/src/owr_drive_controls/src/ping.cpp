@@ -19,7 +19,7 @@ int main(int argc, char ** argv) {
     //init ros
     ros::init(argc, argv, "owr_ping_node");
     ros::NodeHandle n;
-    n.setParam("groundStation","127.0.0.1");
+    n.setParam("groundStation","192.168.1.12");
     ros::Publisher ping_pub = n.advertise<std_msgs::Bool>("owr/ping",1000);
     while (ros::ok()){
         std_msgs::Bool networkStatus;
