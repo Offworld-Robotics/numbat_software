@@ -226,7 +226,9 @@ void NavigationGUI::printGPSPath() {
 // draws GPS path and co-ordinates near the centre of the window
 void NavigationGUI::drawGPS() {
 	glPushMatrix();
-	glTranslated(currWinW/2.0, -currWinH*3.0/5.0, 0);
+	//glTranslated(currWinW/2.0, -currWinH*3.0/5.0, 0);
+	glTranslated(currWinW-150, -currWinH*3.0/5.0, 0);
+	//glTranslated(currWinW - 400, 150 - currWinH, 0);
 
 	if (GPSList.size() > 0) {
 		// draws out the path so that the forward direction of the rover always faces up on the screen
@@ -385,7 +387,9 @@ void NavigationGUI::drawFeedStatus() {
 void NavigationGUI::drawTilt() {
 	char text[30];
 	glPushMatrix();
-	glTranslated(currWinW - 150, 150 - currWinH, 0);
+
+	glTranslated(currWinW/2.0, -currWinH*4.0/5.0, 0);
+	//glTranslated(currWinW - 150, 150 - currWinH, 0);
 	
 	glColor4f(0, 1, 0, TEXTBOX_ALPHA);
 	glRecti(-100, 100, 100, -150);
