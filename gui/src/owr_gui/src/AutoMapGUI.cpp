@@ -2,7 +2,7 @@
 	Main source for OffWorld Robotics Autonomous Mapping & Control GUI
 	Displayed features include:
 	- Occupancy Grid
-	- Start/Stop buttons (todo)
+	- Start/Stop buttons
 
 	Compile using: catkin_make
 	Setup environment using: source devel/setup.bash

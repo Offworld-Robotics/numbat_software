@@ -11,28 +11,34 @@
  *
  */
 
+#include <string>
 
 class Button {
    private:
-	double posX;
-	double posY;
-	double xHalfLen;
-	double yHalfLen;
-	float R, G, B;
-	char label[10];
+	double x;
+	double y;
+	double halfWidth;
+	double halfHeight;
+	float r, g, b;
+	std::string label;
 	bool isClicked;
+	void (*downFunc)(void);
+	void (*upFunc)(void);
+	void init(double x, double y, double width, double height, float r, float g, float b, char *txt, void (*downFunc)(void), void (*upFunc)(void));
+	Button();
 	
    public:
+	Button(double x, double y, double width, double height, float r, float g, float b, char *txt, void (*downFunc)(void), void (*upFunc)(void));
 	void draw();
-	Button();
-	Button(double x, double y, double width, double height, float r, float g, float b, char *txt);
-	void changeColour(float r, float g, float b);
-	bool isPointInBounds(int x, int y);
+	void setColour(float r, float g, float b);
+	bool isInside(int x, int y);
 	void click();
 	void unclick();
 	double getX();
 	double getY();
 	void setPosition(double x, double y);
+	void setDownFunc(void (*downFunc)(void));
+	void setUpFunc(void (*upFunc)(void));
         // override these in derived classes
         virtual void clickDownOperation();
         virtual void clickUpOperation();

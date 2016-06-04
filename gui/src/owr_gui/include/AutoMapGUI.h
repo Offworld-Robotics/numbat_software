@@ -37,6 +37,11 @@ class AutoMapGUI : public GLUTWindow {
 		unsigned char *gridData;
 		int gridCols;
 		int gridRows;
+		
+		Button startButton;
+		Button pauseButton;
+		Button stopButton;
+		
 };
 
 

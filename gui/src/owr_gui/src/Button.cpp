@@ -19,67 +19,79 @@ Button::Button() {
 
 }
 
-Button::Button(double x, double y, double width, double height, float r, float g, float b, char *txt) {
-	posX = x;
-	posY = y;
-	xHalfLen = width/2.0;
-	yHalfLen = height/2.0;
-	R = r;
-	G = g;
-	B = b;
-	strncpy(label, txt, 9);
-	label[9] = '\0';
-	isClicked = false;
+Button::Button(double x, double y, double width, double height, float r, float g, float b, char *txt, void (*downFunc)(void), void (*upFunc)(void)) : label(txt) {
+	this->x = x;
+	this->y = y;
+	this->halfWidth = width/2.0;
+	this->halfHeight = height/2.0;
+	this->r = r;
+	this->g = g;
+	this->b = b;
+	this->downFunc = downFunc;
+	this->upFunc = upFunc;
+	this->isClicked = false;
 }
 
 void Button::draw() {
 	glPushMatrix();
-	glTranslated(posX, posY, 0);
-	if (isClicked)
+	glLoadIdentity();
+	glTranslated(x, y, 0);
+	if (isClicked) {
 		glColor3f(1, 0, 0);
-	else
-		glColor3f(R, G, B);
-	glRectd(-xHalfLen, -yHalfLen, xHalfLen, yHalfLen);
+	} else {
+		glColor3f(r, g, b);
+	}
+	glRectd(-halfWidth, -halfHeight, halfWidth, halfHeight);
 	glColor3f(1, 1, 1);
 	glRasterPos2i(-5, -6);
-	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(label));
+	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(label.c_str()));
 	glPopMatrix();
 }
 
-void Button::changeColour(float r, float g, float b) {
-	R = r;
-	G = g;
-	B = b;
+void Button::setColour(float r, float g, float b) {
+	this->r = r;
+	this->g = g;
+	this->b = b;
 }
 
-bool Button::isPointInBounds(int x, int y) {
+bool Button::isInside(int x, int y) {
 	return (
-		x > (posX - xHalfLen) && x < (posX + xHalfLen) &&
-		y > (posY - yHalfLen) && y < (posY + yHalfLen)
+		x > (this->x - halfWidth) && x < (this->x + halfWidth) &&
+		y > (this->y - halfHeight) && y < (this->y + halfHeight)
 	);
 }
 
 void Button::click() {
 	isClicked = true;
-        clickDownOperation();
+        //clickDownOperation();
+        downFunc();
 }
 
 void Button::unclick() {
 	isClicked = false;
-        clickUpOperation();
+        //clickUpOperation();
+        upFunc();
 }
 
 double Button::getX() {
-	return posX;
+	return x;
 }
 
 double Button::getY() {
-	return posY;
+	return y;
 }
 
 void Button::setPosition(double x, double y) {
-	posX = x;
-	posY = y;
+	this->x = x;
+	this->y = y;
+}
+
+void Button::setDownFunc(void (*downFunc)(void)) {
+	this->downFunc = downFunc;
+}
+
+void Button::setUpFunc(void (*upFunc)(void)) {
+	this->upFunc = upFunc;
 }
 
 void Button::clickDownOperation() {
