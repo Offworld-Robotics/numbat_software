@@ -188,7 +188,7 @@ BoardControl::BoardControl() :
     boardStatusPublisher = nh.advertise<owr_messages::board>("/owr/board_status",10);
     velSubscriber = nh.subscribe<nav_msgs::Odometry>("/odometry/filtered", 1, &BoardControl::velCallback, this, transportHints);
     //subscribe to the ping node
-    pingSubscriber = nh.subscribe<std_msgs::Bool>("owr/ping",10, &BoardControl::pingCallback, this, transportHints);
+    pingSubscriber = nh.subscribe<std_msgs::Bool>("owr/ping",1000, &BoardControl::pingCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
@@ -199,6 +199,7 @@ BoardControl::BoardControl() :
     cameraBottomTilt = CAMERA_ROTATION_MID;
     cameraTopRotate = CAMERA_ROTATION_MID;
     cameraTopTilt = CAMERA_ROTATION_MID;
+    netStatus = true;
     armIncRate = 0;
     cameraBottomRotateIncRate = 0;
     cameraBottomTiltIncRate = 0;
@@ -334,6 +335,7 @@ void BoardControl::run() {
 //                 cameraRotScale(cameraBottomTilt), 
 //                 cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
             if (!netStatus) {
+                ROS_INFO("Emergency Stop");
                 pwmFLW = MOTOR_MID;
                 pwmFRW = MOTOR_MID;
                 pwmBLW = MOTOR_MID;
@@ -358,10 +360,7 @@ void BoardControl::run() {
                 pwmCamBRot, pwmCamBTilt, pwmCamTRot, pwmCamTTilt,
                 pwmLIDAR
             );
-            if (!s.isConnected){
-                ROS_DEBUG("Emergency Stop");
-                break;
-            }
+            if (!s.isConnected) break;
             double updateRateNSec = (ros::Time::now() - lastUpdate).toNSec();
             double updateRateHZ = 1.0/( updateRateNSec / SECONDS_2_NS);
             ROS_INFO("Update Rate NSec: %f, HZ: %f", updateRateNSec, updateRateHZ);
@@ -576,6 +575,7 @@ void BoardControl::pingCallback(const std_msgs::Bool::ConstPtr& networkStatus) {
         netStatus = true;
     } else {
         //emergency stop
+        ROS_INFO("Set net status false");
         netStatus = false;
     }
 }
