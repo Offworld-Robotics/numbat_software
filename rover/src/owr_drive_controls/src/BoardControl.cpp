@@ -343,7 +343,7 @@ void BoardControl::run() {
             lastUpdate = ros::Time::now();
             
             jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
-            armRotationBaseGear.updatePos(s.enc0, lastUpdate);
+            armRotationBaseGear.updatePos(s.enc5, lastUpdate);
             frontLeftSwerveGears.updatePos(-s.enc0, lastUpdate);
             frontRightSwerveGears.updatePos(s.enc5, lastUpdate);
             
@@ -363,7 +363,7 @@ void BoardControl::run() {
             armRotateAngle += armRotateRate;
             pwmArmRot = (armRotateRate * 500) + 1500;
             ROS_INFO("Arm Rotate %d", pwmArmRot);	
-            //pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, 			 armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
+            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
             
             //for now do this for actuators
             pwmArmTop = armTop;
