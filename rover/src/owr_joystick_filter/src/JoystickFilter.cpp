@@ -1,21 +1,22 @@
 /*
  * Filters the Joysticks
  * Original Author: Sam S
- * Editors: Harry J.E Day
- * ROS_NODE:
- * ros package: 
- */
- 
+ * Editors: Harry J.E Day, Sean Thompson
+ * ROS_NODE:owr_joystick_filter
+             * ros package: 
+     */
+     
 
 //#include "bluesat_owr_protobuf/Message1Relay.h"
 #include "ButtonDefs.h"
 #include "RoverDefs.h"
-
 #include "JoystickFilter.h" 
 
 #include <iostream>
 #include <list>
 #include <cmath>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <stdio.h>
 
 #include <geometry_msgs/Twist.h>
@@ -35,6 +36,10 @@
 #define ROTATION_MID 0.5
 #define SENSITIVITY 1 //CANNOT BE 0
 #define SPEED_CAP 0.83333 // 3 km/h in m/s
+
+// DEADZONES for thumbsticks, these will require tuning through testing
+#define DEADZONE_RADIAL_STICK_L 0.1
+#define DEADZONE_RADIAL_STICK_R 0.1
  
 int main(int argc, char ** argv) {
     
@@ -73,20 +78,74 @@ JoystickFilter::JoystickFilter(const std::string topic) {
 }
 
 
-// Attempt at single joystick driving
+// Take Input from the GamePad ie Xbox Controller
 void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     geometry_msgs::Twist cmdVel;
+
+    // Implement a Scaled Radial Deadzone as in 
+    // http://www.third-helix.com/2013/04/12/doing-thumbstick-dead-zones-right.html 
+
+    // Left Thumbstick
+    double L_LR = joy->axes[STICK_L_LR];
+    double L_UD = joy->axes[STICK_L_UD];
+    //ROS_INFO("joy->axes[STICK_L_LR]:%f,joy->axes[STICK_L_UD]:%f", L_LR, L_UD);
+    rawLStick = Eigen::Vector2d(L_LR, L_UD);
+    //rawLStick(joy->axes[STICK_L_LR], joy->axes[STICK_L_UD]*-1.0);
+    //ROS_INFO("rawLStick 0:%f,1:%f", rawLStick(0), rawLStick(1));
+    rawMagLStick = fmin(1.0, rawLStick.norm());
+    //ROS_INFO("rawMagLStick:%f ie output of rawLStick.norm()", rawMagLStick);
+    if(rawMagLStick > 0.0){
+        // need to apply normalisation
+        deadZoneCorrectedMagL = fmax(0.0, (rawMagLStick - DEADZONE_RADIAL_STICK_L));
+        //ROS_INFO("deadZoneCorrectedMagL:%f", deadZoneCorrectedMagL);
+        deadzoneRescaledLStickMag = (deadZoneCorrectedMagL)/(1.0 - (DEADZONE_RADIAL_STICK_L));
+        //ROS_INFO("deadzoneRescaledLStickMag:%f", deadzoneRescaledLStickMag);
+        rescaledLStick = rawLStick;
+        rescaledLStick.normalize();
+        //ROS_INFO("rescaledLStick 0:%f,1:%f", rescaledLStick(0), rescaledLStick(1));
+        rescaledLStick *= deadzoneRescaledLStickMag;
+    } else {
+        // rawMagLStick == 0.0, no stick deflection cannot normalise a zero vector
+        rescaledLStick = Eigen::Vector2d(0.0, 0.0);
+    }
+    //ROS_INFO("rescaledLStick 0:%f,1:%f", rescaledLStick(0), rescaledLStick(1));
+    
+    // Right Thumbstick
+    // Multiply y axis value of joystick by -1.0 to make posive up
+    rawRStick = Eigen::Vector2d(joy->axes[STICK_R_LR], joy->axes[STICK_R_UD]);
+    rawMagRStick = fmin(1.0, rawRStick.norm());
+    if(rawMagRStick > 0.0){
+        deadZoneCorrectedMagR = fmax(0.0, (rawMagRStick - DEADZONE_RADIAL_STICK_R));
+        deadzoneRescaledRStickMag = (deadZoneCorrectedMagR)/(1.0 - (DEADZONE_RADIAL_STICK_R));
+        rescaledRStick = rawRStick;
+        rescaledRStick.normalize();
+        rescaledRStick *= deadzoneRescaledRStickMag;
+    } else {
+        // rawMagRStick == 0.0, no stick deflection cannot normalise a zero vector
+        rescaledRStick = Eigen::Vector2d(0.0, 0.0);
+    }
+    //ROS_INFO("rescaledRStick 0:%f,1:%f", rescaledRStick(0), rescaledRStick(1));
     
     float leftWheelSpeed = 0;
     float rightWheelSpeed = 0;
-    float leftRightMagnitude = std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
+    //float leftRightMagnitude = std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
 
-    // Set sensitivity between 0 and 1: 
-    //  - 0 makes it output = input 
-    //  - 1 makes output = input ^3
-
+    /*
+     * Control Modes
+     *
+     * Hold Button A
+     *      Thumb Sticks control bottom camera rotation
+     *
+     *  Hold Button B
+     *      Thumb Sticks control top camera rotation
+     *
+     *  Normal Driving Mode
+     *      Active by default
+     *      
+     */
     if (joy->buttons[BUTTON_A]) {
+        // Thumb sticks control camera rotation while A Button is held
 
         msgsOut.axes[CAMERA_BOTTOM_ROTATE] = joy->axes[STICK_L_LR];
         msgsOut.axes[CAMERA_BOTTOM_TILT] = joy->axes[STICK_L_UD];
@@ -94,6 +153,7 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         // cameraBottomRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
         // cameraBottomTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
     } else if (joy->buttons[BUTTON_B]) {
+        // Thumb sticks control top camera rotation while B Button is held
 
         msgsOut.axes[CAMERA_TOP_ROTATE] = joy->axes[STICK_L_LR];
         msgsOut.axes[CAMERA_TOP_TILT] = joy->axes[STICK_L_UD];
@@ -101,35 +161,48 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         // cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
         // cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
     } else {
+        // New Steering Scheme Implementation
+        // left stick is forwards backwards (only the vertical axis is used)
+        // right stick is steering angle (only the horizontal axis is used)
+        
+        // Note coordinate system of cmdVel.linear message used to communicat with the board
+        // x = forward-backwards  forwards positive
+        // y = port-starboard 
+        
+        // Note Eigen::Vector2d storing axes values as (x,y) 
+        //  therefore index 0 == x, index 1 == y
+        // set cmdVel.linear.y  = x-axis of R stick rescaled input
+        // get the sign (positive or negative of the axis)
+        double signYAxis = (rescaledRStick(0) > 0.0) ? 1.0: -1.0;
+        //  Magnitude of driveVector is set by rescaledLStick(1);
+        Eigen::Vector2d driveVector(0.0, rescaledLStick(1));
+        //  map direction vector argument ie angle to 
+        //  apply squared scaling of the stick input then reset the sign to give
+        //      lower sensitivity for small steering angles
+        driveVector = Eigen::Rotation2D<double>(M_PI/2 * pow(rescaledRStick(0), 2)*signYAxis) * driveVector;
 
-//         if(STICK_R_LR > 0){
-// 
-//             leftWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;
-//             rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;    
-// 
-//         } else if(STICK_R_LR < 0){
-// 
-//             leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
-//             rightWheelSpeed = joy->axes[STICK_R_UD] + leftRightMagnitude;    
-// 
-//         } else {
-// 
-//             // Minus value of LR to get the total value back between {-1..1}
-//             leftWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
-//             rightWheelSpeed = joy->axes[STICK_R_UD] - leftRightMagnitude;
-// 
-//             // //Divide by 2 so that the max value for left/rightWheelSpeed can never exceed {-1..1} 
-//             // leftWheelSpeed = joy->axes[STICK_R_UD]/2;
-//             // rightWheelSpeed = joy->axes[STICK_R_UD]/2;
-// 
-//         }
+        ROS_INFO("\eRstick(0):%f Rstick(1):%f", rescaledRStick(0),rescaledRStick(1));
+        ROS_INFO("\eLstick(0):%f Lstick(1):%f", rescaledLStick(0),rescaledLStick(1));
+        ROS_INFO("\nrotated driveVector (0):%f (1):%f", driveVector(0),driveVector(1));
+        cmdVel.linear.x = driveVector(1);
+        cmdVel.linear.y = driveVector(0);
+        ROS_INFO("\nNEW Sticks cmdVel.linear Y:%f X:%f", cmdVel.linear.y, cmdVel.linear.x);
+
+
+        /*
+        //OLD IMPLEMENTATION, MAGNITUDE STICK & DIRECTION STICK BOTH LINEAR WITH NO DEADZONE 
         //left stick controls magnitude
-        //right stick controls direction
+        //right stick directly chooses direction vector
+        //  direction in 2d & magnitude by stick deflection
         //joystick values are between 1 and -1
         double magnitude = joy->axes[SPEED_STICK] * SPEED_CAP;
-        cmdVel.linear.x = joy->axes[DIRECTION_STICK_X] * magnitude;
-        cmdVel.linear.y = joy->axes[DIRECTION_STICK_Y] * magnitude;
-
+        // Add Cubic scaling of direction stick input
+        //  this will reduce sensitivity a lot for small deflections,
+        //      and smoothly increase in sensitivity for larger deflections.
+        cmdVel.linear.x = pow(joy->axes[DIRECTION_STICK_X],3) * magnitude;
+        cmdVel.linear.y = pow(joy->axes[DIRECTION_STICK_Y],3) * magnitude * -1;
+        //ROS_INFO("OLD STICKS  cmdVel.linear X:%f Y:%f \n", cmdVel.linear.x, cmdVel.linear.y);
+        */
     }
     msgsOut.buttons[FL_SWERVE_RESET] = joy->buttons[BUTTON_STICK_L];
     msgsOut.buttons[FR_SWERVE_RESET] = joy->buttons[BUTTON_STICK_R];
