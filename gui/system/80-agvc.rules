@@ -1,0 +1,25 @@
+# This is added as an example udev script 
+# It will need to be filled out for the serial numbers and devices on BlueTongue
+# Cameras
+# left camera
+SUBSYSTEM=="video4linux", ATTR{name}=="HD Pro Webcam C920", ATTRS{serial}=="41C9629F", SYMLINK+="video6"
+# right camera
+SUBSYSTEM=="video4linux", ATTR{name}=="HD Pro Webcam C920", ATTRS{serial}=="6F19629F", SYMLINK+="video7"
+
+# allow UVC full access to cameras (Logitech)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="046d", MODE="0666", RUN+="/apc"
+
+# KERNEL=="video*", RUN+="/apc"
+ACTION=="remove", SUBSYSTEM=="usb", ATTRS{idVendor}=="046d", RUN+="/kcn"
+
+# Joysticks
+KERNEL=="js?", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c21d", SYMLINK+="input/primary-joystick"
+
+# Husky
+SUBSYSTEM=="tty", SUBSYSTEMS=="usb-serial", DRIVERS=="pl2303", SYMLINK+="husky"
+
+# Buttercup
+SUBSYSTEM=="tty", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="00df", SYMLINK+="buttercup"
+
+# Microstrain IMU naming and permissioning
+SUBSYSTEM=="tty", ATTRS{idVendor}=="199b", ATTRS{idProduct}=="3065", SYMLINK+="microstrain"
