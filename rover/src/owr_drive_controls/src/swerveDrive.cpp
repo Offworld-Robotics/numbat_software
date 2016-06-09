@@ -52,6 +52,16 @@ swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg ) {
         double closeFrontAng = DEG90-atan2(closeBackR,FRONT_W_2_BACK_W_X);
         double farFrontAng = DEG90-atan2(farBackR,FRONT_W_2_BACK_W_X);
         
+        //if we are in reverse, we just want to go round the same circle in the opposite direction (I think...)
+        if(velMsg->linear.x < 0) {
+            //flip all the motorVs
+            closeFrontV *=-1.0;
+            farFrontV *=-1.0;
+            farBackV *=-1.0;
+            closeBackV *=-1.0;
+        }
+        
+        
         //work out which side to favour
         if(0 <= turnAngle && turnAngle <= M_PI) {
             output.frontLeftMotorV = closeFrontV;
