@@ -64,6 +64,10 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 
 	scale = DEFAULT_SCALE;
 	displayOverlay = true;
+
+	// initializing flag to toggle battery/signal
+	displayWidgets = true;
+
 	srand(time(NULL));
 	//generateTarget();
 }
@@ -171,9 +175,12 @@ void NavigationGUI::display() {
 		drawFeedStatus();
 		drawGPS();
 		drawTilt();
-		drawBattery();
-		drawSignal();
 		drawUltrasonic();
+		if (displayWidgets) {
+			drawBattery();
+			drawSignal();
+		}
+		drawSwitch();
 	}
 
 	glutSwapBuffers();
@@ -514,6 +521,20 @@ void NavigationGUI::drawSignal() {
 	glPopMatrix();
 }
 
+// draws [B] next to battery/signal
+void NavigationGUI::drawSwitch() {
+	glPushMatrix();
+
+	glTranslated(1225, -75, 0);
+	glColor4f(1, 0, 0, ALPHA);
+	char text[3];
+	sprintf(text, "[B]");
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 25, 0);
+
+	glPopMatrix();
+}
+
+
 void NavigationGUI::keydown(unsigned char key, int x, int y) {
 	if (key == 27) {
 		exit(0);
@@ -531,6 +552,9 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 		videoScreen->zoom(ZOOM_IN);
 	} else if (key == 's') {
 		videoScreen->zoom(ZOOM_OUT);
+	// hotkey to toggle battery/signal
+	} else if (key == 'b') {
+		displayWidgets = !displayWidgets;
 	}
 }
 

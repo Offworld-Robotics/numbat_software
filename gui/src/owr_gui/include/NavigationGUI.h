@@ -94,6 +94,7 @@ class NavigationGUI : public GLUTWindow {
 		void drawBattery();
 		void drawSignal();
 		void drawUltrasonic();
+		void drawSwitch();	// draws [B] next to battery/signal
 		
 		// pointer to the ROS handler
 		void *navigationNode;
@@ -123,12 +124,15 @@ class NavigationGUI : public GLUTWindow {
 		double scale;
 		double cursorSpin;
 		bool displayOverlay;
+		bool displayWidgets;	// flag to toggle battery/signal
 
 		//ros stuff
 		ros::Publisher streamPub;
 		void toggleStream(int feed);
 		
 		Video_Feed_Frame *videoScreen;
+
+		
 };
 
 
