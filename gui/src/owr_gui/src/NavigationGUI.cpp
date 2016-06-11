@@ -64,6 +64,7 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 
 	scale = DEFAULT_SCALE;
 	displayOverlay = true;
+        displayTilt = true;
 	srand(time(NULL));
 	//generateTarget();
 }
@@ -170,7 +171,9 @@ void NavigationGUI::display() {
 	if (displayOverlay) {
 		drawFeedStatus();
 		drawGPS();
-		drawTilt();
+                if(displayTilt) {
+		    drawTilt();
+                }
 		drawBattery();
 		drawSignal();
 		drawUltrasonic();
@@ -535,7 +538,9 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 		videoScreen->zoom(ZOOM_IN);
 	} else if (key == 's') {
 		videoScreen->zoom(ZOOM_OUT);
-	}
+	} else if (key == 'a') {
+                displayTilt = !displayTilt;
+        }
 }
 
 void NavigationGUI::special_keydown(int keycode, int x, int y) {
