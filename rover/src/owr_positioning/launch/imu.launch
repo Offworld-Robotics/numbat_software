@@ -3,6 +3,7 @@
     <node pkg="xsens_driver" type="mtnode.py" name="mtnode" output="screen">
       <param name="frame_id" value="base_link"/>
     </node>
+    <node pkg="xsens_driver" type="imu_conversion" name="imu_conversion" output="screen"/>
     <node pkg="robot_localization" type="ekf_localization_node" name="ekf"  output="screen">
        <param name="base_link_frame" value="base_footprint"/>
        <param name="odom_frame" value="odom"/>
@@ -15,8 +16,6 @@
        <!-- make mesurements relative to the first one -->
        <param name="imu0_relative" value="true"/>
        <!-- this may not work, as we don't have absolute -->
-       <param name="imu0_remove_gravitational_acceleration"
-       value="true"/>
-       
+       <param name="imu0_remove_gravitational_acceleration" value="true"/>
     </node>
 </launch>
