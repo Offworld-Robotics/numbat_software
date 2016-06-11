@@ -363,7 +363,7 @@ void BoardControl::run() {
             armRotateAngle += armRotateRate;
             pwmArmRot = (armRotateRate * 500) + 1500;
             ROS_INFO("Arm Rotate %d", pwmArmRot);	
-            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
+            pwmArmRot = armBaseRotate.posToPWM(armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
             
             //for now do this for actuators
             pwmArmTop = armTop;
