@@ -11,11 +11,12 @@
        <param name="world_frame" value="odom"/>
        <param name="imu0" value="/imu"/>
         <param name="two_d_mode" value="false"/>
-       <param name="frequency" value="50"/>
+       <param name="frequency" value="400"/>
        <rosparam param="imu0_config">[false, false, false, false, false, false, false, false, false, true, true, true, true, true, true ]</rosparam>
        <!-- make mesurements relative to the first one -->
        <param name="imu0_relative" value="true"/>
        <!-- this may not work, as we don't have absolute -->
        <param name="imu0_remove_gravitational_acceleration" value="true"/>
     </node>
+    <node pkg="owr_positioning" type="orientation" name="orientation" output="screen"/>
 </launch>
