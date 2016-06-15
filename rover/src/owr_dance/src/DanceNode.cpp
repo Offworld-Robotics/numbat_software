@@ -15,7 +15,7 @@
 
 //45 degrees
 #define ARM_MAX_ANGLE 0.785398
-#define WHEEL_MAX_ANGLE ARM_MAX_ANGLE
+#define WHEEL_MAX_ANGLE (M_PI/2)
 
 #define METER 4 // 4 
 
