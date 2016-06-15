@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="owr_wifi_data" type="scrape.py" name="scrape" />
+</launch>
