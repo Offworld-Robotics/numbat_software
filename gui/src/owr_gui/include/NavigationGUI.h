@@ -55,7 +55,7 @@
 #define TEXTBOX_ALPHA 0.001
 
 // scaling
-#define INPUT_MAX 25
+#define INPUT_MAX -18.85
 #define INPUT_MIN -100
 #define SCALED_MAX 10
 #define SCALED_MIN 0
