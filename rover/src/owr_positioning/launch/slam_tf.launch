@@ -1,0 +1,7 @@
+<launch>
+    <remap from="imu_topic" to="/mti/sensor/imu"/>
+     <node pkg="hector_imu_attitude_to_tf" type="imu_attitude_to_tf_node" name="imu_attitude_to_tf_node">
+        <param name="base_frame" value="base_link"/>
+        <param name="base_stabalized_frame" value="base_footprint"/>
+     </node>
+</launch>
