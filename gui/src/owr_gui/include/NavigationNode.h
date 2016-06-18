@@ -28,6 +28,7 @@ class NavigationNode {
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveBatteryMsg(const owr_messages::status::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
+        void receiveClawPosition();
 		
 	private:
 		NavigationGUI *gui;
@@ -36,6 +37,7 @@ class NavigationNode {
 		image_transport::Subscriber videoSub[TOTAL_FEEDS];
 		ros::Subscriber feedsSub;
 		
+        float clawPosition;
 		float battery;
 		float signal;
 		float tiltX;

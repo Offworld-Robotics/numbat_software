@@ -73,9 +73,10 @@ void NavigationGUI::reshape(int w, int h) {
 	videoScreen->setNewWindowSize(w, h);
 }
 
-void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, vector3D t) {
+void NavigationGUI::updateInfo(float bat, float sig, float ultrason, float claw, ListNode cur, vector3D t) {
 	battery = bat;
 	signal = sig;
+    clawPosition = claw;
 	
 	if (cur != NULL) GPSList.push_front(cur);
 	
@@ -174,6 +175,7 @@ void NavigationGUI::display() {
 		drawBattery();
 		drawSignal();
 		drawUltrasonic();
+        drawClaw();
 	}
 
 	glutSwapBuffers();
@@ -482,6 +484,19 @@ void NavigationGUI::drawBattery() {
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 15, 0);
 
 	glPopMatrix();
+}
+
+//Prints clawPosition value to screen
+void NavigationGUI::drawClaw() {
+    glPushMatrix();   
+    
+    glTranslated(0, 0, 0);
+    glColor4f(1, 0, 0, ALPHA);
+    char text[30];
+    sprintf(text, "%.2f%%", clawPosition*10);
+    drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 15, 0);
+    
+    glPopMatrix();
 }
 
 // draw the signal level near the bottom-right of the window

@@ -58,7 +58,7 @@ class NavigationGUI : public GLUTWindow {
 
 	public:
 		NavigationGUI(int width, int height, int *argc, char **argv);
-		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, vector3D target);
+		void updateInfo(float battery, float signal, float ultrasonic, float clawPosition, ListNode current, vector3D target);
 		void updateVideo(unsigned char *frame, int width, int height);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
 		
@@ -94,11 +94,13 @@ class NavigationGUI : public GLUTWindow {
 		void drawBattery();
 		void drawSignal();
 		void drawUltrasonic();
+        void drawClaw();
 		
 		// pointer to the ROS handler
 		void *navigationNode;
 		
 		// status values
+        float clawPosition;
 		float battery;
 		float signal;
 		float tiltX; // tilt of left-right in degrees
