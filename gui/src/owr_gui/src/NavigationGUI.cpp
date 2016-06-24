@@ -525,7 +525,7 @@ void NavigationGUI::drawSignal() {
 void NavigationGUI::drawSwitch() {
 	glPushMatrix();
 
-	glTranslated(1225, -75, 0);
+	glTranslated(1520, -150, 0);
 	glColor4f(1, 0, 0, ALPHA);
 	char text[3];
 	sprintf(text, "[B]");
