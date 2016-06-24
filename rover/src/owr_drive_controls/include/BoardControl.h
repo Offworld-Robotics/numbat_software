@@ -42,8 +42,6 @@ class BoardControl {
         void velCallback(const nav_msgs::Odometry::ConstPtr& vel);
 
         void publishGPS(GPSData gps);
-        void publishMag(MagData mag);
-        void publishIMU(IMUData imu);
         void publishBattery(double batteryVoltage);
         void publishVoltmeter(double voltage);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
@@ -52,9 +50,6 @@ class BoardControl {
 
         ros::Subscriber velSubscriber;
         ros::Publisher gpsPublisher;
-        ros::Publisher magPublisher;
-        ros::Publisher gyroPublisher;
-        ros::Publisher accPublisher;
         ros::Publisher battVoltPublisher;
         ros::Publisher voltmeterPublisher;
         ros::Publisher boardStatusPublisher;
