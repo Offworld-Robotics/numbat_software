@@ -105,29 +105,20 @@ include_directories(
 
 ## Declare a cpp library
 # add_library(owr_positioning
-#   src/${PROJECT_NAME}/owr_positioning.cpp
-# )
-
 ## Declare a cpp executable
-add_executable(owr_positioning_node src/PositionController.cpp)
+add_executable(orientation src/ExtractOrientation.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(owr_positioning_node owr_messages)
-add_dependencies(owr_positioning_node owr_messages_gencpp)
-target_link_libraries(owr_positioning_node ${catkin_LIBRARIES})
 
-add_executable(owr_magnet_node src/MagnetCoverter.cpp)
-add_dependencies(owr_magnet_node owr_messages_gencpp)
-target_link_libraries(owr_magnet_node ${catkin_LIBRARIES})
-
-add_executable(owr_fusion_node src/SensorFusion.cpp)
-add_dependencies(owr_fusion_node owr_messages_gencpp)
-target_link_libraries(owr_fusion_node ${catkin_LIBRARIES})
+## Specify libraries to link a library or executable target against
+target_link_libraries(orientation
+   ${catkin_LIBRARIES}
+)
+#   src/${PROJECT_NAME}/owr_positioning.cpp
+# )
 
 
-add_executable(owr_object_avoidance src/ObjectAvoidance.cpp)
-target_link_libraries(owr_object_avoidance ${catkin_LIBRARIES})
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(owr_positioning_node
 #   ${catkin_LIBRARIES}
