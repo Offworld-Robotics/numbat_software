@@ -6,6 +6,7 @@
 #define AutoMapGUI_H
 
 #include "GLUTWindow.h"
+#include "Button.h"
 #include <GL/freeglut.h>
 #include <ros/ros.h>
 
@@ -28,6 +29,8 @@ class AutoMapGUI : public GLUTWindow {
 
 		// GLUT keyboard functions
 		void keydown(unsigned char key, int x, int y);
+		void keyup(unsigned char key, int x, int y);
+		void mouse(int button, int state, int x, int y);
 		
 		// pointer to the ROS handler
 		void *autoMapNode;
@@ -41,6 +44,8 @@ class AutoMapGUI : public GLUTWindow {
 		Button startButton;
 		Button pauseButton;
 		Button stopButton;
+		
+		bool showHelp;
 		
 };
 

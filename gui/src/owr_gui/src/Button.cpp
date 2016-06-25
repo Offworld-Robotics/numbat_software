@@ -13,12 +13,6 @@
 #define BUTTON_INACTIVE_COLOR_COMPONENT_BLUE
 */
 
-/* default constructor
- */
-Button::Button() {
-
-}
-
 Button::Button(double x, double y, double width, double height, float r, float g, float b, char *txt, void (*downFunc)(void), void (*upFunc)(void)) : label(txt) {
 	this->x = x;
 	this->y = y;
@@ -36,11 +30,12 @@ void Button::draw() {
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslated(x, y, 0);
-	if (isClicked) {
+	/*if (isClicked) {
 		glColor3f(1, 0, 0);
 	} else {
 		glColor3f(r, g, b);
-	}
+	}*/
+	glColor3f(r, g, b);
 	glRectd(-halfWidth, -halfHeight, halfWidth, halfHeight);
 	glColor3f(1, 1, 1);
 	glRasterPos2i(-5, -6);
@@ -56,8 +51,8 @@ void Button::setColour(float r, float g, float b) {
 
 bool Button::isInside(int x, int y) {
 	return (
-		x > (this->x - halfWidth) && x < (this->x + halfWidth) &&
-		y > (this->y - halfHeight) && y < (this->y + halfHeight)
+		(x > (this->x - halfWidth)) && (x < (this->x + halfWidth)) &&
+		(y > (this->y - halfHeight)) && (y < (this->y + halfHeight))
 	);
 }
 

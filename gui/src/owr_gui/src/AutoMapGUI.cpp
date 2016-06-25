@@ -20,12 +20,19 @@ int main(int argc, char **argv) {
 	return EXIT_SUCCESS;
 }
 
-AutoMapGUI::AutoMapGUI(int width, int height, int *argc, char **argv) : GLUTWindow(width, height, argc, argv, "AutoMap") {
+AutoMapGUI::AutoMapGUI(int width, int height, int *argc, char **argv) :
+	GLUTWindow(width, height, argc, argv, "AutoMap"),
+	startButton(width-200, -200, 200, 100, 0, 0, 1, "Start", NULL, NULL),
+	pauseButton(width-200, -400, 200, 100, 0, 0, 1, "Pause", NULL, NULL),
+	stopButton(width-200, -600, 200, 100, 0, 0, 1, "Stop", NULL, NULL)
+	{
 	autoMapNode = new AutoMapNode(this);
 	
 	glClearColor(0, 0, 0, 0);
 	glShadeModel(GL_FLAT);
 	glutKeyboardFunc(glut_keydown);
+	glutKeyboardUpFunc(glut_keyup);
+	glutMouseFunc(glut_mouse);
 	
 	gridCols = gridRows = -1;
 	gridData = NULL;
@@ -36,6 +43,8 @@ AutoMapGUI::AutoMapGUI(int width, int height, int *argc, char **argv) : GLUTWind
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	
+	showHelp = false;
 }
 
 void AutoMapGUI::updateGrid(char *grid, int cols, int rows) {
@@ -86,11 +95,52 @@ void AutoMapGUI::display() {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 	
+	startButton.draw();
+	pauseButton.draw();
+	stopButton.draw();
+	
+	if(showHelp) {
+		glPushMatrix();
+		glTranslated(100, -100, 0);
+		glColor3f(0,0,1);
+		glRecti(0, 0, 1000, -500);
+		glColor3f(1,1,1);
+		const char *text = "Placeholder Help Text";
+		glRasterPos2i(50, -50);
+		glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, reinterpret_cast<const unsigned char *>(text));
+		glPopMatrix();
+	}
+	
 	glutSwapBuffers();
 }
 
 void AutoMapGUI::keydown(unsigned char key, int x, int y) {
-	if (key == 27) {
+	if(key == 27) {
 		exit(0);
+	} else if(key == '\t') {
+		showHelp = true;
+	}
+}
+
+void AutoMapGUI::keyup(unsigned char key, int x, int y) {
+	if(key == '\t') {
+		showHelp = false;
+	}
+}
+
+void AutoMapGUI::mouse(int button, int state, int x, int y) {
+	y = -y;
+	if(button == GLUT_LEFT_BUTTON) {
+		ROS_INFO("clicked %d %d", x, y);
+		if(startButton.isInside(x, y)) {
+			startButton.click();
+			ROS_INFO("start button clicked");
+		} else if(pauseButton.isInside(x, y)) {
+			pauseButton.click();
+			ROS_INFO("pause button clicked");
+		} else if(stopButton.isInside(x, y)) {
+			stopButton.click();
+			ROS_INFO("stop button clicked");
+		}
 	}
 }

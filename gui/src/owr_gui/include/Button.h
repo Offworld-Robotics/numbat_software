@@ -25,7 +25,6 @@ class Button {
 	void (*downFunc)(void);
 	void (*upFunc)(void);
 	void init(double x, double y, double width, double height, float r, float g, float b, char *txt, void (*downFunc)(void), void (*upFunc)(void));
-	Button();
 	
    public:
 	Button(double x, double y, double width, double height, float r, float g, float b, char *txt, void (*downFunc)(void), void (*upFunc)(void));
