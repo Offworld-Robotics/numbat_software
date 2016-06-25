@@ -123,7 +123,7 @@ class NavigationGUI : public GLUTWindow {
 		double scale;
 		double cursorSpin;
 		bool displayOverlay;
-
+                bool displayTilt;
 		//ros stuff
 		ros::Publisher streamPub;
 		void toggleStream(int feed);
