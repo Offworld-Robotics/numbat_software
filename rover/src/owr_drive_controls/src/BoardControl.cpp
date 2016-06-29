@@ -171,19 +171,11 @@ BoardControl::BoardControl() :
     cam1Button = 0;
     cam2Button = 0;
     cam3Button = 0;
-    //fd = fopen(TTY, "w");
-    //assert(fd != NULL);
-    //subscribe to xbox controller
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("/owr/joysticks",2, &BoardControl::controllerCallback, this, transportHints);
-//    armSubscriber = nh.subscribe<sensor_msgs::Joy>("arm_joy", 2, &BoardControl::armCallback, this,transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
-    magPublisher = nh.advertise<geometry_msgs::Vector3>("mag", 10);
-    gyroPublisher = nh.advertise<geometry_msgs::Vector3>("gyro", 10);
-    accPublisher = nh.advertise<geometry_msgs::Vector3>("acc", 10);
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
     voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
-    boardStatusPublisher = nh.advertise<owr_messages::board>("/owr/board_status",10);
     velSubscriber = nh.subscribe<nav_msgs::Odometry>("/odometry/filtered", 1, &BoardControl::velCallback, this, transportHints);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
@@ -216,8 +208,6 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&frontLeftSwerve);
     jMonitor.addJoint(&frontRightSwerve);
     jMonitor.addJoint(&lidar);
-//     jMonitor.addJoint(&backLeftSwerve);
-//     jMonitor.addJoint(&backRightSwerve);
     jMonitor.addJoint(&armBaseRotate);
     
     //velocity setup
@@ -307,13 +297,6 @@ void BoardControl::run() {
             cameraTopTilt += cameraTopTiltIncRate;
             cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
-            /*if (rotState == OPEN) {
-                clawRotate += 5;
-            } else if (rotState == CLOSE) {
-                clawRotate-= 5;
-            }
-            cap(&clawRotate, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX);*/
-            
             if (clawState  == OPEN) {
                 clawGrip += 5;
             } else if (clawState  == CLOSE) {
@@ -324,11 +307,6 @@ void BoardControl::run() {
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr;
             jMonitor.endCycle(ros::Time::now());
-//             s = steve->update(leftDrive, rightDrive,
-//                 armTop, armBottom, armRotate, clawRotScale(clawRotate),
-//                 clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
-//                 cameraRotScale(cameraBottomTilt), 
-//                 cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
             s = steve->update(
                 pwmFLW, pwmFRW, pwmBLW, pwmBRW, pwmFLS, pwmFRS,
                 pwmArmTop, pwmArmBottom,pwmArmRot,
@@ -386,17 +364,10 @@ void BoardControl::run() {
 
             //publish sensors data
             publishGPS(s.gpsData);
-            publishMag(s.magData);
-            publishIMU(s.imuData);
             publishBattery(s.batteryVoltage);
             #ifdef VOLTMETER_ON
             publishVoltmeter(s.voltmeter);
             #endif
-//             printStatus(&s);
-            
-            //ros and timing stuff
-//             ros::spinOnce();
-//             r.sleep();
         }
         ROS_ERROR("Lost usb connection to Bluetongue");
         ROS_ERROR("Trying to reconnect every %d ms", RECONNECT_DELAY);
@@ -407,24 +378,6 @@ void BoardControl::run() {
             if (success) ROS_INFO("Bluetongue reconnected!");
             else ROS_WARN("Bluetongue reconnection failed. Trying again soon...");
         }
-//         cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
-        
-        
-
-//         struct status s = steve->update(leftDrive, rightDrive,
-//             armTop, armBottom, armRotate, clawRotScale(clawRotate),
-//             clawRotScale(clawGrip), cameraRotScale(cameraBottomRotate),
-//             cameraRotScale(cameraBottomTilt), 
-//             cameraRotScale(cameraTopRotate), cameraRotScale(cameraTopTilt), 1330); 
-// 
-//         publishGPS(s.gpsData);
-//         publishMag(s.magData);
-//         publishIMU(s.imuData);
-//         
-//         printStatus(&s);
-        //sendMessage(lfDrive,lmDrive,lbDrive,rfDrive,rmDrive,rbDrive);
-//         ros::spinOnce();
-//         r.sleep();
     }
     delete steve;
 }
@@ -448,14 +401,6 @@ void BoardControl::publishGPS(GPSData gps) {
     gpsPublisher.publish(msg);
 }
 
-void BoardControl::publishMag(MagData mag) {
-    geometry_msgs::Vector3 msg;
-    msg.x = mag.x;
-    msg.y = mag.y;
-    msg.z = mag.z;
-    // Header just has dummy values
-    magPublisher.publish(msg);
-}
 
 void BoardControl::publishBattery(double batteryVoltage) {
     std_msgs::Float64 msg;
@@ -469,21 +414,6 @@ void BoardControl::publishVoltmeter(double voltage) {
     voltmeterPublisher.publish(msg);
 }
 
-void BoardControl::publishIMU(IMUData imu) {
-    geometry_msgs::Vector3 gyro_msg;
-    geometry_msgs::Vector3 acc_msg;
-    gyro_msg.x = imu.gx;
-    gyro_msg.y = imu.gy;
-    gyro_msg.z = imu.gz;
-    acc_msg.x = imu.ax;
-    acc_msg.y = imu.ay;
-    acc_msg.z = imu.az;
-
-    // Header just has dummy values
-    gyroPublisher.publish(gyro_msg);
-    accPublisher.publish(acc_msg);
-}
-//checks if the button state has changed and changes the feed
 void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
     if((*storedState) != joyState) {
         //TODO: switch feed
