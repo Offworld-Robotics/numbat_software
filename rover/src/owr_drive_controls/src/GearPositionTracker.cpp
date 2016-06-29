@@ -9,10 +9,10 @@
 
 #include "GearPositionTracker.hpp"
 
-GearPositionTracker::GearPositionTracker ( const std::vector< double > & gearsIn ) : gears (gearsIn) {
+GearPositionTracker::GearPositionTracker ( const std::vector< double > & gearsIn ) : PositionTracker(), gears (gearsIn) {
 }
 
-GearPositionTracker::GearPositionTracker (const double* gears,const int nGears ) : gears(gears, gears + nGears) {
+GearPositionTracker::GearPositionTracker (const double* gears,const int nGears ) : PositionTracker(), gears(gears, gears + nGears) {
 }
 
 
@@ -46,27 +46,11 @@ void GearPositionTracker::updatePos(double speed, ros::Time current) {
         while (pos < -M_PI) {
            pos = 2*M_PI + pos;
         }
-        positions.push_back(pos);
-        times.push_back(current);
-        velocities.push_back(speed);
+        
+        updateLists(pos,speed,current,false);
     } else {
-        velocities.push_back(speed);
-        positions.push_back(0.0);
-        times.push_back(current);
+        updateLists(0.0,speed, current,false);
     }
     mutext.unlock();
 }
 
-double GearPositionTracker::getPosition () {
-    //TODO: move based on time
-    return positions.back();
-}
-
-
-void GearPositionTracker::resetPos() {
-    mutext.lock();
-    positions.clear();
-    velocities.clear();
-    times.clear();
-    mutext.unlock();
-}

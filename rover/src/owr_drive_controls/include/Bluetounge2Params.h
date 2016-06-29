@@ -27,4 +27,15 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 #define ARM_BASE_ROTATE_RADIUS 0.01 //TODO: get this
 #define ARM_INCE_RATE_MULTIPLIER 0.1
 
+//TODO: set these values, intentionally crazy so that it is noticable they are wrong
+#define SWERVE_POT_MIN -10000
+#define SWERVE_POT_MAX 100000
+#define SWERVE_POT_TURNS 10
+
+
+#define ARM_POT_MIN SWERVE_POT_MIN 
+#define ARM_POT_MAX SWERVE_POT_MAX
+#define ARM_POT_TURNS SWERVE_POT_TURNS
+
+
 #endif //BLUETOUNGE_2_PARAMS_H
