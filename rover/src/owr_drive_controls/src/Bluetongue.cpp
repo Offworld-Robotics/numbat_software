@@ -61,6 +61,10 @@ struct toNUCMsg {
     int16_t enc3;
     int16_t enc4;
     int16_t enc5;
+    
+    uint16_t armLower;
+    uint16_t armHigher;
+    
 } __attribute__((packed));
 
 bool Bluetongue::reconnect(void) {
@@ -238,8 +242,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
 //     ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
 //     ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
 //             mesg.clawRotate);
-//     ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
-//             mesg.armBottom, mesg.armRotate);
+     ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);
 //     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
 //             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
     
@@ -278,7 +281,9 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.enc4 = resp.enc4 * ENC_MULTIPLIER;
     stat.enc5 = resp.enc5 * ENC_MULTIPLIER;
     
-    ROS_INFO("Encoder speeds %d, %d, %d, %d, %d, %d", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
+    //ROS_INFO("Encoder speeds %d, %d, %d, %d, %d, %d", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
+      
+    ROS_INFO("ARM POT. LOWER: %d ******* HIGHER %d *****", resp.armLower, resp.armHigher);  
         
 //     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
 //     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
