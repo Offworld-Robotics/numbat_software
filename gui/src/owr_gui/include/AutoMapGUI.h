@@ -47,6 +47,10 @@ class AutoMapGUI : public GLUTWindow {
 		
 		bool showHelp;
 		
+		static void sendStartMessage();
+		static void sendPauseMessage();
+		static void sendStopMessage();
+		
 };
 
 

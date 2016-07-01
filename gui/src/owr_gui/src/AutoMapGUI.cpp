@@ -22,9 +22,9 @@ int main(int argc, char **argv) {
 
 AutoMapGUI::AutoMapGUI(int width, int height, int *argc, char **argv) :
 	GLUTWindow(width, height, argc, argv, "AutoMap"),
-	startButton(width-200, -200, 200, 100, 0, 0, 1, "Start", NULL, NULL),
-	pauseButton(width-200, -400, 200, 100, 0, 0, 1, "Pause", NULL, NULL),
-	stopButton(width-200, -600, 200, 100, 0, 0, 1, "Stop", NULL, NULL)
+	startButton(width-200, -200, 200, 100, 0, 0, 1, "Start", AutoMapGUI::sendStartMessage, NULL),
+	pauseButton(width-200, -400, 200, 100, 0, 0, 1, "Pause", AutoMapGUI::sendPauseMessage, NULL),
+	stopButton(width-200, -600, 200, 100, 0, 0, 1, "Stop", AutoMapGUI::sendStopMessage, NULL)
 	{
 	autoMapNode = new AutoMapNode(this);
 	
@@ -130,17 +130,25 @@ void AutoMapGUI::keyup(unsigned char key, int x, int y) {
 
 void AutoMapGUI::mouse(int button, int state, int x, int y) {
 	y = -y;
-	if(button == GLUT_LEFT_BUTTON) {
-		ROS_INFO("clicked %d %d", x, y);
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		if(startButton.isInside(x, y)) {
 			startButton.click();
-			ROS_INFO("start button clicked");
 		} else if(pauseButton.isInside(x, y)) {
 			pauseButton.click();
-			ROS_INFO("pause button clicked");
 		} else if(stopButton.isInside(x, y)) {
 			stopButton.click();
-			ROS_INFO("stop button clicked");
 		}
 	}
+}
+
+void AutoMapGUI::sendStartMessage() {
+	ROS_INFO("start message");
+}
+
+void AutoMapGUI::sendPauseMessage() {
+	ROS_INFO("pause message");
+}
+
+void AutoMapGUI::sendStopMessage() {
+	ROS_INFO("stop message");
 }
