@@ -10,7 +10,7 @@
 
 class PositionTracker {
     public:
-        void resetPos();
+        virtual void resetPos();
         double getPosition();
     protected:
         std::vector < double > velocities;
