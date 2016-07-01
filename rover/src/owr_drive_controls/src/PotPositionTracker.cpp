@@ -30,8 +30,8 @@ void PotPositionTracker::updatePos(double potValue, ros::Time current) {
         (pos > 2.0 * M_PI * (turns - TURN_SAFTEY_MARGIN)) || 
         (pos < 2.0 * M_PI * (turns - TURN_SAFTEY_MARGIN))
     ) {
+        ROS_ERROR("Too many turns! Position is %f %% 2PI, pot value is %f", pos, potValue);
         pos = std::numeric_limits<double>::quiet_NaN();
-        ROS_ERROR("Too many turns! Position is %f, pot value is %f", pos, potValue);
     }
         
     
