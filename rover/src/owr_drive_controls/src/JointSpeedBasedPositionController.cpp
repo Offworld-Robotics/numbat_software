@@ -108,6 +108,11 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
  */
 int JointSpeedBasedPositionController::posToPWM(double futurePos, double currentPos, double updateFrequency) {
     
+    //check for nan - we should stop
+    if(std::isnan<float>(currentPos)) {
+        ROS_ERROR("Current Position is NaN!");
+        return deltaPWM/2 + minPWM;
+    }
     
     //check for invalid values
     if( std::fabs(futurePos) + FLOATING_PT_ERROR > (M_PI * 2)) {
