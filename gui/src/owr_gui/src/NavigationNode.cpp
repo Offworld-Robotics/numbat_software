@@ -49,10 +49,10 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	//image_transport::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
 
         // Frames of video from camera
-	videoSub[0] = imgTrans.subscribe("/cam0", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
-	videoSub[1] = imgTrans.subscribe("/cam1", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
-	videoSub[2] = imgTrans.subscribe("/cam2", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
-	videoSub[3] = imgTrans.subscribe("/cam3", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
+	videoSub[0] = imgTrans.subscribe("/cam0", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("theora"));
+	videoSub[1] = imgTrans.subscribe("/cam1", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("theora"));
+	videoSub[2] = imgTrans.subscribe("/cam2", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("theora"));
+	videoSub[3] = imgTrans.subscribe("/cam3", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("theora"));
 
 }
 
