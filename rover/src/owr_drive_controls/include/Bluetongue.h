@@ -60,12 +60,13 @@ struct status {
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
-    double enc0; // Angular velocities derived from motor encoders
-    double enc1;
-    double enc2;
-    double enc3;
-    double enc4;
-    double enc5;
+    double swerveLeft; // Swerve Positions from potentiometers
+    double swerveRight;
+    
+    double pot0; // TODO: implement and rename when being used.
+    double pot1;
+    double pot2;
+    double pot3;
 };
     
 class Bluetongue {
