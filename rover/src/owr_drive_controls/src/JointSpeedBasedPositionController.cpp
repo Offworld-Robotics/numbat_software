@@ -9,7 +9,7 @@
 #include <math.h>
 #include <ros/ros.h>
 
-#define VEL_INC 10.2
+#define VEL_INC 0.001 
 #define SMALL_INC 0.001
 #define VEL_ERROR SMALL_INC
 
@@ -130,7 +130,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     double aimPosDelta = calcShortestCircDelta(currentPos, futurePos);
     
     //escape if we are close enough
-    if(fabs(aimPosDelta) < (0.15)) {
+    if(fabs(aimPosDelta) < (0.1)) {
         int pwm = deltaPWM/2 + minPWM; 
         printf("mid pwm %d, posDelta %f\n", pwm, aimPosDelta);
 //         nextPosGuess = currentPos;
@@ -155,7 +155,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
          posDelta = calcShortestCircDelta(currentPos, lastKnownPosition);
     }
     currentAngVel = posDelta/deltaT;
-    currentAngVel = currentAngVel * gearMultiplier;
+    currentAngVel = currentAngVel;// * gearMultiplier;
     double targetAngularVel = currentAngVel;
     //Step 2: Calculate the direction to reach the desired position fastest (CW, CCW)
     double radialDistToTarget =  calcShortestCircDelta(futurePos, currentPos);
@@ -198,7 +198,8 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
 
     
     //Step 3: will we pass the point this turn
-    double nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
+    //double nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
+    double nextPosGuess = posRangeConvert(targetAngularVel * updateFrequency);
     
     double nextPosDelta = calcShortestCircDelta(nextPosGuess, currentPos);
     printf("nextPosGuess %f nextPosDelta %f\n", nextPosGuess, nextPosDelta);

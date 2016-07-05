@@ -323,8 +323,8 @@ void BoardControl::run() {
             jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
             /*armRotationBasePotMonitor.updatePos(s.enc0, lastUpdate);*/
             //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
-            frontLeftSwervePotMonitor.updatePos(s.pot0, lastUpdate);
-            frontRightSwervePotMonitor.updatePos(s.pot1, lastUpdate);
+            frontLeftSwervePotMonitor.updatePos(s.swerveLeft, lastUpdate);
+            frontRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
             
             //do joint calculations
             //TODO: check if empty
