@@ -158,11 +158,11 @@ BoardControl::BoardControl() :
         nh,
         "laser_tilt_joint"
     ),
-    frontLeftSwervePotMonitor(SWERVE_POT_MIN, SWERVE_POT_MAX, SWERVE_POT_TURNS),
-    frontRightSwervePotMonitor(SWERVE_POT_MIN, SWERVE_POT_MAX, SWERVE_POT_TURNS),
-    backLeftSwervePotMonitor(SWERVE_POT_MIN, SWERVE_POT_MAX, SWERVE_POT_TURNS),
-    backRightSwervePotMonitor(SWERVE_POT_MIN, SWERVE_POT_MAX, SWERVE_POT_TURNS),
-    armRotationBasePotMonitor(ARM_POT_MIN, ARM_POT_MAX, ARM_POT_TURNS),
+    frontLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS),
+    frontRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS),
+    backLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS),
+    backRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS),
+    armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS),
     asyncSpinner(SPINNER_THREADS)
     {
 
@@ -321,9 +321,10 @@ void BoardControl::run() {
             lastUpdate = ros::Time::now();
             
             jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
-            armRotationBasePotMonitor.updatePos(s.enc0, lastUpdate);
-            frontLeftSwervePotMonitor.updatePos(-s.enc0, lastUpdate);
-            frontRightSwervePotMonitor.updatePos(s.enc5, lastUpdate);
+            /*armRotationBasePotMonitor.updatePos(s.enc0, lastUpdate);*/
+            //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
+            frontLeftSwervePotMonitor.updatePos(s.pot0, lastUpdate);
+            frontRightSwervePotMonitor.updatePos(s.pot1, lastUpdate);
             
             //do joint calculations
             //TODO: check if empty

@@ -108,9 +108,9 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
  */
 int JointSpeedBasedPositionController::posToPWM(double futurePos, double currentPos, double updateFrequency) {
     
-    //check for nan - we should stop
-    if(std::isnan<float>(currentPos)) {
-        ROS_ERROR("Current Position is NaN!");
+    //check for infinity - we should stop
+    if(std::isinf<double>(currentPos)) {
+        ROS_ERROR("Current Position is infinity!");
         return deltaPWM/2 + minPWM;
     }
     

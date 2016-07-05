@@ -9,12 +9,13 @@
 
 class PotPositionTracker : public PositionTracker {
     public:
-        PotPositionTracker(int maxV, int minV, int turns);
+        PotPositionTracker(float negLimit, float posLimit, float singleRotationRange, int turns);
         void updatePos(double potValue);
         void updatePos(double potValue, ros::Time current);
         virtual void resetPos();
     private:
         const std::vector< double > gears;
-        int maxValue, minValue, turns;
-        int center;
+        float negLimit, posLimit, singleRotationRange;
+        int turns;
+        float center;
 };
