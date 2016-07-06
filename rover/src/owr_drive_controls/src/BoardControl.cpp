@@ -158,11 +158,11 @@ BoardControl::BoardControl() :
         nh,
         "laser_tilt_joint"
     ),
-    frontLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
-    frontRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
-    backLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
-    backRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
-    armRotationBaseGear(ARM_BASE_ROTATE_GEARS, ARM_BASE_ROTATE_N_GEARS),
+    frontLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    frontRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
+    backLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    backRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS, SWERVE_POT_L_CENTER),
     asyncSpinner(SPINNER_THREADS)
     {
 
@@ -321,9 +321,10 @@ void BoardControl::run() {
             lastUpdate = ros::Time::now();
             
             jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
-            armRotationBaseGear.updatePos(s.enc0, lastUpdate);
-            frontLeftSwerveGears.updatePos(-s.enc0, lastUpdate);
-            frontRightSwerveGears.updatePos(s.enc5, lastUpdate);
+            /*armRotationBasePotMonitor.updatePos(s.enc0, lastUpdate);*/
+            //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
+            frontLeftSwervePotMonitor.updatePos(s.swerveLeft, lastUpdate);
+            frontRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
             
             //do joint calculations
             //TODO: check if empty
@@ -333,8 +334,8 @@ void BoardControl::run() {
             pwmBLW = backLeftWheel.velToPWM(swerveState.backLeftMotorV);
             pwmBRW = backRightWheel.velToPWM(swerveState.backRightMotorV);
             //TODO: this should actually be the angle from the encoders
-            pwmFRS = frontRightSwerve.posToPWM(frontRightSwerveGears.getPosition(), updateRateHZ);
-            pwmFLS =  frontLeftSwerve.posToPWM(frontLeftSwerveGears.getPosition(), updateRateHZ);
+            pwmFRS = frontRightSwerve.posToPWM(frontRightSwervePotMonitor.getPosition(), updateRateHZ);
+            pwmFLS =  frontLeftSwerve.posToPWM(-frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
             pwmLIDAR = lidar.velToPWM();
             
             //adjust the arm position
@@ -460,11 +461,11 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
     
     if(joy->buttons[FL_SWERVE_RESET]) {
-        frontLeftSwerveGears.resetPos();
+        frontLeftSwervePotMonitor.resetPos();
         ROS_INFO("Reset Front left Swerve");
     }
     if (joy->buttons[FR_SWERVE_RESET]) {
-        frontRightSwerveGears.resetPos();
+        frontRightSwervePotMonitor.resetPos();
         ROS_INFO("Reset Front right Swerve");
     }
 }

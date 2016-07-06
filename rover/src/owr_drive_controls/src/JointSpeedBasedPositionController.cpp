@@ -9,7 +9,7 @@
 #include <math.h>
 #include <ros/ros.h>
 
-#define VEL_INC 10.2
+#define VEL_INC 0.001 
 #define SMALL_INC 0.001
 #define VEL_ERROR SMALL_INC
 
@@ -108,6 +108,11 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
  */
 int JointSpeedBasedPositionController::posToPWM(double futurePos, double currentPos, double updateFrequency) {
     
+    //check for infinity - we should stop
+    if(std::isinf<double>(currentPos)) {
+        ROS_ERROR("Current Position is infinity!");
+        return deltaPWM/2 + minPWM;
+    }
     
     //check for invalid values
     if( std::fabs(futurePos) + FLOATING_PT_ERROR > (M_PI * 2)) {
@@ -125,7 +130,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     double aimPosDelta = calcShortestCircDelta(currentPos, futurePos);
     
     //escape if we are close enough
-    if(fabs(aimPosDelta) < (0.15)) {
+    if(fabs(aimPosDelta) < (0.2)) {
         int pwm = deltaPWM/2 + minPWM; 
         printf("mid pwm %d, posDelta %f\n", pwm, aimPosDelta);
 //         nextPosGuess = currentPos;
@@ -150,7 +155,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
          posDelta = calcShortestCircDelta(currentPos, lastKnownPosition);
     }
     currentAngVel = posDelta/deltaT;
-    currentAngVel = currentAngVel * gearMultiplier;
+    currentAngVel = currentAngVel;// * gearMultiplier;
     double targetAngularVel = currentAngVel;
     //Step 2: Calculate the direction to reach the desired position fastest (CW, CCW)
     double radialDistToTarget =  calcShortestCircDelta(futurePos, currentPos);
@@ -161,17 +166,18 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     //are we at zero?
     if(fabs(currentAngVel) > VEL_ERROR) {
+	printf("maxVel: %f, currentAngVel: %f", maxVelocity, currentAngVel);
         printf("non zero vel\n");
         //Are we going in the right direction   
         if(std::signbit(radialDistToTarget) == std::signbit(currentAngVel)) { //compares the sign of the two
-            printf("sign not equal\n");
+            printf("sign equal\n");
             if(targetAngularVel > 0) {
                 targetAngularVel = std::min(currentAngVel+VEL_INC,maxVelocity);
             } else if (targetAngularVel < 0) {
                 targetAngularVel = std::max(currentAngVel-VEL_INC,-maxVelocity);
             }
         } else {
-            printf("sign equal\n");
+            printf("sign not equal\n");
             //this will reverse the sign if it needs to be negative
             if(currentAngVel > 0) {
                 targetAngularVel = VEL_INC;   
@@ -193,7 +199,8 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
 
     
     //Step 3: will we pass the point this turn
-    double nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
+    //double nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
+    double nextPosGuess = posRangeConvert(targetAngularVel * updateFrequency);
     
     double nextPosDelta = calcShortestCircDelta(nextPosGuess, currentPos);
     printf("nextPosGuess %f nextPosDelta %f\n", nextPosGuess, nextPosDelta);

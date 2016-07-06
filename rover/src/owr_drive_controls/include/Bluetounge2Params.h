@@ -27,4 +27,25 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 #define ARM_BASE_ROTATE_RADIUS 0.01 //TODO: get this
 #define ARM_INCE_RATE_MULTIPLIER 0.1
 
+
+/*
+ * NOTE: The pot is a 10 turn pot, this data limits it to one turn
+ */
+
+#define SWERVE_POT_R_CENTER 779.0
+#define SWERVE_POT_L_CENTER 765.0
+#define SWERVE_POT_LIMIT_N_DEG 730.75
+#define SWERVE_POT_LIMIT_P_DEG 816.25
+#define SWERVE_POT_REVOLUTION 155
+#define SWERVE_POT_TURNS 1
+
+
+//TODO: put values here
+#define ARM_POT_CENTER 0
+#define ARM_POT_LIMIT_N_DEG 0
+#define ARM_POT_LIMIT_P_DEG 0
+#define ARM_POT_REVOLUTION 0
+#define ARM_POT_TURNS 0
+
+
 #endif //BLUETOUNGE_2_PARAMS_H

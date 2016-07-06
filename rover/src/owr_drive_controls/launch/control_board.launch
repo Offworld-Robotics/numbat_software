@@ -1,5 +1,5 @@
 <launch>
-	<param name="board_tty" value="/dev/board0"/>
+	<param name="board_tty" value="/dev/board1"/>
 	<!--<node pkg="owr_joystick_filter" type="owr_joystick_filter_node" name="owr_joystick_filter_node" output="screen">
 	</node>-->
 	<node pkg="owr_joystick_filter" type="owr_joystick_filter_node" name="owr_joystick_filter_node" output="screen">
