@@ -78,10 +78,12 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
     maxPWM = maxPWMIn;
     minPWM = minPWMIn;
     maxRPM = maxRPMIn;
+    turnsCorrectingFor = 0;
     deltaPWM = maxPWMIn - minPWMIn;
     maxVelocity = (maxRPMIn * 2*M_PI/SECONDS_IN_MINUTE) ;
     velocityRange = maxVelocity * 2.0;
     printf("deltaPWM %d, maxVelocity %f velocityRange %f\n", deltaPWM, maxVelocity, velocityRange);
+    pwmVelRatio = (deltaPWM) / (velocityRange);
     
     
     //inital values
@@ -108,136 +110,116 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
  */
 int JointSpeedBasedPositionController::posToPWM(double futurePos, double currentPos, double updateFrequency) {
     
-    //check for infinity - we should stop
-    if(std::isinf<double>(currentPos)) {
-        ROS_ERROR("Current Position is infinity!");
-        return deltaPWM/2 + minPWM;
-    }
-    
-    //check for invalid values
-    if( std::fabs(futurePos) + FLOATING_PT_ERROR > (M_PI * 2)) {
-        ROS_ERROR("angle %f radians is not a valid position. Positions should be btween %f and %f",futurePos,(M_PI * 2),-(M_PI * 2));
-        printf("angle %f radians is not a valid position. Positions should be btween %f and %f\n",futurePos,(M_PI * 2),-(M_PI * 2));
-        return -1;
-    }
-    
-    //place the two angles in our range
-    futurePos = posRangeConvert(futurePos);
-    currentPos = posRangeConvert(currentPos);
-    printf("future %f, current %f, update %f\n", futurePos, currentPos, updateFrequency);
-    
+    double targetAngularVel;
     double deltaT = 1.0/updateFrequency;
-    double aimPosDelta = calcShortestCircDelta(currentPos, futurePos);
-    
-    //escape if we are close enough
-    if(fabs(aimPosDelta) < (0.2)) {
-        int pwm = deltaPWM/2 + minPWM; 
-        printf("mid pwm %d, posDelta %f\n", pwm, aimPosDelta);
-//         nextPosGuess = currentPos;
-        lastPWM = pwm;
-        lastKnownPosition = currentPos;
-        lastAimPosition = futurePos;
-        lastAngularVelocity = 0.0;
-        lastDeltaT = deltaT;
-        printf("close enoug\n");
-        return pwm;
-    }
+    int pwm;
     
     //Step 1: Calculate the angular velocity currently
-    double gearMultiplier = 1;
-    int i;
-    for(i = 0; i < nGears; i++) {
-        gearMultiplier /= gearRatio[i];
-    }
     double currentAngVel = 0.0;
     double posDelta = futurePos;
     if(!std::isnan(lastKnownPosition)) {
-         posDelta = calcShortestCircDelta(currentPos, lastKnownPosition);
+        posDelta = calcShortestCircDelta(currentPos, lastKnownPosition);
     }
     currentAngVel = posDelta/deltaT;
-    currentAngVel = currentAngVel;// * gearMultiplier;
-    double targetAngularVel = currentAngVel;
-    //Step 2: Calculate the direction to reach the desired position fastest (CW, CCW)
-    double radialDistToTarget =  calcShortestCircDelta(futurePos, currentPos);
-    
-//     printf("updateFrequency %f, deltaT %f, currentAngVel %f, targetAngularVel %f, radialDistToTarget %f\n", updateFrequency, deltaT, currentAngVel, targetAngularVel, radialDistToTarget);
-    
-    //TODO: check limits and efficiencies here
-    
-    //are we at zero?
-    if(fabs(currentAngVel) > VEL_ERROR) {
-	printf("maxVel: %f, currentAngVel: %f", maxVelocity, currentAngVel);
-        printf("non zero vel\n");
-        //Are we going in the right direction   
-        if(std::signbit(radialDistToTarget) == std::signbit(currentAngVel)) { //compares the sign of the two
-            printf("sign equal\n");
-            if(targetAngularVel > 0) {
-                targetAngularVel = std::min(currentAngVel+VEL_INC,maxVelocity);
-            } else if (targetAngularVel < 0) {
-                targetAngularVel = std::max(currentAngVel-VEL_INC,-maxVelocity);
-            }
+
+
+    //check for infinity - we should try to return to the center
+    if(std::isinf<double>(currentPos)) {
+        ROS_ERROR("Current Position is infinity!");
+
+        //if we've been trying for more than 1 second give up
+        if(turnsCorrectingFor > updateFrequency) {
+            targetAngularVel = 0.0;
+        } else if (currentPos > 0) {
+            targetAngularVel = -VEL_INC;
+        } else { //currentPos < 0
+            targetAngularVel = VEL_INC;
+        }
+        
+    //check for invalid values
+    } else if ( std::fabs(futurePos) + FLOATING_PT_ERROR > (M_PI * 2)) {
+        ROS_ERROR("angle %f radians is not a valid position. Positions should be btween %f and %f",futurePos,(M_PI * 2),-(M_PI * 2));
+        targetAngularVel = 0.0;
+    } else {
+        
+        //place the two angles in our range
+        futurePos = posRangeConvert(futurePos);
+        currentPos = posRangeConvert(currentPos);
+        printf("future %f, current %f, update %f\n", futurePos, currentPos, updateFrequency);
+        
+        double aimPosDelta = calcShortestCircDelta(currentPos, futurePos);
+        
+        //escape if we are close enough
+        if(fabs(aimPosDelta) < (0.2)) {
+            lastKnownPosition = currentPos;
+            lastAimPosition = futurePos;
+            lastDeltaT = deltaT;
+            printf("close enough\n");
+            
+            targetAngularVel = 0.0;
         } else {
-            printf("sign not equal\n");
-            //this will reverse the sign if it needs to be negative
-            if(currentAngVel > 0) {
-                targetAngularVel = VEL_INC;   
+        
+            double targetAngularVel = currentAngVel;
+            
+            //Step 2: Calculate the direction to reach the desired position fastest (CW, CCW)
+            double radialDistToTarget =  calcShortestCircDelta(futurePos, currentPos);
+            
+            
+            //are we at zero?
+            if(fabs(currentAngVel) > VEL_ERROR) {
+                printf("maxVel: %f, currentAngVel: %f", maxVelocity, currentAngVel);
+                printf("non zero vel\n");
+                //Are we going in the right direction   
+                if(std::signbit(radialDistToTarget) == std::signbit(currentAngVel)) { //compares the sign of the two
+                    printf("sign equal\n");
+                    if(targetAngularVel > 0) {
+                        targetAngularVel = std::min(currentAngVel+VEL_INC,maxVelocity);
+                    } else if (targetAngularVel < 0) {
+                        targetAngularVel = std::max(currentAngVel-VEL_INC,-maxVelocity);
+                    }
+                } else {
+                    printf("sign not equal\n");
+                    //this will reverse the sign if it needs to be negative
+                    if(currentAngVel > 0) {
+                        targetAngularVel = VEL_INC;   
+                    } else {
+                        targetAngularVel = -VEL_INC;
+                    }
+                    
+                }
             } else {
-                targetAngularVel = -VEL_INC;
+                printf("zero vel\n");
+                
+                if(radialDistToTarget > 0 + SMALL_INC) {
+                    targetAngularVel = VEL_INC;
+                } else if (radialDistToTarget < 0 -  SMALL_INC) {
+                    targetAngularVel = -VEL_INC;
+                } else {
+                    targetAngularVel = 0;
+                }
+                
             }
+
+            
+            //Step 3: will we pass the point this turn
+            double nextPosGuess = posRangeConvert(targetAngularVel * updateFrequency);
+            
+            double nextPosDelta = calcShortestCircDelta(nextPosGuess, currentPos);
+            printf("nextPosGuess %f nextPosDelta %f\n", nextPosGuess, nextPosDelta);
+            //step back the speed to a more sensible one if we are going to miss the point
+            if(std::fabs(nextPosDelta) > std::fabs(posDelta)) {
+                //decrease to a value that will get us just before it
+                targetAngularVel = (calcShortestCircDelta((futurePos - SMALL_INC) , currentPos) / deltaT);
+                nextPosGuess = posRangeConvert(targetAngularVel * updateFrequency);
+                nextPosDelta = calcShortestCircDelta(nextPosGuess, currentPos);
+            }
+            nextPosGuess = (targetAngularVel * updateFrequency);
+            
             
         }
-    } else {
-        printf("zero vel\n");
-        
-        if(radialDistToTarget > 0 + SMALL_INC) {
-            targetAngularVel = VEL_INC;
-        } else if (radialDistToTarget < 0 -  SMALL_INC) {
-            targetAngularVel = -VEL_INC;
-        }
-        //NOTE: if radialDistToTarget == 0 we don't want to increase_
     }
-
-    
-    //Step 3: will we pass the point this turn
-    //double nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
-    double nextPosGuess = posRangeConvert(targetAngularVel * updateFrequency);
-    
-    double nextPosDelta = calcShortestCircDelta(nextPosGuess, currentPos);
-    printf("nextPosGuess %f nextPosDelta %f\n", nextPosGuess, nextPosDelta);
-    //step back the speed to a more sensible one if we are going to miss the point
-    if(std::fabs(nextPosDelta) > std::fabs(posDelta)) {
-        //decrease to a value that will get us just before it
-        targetAngularVel = (calcShortestCircDelta((futurePos - SMALL_INC) , currentPos) / deltaT);
-        nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
-        nextPosDelta = calcShortestCircDelta(nextPosGuess, currentPos);
-    }
-    //TODO: correctly implement the above
-    nextPosGuess = (targetAngularVel * updateFrequency);
-//     if(std::fabs(nextPosGuess) > (M_PI * 2) ) {
-//         
-//         //TODO: this is a danger
-//     }
-    
-    
-    lastTargetVelocity = targetAngularVel;
-    
-//     printf(" targetAngularVel %f\n",  targetAngularVel);
-    double gearAdjustedVel = targetAngularVel;
-    
-    gearAdjustedVel *= gearMultiplier;
-//     printf("gearAdjustedVel %f\n", gearAdjustedVel);
-    if (gearAdjustedVel > 0.0) {
-        gearAdjustedVel = std::min<double>(gearAdjustedVel, maxVelocity);
-//         printf("gearAdjustedVel max %f\n", gearAdjustedVel);
-    } else {
-        gearAdjustedVel = std::max<double>(gearAdjustedVel, -maxVelocity);
-//          printf("gearAdjustedVel min %f\n", gearAdjustedVel);
-    }
-    
-    
-    double pwmVelRatio = (deltaPWM) / (velocityRange);
-    int pwm = (int)(gearAdjustedVel * pwmVelRatio) + minPWM + (deltaPWM/2);
-    printf("maxVel %f, aimVel %f, currentVel %f\n", maxVelocity, gearAdjustedVel, currentAngVel);
+    pwm = (int)(targetAngularVel * pwmVelRatio) + minPWM + (deltaPWM/2);
+    printf("maxVel %f, aimVel %f, currentVel %f\n", maxVelocity, targetAngularVel, currentAngVel);
 //     printf("pwm %d, gearAdjustedVel %f, multi %f\n", pwm, gearAdjustedVel, gearAdjustedVel * pwmVelRatio);
     
     #ifdef DO_VEL_ADJUST
@@ -247,8 +229,8 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
             pwm += error;
         }
     #endif
-    
     lastPWM = pwm;
+    lastTargetVelocity = targetAngularVel;
     lastKnownPosition = currentPos;
     lastAimPosition = futurePos;
     lastAngularVelocity = currentAngVel;
@@ -275,4 +257,5 @@ jointInfo JointSpeedBasedPositionController::extrapolateStatus(ros::Time session
     info.jointName = name;
     return info;
 }
+
     

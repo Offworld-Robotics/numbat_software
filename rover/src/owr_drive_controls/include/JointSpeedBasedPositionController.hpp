@@ -31,5 +31,10 @@ class JointSpeedBasedPositionController : public JointController {
         double lastAimPosition, lastKnownPosition;
         int lastPWM;
         double lastDeltaT;
-    
+        double pwmVelRatio;
+        
+        /**
+         * used to keep track of how long we have been correcting for, if it is too long we want to stop
+         */
+        int turnsCorrectingFor;
 };
