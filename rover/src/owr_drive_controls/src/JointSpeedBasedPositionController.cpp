@@ -130,7 +130,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     double aimPosDelta = calcShortestCircDelta(currentPos, futurePos);
     
     //escape if we are close enough
-    if(fabs(aimPosDelta) < (0.1)) {
+    if(fabs(aimPosDelta) < (0.2)) {
         int pwm = deltaPWM/2 + minPWM; 
         printf("mid pwm %d, posDelta %f\n", pwm, aimPosDelta);
 //         nextPosGuess = currentPos;
@@ -166,17 +166,18 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     //are we at zero?
     if(fabs(currentAngVel) > VEL_ERROR) {
+	printf("maxVel: %f, currentAngVel: %f", maxVelocity, currentAngVel);
         printf("non zero vel\n");
         //Are we going in the right direction   
         if(std::signbit(radialDistToTarget) == std::signbit(currentAngVel)) { //compares the sign of the two
-            printf("sign not equal\n");
+            printf("sign equal\n");
             if(targetAngularVel > 0) {
                 targetAngularVel = std::min(currentAngVel+VEL_INC,maxVelocity);
             } else if (targetAngularVel < 0) {
                 targetAngularVel = std::max(currentAngVel-VEL_INC,-maxVelocity);
             }
         } else {
-            printf("sign equal\n");
+            printf("sign not equal\n");
             //this will reverse the sign if it needs to be negative
             if(currentAngVel > 0) {
                 targetAngularVel = VEL_INC;   

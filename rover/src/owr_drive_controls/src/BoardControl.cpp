@@ -158,11 +158,11 @@ BoardControl::BoardControl() :
         nh,
         "laser_tilt_joint"
     ),
-    frontLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS),
-    frontRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS),
-    backLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS),
-    backRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS),
-    armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS),
+    frontLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    frontRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
+    backLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    backRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS, SWERVE_POT_L_CENTER),
     asyncSpinner(SPINNER_THREADS)
     {
 
@@ -335,7 +335,7 @@ void BoardControl::run() {
             pwmBRW = backRightWheel.velToPWM(swerveState.backRightMotorV);
             //TODO: this should actually be the angle from the encoders
             pwmFRS = frontRightSwerve.posToPWM(frontRightSwervePotMonitor.getPosition(), updateRateHZ);
-            pwmFLS =  frontLeftSwerve.posToPWM(frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
+            pwmFLS =  frontLeftSwerve.posToPWM(-frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
             pwmLIDAR = lidar.velToPWM();
             
             //adjust the arm position

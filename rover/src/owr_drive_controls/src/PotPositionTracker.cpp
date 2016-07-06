@@ -16,9 +16,9 @@
     center = (maxV + minV)/2;
 }*/
 
-PotPositionTracker::PotPositionTracker(float negLimit, float posLimit, float singleRotationRange, int turns) :
+PotPositionTracker::PotPositionTracker(float negLimit, float posLimit, float singleRotationRange, int turns, float center) :
     negLimit(negLimit), posLimit(posLimit), singleRotationRange(singleRotationRange), 
-    turns(turns), center((negLimit + posLimit) / 2.0) {
+    turns(turns), center(center) {
 
 }
 
@@ -31,7 +31,7 @@ void PotPositionTracker::updatePos(double potValue, ros::Time current) {
     //put the pot value in the range -PI*turns to PI*turns
     //TODO: check that this works when the center value is not the center, I'm pretty sure it does
     double pos = ((potValue - center) / (singleRotationRange*turns)) * (2.0 * M_PI * turns);
-    
+    ROS_INFO("POT VALUE: %f", potValue); 
     //check we haven't overshot
     if( potValue < negLimit) {
         ROS_ERROR("Too many turns! Too negative. Position is %f %% 2PI, pot value is %f", pos, potValue);

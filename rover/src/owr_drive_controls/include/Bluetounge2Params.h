@@ -32,7 +32,8 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
  * NOTE: The pot is a 10 turn pot, this data limits it to one turn
  */
 
-#define SWERVE_POT_CENTER 777.5
+#define SWERVE_POT_R_CENTER 779.0
+#define SWERVE_POT_L_CENTER 765.0
 #define SWERVE_POT_LIMIT_N_DEG 738.75
 #define SWERVE_POT_LIMIT_P_DEG 816.25
 #define SWERVE_POT_REVOLUTION 155

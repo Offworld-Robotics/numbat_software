@@ -9,7 +9,7 @@
 
 class PotPositionTracker : public PositionTracker {
     public:
-        PotPositionTracker(float negLimit, float posLimit, float singleRotationRange, int turns);
+        PotPositionTracker(float negLimit, float posLimit, float singleRotationRange, int turns, float center);
         void updatePos(double potValue);
         void updatePos(double potValue, ros::Time current);
         virtual void resetPos();
