@@ -14,7 +14,7 @@ TEST(TestJointSpeedController, testConstruction) {
     ros::NodeHandle nh("aaa");
     double gearRatio[2] = {1,2};
     
-    JointSpeedBasedPositionController contrl1(0.5,gearRatio, 2, 1000, 2000, 24000,  "/test", nh, "test_joint");
+    JointSpeedBasedPositionController contrl1(0.5, 1000, 2000, 24000,  "/test", nh, "test_joint",true);
 }
 
 TEST(TestJointSpeedController, testFullPower) {
@@ -22,13 +22,19 @@ TEST(TestJointSpeedController, testFullPower) {
     ros::NodeHandle nh("aaa");
     double gearRatio[1] = {1};
     
-    JointSpeedBasedPositionController contrl1(1,gearRatio, 1, 1000, 2000, 1,  "/test", nh, "test_joint");
-    int max = contrl1.posToPWM(M_PI, 0, 5.0); //rotate the maximum possible distance from 0, should require full power
+    JointSpeedBasedPositionController contrl1(1, 1000, 2000, 1,  "/test", nh, "test_joint",true);
+    int max = contrl1.posToPWM(M_PI, 0, 10.0); //rotate the maximum possible distance from 0, should require full power
+    max = contrl1.posToPWM(M_PI, 0, 10.0); //rotate the maximum possible distance from 0, should require full power
+    max = contrl1.posToPWM(M_PI, 0, 10.0); //rotate the maximum possible distance from 0, should require full power
+    max = contrl1.posToPWM(M_PI, 0, 10.0); //rotate the maximum possible distance from 0, should require full power
+    max = contrl1.posToPWM(M_PI, 0, 10.0); //rotate the maximum possible distance from 0, should require full power
+    max = contrl1.posToPWM(M_PI, 0, 10.0); //rotate the maximum possible distance from 0, should require full power
+    max = contrl1.posToPWM(M_PI, 0, 10.0); //rotate the maximum possible distance from 0, should require full power
     EXPECT_GE(2000,max );
     EXPECT_LE(1900, max);
     printf("max pwm %d\n", max);
     
-    int min = contrl1.posToPWM(M_PI+0.001, 0, 5.0); //rotate the maximum possible distance from 0 in the opposite direction, should require full power
+    int min = contrl1.posToPWM(M_PI+0.001, 0, 10.0); //rotate the maximum possible distance from 0 in the opposite direction, should require full power
     EXPECT_LE(1000, min);
     EXPECT_GE(1100, min);
     printf("min pwm %d\n", min);
@@ -43,7 +49,7 @@ TEST(TestJointSpeedController, testIncrementing) {
     ros::NodeHandle nh("aaa");
     double gearRatio[1] = {1};
     
-    JointSpeedBasedPositionController contrl1(0.5,gearRatio, 1, 1000, 2000, 1,  "/test", nh, "test_joint");
+    JointSpeedBasedPositionController contrl1(0.5, 1000, 2000, 1,  "/test", nh, "test_joint",true);
     int max = contrl1.posToPWM(M_PI_2, 0, 5.0); //rotate the maximum possible distance from 0, should require full power
     EXPECT_GE(2000,max );
     EXPECT_LE(1900, max);
@@ -65,7 +71,7 @@ TEST(TestJointSpeedController, testGears) {
     ros::NodeHandle nh("aaa");
     double gearRatio[1] = {1.0/455.0};
     
-    JointSpeedBasedPositionController contrl1(1,gearRatio, 1, 1000, 2000, 1,  "/test", nh, "test_joint");
+    JointSpeedBasedPositionController contrl1(1, 1000, 2000, 1,  "/test", nh, "test_joint",true);
     int max = contrl1.posToPWM(M_PI, 0, 5.0); //rotate the maximum possible distance from 0, should require full power
     EXPECT_GE(2000,max );
     EXPECT_LE(1900, max);

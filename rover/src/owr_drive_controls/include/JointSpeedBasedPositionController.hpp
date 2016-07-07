@@ -9,7 +9,7 @@
 
 class JointSpeedBasedPositionController : public JointController {
     public:
-        JointSpeedBasedPositionController(double radius, const double * gearRatio, int nGears,int minPWM, int maxPWM, int maxRPM, char * topic, ros::NodeHandle nh, std::string name);
+        JointSpeedBasedPositionController(double radius, int minPWM, int maxPWM, int maxRPM, char * topic, ros::NodeHandle nh, std::string name, bool flipDirection);
         int posToPWM(double futurePos, double currentPos, double updateFrequency);
         int posToPWM(double currentPos, double updateFrequency);
         virtual jointInfo extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime);
@@ -32,6 +32,7 @@ class JointSpeedBasedPositionController : public JointController {
         int lastPWM;
         double lastDeltaT;
         double pwmVelRatio;
+        bool flipDirection;
         
         /**
          * used to keep track of how long we have been correcting for, if it is too long we want to stop

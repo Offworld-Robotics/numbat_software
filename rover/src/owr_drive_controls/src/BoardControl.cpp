@@ -100,57 +100,52 @@ BoardControl::BoardControl() :
     ),
     frontLeftSwerve(
         SWERVE_RADIUS,
-        SWERVE_GEARS,
-        SWERVE_N_GEARS,
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
         "/front_left_swerve_controller/command",
         nh,
-        "front_left_swerve"
+        "front_left_swerve",
+        false
     ),
     frontRightSwerve(
        SWERVE_RADIUS,
-        SWERVE_GEARS,
-        SWERVE_N_GEARS,
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
         "/front_right_swerve_controller/command",
         nh,
-        "front_right_swerve"
+        "front_right_swerve",
+        true
     ), backLeftSwerve(
         SWERVE_RADIUS,
-        SWERVE_GEARS,
-        SWERVE_N_GEARS,
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
         "/back_left_swerve_controller/command",
         nh,
-        "back_left_swerve"
+        "back_left_swerve",
+        false
     ),
     backRightSwerve(
         SWERVE_RADIUS,
-        SWERVE_GEARS,
-        SWERVE_N_GEARS,
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
         "/back_right_swerve_controller/command",
         nh,
-        "back_right_swerve"
+        "back_right_swerve",
+        true
     ),
     armBaseRotate(
         ARM_BASE_ROTATE_RADIUS,
-        ARM_BASE_ROTATE_GEARS,
-        ARM_BASE_ROTATE_N_GEARS,
         ARM_BASE_ROTATE_MOTOR_MIN_PWM,
         ARM_BASE_ROTATE_MOTOR_MAX_PWM,
         ARM_BASE_ROTATE_MOTOR_RPM,
         "/arm_base_rotate_controller/command",
         nh,
-        "arm_base_rotation"
+        "arm_base_rotation",
+        true
     ),
     lidar(
         STATIONARY,
@@ -335,7 +330,7 @@ void BoardControl::run() {
             pwmBRW = backRightWheel.velToPWM(swerveState.backRightMotorV);
             //TODO: this should actually be the angle from the encoders
             pwmFRS = frontRightSwerve.posToPWM(frontRightSwervePotMonitor.getPosition(), updateRateHZ);
-            pwmFLS =  frontLeftSwerve.posToPWM(-frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
+            pwmFLS =  frontLeftSwerve.posToPWM(frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
             pwmLIDAR = lidar.velToPWM();
             
             //adjust the arm position
