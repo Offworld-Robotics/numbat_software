@@ -12,6 +12,7 @@
 #include "AutoMapGUI.h"
 #include "AutoMapNode.h"
 #include <cstdlib>
+#include <string>
 
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "AutoMapGUI");
@@ -45,6 +46,8 @@ AutoMapGUI::AutoMapGUI(int width, int height, int *argc, char **argv) :
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	
 	showHelp = false;
+	textBuffer[0] = '\0';
+	bufferIndex = 0;
 }
 
 void AutoMapGUI::updateGrid(char *grid, int cols, int rows) {
@@ -95,6 +98,13 @@ void AutoMapGUI::display() {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 	
+	glPushMatrix();
+	glTranslated(currWinW - 300, -100, 0);
+	glColor3f(1, 1, 1);
+	glRasterPos2i(-5, -6);
+	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(textBuffer));
+	glPopMatrix();
+	
 	startButton.draw();
 	pauseButton.draw();
 	stopButton.draw();
@@ -119,6 +129,17 @@ void AutoMapGUI::keydown(unsigned char key, int x, int y) {
 		exit(0);
 	} else if(key == '\t') {
 		showHelp = true;
+	} else if(key == 8) {
+		if(bufferIndex > 0) {
+			textBuffer[--bufferIndex] = '\0';
+		}
+	} else if(key >= ' ' && key <= '~') {
+		if(bufferIndex < BUFFER_SIZE-1) {
+			textBuffer[bufferIndex++] = key;
+			textBuffer[bufferIndex] = '\0';
+		}
+	} else if(key == 13) {
+		ROS_INFO("Sending message");
 	}
 }
 

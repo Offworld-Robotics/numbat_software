@@ -9,12 +9,15 @@
 #include "Button.h"
 #include <GL/freeglut.h>
 #include <ros/ros.h>
+#include <string>
 
 #define PI 3.1415926535897932384626433832795
 
 // default window size
 #define WINDOW_W 1855
 #define WINDOW_H 917
+
+#define BUFFER_SIZE 100
 
 class AutoMapGUI : public GLUTWindow {
 	public:
@@ -41,11 +44,14 @@ class AutoMapGUI : public GLUTWindow {
 		int gridCols;
 		int gridRows;
 		
+		bool showHelp;
+		
+		char textBuffer[BUFFER_SIZE];
+		int bufferIndex;
+		
 		Button startButton;
 		Button pauseButton;
 		Button stopButton;
-		
-		bool showHelp;
 		
 		static void sendStartMessage();
 		static void sendPauseMessage();
