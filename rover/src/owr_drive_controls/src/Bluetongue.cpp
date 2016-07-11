@@ -282,7 +282,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.swerveRight = resp.swerveRight;
     stat.pot0 = resp.armLower;
     stat.pot1 = resp.armHigher;  
-    ROS_INFO("ARM POT. LOWER: %d ******* HIGHER %d *****", resp.armLower, resp.armHigher);  
+    ROS_INFO("ARM POT. left: %d ******* right %d *****", resp.swerveLeft, resp.swerveRight);  
         
 //     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
 //     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
