@@ -298,9 +298,9 @@ void BoardControl::run() {
             cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
             if (clawState  == OPEN) {
-                clawGrip += 5;
+                clawGrip += 2;
             } else if (clawState  == CLOSE) {
-                clawGrip -=  5;
+                clawGrip -=  2;
             }
             cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
