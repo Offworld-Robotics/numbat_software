@@ -159,10 +159,10 @@ BoardControl::BoardControl() :
         nh,
         "laser_tilt_joint"
     ),
-    frontLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
-    frontRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
-    backLeftSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
-    backRightSwervePotMonitor(SWERVE_POT_LIMIT_N_DEG, SWERVE_POT_LIMIT_P_DEG, SWERVE_POT_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    frontLeftSwervePotMonitor(SWERVE_POT_L_LIMIT_N_DEG, SWERVE_POT_L_LIMIT_P_DEG, SWERVE_POT_L_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    frontRightSwervePotMonitor(SWERVE_POT_R_LIMIT_N_DEG, SWERVE_POT_R_LIMIT_P_DEG, SWERVE_POT_R_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
+    backLeftSwervePotMonitor(SWERVE_POT_L_LIMIT_N_DEG, SWERVE_POT_L_LIMIT_P_DEG, SWERVE_POT_L_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    backRightSwervePotMonitor(SWERVE_POT_R_LIMIT_N_DEG, SWERVE_POT_R_LIMIT_P_DEG, SWERVE_POT_R_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
     armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS, SWERVE_POT_L_CENTER),
     asyncSpinner(SPINNER_THREADS)
     {
@@ -302,9 +302,9 @@ void BoardControl::run() {
             cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
             if (clawState  == OPEN) {
-                clawGrip += 5;
+                clawGrip += 2;
             } else if (clawState  == CLOSE) {
-                clawGrip -=  5;
+                clawGrip -=  2;
             }
             cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
