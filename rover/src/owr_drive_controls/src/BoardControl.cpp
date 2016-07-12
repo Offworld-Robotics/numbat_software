@@ -336,7 +336,7 @@ void BoardControl::run() {
             //TODO: this should actually be the angle from the encoders
             pwmFRS = frontRightSwerve.posToPWM(frontRightSwervePotMonitor.getPosition(), updateRateHZ);
             pwmFLS =  frontLeftSwerve.posToPWM(-frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
-            pwmLIDAR = lidar.velToPWM();
+            pwmLIDAR = lidar.velToPWM(updateRateHZ);
             
             //adjust the arm position
             armRotateAngle += armRotateRate;

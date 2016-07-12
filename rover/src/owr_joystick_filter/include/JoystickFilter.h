@@ -16,6 +16,8 @@
 #include "owr_messages/heading.h"
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Joy.h>
+#include <std_msgs/Int16.h>
+#include <std_msgs/Float64.h>
 
 class JoystickFilter {
     
@@ -38,6 +40,8 @@ class JoystickFilter {
         //ros::Subscriber sub;
         ros::NodeHandle node;         // ros::NodeHandle nh;
         ros::Publisher  velPublisher;
+        ros::Publisher lidarModePublisher;
+        ros::Publisher lidarPosPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
 
@@ -58,6 +62,9 @@ class JoystickFilter {
         std::list<double> latitudes;
         std::list<double> longitudes;
         int cam0Button, cam1Button, cam2Button, cam3Button;
+        std_msgs::Int16 lidarModeMsg;
+        std_msgs::Float64 lidarPos;
+
         
         // working data for thumbsticks calculated on each input callback
         // LEFT Thumb Stick
