@@ -426,11 +426,11 @@ void BoardControl::publishADC(status s) {
    adcMsg.pot.push_back(s.swerveRight);
    adcMsg.potFrame.push_back("front_right_swerve");
    adcMsg.pot.push_back(s.pot0);
-   adcMsg.potFrame.push_back("voltage");
+   adcMsg.potFrame.push_back("pot0");
    adcMsg.pot.push_back(s.pot1);
-   adcMsg.potFrame.push_back("voltmeter");
+   adcMsg.potFrame.push_back("pot1");
    adcMsg.pot.push_back(s.pot3);
-   adcMsg.potFrame.push_back("claw_feedback");
+   adcMsg.potFrame.push_back("pot2");
    
    adcMsg.header.stamp = ros::Time::now();
    adcMsg.header.seq = (++adcMsgSeq);
