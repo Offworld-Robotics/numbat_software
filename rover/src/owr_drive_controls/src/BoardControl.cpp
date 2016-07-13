@@ -323,7 +323,7 @@ void BoardControl::run() {
             double updateRateHZ = 1.0/( updateRateNSec / SECONDS_2_NS);
             ROS_INFO("Update Rate NSec: %f, HZ: %f", updateRateNSec, updateRateHZ);
             lastUpdate = ros::Time::now();
-            
+            publishADC(s); 
             jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
             /*armRotationBasePotMonitor.updatePos(s.enc0, lastUpdate);*/
             //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
