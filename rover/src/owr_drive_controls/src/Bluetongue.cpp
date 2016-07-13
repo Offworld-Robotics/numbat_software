@@ -270,6 +270,9 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
         stat.roverOk = true;
     }
     stat.batteryVoltage = ((resp.vbat / 1024.0) * 3.3) * 5.7;
+    
+    ROS_INFO("Battery Voltage %f *****", stat.batteryVoltage);
+    
     #ifdef VOLTMETER_ON
     stat.voltmeter = (((resp.voltmeter / 1024.0)*3.3) - 1.65) * (37.2 / 2.2);
     #endif
