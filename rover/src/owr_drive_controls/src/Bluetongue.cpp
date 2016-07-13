@@ -61,8 +61,6 @@ struct toNUCMsg {
     
     uint16_t pot0; // TODO: implement and rename when being used.
     uint16_t pot1;
-    uint16_t pot2;
-    uint16_t pot3;
     
     uint16_t armLower;
     uint16_t armHigher;
@@ -284,7 +282,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.swerveLeft = resp.swerveLeft;
     stat.swerveRight = resp.swerveRight;
     stat.pot0 = resp.armLower;
-    stat.pot1 = resp.armHigher;  
+    stat.pot1 = resp.armHigher;
     ROS_INFO("ARM POT. left: %d ******* right %d *****", resp.swerveLeft, resp.swerveRight);  
         
 //     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
