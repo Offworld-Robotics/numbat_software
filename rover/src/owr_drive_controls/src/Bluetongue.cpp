@@ -269,7 +269,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     } else {
         stat.roverOk = true;
     }
-    stat.batteryVoltage = ((resp.vbat / 1024.0) * 3.3) * 5.7;
+    stat.batteryVoltage = ((resp.vbat / 4096.0) * 3.3) * 5.7;
     #ifdef VOLTMETER_ON
     stat.voltmeter = (((resp.voltmeter / 1024.0)*3.3) - 1.65) * (37.2 / 2.2);
     #endif
@@ -280,10 +280,12 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     // ADC data:
     stat.swerveLeft = resp.swerveLeft;
     stat.swerveRight = resp.swerveRight;
-    stat.pot0 = resp.armLower;
-    stat.pot1 = resp.armHigher;  
+    stat.pot0 = resp.pot0;
+    stat.pot1 = resp.pot1;
+    stat.pot2 = resp.pot2;
+    stat.pot3 = resp.pot3;  
     ROS_INFO("ARM POT. left: %d ******* right %d *****", resp.swerveLeft, resp.swerveRight);  
-        
+    ROS_INFO("BATTERY VOLTAGE %d -> %f #################", resp.vbat, stat.batteryVoltage);       
 //     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
 //     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
 //     jointMsg.header.seq = timeSeq; // sequence ID

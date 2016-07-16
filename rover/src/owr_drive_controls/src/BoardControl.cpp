@@ -16,6 +16,7 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <geometry_msgs/Vector3.h>
 #include <std_msgs/Float64.h>
+#include "owr_messages/adc.h"
 #include <limits>
 
 #define MOTOR_MID 1500.0
@@ -177,6 +178,7 @@ BoardControl::BoardControl() :
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
     voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
     velSubscriber = nh.subscribe<nav_msgs::Odometry>("/odometry/filtered", 1, &BoardControl::velCallback, this, transportHints);
+    adcStatusPublisher = nh.advertise<owr_messages::adc>("/owr/adc", 10, true);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
@@ -195,6 +197,8 @@ BoardControl::BoardControl() :
     gpsSequenceNum = 0;
     rotState = STOP;
     clawState = STOP;
+    
+    adcMsgSeq = 0;
     
     currentVel.linear.x = 0;
     currentVel.linear.y = 0;
@@ -319,7 +323,7 @@ void BoardControl::run() {
             double updateRateHZ = 1.0/( updateRateNSec / SECONDS_2_NS);
             ROS_INFO("Update Rate NSec: %f, HZ: %f", updateRateNSec, updateRateHZ);
             lastUpdate = ros::Time::now();
-            
+            publishADC(s); 
             jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
             /*armRotationBasePotMonitor.updatePos(s.enc0, lastUpdate);*/
             //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
@@ -414,6 +418,26 @@ void BoardControl::publishVoltmeter(double voltage) {
     msg.data = voltage;
     voltmeterPublisher.publish(msg);
 }
+
+void BoardControl::publishADC(status s) {
+   owr_messages::adc adcMsg;
+   adcMsg.pot.push_back(s.swerveLeft);
+   adcMsg.potFrame.push_back("front_left_swerve");
+   adcMsg.pot.push_back(s.swerveRight);
+   adcMsg.potFrame.push_back("front_right_swerve");
+   adcMsg.pot.push_back(s.pot0);
+   adcMsg.potFrame.push_back("pot0");
+   adcMsg.pot.push_back(s.pot1);
+   adcMsg.potFrame.push_back("pot1");
+   adcMsg.pot.push_back(s.pot2);
+   adcMsg.potFrame.push_back("pot2");
+   adcMsg.pot.push_back(s.pot3);
+   adcMsg.potFrame.push_back("pot3");
+   adcMsg.header.stamp = ros::Time::now();
+   adcMsg.header.seq = (++adcMsgSeq);
+   adcStatusPublisher.publish<owr_messages::adc>(adcMsg);
+}
+    
 
 void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
     if((*storedState) != joyState) {

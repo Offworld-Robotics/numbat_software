@@ -44,6 +44,7 @@ class BoardControl {
         void publishGPS(GPSData gps);
         void publishBattery(double batteryVoltage);
         void publishVoltmeter(double voltage);
+        void publishADC(status s);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
@@ -53,6 +54,7 @@ class BoardControl {
         ros::Publisher battVoltPublisher;
         ros::Publisher voltmeterPublisher;
         ros::Publisher boardStatusPublisher;
+        ros::Publisher adcStatusPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
         ros::AsyncSpinner asyncSpinner;
@@ -76,6 +78,8 @@ class BoardControl {
         int clawRotate; // pwm
         int clawGrip;
         int rotState; // On-Off
+        //number of adc messages published
+        int adcMsgSeq;
         //int clawState;
         
         //to keep track of button states. It is possible press could change it
