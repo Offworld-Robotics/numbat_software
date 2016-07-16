@@ -19,6 +19,7 @@ Astar::Astar(const std::string topic) {
     // shouldn't need to set any values..?
     // check topic names!
     aStarSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::aStarCallback, this);
+    pathPublisher = node.advertise<nav_msgs::Path>(topic, 2, true);
     //goalSubscriber = node.subscribe<geometry_msgs>("goal", 2, &Astar::setGoalCallback, this);
     //tfSubscriber = node.subscribe<geometry_msgs>("tf", 2, &Astar::setStartCallback, this);
 }
@@ -26,12 +27,12 @@ Astar::Astar(const std::string topic) {
 void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
     goal.isGoal = true;
-    goal.x = 2050;
-    goal.y = 2048;
+    goal.x = 2206;
+    goal.y = 2060;
     
     start.isStart = true;
-    start.x = 2048;
-    start.y = 2048;
+    start.x = 2024;
+    start.y = 2024;
     
     if (!goal.isGoal) {
         ROS_ERROR("Can't find goal!");
@@ -49,20 +50,22 @@ void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     makeGrid((int8_t*)gridData->data.data(), gridData->info);
     
     findPath();         // do aStar algorithm, get the path
-    printGrid();
+    //printGrid();
     // idk
-    //convertPath();      //convert aStarPath to the path output we need
+    finalPath.header = gridData->header;
+    finalPath.header.stamp = ros::Time::now();
+    convertPath();      //convert aStarPath to the path output we need
     
-    // no idea how to publish a correct path
-    //pathPublisher.publish(finalPath);
     //std::cout << "occupancyGrid width = " << occupancyGrid.size() << std::endl;
     //std::cout << "occupancyGrid height = " << occupancyGrid[0].size() << std::endl;
-    std::cout << "(2024, 2024) = " << (int)occupancyGrid[2024][2024] << std::endl;
-    std::cout << "(2044, 2024) = " << (int)occupancyGrid[2044][2024] << std::endl;
-    std::cout << "(2024, 2044) = " << (int)occupancyGrid[2024][2044] << std::endl;
-    std::cout << "(2004, 2024) = " << (int)occupancyGrid[2004][2024] << std::endl;
-    std::cout << "(2024, 2004) = " << (int)occupancyGrid[2024][2004] << std::endl;
+    //std::cout << "start = (" << start.x << ", " << start.y << ") = " << (int)occupancyGrid[start.x][start.y] << std::endl;
+    //std::cout << "goal = (" << goal.x << ", " << goal.y << ") = " << (int)occupancyGrid[goal.x][goal.y] << std::endl;
+    //std::cout << "(2020, 2024) = " << (int)occupancyGrid[2020][2024] << std::endl;
+    
     clearPaths();
+    
+    // no idea how to publish a path lelele?
+    pathPublisher.publish(finalPath);
 }
 
 void Astar::setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint) {
@@ -98,11 +101,11 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
         return;
     }
     occupancyGrid.resize(info.width);
-    //set entire grid to somewhat passable
+    //set entire grid to impassable
     for(unsigned int i = 0; i < occupancyGrid.size(); ++i) {
         occupancyGrid[i].resize(info.height);
         for(unsigned int j = 0; j < occupancyGrid[i].size(); ++j) {
-            occupancyGrid[i][j] = 50;
+            occupancyGrid[i][j] = IMPASS;
         }
     }
     
@@ -110,10 +113,15 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
     int y = 0;
     char value;
     
-    for (unsigned int i = 0; i < sizeof(data)/sizeof(int8_t); ++i) {
+    for (unsigned int i = 0; i < (info.width * info.height); ++i) {
         value = data[i];
+        
+        //if (value != 50 && value > 0) {
+        //    std::cout << (int)value << std::endl;
+        //}
+        
         if (value < 0) {
-            value = IMPASS;    // set unknowns to impassable
+            value = 100;    // set unknowns to somewhat passable
         }
         occupancyGrid[x][y] = value;    // set the value
         
@@ -126,12 +134,6 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
         }
     }
 }
-
-void Astar::convertPath() {
-    aStarPath;
-    finalPath;
-}
-
 
 void Astar::setGridEndPoints(int sx, int sy, int gx,int gy) {
     start.isStart = true;
@@ -351,14 +353,30 @@ double Astar::getDist (point point1, point point2) {
 }
 
 void Astar::getPath() {
+    std::vector<point>::iterator it;
+    
     while(currentPos.previndex != -1){
-        aStarPath.push_back(currentPos);
-        //std::cout << "finalpath xy = (" << currentPos.x << ", " << currentPos.y << ")" << std::endl;
-        //std::cout << "  finalpath previndex = " << currentPos.previndex << std::endl;
+        it = aStarPath.begin();
+        
+        aStarPath.insert(it, currentPos);
+        
         currentPos = closedSet[currentPos.previndex];
     }
     //std::cout << "finalpath xy = (" << currentPos.x << ", " << currentPos.y << ")" << std::endl;
     //std::cout << "  finalpath previndex = " << currentPos.previndex << std::endl;
+}
+
+void Astar::convertPath() {
+    geometry_msgs::PoseStamped thisPose;
+    thisPose.header = finalPath.header; // TODO is this ok/right?
+    finalPath.poses.resize(aStarPath.size());
+    for (unsigned int i = 0; i < aStarPath.size(); ++i) {
+        thisPose.header.seq = i;
+        thisPose.pose.position.x = ((double)aStarPath[i].x/20) - 101.25;
+        thisPose.pose.position.y = ((double)aStarPath[i].y/20) - 101.25;
+        
+        finalPath.poses[i] = thisPose;
+    }
 }
 
 void Astar::clearPaths() {

@@ -77,6 +77,7 @@ class Astar {
     protected:
         ros::Publisher  pathPublisher;
     private:
+        
         ros::NodeHandle node;         // ros::NodeHandle nh;
         ros::Subscriber aStarSubscriber;
         ros::Subscriber goalSubscriber;
