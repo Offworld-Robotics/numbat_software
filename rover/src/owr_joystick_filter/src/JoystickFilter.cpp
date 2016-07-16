@@ -42,7 +42,7 @@
 #define LIDAR_CONTINUOS 1
 #define LIDAR_STATIONARY 2
 #define LIDAR_POSITION 3
-#define LIDAR_MULTIPLIER 0.05
+#define LIDAR_MULTIPLIER 0.01
  
 int main(int argc, char ** argv) {
     
@@ -142,10 +142,10 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
      * Toggle lidar mode
      */
      if(joy->buttons[BUTTON_LB]) {
-         lidarModeMsg.data = lidarModeMsg.data + 1 % 3;
+         lidarModeMsg.data = (lidarModeMsg.data + 1) % 3;
          lidarModePublisher.publish<std_msgs::Int16>(lidarModeMsg);
      } else if(joy->buttons[BUTTON_RB]) {
-         lidarModeMsg.data =abs(lidarModeMsg.data - 1 % 3);
+         lidarModeMsg.data =abs((lidarModeMsg.data - 1) % 3);
          lidarModePublisher.publish<std_msgs::Int16>(lidarModeMsg);
      }
 

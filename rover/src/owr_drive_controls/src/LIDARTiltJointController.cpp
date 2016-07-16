@@ -32,7 +32,7 @@ static double pwmToPos(double pwm) {
 
 LIDARTiltJointController::LIDARTiltJointController(LIDARTiltMode aMode, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
     //initalise mode subscriber
-    modeSub = nh.subscribe("/owr/lidar_gimbal_mode", 10, &LIDARTiltJointController::setModeCallback, this);
+    modeSub = nh.subscribe("/owr/lidar_gimble_mode", 10, &LIDARTiltJointController::setModeCallback, this);
     
     angle = LIDAR_HORIZ;
     currentDirection = FORWARDS;
@@ -76,6 +76,7 @@ int LIDARTiltJointController::velToPWM(double requestedValue, double hz) {
     } else { //position
         pwm = (requestedValue * 180.0) / (DEG_PER_PWM * M_PI) + LIDAR_HORIZ;
         lastAngularVelocity  = (((lastPWM - LIDAR_HORIZ) * DEG_PER_PWM * (M_PI/180.0)) - requestedValue) * hz;
+	ROS_INFO("pwm %d requested %f", pwm, requestedValue);
     }
     lastHz = hz;
     lastPWM = pwm;
@@ -94,7 +95,7 @@ int LIDARTiltJointController::velToPWM (double hz ) {
 
 void LIDARTiltJointController::setModeCallback(const std_msgs::Int16 modeMsg) {
     mode = (LIDARTiltMode) modeMsg.data;
-
+    ROS_INFO("Mode %d",(int) mode);
 }
 
 
