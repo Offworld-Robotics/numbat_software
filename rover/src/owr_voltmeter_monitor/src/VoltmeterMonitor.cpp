@@ -28,17 +28,19 @@ VoltmeterMonitor::VoltmeterMonitor() : node() {
         publisher  = node.advertise<std_msgs::Float32>("/owr/voltmeter", 10);
         
         node.getParam("voltmeter_offset", voltmeterOffset);
+        voltmeterScale = 0.012774;
         node.getParam("voltmeter_scale", voltmeterScale);
-        voltmeterFrame = "pot0"; //default value
+        voltmeterFrame = "pot2"; //default value
         node.getParam("voltmeter_frame", voltmeterFrame); 
         ROS_INFO("Running with scale %f and offset %f", voltmeterScale, voltmeterOffset);
 }
 
 void VoltmeterMonitor::callback(const owr_messages::adc_< std::allocator< void > >::ConstPtr& adc) {
     std_msgs::Float32 msg;
-    
+    ROS_INFO("callback!!");    
     for(int i = 0; i < adc->potFrame.size(); ++i) {
         if(adc->potFrame[i].compare(voltmeterFrame) == 0) {
+            ROS_INFO("input: %f, scale %f", adc->pot[i], voltmeterScale);
             msg.data = (adc->pot[i] + voltmeterOffset) * voltmeterScale;
             publisher.publish<std_msgs::Float32>(msg);
         }
