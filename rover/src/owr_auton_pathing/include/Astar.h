@@ -1,7 +1,6 @@
 /*
  */
 #ifndef ASTAR_H
-
 #include <ros/ros.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/MapMetaData.h>
@@ -108,6 +107,8 @@ class Astar {
         
         void getPath();                           // Reconstruct path back to start
         void convertPath();
+        
+        void clearPaths();
         
         void computeNeighbors();              // Computes neighbor of a point; gets their weight, pushes to openSet etc
         std::vector<point> getNeighbors(point point1);    // Gets legal (not impassable, not in closedSet) neighbors of a point, returns them with x,y,stepcost defined

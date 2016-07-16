@@ -9,7 +9,7 @@
 int main (int argc, char *argv[]) {
     
     ros::init(argc, argv, "owr_astar");
-    std::cout << "ros init'd" << std::endl;
+    //std::cout << "ros init'd" << std::endl;
     Astar pathFinder("owr_auton_pathing");
     pathFinder.spin();
     return 0;
@@ -26,12 +26,12 @@ Astar::Astar(const std::string topic) {
 void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
     goal.isGoal = true;
-    goal.x = 8;
-    goal.y = 0;
+    goal.x = 2050;
+    goal.y = 2048;
     
     start.isStart = true;
-    start.x = 1;
-    start.y = 1;
+    start.x = 2048;
+    start.y = 2048;
     
     if (!goal.isGoal) {
         ROS_ERROR("Can't find goal!");
@@ -55,6 +55,14 @@ void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
     // no idea how to publish a correct path
     //pathPublisher.publish(finalPath);
+    //std::cout << "occupancyGrid width = " << occupancyGrid.size() << std::endl;
+    //std::cout << "occupancyGrid height = " << occupancyGrid[0].size() << std::endl;
+    std::cout << "(2024, 2024) = " << (int)occupancyGrid[2024][2024] << std::endl;
+    std::cout << "(2044, 2024) = " << (int)occupancyGrid[2044][2024] << std::endl;
+    std::cout << "(2024, 2044) = " << (int)occupancyGrid[2024][2044] << std::endl;
+    std::cout << "(2004, 2024) = " << (int)occupancyGrid[2004][2024] << std::endl;
+    std::cout << "(2024, 2004) = " << (int)occupancyGrid[2024][2004] << std::endl;
+    clearPaths();
 }
 
 void Astar::setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint) {
@@ -77,30 +85,11 @@ void Astar::setStartCallback(const geometry_msgs::Transform::ConstPtr& theTF) {
 
 //ros's main loop thing?
 void Astar::spin() {
-    std::cout << "spinning" << std::endl;
+    //std::cout << "spinning" << std::endl;
     while(ros::ok()) {
         ros::spinOnce();
     }
 }
-
-/* //test main
-int main(int argc, char **argv) {
-    std::cout << "A* search test" << std::endl;
-    
-    Astar test;
-    
-    test.setGridEndPoints(0,0,83,83);
-    test.setGridStepCosts("middle");
-    
-    //test.printGrid();
-    
-    test.findPath();
-    
-    test.printGrid();
-    
-    return 0;
-}
-*/
 
 void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
     
@@ -108,12 +97,12 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
         ROS_ERROR("nav_msgs::OccupancyGrid is too big!");
         return;
     }
-    occupancyGrid.resize(SIZE_OF_GRID);
-    //set entire grid to impassable
+    occupancyGrid.resize(info.width);
+    //set entire grid to somewhat passable
     for(unsigned int i = 0; i < occupancyGrid.size(); ++i) {
-        occupancyGrid[i].resize(SIZE_OF_GRID);
+        occupancyGrid[i].resize(info.height);
         for(unsigned int j = 0; j < occupancyGrid[i].size(); ++j) {
-            occupancyGrid[i][j] = IMPASS;
+            occupancyGrid[i][j] = 50;
         }
     }
     
@@ -131,7 +120,7 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
         x ++;   //always increment x
         
         // if we're at a multiple of the width, move to the next line
-        if ((i % (info.width-1)) == 0) {    // need to subtract 1 because the i will be 1 less
+        if (x == info.width) {
             y ++;
             x = 0;  // reset x to the start of the row
         }
@@ -154,7 +143,7 @@ void Astar::setGridEndPoints(int sx, int sy, int gx,int gy) {
     goal.y = gy;
 }
 
-/* //-------- testing only ------------
+/* //------ testing mainly ------------
 void Astar::setGridStepCosts(char *typeOfObstacle) {
     
     // set initial costs to 1
@@ -218,7 +207,7 @@ void Astar::printGrid(){
             std::cout << ", ";
         }
     }
-    std::cout << "]";
+    std::cout << "]" << std::endl;
 }
 /*------------------------------------*/
 
@@ -370,4 +359,11 @@ void Astar::getPath() {
     }
     //std::cout << "finalpath xy = (" << currentPos.x << ", " << currentPos.y << ")" << std::endl;
     //std::cout << "  finalpath previndex = " << currentPos.previndex << std::endl;
+}
+
+void Astar::clearPaths() {
+    closedSet.clear();
+    openSet.clear();
+    frontierSet.clear();
+    aStarPath.clear();
 }
