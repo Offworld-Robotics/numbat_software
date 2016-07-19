@@ -214,6 +214,8 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&lidar);
     jMonitor.addJoint(&armBaseRotate);
     
+    armRotateAngle = 0.0;
+    
     //velocity setup
     currentVel.linear.x = std::numeric_limits<double >::quiet_NaN();
 }
@@ -230,6 +232,12 @@ void cap(int *a, int low, int high) {
     *a = *a < low ? low : *a;
     *a = *a > high ? high : *a;
 }
+
+void capf(float *a, float low, float high) {
+    *a = *a < low ? low : *a;
+    *a = *a > high ? high : *a;
+}
+
 
 #define UPDATE_RATE 10 //Hz
 #define SECONDS_2_NS 1000000000
@@ -329,9 +337,9 @@ void BoardControl::run() {
             //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
             frontLeftSwervePotMonitor.updatePos(s.swerveLeft, lastUpdate);
             frontRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
+            armRotationBasePotMonitor.updatePos(s.pot0, lastUpdate);
             
             //do joint calculations
-            //TODO: check if empty
             swerveMotorVels swerveState = doVelTranslation(&(currentVel));
             pwmFLW = frontLeftWheel.velToPWM(swerveState.frontLeftMotorV);
             pwmFRW = frontRightWheel.velToPWM(swerveState.frontRightMotorV);
@@ -344,9 +352,10 @@ void BoardControl::run() {
             
             //adjust the arm position
             armRotateAngle += armRotateRate;
-            pwmArmRot = (armRotateRate * 500) + 1500;
-            ROS_INFO("Arm Rotate %d", pwmArmRot);	
-            //pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, 			 armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
+            capf(&armRotateAngle, -2.0*M_PI, 2.0*M_PI);
+            //pwmArmRot = (armRotateRate * 500) + 1500;
+            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, armRotationBasePotMonitor.getPosition(), updateRateHZ); 
+            ROS_INFO("Arm Rotate %d", pwmArmRot);
             
             //for now do this for actuators
             pwmArmTop = armTop;
