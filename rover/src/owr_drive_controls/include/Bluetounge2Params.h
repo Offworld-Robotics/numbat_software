@@ -48,7 +48,7 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 #define ARM_POT_LIMIT_N_DEG 0
 #define ARM_POT_LIMIT_P_DEG 0
 #define ARM_POT_REVOLUTION 0
-#define ARM_POT_TURNS 0
+#define ARM_POT_TURNS 1 
 
 
 #endif //BLUETOUNGE_2_PARAMS_H
