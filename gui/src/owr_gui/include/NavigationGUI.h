@@ -55,7 +55,7 @@
 #define ALPHA 1.0 // transparency factor
 #define TEXTBOX_ALPHA 0.001
 
-#define NUM_ARM_JOINTS 11
+#define NUM_ARM_JOINTS 12
 
 class NavigationGUI : public GLUTWindow {
 
@@ -139,9 +139,7 @@ class NavigationGUI : public GLUTWindow {
 		void drawArmModel();
 		
 		tf::StampedTransform armTFs[NUM_ARM_JOINTS];
-		tf::StampedTransform wheelTFs[2];
-		
-		void drawWheelAngles();
+		tf::Vector3 tfOrigins[NUM_ARM_JOINTS];
 };
 
 

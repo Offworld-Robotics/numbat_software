@@ -178,8 +178,6 @@ void NavigationGUI::display() {
 		drawArmModel();
 	}
 	
-	drawWheelAngles();
-	
 	glutSwapBuffers();
 }
 
@@ -543,6 +541,22 @@ void NavigationGUI::refreshArmTFs() {
 		arm_lower_top_plates
 		*/
 		
+		/*
+		-arm_base
+			-arm_top_actuator_base
+				-arm_top_actuator_shaft
+					-arm_top_plates
+						-arm_top_plate_base_link
+			-arm_bottom_plates
+				-arm_bottom_actuator_base
+					-arm_bottom_actuator_shaft
+						-arm_lower_bottom_plates
+							-arm_sync_plate_lower
+							-claw_base
+				-arm_sync_plates
+					-arm_lower_top_plates
+		*/
+		
 		tfListener.lookupTransform("/arm_base", "/arm_top_actuator_base", ros::Time(0), armTFs[0]);
 		tfListener.lookupTransform("/arm_base", "/arm_top_actuator_shaft", ros::Time(0), armTFs[1]);
 		tfListener.lookupTransform("/arm_base", "/arm_top_plates", ros::Time(0), armTFs[2]);
@@ -552,15 +566,14 @@ void NavigationGUI::refreshArmTFs() {
 		tfListener.lookupTransform("/arm_base", "/arm_bottom_actuator_shaft", ros::Time(0), armTFs[6]);
 		tfListener.lookupTransform("/arm_base", "/arm_lower_bottom_plates", ros::Time(0), armTFs[7]);
 		tfListener.lookupTransform("/arm_base", "/arm_sync_plate_lower", ros::Time(0), armTFs[8]);
-		tfListener.lookupTransform("/arm_base", "/arm_sync_plates", ros::Time(0), armTFs[9]);
-		tfListener.lookupTransform("/arm_base", "/arm_lower_top_plates", ros::Time(0), armTFs[10]);
+		tfListener.lookupTransform("/arm_base", "/claw_base", ros::Time(0), armTFs[9]);
+		tfListener.lookupTransform("/arm_base", "/arm_sync_plates", ros::Time(0), armTFs[10]);
+		tfListener.lookupTransform("/arm_base", "/arm_lower_top_plates", ros::Time(0), armTFs[11]);
 		
-		/*for (int i = 0;i < NUM_ARM_JOINTS;i++) {
-			ROS_INFO("armTFs[%d]: %f,%f,%f\n\n", i,
-			armTFs[i].getOrigin().x(),
-			armTFs[i].getOrigin().y(),
-			armTFs[i].getOrigin().z());
-		}*/
+		
+		for (int i = 0;i < NUM_ARM_JOINTS;i++) {
+			tfOrigins[i] = armTFs[i].getOrigin();
+		}
 	} catch (tf::TransformException &ex) {
 		ROS_ERROR("%s",ex.what());
 	}
@@ -569,40 +582,61 @@ void NavigationGUI::refreshArmTFs() {
 // draw the arm model widget
 void NavigationGUI::drawArmModel() {
 	glPushMatrix();
-	glTranslated(currWinW/2.0, -currWinH/2.0, 0);	
-
+	glTranslated(currWinW/2.0, -currWinH/2.0, 0);
+	
 	glColor3f(1,0,0);
 	glScaled(400, 400, 1);
+	/*
+	-arm_base
+		-arm_top_actuator_base [0]
+			-arm_top_actuator_shaft [1]
+				-arm_top_plates [2]
+					-arm_top_plate_base_link [3]
+		-arm_bottom_plates [4]
+			-arm_bottom_actuator_base [5]
+				-arm_bottom_actuator_shaft [6]
+					-arm_lower_bottom_plates [7]
+						-arm_sync_plate_lower [8]
+						-claw_base [9]
+			-arm_sync_plates [10]
+				-arm_lower_top_plates [11]
+	*/
 	glBegin(GL_LINES);
-	for(int i = 0;i < NUM_ARM_JOINTS;i++) {
-		glVertex3d(0,0,0);
-		glVertex3d(armTFs[i].getOrigin().x(), armTFs[i].getOrigin().z(), 0);
-	}
-	glEnd();
-
-	glPopMatrix();
-}
-
-void NavigationGUI::refreshWheelTFs() {
-	try {
-		//listener.lookupTransform("/from_frame", "/to_frame", ros::Time(0), transform);
-		
-		tfListener.lookupTransform("/base_link", "/front_left_wheel", ros::Time(0), wheelTFs[0]);
-		tfListener.lookupTransform("/base_link", "/front_right_wheel", ros::Time(0), wheelTFs[1]);
-		
-	} catch (tf::TransformException &ex) {
-		ROS_ERROR("%s",ex.what());
-	}
-}
-
-// draw steer wheel angles
-void NavigationGUI::drawWheelAngles() {
-	glPushMatrix();
-	glTranslated(currWinW/2.0, -currWinH/3.0, 0);	
-
-	glColor3f(1,0,0);
-	glBegin(GL_LINES);
+	glVertex2d(0,0);
+	glVertex2d(tfOrigins[0].x(), tfOrigins[0].z());
 	
+	glVertex2d(tfOrigins[0].x(), tfOrigins[0].z());
+	glVertex2d(tfOrigins[1].x(), tfOrigins[1].z());
+	
+	glVertex2d(tfOrigins[1].x(), tfOrigins[1].z());
+	glVertex2d(tfOrigins[2].x(), tfOrigins[2].z());
+	
+	glVertex2d(tfOrigins[2].x(), tfOrigins[2].z());
+	glVertex2d(tfOrigins[3].x(), tfOrigins[3].z());
+	
+	glVertex2d(0,0);
+	glVertex2d(tfOrigins[4].x(), tfOrigins[4].z());
+	
+	glVertex2d(tfOrigins[4].x(), tfOrigins[4].z());
+	glVertex2d(tfOrigins[5].x(), tfOrigins[5].z());
+	
+	glVertex2d(tfOrigins[5].x(), tfOrigins[5].z());
+	glVertex2d(tfOrigins[6].x(), tfOrigins[6].z());
+	
+	glVertex2d(tfOrigins[6].x(), tfOrigins[6].z());
+	glVertex2d(tfOrigins[7].x(), tfOrigins[7].z());
+	
+	glVertex2d(tfOrigins[7].x(), tfOrigins[7].z());
+	glVertex2d(tfOrigins[8].x(), tfOrigins[8].z());
+	
+	glVertex2d(tfOrigins[7].x(), tfOrigins[7].z());
+	glVertex2d(tfOrigins[9].x(), tfOrigins[9].z());
+	
+	glVertex2d(tfOrigins[4].x(), tfOrigins[4].z());
+	glVertex2d(tfOrigins[10].x(), tfOrigins[10].z());
+	
+	glVertex2d(tfOrigins[10].x(), tfOrigins[10].z());
+	glVertex2d(tfOrigins[11].x(), tfOrigins[11].z());
 	glEnd();
 
 	glPopMatrix();
