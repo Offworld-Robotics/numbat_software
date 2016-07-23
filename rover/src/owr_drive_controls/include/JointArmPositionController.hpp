@@ -5,6 +5,8 @@
  * Purpose: Represents an interface for controlling a motor. It takes in a target position, and current postion and outputs a pwm rate.
  */
 
+#include "JointVelocityController.hpp"
+
 class JointArmPositionController : public JointController {
     public:
         JointArmPositionController(int minPosition, int maxPosition, int minValue, int maxValue, int minPWM, int maxPWM, char * topic, ros::NodeHandle nh, std::string name);
@@ -15,7 +17,7 @@ class JointArmPositionController : public JointController {
         
         int minValue, maxValue;
         
-        int minPWM, maxPWM
+        int minPWM, maxPWM;
         
         int lastPos, lastPWM;
 };

@@ -10,7 +10,7 @@
 #include <ros/ros.h>
 
 
-JointArmPositionController(int minPositionIn, int maxPositionIn, int minValueIn, int maxValueIn, int minPWMIn, int maxPWMIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
+JointArmPositionController :: JointArmPositionController(int minPositionIn, int maxPositionIn, int minValueIn, int maxValueIn, int minPWMIn, int maxPWMIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
         minPosition = minPositionIn;
         maxPosition = maxPositionIn;
         minValue = minValueIn;
@@ -23,20 +23,22 @@ JointArmPositionController(int minPositionIn, int maxPositionIn, int minValueIn,
 // we are linearly mapping the range of position readings to the range of PWM values.
 // Thus, use the function Y = (X-A)/(B-A) * (D-C) + C
 // where we are mapping X within A to B, to Y from C to D.
-int posToPWM(int currentPos, int futurePos, double updateFrequency){
-    double temp = futurePos - this.minPositionIn; // X - A
-    temp = (temp / ( this.maxPosition - this.minPosition )); // (X-A)/(B-A)
-    temp = temp * ( this.maxPWM - this.minPWM ) + minPWM; // (X-A)/(B-A) * (D-C) + C
+int JointArmPositionController :: posToPWM(int currentPos, int futurePos, double updateFrequency){
+    double temp = futurePos - minPosition; // X - A
+    temp = (temp / ( maxPosition - minPosition )); // (X-A)/(B-A)
+    temp = temp * ( maxPWM - minPWM ) + minPWM; // (X-A)/(B-A) * (D-C) + C
     int result = temp;
-    this.lastPos = currPos;
+    lastPos = currentPos;
     return temp;
 }
 
-virtual jointInfo extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime){
+jointInfo JointArmPositionController::extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime){
     jointInfo info;
+    ros::Duration dif = extrapolationTime - sessionStart;
+    
     info.velocity = 0;
-    info.position = this.lastPos + (extrapolationTime - sessionStart) * info.velocity; //TODO: can make this more accurate if m/s of actuator is known
-    info.pwm = this.lastPWM;
+    info.position = lastPos + dif.toSec() * info.velocity; //TODO: can make this more accurate if m/s of actuator is known
+    info.pwm = lastPWM;
     info.jointName = name;
     return info;
 }
