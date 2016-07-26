@@ -360,7 +360,7 @@ void BoardControl::run() {
             
             //adjust the arm position
             armRotateAngle += armRotateRate;
-            armRotateAngle = fmax(-2.0*M_PI,fmin(2.0*M_PI, armRotateAngle));
+            armRotateAngle = fmax(armRotationBasePotMonitor.getMinAngle(),fmin(armRotationBasePotMonitor.getMaxAngle(), armRotateAngle));
             //pwmArmRot = (armRotateRate * 500) + 1500;
             pwmArmRot = armBaseRotate.posToPWM(armRotateAngle,armRotationBasePotMonitor.getPosition(), updateRateHZ); 
             ROS_INFO("Arm Rotate %d", pwmArmRot);

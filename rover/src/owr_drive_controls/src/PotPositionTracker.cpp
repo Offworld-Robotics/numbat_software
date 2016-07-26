@@ -44,12 +44,12 @@ void PotPositionTracker::updatePos(double potValue, ros::Time current) {
     
     //make sure the pos is in our 'nice' range (between M_PI and -M_PI)
     //second statement is for when we have an invalid pot value
-    while (pos > M_PI && !std::isinf(pos)) {
+    /*while (pos > M_PI && !std::isinf(pos)) {
         pos = -(2*M_PI - pos);
     } 
     while (pos < -M_PI && !std::isinf(pos)) {
         pos = 2*M_PI + pos;
-    }
+    }*/
     //TODO: calc velocity
     
     updateLists(pos, 0.0, current,true);
@@ -67,5 +67,13 @@ void PotPositionTracker::resetPos() {
     }
     mutext.unlock();
     PositionTracker::resetPos();
+}
+
+double PotPositionTracker::getMaxAngle() {
+    return ((posLimit - center) / (singleRotationRange*turns)) * (2.0 * M_PI * turns);
+}
+
+double PotPositionTracker::getMinAngle() {
+   return ((negLimit - center) / (singleRotationRange*turns)) * (2.0 * M_PI * turns);
 }
 
