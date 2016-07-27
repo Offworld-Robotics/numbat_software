@@ -21,7 +21,7 @@ Astar::Astar(const std::string topic) {
     aStarSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::aStarCallback, this);
     pathPublisher = node.advertise<nav_msgs::Path>(topic, 2, true);
     //goalSubscriber = node.subscribe<geometry_msgs>("goal", 2, &Astar::setGoalCallback, this);
-    //tfSubscriber = node.subscribe<geometry_msgs>("tf", 2, &Astar::setStartCallback, this);
+    
 }
 
 void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
@@ -29,6 +29,9 @@ void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     goal.isGoal = true;
     goal.x = 2206;
     goal.y = 2060;
+    
+    tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
+    ROS_INFO("tf = (%f, %f)\n", transform.getOrigin().getX(), transform.getOrigin().getY());
     
     start.isStart = true;
     start.x = 2024;

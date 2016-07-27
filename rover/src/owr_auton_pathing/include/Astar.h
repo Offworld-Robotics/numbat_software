@@ -8,6 +8,7 @@
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Transform.h>
 #include <nav_msgs/Path.h>
+#include <tf/transform_listener.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -81,7 +82,9 @@ class Astar {
         ros::NodeHandle node;         // ros::NodeHandle nh;
         ros::Subscriber aStarSubscriber;
         ros::Subscriber goalSubscriber;
-        ros::Subscriber tfSubscriber;
+        
+        tf::TransformListener tfListener;
+        tf::StampedTransform transform;
         
         //nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
         nav_msgs::Path finalPath;               // finalPath for us to publish
