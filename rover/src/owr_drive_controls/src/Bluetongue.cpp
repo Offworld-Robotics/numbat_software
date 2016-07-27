@@ -286,6 +286,10 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.pot3 = resp.pot3;  
     ROS_INFO("ARM POT. left: %d ******* right %d *****", resp.swerveLeft, resp.swerveRight);  
     ROS_INFO("BATTERY VOLTAGE %d -> %f #################", resp.vbat, stat.batteryVoltage);       
+    ROS_INFO("Actual Pos: %d", resp.pot0);
+    ROS_INFO("Target Pos: %d", resp.pot1);
+    ROS_INFO("Error: %d", resp.pot2);
+    ROS_INFO("Move to: %d", resp.pot3);
 //     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
 //     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
 //     jointMsg.header.seq = timeSeq; // sequence ID

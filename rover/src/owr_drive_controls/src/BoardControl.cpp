@@ -28,6 +28,10 @@
 #define CLAW_ROTATION_MAX 90
 #define CLAW_ROTATION_MIN 0
 
+#define CLAW_GRIP_MAX 180
+#define CLAW_GRIP_MIN 0
+#define CLAW_GRIP_MID 90
+
 #define CAMERA_ROTATION_MID 90
 #define CAMERA_ROTATION_MAX 180
 #define CAMERA_ROTATION_MIN 0
@@ -184,7 +188,7 @@ BoardControl::BoardControl() :
     armTop = MOTOR_MID;
     armBottom = MOTOR_MID;
     clawRotate = CLAW_ROTATION_MID;
-    clawGrip = CLAW_ROTATION_MID;
+    clawGrip = CLAW_GRIP_MID;
     cameraBottomRotate = CAMERA_ROTATION_MID;
     cameraBottomTilt = CAMERA_ROTATION_MID;
     cameraTopRotate = CAMERA_ROTATION_MID;
@@ -216,6 +220,10 @@ BoardControl::BoardControl() :
     
     //velocity setup
     currentVel.linear.x = std::numeric_limits<double >::quiet_NaN();
+}
+
+int clawGripScale(int raw) {
+    return ((float)raw/(float)CLAW_GRIP_MAX) * 1000.0 + 1000;
 }
 
 int clawRotScale(int raw) {
@@ -306,7 +314,8 @@ void BoardControl::run() {
             } else if (clawState  == CLOSE) {
                 clawGrip -=  2;
             }
-            cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
+            
+            //cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr;
