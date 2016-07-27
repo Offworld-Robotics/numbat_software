@@ -163,6 +163,7 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
      *      Active by default
      *      
      */
+    gimbalRate = 0.0;
     if (joy->buttons[BUTTON_A]) {
         //IMPORTANT: this will do nothing if the lidar is not is position mode
         gimbalRate = joy->axes[STICK_L_UD];
