@@ -3,8 +3,8 @@
  * Original Author: Sam S
  * Editors: Harry J.E Day, Sean Thompson
  * ROS_NODE:owr_joystick_filter
-             * ros package: 
-     */
+ * ros package: 
+ */
      
 
 //#include "bluesat_owr_protobuf/Message1Relay.h"
@@ -56,7 +56,8 @@ int main(int argc, char ** argv) {
     return EXIT_SUCCESS;   
 }
 
-JoystickFilter::JoystickFilter(const std::string topic) {
+JoystickFilter::JoystickFilter(const std::string topic) :
+    gimbalRate(0.0) {
     altitude = 0;
     latitude = 0;
     longitude = 0;
@@ -164,8 +165,7 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
      */
     if (joy->buttons[BUTTON_A]) {
         //IMPORTANT: this will do nothing if the lidar is not is position mode
-        lidarPos.data += joy->axes[STICK_L_UD] * LIDAR_MULTIPLIER;
-        lidarPosPublisher.publish<std_msgs::Float64>(lidarPos);
+        gimbalRate = joy->axes[STICK_L_UD];
         
         // Thumb sticks control camera rotation while A Button is held
 
@@ -280,7 +280,13 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
 //main loop
 void JoystickFilter::spin() {
+    ros::Rate r(20);
     while(ros::ok()) {
+        
+        lidarPos.data += gimbalRate * LIDAR_MULTIPLIER;
+        lidarPosPublisher.publish<std_msgs::Float64>(lidarPos);
+        
+        r.sleep();
         ros::spinOnce();
     }
 }
