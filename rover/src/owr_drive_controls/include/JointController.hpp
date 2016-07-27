@@ -20,7 +20,7 @@
 
 typedef struct _jointInfo {
     int pwm;
-    double effort, velocity, position;
+    double effort, velocity, position, targetPos;
     std::string jointName;
 } jointInfo;
 

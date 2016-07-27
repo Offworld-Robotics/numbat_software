@@ -18,11 +18,14 @@
 #include <std_msgs/Float64.h>
 #include "owr_messages/adc.h"
 #include <limits>
+#include <math.h>
 
 #define MOTOR_MID 1500.0
 #define MOTOR_MAX 1900.0
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
+
+#define ARM_ROTATE_RATE 0.04
 
 #define CLAW_ROTATION_MID 45
 #define CLAW_ROTATION_MAX 90
@@ -106,6 +109,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
+        SWERVE_ACCURACY,
         "/front_left_swerve_controller/command",
         nh,
         "front_left_swerve"
@@ -117,6 +121,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
+        SWERVE_ACCURACY,
         "/front_right_swerve_controller/command",
         nh,
         "front_right_swerve"
@@ -127,6 +132,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
+        SWERVE_ACCURACY,
         "/back_left_swerve_controller/command",
         nh,
         "back_left_swerve"
@@ -138,6 +144,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
+        SWERVE_ACCURACY,
         "/back_right_swerve_controller/command",
         nh,
         "back_right_swerve"
@@ -149,6 +156,7 @@ BoardControl::BoardControl() :
         ARM_BASE_ROTATE_MOTOR_MIN_PWM,
         ARM_BASE_ROTATE_MOTOR_MAX_PWM,
         ARM_BASE_ROTATE_MOTOR_RPM,
+        ARM_ACCURACY,
         "/arm_base_rotate_controller/command",
         nh,
         "arm_base_rotation"
@@ -163,7 +171,7 @@ BoardControl::BoardControl() :
     frontRightSwervePotMonitor(SWERVE_POT_R_LIMIT_N_DEG, SWERVE_POT_R_LIMIT_P_DEG, SWERVE_POT_R_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
     backLeftSwervePotMonitor(SWERVE_POT_L_LIMIT_N_DEG, SWERVE_POT_L_LIMIT_P_DEG, SWERVE_POT_L_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
     backRightSwervePotMonitor(SWERVE_POT_R_LIMIT_N_DEG, SWERVE_POT_R_LIMIT_P_DEG, SWERVE_POT_R_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
-    armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS, SWERVE_POT_L_CENTER),
+    armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS, ARM_POT_CENTER),
     asyncSpinner(SPINNER_THREADS)
     {
 
@@ -352,9 +360,9 @@ void BoardControl::run() {
             
             //adjust the arm position
             armRotateAngle += armRotateRate;
-            capf(&armRotateAngle, -2.0*M_PI, 2.0*M_PI);
+            armRotateAngle = fmax(armRotationBasePotMonitor.getMinAngle(),fmin(armRotationBasePotMonitor.getMaxAngle(), armRotateAngle));
             //pwmArmRot = (armRotateRate * 500) + 1500;
-            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, armRotationBasePotMonitor.getPosition(), updateRateHZ); 
+            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle,armRotationBasePotMonitor.getPosition(), updateRateHZ); 
             ROS_INFO("Arm Rotate %d", pwmArmRot);
             
             //for now do this for actuators
@@ -488,7 +496,7 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
     //Handle arm rotation
     //armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
-    armRotateRate = joy->axes[ARM_ROTATE];
+    armRotateRate = (joy->axes[ARM_ROTATE]*ARM_ROTATE_RATE);
     //armIncRate = top * 5;
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
     armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;

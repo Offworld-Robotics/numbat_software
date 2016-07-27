@@ -36,44 +36,14 @@ static inline double signFMod(double v, double mod) {
 
 //Condition: -PI/2 <= a <= PI/2, -PI/2 <= b <= PI/2
 static inline double calcShortestCircDelta(double a, double b) {
-    
-//     double ab = (a - b);
-//     
-//     //we want numbers to be in the range 
-// //     if(
-// //     if ( (ab + FLOATING_PT_ERROR) >= M_PI && fabs(ab) < (M_PI * 2)) {
-// //         ab = ((M_PI * 2) - ab);
-// //     } else if (ab < -M_PI && fabs(ab) < (M_PI * 2)) {
-// //         ab = ((M_PI * 2) + ab);
-// //     } else {
-// //         printf("error\n");
-// //     }
-//     double ba = (b - a);
-// //     if (ba > M_PI && fabs(ba) < (M_PI * 2)) {
-// //         ba = ((M_PI * 2) - ba);
-// //     } else if (ab < -M_PI && fabs(ab) < (M_PI * 2)) {
-// //         ba = ((M_PI * 2) + ba);
-// //     } else {
-// //         printf("error\n");
-// //     }
-    
-//     double ab = (a - b);
-//     ab = signFMod(ab + M_PI,(M_PI * 2)) - M_PI;
-//     double ba = (b - a);
-//     ba = signFMod(ba + M_PI,(M_PI * 2)) - M_PI;
-// //     printf("ab %f, ba %f\n", ab, ba);
-//     double result = 0;
-//     if(fabs(ba) >= fabs(ab)) {
-//         result  = ab;
-//     } else {
-//         result = ba;
-//     }
-//     return result;
-//     printf("a: %f b: %f\nf: %f\n",a ,b, b-a);
+    double angle = fmod((b-a), M_PI);
+    if(b < a) {
+       angle*=-1.0;
+    } 
     return b-a;
 }
 
-JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radiusIn, const double * gearRatioIn, int nGearsIn,int minPWMIn, int maxPWMIn, int maxRPMIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
+JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radiusIn, const double * gearRatioIn, int nGearsIn,int minPWMIn, int maxPWMIn, int maxRPMIn, double accuracy, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name), accuracy(accuracy) {
     radius = radiusIn;
     maxPWM = maxPWMIn;
     minPWM = minPWMIn;
@@ -122,15 +92,15 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     }
     
     //place the two angles in our range
-    futurePos = posRangeConvert(futurePos);
-    currentPos = posRangeConvert(currentPos);
+    //futurePos = posRangeConvert(futurePos);
+    //currentPos = posRangeConvert(currentPos);
     printf("future %f, current %f, update %f\n", futurePos, currentPos, updateFrequency);
     
     double deltaT = 1.0/updateFrequency;
     double aimPosDelta = calcShortestCircDelta(currentPos, futurePos);
     
     //escape if we are close enough
-    if(fabs(aimPosDelta) < (0.2)) {
+    if(fabs(aimPosDelta) < (accuracy)) {
         int pwm = deltaPWM/2 + minPWM; 
         printf("mid pwm %d, posDelta %f\n", pwm, aimPosDelta);
 //         nextPosGuess = currentPos;
@@ -273,6 +243,7 @@ jointInfo JointSpeedBasedPositionController::extrapolateStatus(ros::Time session
     info.velocity = aimVel; //TODO: extrapolate based on delta
     info.pwm = lastPWM;
     info.jointName = name;
+    info.targetPos = lastAimPosition;
     return info;
 }
     
