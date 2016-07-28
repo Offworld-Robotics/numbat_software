@@ -46,6 +46,13 @@ int JointVelocityController::velToPWM(double targetVel, double currentVel) {
 //     printf("nGears %d", nGears);
     
     
+    if(
+        (stopP && currentVel > currentVel) ||
+        (stopN && currentVel < currentVel)
+    ) {
+        ROS_ERROR("Stop");
+        return deltaPWM/2 + minPWM;
+    }
     //w=v/r
     double targetAngularVelocity = targetVel/wheelRadius;
     double currentAngularVelocity = currentVel/wheelRadius;
