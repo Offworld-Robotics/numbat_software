@@ -78,6 +78,13 @@ int LIDARTiltJointController::velToPWM(double requestedValue, double hz) {
         lastAngularVelocity  = (((lastPWM - LIDAR_HORIZ) * DEG_PER_PWM * (M_PI/180.0)) - requestedValue) * hz;
 	ROS_INFO("pwm %d requested %f", pwm, requestedValue);
     }
+    if(
+        (stopP && lastPWM > pwm) ||
+        (stopN && lastPWM < pwm)
+    ) {
+        ROS_ERROR("Stop");
+        return lastPWM;
+    }
     lastHz = hz;
     lastPWM = pwm;
 //     printf("pwm %d\n", pwm);

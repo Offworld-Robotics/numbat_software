@@ -84,6 +84,16 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
         return deltaPWM/2 + minPWM;
     }
     
+    //check for stops
+    if(
+        (stopP && currentPos > futurePos) ||
+        (stopN && currentPos < futurePos)
+    ) {
+        ROS_ERROR("Stop");
+        return deltaPWM/2 + minPWM;
+    }
+    
+    
     //check for invalid values
     if( std::fabs(futurePos) + FLOATING_PT_ERROR > (M_PI * 2)) {
         ROS_ERROR("angle %f radians is not a valid position. Positions should be btween %f and %f",futurePos,(M_PI * 2),-(M_PI * 2));
