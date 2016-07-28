@@ -45,11 +45,8 @@ int JointVelocityController::velToPWM(double targetVel, double currentVel) {
     printf("Vel target vel  %f, current vel %f\n", targetVel, currentVel);
 //     printf("nGears %d", nGears);
     
-    
-    if(
-        (stopP && currentVel > currentVel) ||
-        (stopN && currentVel < currentVel)
-    ) {
+    //currently we don't have acurate velocity input
+    if(stopP || stopN) {
         ROS_ERROR("Stop");
         return deltaPWM/2 + minPWM;
     }

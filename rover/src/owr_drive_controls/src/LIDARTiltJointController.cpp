@@ -83,7 +83,7 @@ int LIDARTiltJointController::velToPWM(double requestedValue, double hz) {
         (stopN && lastPWM < pwm)
     ) {
         ROS_ERROR("Stop");
-        return pwm;
+        return lastPWM;
     }
     lastHz = hz;
     lastPWM = pwm;
