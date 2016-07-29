@@ -21,6 +21,7 @@
 #include "JointSpeedBasedPositionController.hpp"
 #include "LIDARTiltJointController.hpp"
 #include "PotPositionTracker.hpp"
+#include "JointArmVelocityController.hpp"
 
 using namespace std; 
 
@@ -99,6 +100,7 @@ class BoardControl {
         LIDARTiltJointController lidar;
         PotPositionTracker frontLeftSwervePotMonitor, frontRightSwervePotMonitor, backLeftSwervePotMonitor, backRightSwervePotMonitor;
         PotPositionTracker armRotationBasePotMonitor;
+        JointArmVelocityController armUpperAct, armLowerAct;
         //TODO: add lidar, actuators here.
         
 };

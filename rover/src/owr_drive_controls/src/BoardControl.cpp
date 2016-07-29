@@ -153,6 +153,20 @@ BoardControl::BoardControl() :
         nh,
         "arm_base_rotation"
     ),
+    armUpperAct(
+        ARM_ACT_PWM_MIN, 
+        ARM_ACT_PWM_MAX, 
+        "/upper_arm_act_controller/command", 
+        nh, 
+        "upper_arm_act"
+    ),
+    armLowerAct(
+        ARM_ACT_PWM_MIN, 
+        ARM_ACT_PWM_MAX, 
+        "/lower_arm_act_controller/command", 
+        nh, 
+        "lower_arm_act"
+    ),
     lidar(
         STATIONARY,
         "/laser_tilt_joint_controller/command",
@@ -213,6 +227,9 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&frontRightSwerve);
     jMonitor.addJoint(&lidar);
     jMonitor.addJoint(&armBaseRotate);
+    jMonitor.addJoint(&armLowerAct);
+    jMonitor.addJoint(&armUpperAct);
+    
     
     //velocity setup
     currentVel.linear.x = std::numeric_limits<double >::quiet_NaN();
@@ -342,6 +359,7 @@ void BoardControl::run() {
             pwmFLS =  frontLeftSwerve.posToPWM(-frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
             pwmLIDAR = lidar.velToPWM();
             
+            
             //adjust the arm position
             armRotateAngle += armRotateRate;
             pwmArmRot = (armRotateRate * 500) + 1500;
@@ -349,8 +367,13 @@ void BoardControl::run() {
             //pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, 			 armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
             
             //for now do this for actuators
-            pwmArmTop = armTop;
-            pwmArmBottom = armBottom;
+            //pwmArmTop = armTop;
+            pwmArmTop = armUpperAct.velToPWM(armTop);
+            updatePos(s.armUpper);
+            
+            //pwmArmBottom = armBottom;
+            pwmArmBottom = armLowerAct.velToPWM(armBottom);
+            updatePos(s.armLower);
             
             //and keep everything else the same
             //pwmClawRotate = clawRotScale(clawRotate);
