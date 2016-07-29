@@ -369,11 +369,11 @@ void BoardControl::run() {
             //for now do this for actuators
             //pwmArmTop = armTop;
             pwmArmTop = armUpperAct.velToPWM(armTop);
-            updatePos(s.armUpper);
+            armUpperAct.updatePos(s.armUpper);
             
             //pwmArmBottom = armBottom;
             pwmArmBottom = armLowerAct.velToPWM(armBottom);
-            updatePos(s.armLower);
+            armLowerAct.updatePos(s.armLower);
             
             //and keep everything else the same
             //pwmClawRotate = clawRotScale(clawRotate);
