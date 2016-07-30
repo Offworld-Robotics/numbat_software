@@ -284,6 +284,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     stat.pot1 = resp.pot1;
     stat.pot2 = resp.pot2;
     stat.pot3 = resp.pot3;  
+    ROS_INFO("pot0 %f, pot1 %f, pot2 %f, pot3 %f", stat.pot0, stat.pot1, stat.pot2, stat.pot3);
     ROS_INFO("ARM POT. left: %d ******* right %d *****", resp.swerveLeft, resp.swerveRight);  
     ROS_INFO("BATTERY VOLTAGE %d -> %f #################", resp.vbat, stat.batteryVoltage);       
     ROS_INFO("Actual Pos: %d", resp.pot0);
