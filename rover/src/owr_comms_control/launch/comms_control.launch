@@ -1,0 +1,3 @@
+<launch>
+     <node pkg="owr_comms_control" type="comms_control.py" name="comms_control" output="screen"/>
+</launch>
