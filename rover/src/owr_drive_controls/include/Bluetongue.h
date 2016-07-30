@@ -67,6 +67,9 @@ struct status {
     double pot1;
     double pot2;
     double pot3;
+
+    double clawActual;
+    double clawEffort;
 };
     
 class Bluetongue {
