@@ -35,7 +35,7 @@ void JointArmVelocityController :: updatePos(int positionIn){
     
     if( (lastPos < temp) && stopP){
         // do nothing, we dont want to increase
-    else if( (lastPos > temp) && stopN){
+    } else if( (lastPos > temp) && stopN){
         // do nothing, we dont want to increase
     } else {
         lastPos = temp;
