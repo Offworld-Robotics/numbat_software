@@ -481,6 +481,10 @@ void BoardControl::publishADC(status s) {
    adcMsg.potFrame.push_back("pot2");
    adcMsg.pot.push_back(s.pot3);
    adcMsg.potFrame.push_back("pot3");
+   adcMsg.pot.push_back(s.armLower);
+   adcMsg.potFrame.push_back("armLower");
+   adcMsg.pot.push_back(s.armUpper);
+   adcMsg.potFrame.push_back("armUpper");
    adcMsg.header.stamp = ros::Time::now();
    adcMsg.header.seq = (++adcMsgSeq);
    adcStatusPublisher.publish<owr_messages::adc>(adcMsg);

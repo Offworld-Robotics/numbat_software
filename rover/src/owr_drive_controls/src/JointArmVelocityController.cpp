@@ -33,7 +33,11 @@ void JointArmVelocityController :: updatePos(int positionIn){
     
     temp = ( temp * (maxPosition - minPosition) ) + minPosition;
     
-    lastPos = temp;
+    if( (lastPos < temp) && stopP)
+        // do nothing, we dont want to increase
+    } else {
+        lastPos = temp;
+    }
 }
 
 jointInfo JointArmVelocityController::extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime){
