@@ -11,9 +11,13 @@
 #include <ros/ros.h>
 
 
-JointArmVelocityController :: JointArmVelocityController(int minPWMIn, int maxPWMIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
+JointArmVelocityController :: JointArmVelocityController(double minADCIn, double maxADCIn, double minPos, double maxPos, int minPWMIn, int maxPWMIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
         minPWM = minPWMIn;
         maxPWM = maxPWMIn;
+        minADC = minADCIn;
+        maxADC = maxADCIn;
+        minPosition = minPos;
+        maxPosition = maxPos;
         lastPWM = minPWMIn + ( (maxPWMIn - minPWMIn)/2 ); // Initialise lastPWM to be stationary.
 }
 
@@ -22,8 +26,14 @@ int JointArmVelocityController :: velToPWM(int futureVel){
     return futureVel;
 }
 
+// Y = (X-A)/(B-A) * (D-C) + C
 void JointArmVelocityController :: updatePos(int positionIn){
-    lastPos = positionIn;
+    
+    double temp = (positionIn - minADC)/(maxADC - minADC);
+    
+    temp = ( temp * (maxPosition - minPosition) ) + minPosition;
+    
+    lastPos = temp;
 }
 
 jointInfo JointArmVelocityController::extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime){

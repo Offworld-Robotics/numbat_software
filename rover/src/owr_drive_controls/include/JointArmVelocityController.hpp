@@ -9,13 +9,17 @@
 
 class JointArmVelocityController : public JointController {
     public:
-        JointArmVelocityController(int minPWM, int maxPWM, char * topic, ros::NodeHandle nh, std::string name);
+        JointArmVelocityController(double minADCIn, double maxADCIn, double minPos, double maxPos ,int minPWM, int maxPWM, char * topic, ros::NodeHandle nh, std::string name);
         int velToPWM(int futureVel);
         void updatePos(int positionIn);
         virtual jointInfo extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime);
     private:
         
+        double minPosition, maxPosition
+        
         int minPWM, maxPWM;
         
-        int lastPos, lastPWM;
+        double minADC, double maxADC, 
+        
+        double lastPos, lastPWM;
 };

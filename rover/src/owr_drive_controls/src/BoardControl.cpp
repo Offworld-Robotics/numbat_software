@@ -154,6 +154,10 @@ BoardControl::BoardControl() :
         "arm_base_rotation"
     ),
     armUpperAct(
+        UPPER_MIN_ADC,
+        UPPER_MAX_ADC,
+        UPPER_MIN_POS,
+        UPPER_MAX_POS,
         ARM_ACT_PWM_MIN, 
         ARM_ACT_PWM_MAX, 
         "/upper_arm_act_controller/command", 
@@ -161,6 +165,10 @@ BoardControl::BoardControl() :
         "upper_arm_act"
     ),
     armLowerAct(
+        LOWER_MIN_ADC,
+        LOWER_MAX_ADC,
+        LOWER_MIN_POS,
+        LOWER_MAX_POS,
         ARM_ACT_PWM_MIN, 
         ARM_ACT_PWM_MAX, 
         "/lower_arm_act_controller/command", 

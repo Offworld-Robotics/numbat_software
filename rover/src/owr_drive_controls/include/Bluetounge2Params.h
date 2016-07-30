@@ -55,15 +55,15 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 
 // Placeholders, not currently used
 // These [MIN, MAX] are not limits, but are instead used for mapping ADC reading to length measurement.
-#define LOWER_MIN_POS 7
-#define LOWER_MAX_POS 22
-#define LOWER_MIN_PWM 3640
-#define LOWER_MAX_PWM 1457
+#define LOWER_MIN_POS 0.07
+#define LOWER_MAX_POS 0.22
+#define LOWER_MIN_ADC 3640
+#define LOWER_MAX_ADC 1457
 
-#define UPPER_MIN_POS 4
-#define UPPER_MAX_POS 16
-#define UPPER_MIN_PWM 610
-#define UPPER_MAX_PWM 2804
+#define UPPER_MIN_POS 0.04
+#define UPPER_MAX_POS 0.16
+#define UPPER_MIN_ADC 610
+#define UPPER_MAX_ADC 2804
 
 
 #endif //BLUETOUNGE_2_PARAMS_H
