@@ -15,11 +15,11 @@ class JointArmVelocityController : public JointController {
         virtual jointInfo extrapolateStatus(ros::Time sessionStart, ros::Time extrapolationTime);
     private:
         
-        double minPosition, maxPosition
+        double minPosition, maxPosition;
         
         int minPWM, maxPWM;
         
-        double minADC, double maxADC, 
+        double minADC, maxADC;
         
         double lastPos, lastPWM;
 };
