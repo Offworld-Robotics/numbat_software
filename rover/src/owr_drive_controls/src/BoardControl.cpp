@@ -370,7 +370,7 @@ void BoardControl::run() {
             } else { //STOP
             	pwmClawRotate = 1500;
             }
-            pwmClawGrip   = clawRotScale(clawGrip);
+            pwmClawGrip   = clawGripScale(clawGrip);
             pwmCamBRot    = cameraRotScale(cameraBottomRotate);
             pwmCamBTilt   = cameraRotScale(cameraBottomTilt);
             pwmCamTRot    = cameraRotScale(cameraTopRotate);
