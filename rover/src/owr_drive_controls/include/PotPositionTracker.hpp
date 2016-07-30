@@ -12,6 +12,10 @@ class PotPositionTracker : public PositionTracker {
         PotPositionTracker(float negLimit, float posLimit, float singleRotationRange, int turns, float center);
         void updatePos(double potValue);
         void updatePos(double potValue, ros::Time current);
+        
+        double getMinAngle();
+        double getMaxAngle();
+        
         virtual void resetPos();
     private:
         const std::vector< double > gears;

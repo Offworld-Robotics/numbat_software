@@ -280,15 +280,12 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     // ADC data:
     stat.swerveLeft = resp.swerveLeft;
     stat.swerveRight = resp.swerveRight;
-    
-    stat.armUpper = resp.armUpper;
-    stat.armLower = resp.armLower;
-    
     stat.pot0 = resp.pot0;
     stat.pot1 = resp.pot1;
     stat.pot2 = resp.pot2;
-    stat.pot3 = resp.pot3;
-    ROS_INFO("ARM POT. upper: %d ******* lower %d *****", resp.armUpper, resp.armLower);  
+    stat.pot3 = resp.pot3;  
+    ROS_INFO("pot0 %f, pot1 %f, pot2 %f, pot3 %f", stat.pot0, stat.pot1, stat.pot2, stat.pot3);
+    ROS_INFO("ARM POT. left: %d ******* right %d *****", resp.swerveLeft, resp.swerveRight);  
     ROS_INFO("BATTERY VOLTAGE %d -> %f #################", resp.vbat, stat.batteryVoltage);       
 //     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
 //     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing

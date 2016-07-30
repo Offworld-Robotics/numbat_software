@@ -32,23 +32,25 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
  * NOTE: The pot is a 10 turn pot, this data limits it to one turn
  */
 
-#define SWERVE_POT_R_CENTER 2100.0
-#define SWERVE_POT_L_CENTER 2032.0
-#define SWERVE_POT_L_LIMIT_N_DEG 1932.0
-#define SWERVE_POT_L_LIMIT_P_DEG 2131.0
+#define SWERVE_POT_R_CENTER 2069.0//1961.0 //2088.0 
+#define SWERVE_POT_L_CENTER 2015.0 //2032.0
+#define SWERVE_POT_L_LIMIT_N_DEG 1890.0 //1932.0 
+#define SWERVE_POT_L_LIMIT_P_DEG 2136.0 //2131.0 
 #define SWERVE_POT_L_REVOLUTION 400
 #define SWERVE_POT_TURNS 1
-#define SWERVE_POT_R_LIMIT_N_DEG 2000.0
-#define SWERVE_POT_R_LIMIT_P_DEG 2200.0
+#define SWERVE_POT_R_LIMIT_N_DEG 1958.0 //1988.0
+#define SWERVE_POT_R_LIMIT_P_DEG 2188.0
 #define SWERVE_POT_R_REVOLUTION 400
+#define SWERVE_ACCURACY 0.2
 
 
-//TODO: put values here
-#define ARM_POT_CENTER 0
-#define ARM_POT_LIMIT_N_DEG 0
-#define ARM_POT_LIMIT_P_DEG 0
-#define ARM_POT_REVOLUTION 0
-#define ARM_POT_TURNS 0
+// Nuno and Denis did these lololololol!
+#define ARM_POT_CENTER 1963
+#define ARM_POT_LIMIT_N_DEG 1160
+#define ARM_POT_LIMIT_P_DEG 2783
+#define ARM_POT_REVOLUTION 820
+#define ARM_POT_TURNS 22 
+#define ARM_ACCURACY 0.3
 
 #define ARM_ACT_PWM_MIN 1000
 #define ARM_ACT_PWM_MAX 2000
