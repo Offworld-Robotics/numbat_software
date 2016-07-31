@@ -26,7 +26,7 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 #define ARM_BASE_ROTATE_MOTOR_RPM (26*455) 
 #define ARM_BASE_ROTATE_RADIUS 0.01 //TODO: get this
 #define ARM_INCE_RATE_MULTIPLIER 0.05
-#define ARM_ROTATE_RATE 0.02
+#define ARM_ROTATE_RATE 0.01
 
 
 /*
@@ -51,7 +51,7 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 #define ARM_POT_LIMIT_P_DEG 2783
 #define ARM_POT_REVOLUTION 820
 #define ARM_POT_TURNS 22 
-#define ARM_ACCURACY 0.2
+#define ARM_ACCURACY 0.0
 
 #define ARM_ACT_PWM_MIN 1000
 #define ARM_ACT_PWM_MAX 2000
