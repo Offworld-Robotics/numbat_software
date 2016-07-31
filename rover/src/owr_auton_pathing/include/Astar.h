@@ -82,8 +82,9 @@ class Astar {
         ros::NodeHandle node;         // ros::NodeHandle nh;
         ros::Subscriber aStarSubscriber;
         ros::Subscriber goalSubscriber;
+        ros::Subscriber goSubscriber;
         
-        tf::TransformListener tfListener;
+        //tf::TransformListener tfListener;
         tf::StampedTransform transform;
         
         //nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
@@ -101,9 +102,12 @@ class Astar {
         point start;
         point currentPos;
         
+        // do I go or no?
+        bool go;
+        
         void aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
         void setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint);
-        void setStartCallback(const geometry_msgs::Transform::ConstPtr& theTF);
+        void setGoCallback(const bool& goOrNo);
         
         void findPath();                          // main loop
         

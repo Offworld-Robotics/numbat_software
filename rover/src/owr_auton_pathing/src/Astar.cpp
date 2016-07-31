@@ -20,55 +20,63 @@ Astar::Astar(const std::string topic) {
     // check topic names!
     aStarSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::aStarCallback, this);
     pathPublisher = node.advertise<nav_msgs::Path>(topic, 2, true);
-    //goalSubscriber = node.subscribe<geometry_msgs>("goal", 2, &Astar::setGoalCallback, this);
     
+    goalSubscriber = node.subscribe<geometry_msgs::Point>("goal", 2, &Astar::setGoalCallback, this);
+    //goSubscriber = node.subscribe<bool>("go", 2, &Astar::setGoCallback, this);
 }
 
 void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
-    goal.isGoal = true;
-    goal.x = 2206;
-    goal.y = 2060;
+    // if it's a nogo, don't go!
+    if (go == true) {
     
-    tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
-    ROS_INFO("tf = (%f, %f)\n", transform.getOrigin().getX(), transform.getOrigin().getY());
-    
-    start.isStart = true;
-    start.x = 2024;
-    start.y = 2024;
-    
-    if (!goal.isGoal) {
-        ROS_ERROR("Can't find goal!");
-        return;
+        goal.isGoal = true;
+        goal.x = 2206;
+        goal.y = 2060;
+        
+        //tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
+        
+        ROS_INFO("tf = (%f, %f)\n", transform.getOrigin().getX(), transform.getOrigin().getY());
+        
+        start.isStart = true;
+        start.x = 2024;
+        start.y = 2024;
+        
+        if (!goal.isGoal) {
+            ROS_ERROR("Can't find goal!");
+            return;
+        }
+        if (!start.isStart) {
+            ROS_ERROR("Can't find start!");
+            return;
+        }
+        
+        // interpret data and put it in the occupancyGrid
+        //makeGrid((int8_t*)gridData->data.data(), gridData->info);
+        //nav_msgs::OccupancyGrid testData;
+        
+        makeGrid((int8_t*)gridData->data.data(), gridData->info);
+        
+        findPath();         // do aStar algorithm, get the path
+        //printGrid();
+        // idk
+        finalPath.header = gridData->header;
+        finalPath.header.stamp = ros::Time::now();
+        convertPath();      //convert aStarPath to the path output we need
+        
+        //std::cout << "occupancyGrid width = " << occupancyGrid.size() << std::endl;
+        //std::cout << "occupancyGrid height = " << occupancyGrid[0].size() << std::endl;
+        //std::cout << "start = (" << start.x << ", " << start.y << ") = " << (int)occupancyGrid[start.x][start.y] << std::endl;
+        //std::cout << "goal = (" << goal.x << ", " << goal.y << ") = " << (int)occupancyGrid[goal.x][goal.y] << std::endl;
+        //std::cout << "(2020, 2024) = " << (int)occupancyGrid[2020][2024] << std::endl;
+        
+        clearPaths();
+        
+        // no idea how to publish a path lelele?
+        pathPublisher.publish(finalPath);
+        
     }
-    if (!start.isStart) {
-        ROS_ERROR("Can't find start!");
-        return;
-    }
     
-    // interpret data and put it in the occupancyGrid
-    //makeGrid((int8_t*)gridData->data.data(), gridData->info);
-    //nav_msgs::OccupancyGrid testData;
-    
-    makeGrid((int8_t*)gridData->data.data(), gridData->info);
-    
-    findPath();         // do aStar algorithm, get the path
-    //printGrid();
-    // idk
-    finalPath.header = gridData->header;
-    finalPath.header.stamp = ros::Time::now();
-    convertPath();      //convert aStarPath to the path output we need
-    
-    //std::cout << "occupancyGrid width = " << occupancyGrid.size() << std::endl;
-    //std::cout << "occupancyGrid height = " << occupancyGrid[0].size() << std::endl;
-    //std::cout << "start = (" << start.x << ", " << start.y << ") = " << (int)occupancyGrid[start.x][start.y] << std::endl;
-    //std::cout << "goal = (" << goal.x << ", " << goal.y << ") = " << (int)occupancyGrid[goal.x][goal.y] << std::endl;
-    //std::cout << "(2020, 2024) = " << (int)occupancyGrid[2020][2024] << std::endl;
-    
-    clearPaths();
-    
-    // no idea how to publish a path lelele?
-    pathPublisher.publish(finalPath);
 }
 
 void Astar::setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint) {
@@ -79,14 +87,17 @@ void Astar::setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint) {
     goal.y = 5;
     //-------------------------
     
+    //goal.x = thePoint->x;
+    //goal.y = thePoint->y;
+    
 }
 
-void Astar::setStartCallback(const geometry_msgs::Transform::ConstPtr& theTF) {
-    // ---------- test only
-    start.isStart = true;
-    start.x = 0;
-    start.y = 0;
-    // ----------------
+void Astar::setGoCallback(const bool& goOrNo) {
+    
+    //-------- test data ------
+    go = true;
+    //go = goOrNo;
+    
 }
 
 //ros's main loop thing?
