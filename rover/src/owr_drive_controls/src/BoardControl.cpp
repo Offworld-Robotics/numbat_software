@@ -256,6 +256,11 @@ BoardControl::BoardControl() :
 int clawRotScale(int raw) {
     return ((float)raw/(float)CLAW_ROTATION_MAX)*1000.0 + 1000;
 }
+
+int reverseClawRotScale(int actual) {
+    return (actual - 1000)*CLAW_ROTATION_MAX/1000.0; 
+}
+
 int cameraRotScale(int raw) {
     return ((float)raw/(float)CAMERA_ROTATION_MAX)*1000.0 + 1000;
 }
@@ -280,6 +285,7 @@ void capf(float *a, float low, float high) {
 
 void BoardControl::run() {
     std::string board;
+    bool firstRun = true;
     nh.param<std::string>("board_tty", board, TTY);
     ROS_INFO("connecting to board on %s", board.c_str());
     Bluetongue* steve = new Bluetongue(board.c_str());
@@ -372,6 +378,11 @@ void BoardControl::run() {
             frontRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
             armRotationBasePotMonitor.updatePos(s.pot0, lastUpdate);
             
+            if(firstRun) {
+	        armRotateAngle = armRotationBasePotMonitor.getPosition();
+                clawGrip = reverseClawRotScale(s.clawActual);
+                firstRun = false;
+            }
             //do joint calculations
             swerveMotorVels swerveState = doVelTranslation(&(currentVel));
             pwmFLW = frontLeftWheel.velToPWM(swerveState.frontLeftMotorV);
@@ -424,6 +435,7 @@ void BoardControl::run() {
         ROS_ERROR("Lost usb connection to Bluetongue");
         ROS_ERROR("Trying to reconnect every %d ms", RECONNECT_DELAY);
         bool success = false;
+        firstRun = true;
         while (ros::ok() && !success) {
             usleep(RECONNECT_DELAY * 1000);
             success = steve->reconnect();
