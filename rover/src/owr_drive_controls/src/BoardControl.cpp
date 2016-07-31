@@ -347,7 +347,7 @@ void BoardControl::run() {
             } else if (clawState  == CLOSE) {
                 clawGrip -=  2;
             }
-            cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
+            //cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr;
@@ -488,6 +488,8 @@ void BoardControl::publishADC(status s) {
    adcMsg.potFrame.push_back("clawActual");
    adcMsg.pot.push_back(s.clawEffort);
    adcMsg.potFrame.push_back("clawEffort");
+   adcMsg.pot.push_back(clawRotScale(clawGrip));
+   adcMsg.potFrame.push_back("clawGrip");
    adcMsg.header.stamp = ros::Time::now();
    adcMsg.header.seq = (++adcMsgSeq);
    adcStatusPublisher.publish<owr_messages::adc>(adcMsg);
