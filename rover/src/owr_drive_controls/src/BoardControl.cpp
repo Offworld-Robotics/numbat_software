@@ -25,7 +25,6 @@
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
 
-#define ARM_ROTATE_RATE 0.04
 
 #define CLAW_ROTATION_MID 45
 #define CLAW_ROTATION_MAX 90

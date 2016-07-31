@@ -21,11 +21,12 @@ const double SWERVE_GEARS[] = {1.0/455.0, -1.0/4.75};
 const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid values here
 // const std::vector < double > ARM_BASE_GEARS_VECTOR {0.1};
 #define ARM_BASE_ROTATE_N_GEARS 2
-#define ARM_BASE_ROTATE_MOTOR_MAX_PWM 2000
-#define ARM_BASE_ROTATE_MOTOR_MIN_PWM 1000
+#define ARM_BASE_ROTATE_MOTOR_MAX_PWM 1800
+#define ARM_BASE_ROTATE_MOTOR_MIN_PWM 1200
 #define ARM_BASE_ROTATE_MOTOR_RPM (26*455) 
 #define ARM_BASE_ROTATE_RADIUS 0.01 //TODO: get this
-#define ARM_INCE_RATE_MULTIPLIER 0.1
+#define ARM_INCE_RATE_MULTIPLIER 0.05
+#define ARM_ROTATE_RATE 0.02
 
 
 /*
@@ -50,7 +51,7 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 #define ARM_POT_LIMIT_P_DEG 2783
 #define ARM_POT_REVOLUTION 820
 #define ARM_POT_TURNS 22 
-#define ARM_ACCURACY 0.3
+#define ARM_ACCURACY 0.2
 
 #define ARM_ACT_PWM_MIN 1000
 #define ARM_ACT_PWM_MAX 2000
