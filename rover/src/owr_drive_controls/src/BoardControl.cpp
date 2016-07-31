@@ -161,6 +161,28 @@ BoardControl::BoardControl() :
         nh,
         "arm_base_rotation"
     ),
+    armUpperAct(
+        UPPER_MIN_ADC,
+        UPPER_MAX_ADC,
+        UPPER_MIN_POS,
+        UPPER_MAX_POS,
+        ARM_ACT_PWM_MIN, 
+        ARM_ACT_PWM_MAX, 
+        "/upper_arm_act_controller/command", 
+        nh, 
+        "upper_arm_act"
+    ),
+    armLowerAct(
+        LOWER_MIN_ADC,
+        LOWER_MAX_ADC,
+        LOWER_MIN_POS,
+        LOWER_MAX_POS,
+        ARM_ACT_PWM_MIN, 
+        ARM_ACT_PWM_MAX, 
+        "/lower_arm_act_controller/command", 
+        nh, 
+        "lower_arm_act"
+    ),
     lidar(
         STATIONARY,
         "/laser_tilt_joint_controller/command",
@@ -221,6 +243,9 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&frontRightSwerve);
     jMonitor.addJoint(&lidar);
     jMonitor.addJoint(&armBaseRotate);
+    jMonitor.addJoint(&armLowerAct);
+    jMonitor.addJoint(&armUpperAct);
+    
     
     armRotateAngle = 0.0;
     
@@ -322,7 +347,7 @@ void BoardControl::run() {
             } else if (clawState  == CLOSE) {
                 clawGrip -=  2;
             }
-            //cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
+            cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr;
@@ -366,8 +391,13 @@ void BoardControl::run() {
             ROS_INFO("Arm Rotate %d", pwmArmRot);
             
             //for now do this for actuators
-            pwmArmTop = armTop;
-            pwmArmBottom = armBottom;
+            //pwmArmTop = armTop;
+            pwmArmTop = armUpperAct.velToPWM(armTop);
+            armUpperAct.updatePos(s.armUpper);
+            
+            //pwmArmBottom = armBottom;
+            pwmArmBottom = armLowerAct.velToPWM(armBottom);
+            armLowerAct.updatePos(s.armLower);
             
             //and keep everything else the same
             //pwmClawRotate = clawRotScale(clawRotate);
@@ -450,6 +480,10 @@ void BoardControl::publishADC(status s) {
    adcMsg.potFrame.push_back("pot2");
    adcMsg.pot.push_back(s.pot3);
    adcMsg.potFrame.push_back("pot3");
+   adcMsg.pot.push_back(s.armLower);
+   adcMsg.potFrame.push_back("armLower");
+   adcMsg.pot.push_back(s.armUpper);
+   adcMsg.potFrame.push_back("armUpper");
    adcMsg.pot.push_back(s.clawActual);
    adcMsg.potFrame.push_back("clawActual");
    adcMsg.pot.push_back(s.clawEffort);

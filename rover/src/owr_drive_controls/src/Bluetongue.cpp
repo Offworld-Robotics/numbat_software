@@ -65,7 +65,7 @@ struct toNUCMsg {
     uint16_t pot3;
     
     uint16_t armLower;
-    uint16_t armHigher;
+    uint16_t armUpper;
     
     uint16_t clawEffort;
     uint16_t clawActual;   
