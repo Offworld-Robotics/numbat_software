@@ -53,43 +53,6 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         //crop the image
         cv::Rect rect(50,100,490, 300);
         img = img(rect);
-        /*cv::imshow("o
-         * urig", img);
-        cv::waitKey();
-        cv::Mat cannyImg, colourImg, noBlue, noGreen;
-        //cv::blur( img, img, cv::Size(3,3) );
-	cv::MatIterator_<cv::Vec3b> it, end;
-        for(it = img.begin<cv::Vec3b>(), end = img.end<cv::Vec3b>(); it != end; ++it) {
-            if(((int)(*it)[0] + 20) > (*it)[2]   && ((int)(*it)[1]+20) > (*it)[2]) {
-                for(int i = 0; i < img.channels(); ++i) {
-                    (*it)[i] = 0;
-                }
-            }
-        }
-        cv::imshow("colourMask", img);
-        cv::Mat channels[3];
-        cv::split(img,channels);
-        cv::imshow("red", channels[2]);
- 
-        cv::Canny(channels[2], cannyImg, 75, 200, 3);
-        ROS_INFO("b");
-        cv::cvtColor(cannyImg, colourImg, CV_GRAY2BGR);
-	cv::imshow("canny", cannyImg);
-        
-        //convert the lines
-        std::vector<cv::Vec4i> lines;
-        HoughLinesP(cannyImg, lines, RESOLUTION_PX, RESOLUTION_DEG, MIN_THRESHOLD, MIN_LINE_LENGTH, MAX_LINE_GAP);
-        
-        #ifdef DEBUG
-        //draw all the lines and display
-        for( size_t i = 0; i < lines.size(); i++ ) {
-            cv::Vec4i l = lines[i];
-            cv::line( colourImg, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 3, CV_AA);
-        }
-        
-        cv::imshow("lines", colourImg);
-        cv::waitKey();
-        #endif*/
         //source: http://stackoverflow.com/questions/35866411/opencv-how-to-detect-lines-of-a-specific-colour
 
         cv::Mat hsvImg;
@@ -167,6 +130,8 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
       tf::Quaternion quat(roll, pitch,0);
       imuMsg.orientation.x = quat.x();
       imuMsg.orientation.y = quat.y();
+      imuMsg.orientation.z = quat.z();
+      imuMsg.orientation.w = quat.w();
       imuPub.publish(imuMsg);
       cv::waitKey();
 
