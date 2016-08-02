@@ -21,7 +21,11 @@
 #define MAX_LINE_GAP 12
 #define BG_INTENSITY_THRESHOLD 150
 
+#define COVARIANCE_SIZE 9
+
 #define DEBUG
+
+static inline void zeroCovariances(sensor_msgs::Imu & imu);
 
 int main(int argc, char ** argv) {
     
@@ -56,29 +60,32 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         //source: http://stackoverflow.com/questions/35866411/opencv-how-to-detect-lines-of-a-specific-colour
 
         cv::Mat hsvImg;
-        cv::cvtColor(img, hsvImg, CV_BGR2HSV);        
+        cv::cvtColor(img, hsvImg, CV_BGR2HSV); 
+#ifdef DEBUG
         cv::imshow("hsv", hsvImg);
+#endif
         
         //split the hsv channels
         cv::Mat channels[3];
         cv::split(hsvImg, channels);
 
        //red is painfull because it is in the end of the hsv colour circle
-       const int hueValue = 0;
-       const int hueRange = 15;
+       const int HUE_VALUE = 0;
+       const int HUE_RANGE = 15;
        
        const int MIN_SATURATION = 70;
        const int MIN_VALUE  = 100;
        
        //check if the colour is in the lower hue range
        cv::Mat hueMask;
-       cv::inRange(channels[0], hueValue - hueRange, hueValue + hueRange, hueMask);
+       cv::inRange(channels[0], HUE_VALUE - HUE_RANGE, HUE_VALUE + HUE_RANGE, hueMask);
        
        //we need to check the other side to because red
-       if(hueValue - hueRange < 0 || hueValue + hueRange > 180) {
+       //if statement for readability only, will always run
+       if(HUE_VALUE - HUE_RANGE < 0 || HUE_VALUE + HUE_RANGE > 180) {
            cv::Mat hueMaskUpper;
-           int upperHueValue = hueValue + 180;
-           cv::inRange(channels[0], upperHueValue - hueRange, upperHueValue + hueRange, hueMaskUpper);
+           const int UPPER_HUE_VALUE = HUE_VALUE + 180;
+           cv::inRange(channels[0], UPPER_HUE_VALUE - HUE_RANGE, UPPER_HUE_VALUE + HUE_RANGE, hueMaskUpper);
 
            //bitwise or the masks
            hueMask = hueMask | hueMaskUpper;
@@ -90,7 +97,9 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
 
       //apply a mask to filter
       hueMask = (hueMask & satMask) & valueMask;
+#ifdef DEBUG
       cv::imshow("red colour", hueMask);
+#endif
       
 
       //apply a Canny filter so we get edges of lines
@@ -102,7 +111,7 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
       std::vector<cv::Vec4i> lines;
       HoughLinesP(cannyImg, lines, RESOLUTION_PX, RESOLUTION_DEG, MIN_THRESHOLD, MIN_LINE_LENGTH, MAX_LINE_GAP);
         
-        #ifdef DEBUG
+#ifdef DEBUG
         //draw all the lines and display
         for( size_t i = 0; i < lines.size(); i++ ) {
             cv::Vec4i l = lines[i];
@@ -110,7 +119,7 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         }
         
         cv::imshow("lines", img);
-        #endif
+#endif
       //calculate the gradients of the lines
       std::vector<double> gradients;
       for(size_t i =0; i < lines.size(); i++) {
@@ -133,15 +142,28 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
       imuMsg.orientation.z = quat.z();
       imuMsg.orientation.w = quat.w();
       imuPub.publish(imuMsg);
+#ifdef DEBUG
       cv::waitKey();
+#endif
 
     } catch (cv_bridge::Exception & e) {
         ROS_ERROR("cv_bridge exception: %s", e.what());
         return;
     } catch(cv::Exception & e) {
         
-        ROS_ERROR("cv_bridge exception: %s", e.what());
+        ROS_ERROR("cv exception: %s", e.what());
         return;
     }
 }
+
+
+static inline void zeroCovariances(sensor_msgs::Imu & imu) {
+    for(int i = 0; i < COVARIANCE_SIZE; ++i) {
+        imu.angular_velocity_covariance[i] = -1;
+        imu.linear_acceleration_covariance[i] = -1;
+    }
+
+}
+
+
 
