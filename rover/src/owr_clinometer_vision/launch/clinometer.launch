@@ -1,0 +1,7 @@
+<launch>
+	<node pkg="gscam" type="gscam" name="clinocam" output="screen">
+		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/clinocam ! video/x-raw-rgb,framerate=30/1,width=320,height=240 !ffmpegcolorspace"/>
+		<remap from="/camera/image_raw" to="/clinometer_cam/image_raw"/>
+	</node>
+	<node pkg="owr_clinometer_vision" type="clinometer_node" name="clinometer_node" output="screen"/>
+</launch>

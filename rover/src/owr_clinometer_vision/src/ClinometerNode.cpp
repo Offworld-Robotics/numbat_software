@@ -17,6 +17,7 @@
 #define MIN_THRESHOLD 50
 #define MIN_LINE_LENGTH 50
 #define MAX_LINE_GAP 10
+#define BG_INTENSITY_THRESHOLD 150
 
 #define DEBUG
 
@@ -25,7 +26,7 @@ int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_clinometer_vision");
     ClinometerNode cn;
     
-#ifdef DEBUG
+#ifdef DEBUG_TEST
     cv_bridge::CvImage cv_image;
     cv_image.image = cv::imread("/home/hjed/Bluesat/owr_software/rover/src/owr_clinometer_vision/617G1jejJIL._SL1500_.jpg",CV_LOAD_IMAGE_COLOR);
     cv_image.encoding = "bgr8";
@@ -39,7 +40,7 @@ int main(int argc, char ** argv) {
 }
 
 ClinometerNode::ClinometerNode() : nh(), imgTransport(nh) {
-    camSub = imgTransport.subscribe("/clinometer_cam", 1, &ClinometerNode::imageCallback, this);
+    camSub = imgTransport.subscribe("/clinometer_cam/image_raw", 1, &ClinometerNode::imageCallback, this);
     imuPub = nh.advertise<sensor_msgs::Imu>("/owr/sensors/clinometer", 2, true);
 }
 
@@ -51,10 +52,25 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         ROS_INFO("a");
         cv::imshow("orig", img);
         cv::waitKey();
-        cv::Mat cannyImg, greyImg;
-        cv::Canny(img, cannyImg, 50, 200, 3);
+        cv::Mat cannyImg, colourImg, noBlue, noGreen;
+        //cv::blur( img, img, cv::Size(3,3) );
+	cv::MatIterator_<cv::Vec3b> it, end;
+        for(it = img.begin<cv::Vec3b>(), end = img.end<cv::Vec3b>(); it != end; ++it) {
+            if(((int)(*it)[0] + 20) > (*it)[2]   && ((int)(*it)[1]+20) > (*it)[2]) {
+                for(int i = 0; i < img.channels(); ++i) {
+                    (*it)[i] = 0;
+                }
+            }
+        }
+        cv::imshow("colourMask", img);
+        cv::Mat channels[3];
+        cv::split(img,channels);
+        cv::imshow("red", channels[2]);
+ 
+        cv::Canny(channels[2], cannyImg, 75, 200, 3);
         ROS_INFO("b");
-        cv::cvtColor(cannyImg, greyImg, CV_GRAY2BGR);
+        cv::cvtColor(cannyImg, colourImg, CV_GRAY2BGR);
+	cv::imshow("canny", cannyImg);
         
         //convert the lines
         std::vector<cv::Vec4i> lines;
@@ -64,10 +80,10 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         //draw all the lines and display
         for( size_t i = 0; i < lines.size(); i++ ) {
             cv::Vec4i l = lines[i];
-            cv::line( greyImg, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 3, CV_AA);
+            cv::line( colourImg, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 3, CV_AA);
         }
         
-        cv::imshow("lines", greyImg);
+        cv::imshow("lines", colourImg);
         cv::waitKey();
         #endif
     } catch (cv_bridge::Exception & e) {
