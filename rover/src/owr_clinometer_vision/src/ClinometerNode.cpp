@@ -16,8 +16,8 @@
 #define DEG_1 (CV_PI/180.0)
 #define RESOLUTION_DEG DEG_1
 
-#define MIN_THRESHOLD 50
-#define MIN_LINE_LENGTH 45
+#define MIN_THRESHOLD 40 
+#define MIN_LINE_LENGTH 20 
 #define MAX_LINE_GAP 15
 #define BG_INTENSITY_THRESHOLD 150
 
@@ -26,6 +26,7 @@
 #define DEBUG
 
 static inline void zeroCovariances(sensor_msgs::Imu & imu);
+static double doLineDetection(cv::Mat img);
 
 int main(int argc, char ** argv) {
 
@@ -71,10 +72,10 @@ cv_bridge::CvImagePtr cv_ptr;
 
         //red is painfull because it is in the end of the hsv colour circle
         const int HUE_VALUE = 0;
-        const int HUE_RANGE = 15;
+        const int HUE_RANGE = 12;
         
-        const int MIN_SATURATION = 70;
-         const int MIN_VALUE  = 100;
+        const int MIN_SATURATION = 60;
+        const int MIN_VALUE  = 100;
         
         //check if the colour is in the lower hue range
         cv::Mat hueMask;
@@ -100,53 +101,35 @@ cv_bridge::CvImagePtr cv_ptr;
     #ifdef DEBUG
         cv::imshow("red colour", hueMask);
     #endif
-        
+        //denoising
+        cv::medianBlur(hueMask,hueMask,5);
+#ifdef DEBUG
+        cv::imshow("denoise", hueMask);
+#endif
+        //gradient
+        cv::Mat rollImg, pitchImg;
+        rollImg = hueMask.clone();
+        pitchImg = hueMask.clone();
+        ROS_INFO("x %d, y %d", rollImg.size().width, rollImg.size().height);
+        const cv::Rect rollRect(0, 80 , 150,80 );
+        double roll  = doLineDetection(rollImg(rollRect));
+        const cv::Rect pitchRect(170, 80 , 150,80 );
+        double pitch = doLineDetection(pitchImg(pitchRect)); 
 
-        //apply a Canny filter so we get edges of lines
-        cv::Mat cannyImg;
-        cv::Canny(hueMask, cannyImg, 50, 200, 3);
-    #ifdef DEBUG
-        cv::imshow("canny", cannyImg);
-    #endif
-        std::vector<cv::Vec4i> lines;
-        HoughLinesP(cannyImg, lines, RESOLUTION_PX, RESOLUTION_DEG, MIN_THRESHOLD, MIN_LINE_LENGTH, MAX_LINE_GAP);
-        
-    #ifdef DEBUG
-        //draw all the lines and display
-        for( size_t i = 0; i < lines.size(); i++ ) {
-            cv::Vec4i l = lines[i];
-            cv::line(img, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 3, CV_AA);
-        }
-        
-        cv::imshow("lines", img);
-        ROS_INFO("Next img");
-    #endif
-        //calculate the angles of the lines
-        std::vector<double> angles;
-        for(size_t i =0; i < lines.size(); i++) {
-            const cv::Vec4i l = lines[i];
-            //gradient is (y1-y2)/(x1-x2)
-            angles.push_back(atan2(((float)(l[0]-l[2])),(l[1]-l[3])));
-    #ifdef DEBUG
-            ROS_INFO("%f gradient", angles.back());
-    #endif
-        }
-
-        if(angles.size() >= 2) {
-            sensor_msgs::Imu imuMsg;
-            imuMsg.header = msg->header;
-            zeroCovariances(imuMsg);
-            int roll = angles[0];
-            int pitch = angles[1];
-            tf::Quaternion quat(roll, pitch,0);
-            imuMsg.orientation.x = quat.x();
-            imuMsg.orientation.y = quat.y();
-            imuMsg.orientation.z = quat.z();
-            imuMsg.orientation.w = quat.w();
-            imuPub.publish(imuMsg);
+        sensor_msgs::Imu imuMsg;
+        imuMsg.header = msg->header;
+        zeroCovariances(imuMsg);
+        /*roll = angles[0];
        } else {
            ROS_ERROR("No gradient found");
        }
+        int pitch = angles[1];*/
+        tf::Quaternion quat(roll, pitch,0);
+        imuMsg.orientation.x = quat.x();
+        imuMsg.orientation.y = quat.y();
+        imuMsg.orientation.z = quat.z();
+        imuMsg.orientation.w = quat.w();
+        imuPub.publish(imuMsg);
     #ifdef DEBUG
         cv::waitKey();
     #endif
@@ -172,3 +155,45 @@ static inline void zeroCovariances(sensor_msgs::Imu & imu) {
 
 
 
+static double doLineDetection(cv::Mat img) {
+
+
+        //apply a Canny filter so we get edges of lines
+        cv::Mat cannyImg;
+        cv::Canny(img, cannyImg, 50, 200, 3);
+    #ifdef DEBUG
+        cv::imshow("canny", cannyImg);
+    #endif
+        std::vector<cv::Vec4i> lines;
+        HoughLinesP(cannyImg, lines, RESOLUTION_PX, RESOLUTION_DEG, MIN_THRESHOLD, MIN_LINE_LENGTH, MAX_LINE_GAP);
+        
+    #ifdef DEBUG
+        cv::Mat debugImg;
+        cv::cvtColor(img, debugImg, CV_GRAY2RGB); 
+        //draw all the lines and display
+        for( size_t i = 0; i < lines.size(); i++ ) {
+            cv::Vec4i l = lines[i];
+            cv::line(debugImg, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 3, CV_AA);
+        }
+        
+        cv::imshow("lines", debugImg);
+        ROS_INFO("Next img");
+    #endif
+        //calculate the angles of the lines
+        std::vector<double> angles;
+        for(size_t i =0; i < lines.size(); i++) {
+            const cv::Vec4i l = lines[i];
+            //gradient is (y1-y2)/(x1-x2)
+            angles.push_back(atan2(((float)(l[0]-l[2])),(l[1]-l[3])));
+    #ifdef DEBUG
+            ROS_INFO("%f gradient", angles.back());
+            cv::waitKey();
+    #endif
+        }
+        if(angles.size() > 0) {
+            return angles[0];
+        } else {
+            return 0.0;
+        }
+
+}
