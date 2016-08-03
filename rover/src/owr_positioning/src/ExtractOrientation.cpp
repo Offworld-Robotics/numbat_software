@@ -33,7 +33,7 @@ int main(int argc, char ** argv) {
 
 ExtractOrientation::ExtractOrientation() {
     
-    quatMsgPub =  nh.advertise<geometry_msgs::Quaternion>("/orientation",10,false);
+    quatMsgPub =  nh.advertise<geometry_msgs::Quaternion>("/orientation",1,false);
     odometrySub = nh.subscribe("/odometry/filtered",1,&ExtractOrientation::odometryCallback, this);
     
 }
