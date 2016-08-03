@@ -28,30 +28,30 @@
 static inline void zeroCovariances(sensor_msgs::Imu & imu);
 
 int main(int argc, char ** argv) {
-    
-    ros::init(argc, argv, "owr_clinometer_vision");
-    ClinometerNode cn;
-    
+
+ros::init(argc, argv, "owr_clinometer_vision");
+ClinometerNode cn;
+
 #ifdef DEBUG_TEST
-    cv_bridge::CvImage cv_image;
-    cv_image.image = cv::imread("/home/hjed/Bluesat/owr_software/rover/src/owr_clinometer_vision/617G1jejJIL._SL1500_.jpg",CV_LOAD_IMAGE_COLOR);
-    cv_image.encoding = "bgr8";
-    
-    sensor_msgs::Image ros_image;
-    cv_image.toImageMsg(ros_image);
-    cn.imageCallback(boost::const_pointer_cast<sensor_msgs::Image>(boost::shared_ptr<sensor_msgs::Image>( &ros_image)));
+cv_bridge::CvImage cv_image;
+cv_image.image = cv::imread("/home/hjed/Bluesat/owr_software/rover/src/owr_clinometer_vision/617G1jejJIL._SL1500_.jpg",CV_LOAD_IMAGE_COLOR);
+cv_image.encoding = "bgr8";
+
+sensor_msgs::Image ros_image;
+cv_image.toImageMsg(ros_image);
+cn.imageCallback(boost::const_pointer_cast<sensor_msgs::Image>(boost::shared_ptr<sensor_msgs::Image>( &ros_image)));
 #endif
-    
-    ros::spin();
+
+ros::spin();
 }
 
 ClinometerNode::ClinometerNode() : nh(), imgTransport(nh) {
-    camSub = imgTransport.subscribe("/clinometer_cam/image_raw", 1, &ClinometerNode::imageCallback, this);
-    imuPub = nh.advertise<sensor_msgs::Imu>("/owr/sensors/clinometer", 2, true);
+camSub = imgTransport.subscribe("/clinometer_cam/image_raw", 1, &ClinometerNode::imageCallback, this);
+imuPub = nh.advertise<sensor_msgs::Imu>("/owr/sensors/clinometer", 2, true);
 }
 
 void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< void > >::ConstPtr& msg) {
-    cv_bridge::CvImagePtr cv_ptr;
+cv_bridge::CvImagePtr cv_ptr;
     try {
         cv::Mat img = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8)->image;
         //crop the image
@@ -61,57 +61,57 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
 
         cv::Mat hsvImg;
         cv::cvtColor(img, hsvImg, CV_BGR2HSV); 
-#ifdef DEBUG
+    #ifdef DEBUG
         cv::imshow("hsv", hsvImg);
-#endif
+    #endif
         
         //split the hsv channels
         cv::Mat channels[3];
         cv::split(hsvImg, channels);
 
-       //red is painfull because it is in the end of the hsv colour circle
-       const int HUE_VALUE = 0;
-       const int HUE_RANGE = 15;
-       
-       const int MIN_SATURATION = 70;
-       const int MIN_VALUE  = 100;
-       
-       //check if the colour is in the lower hue range
-       cv::Mat hueMask;
-       cv::inRange(channels[0], HUE_VALUE - HUE_RANGE, HUE_VALUE + HUE_RANGE, hueMask);
-       
-       //we need to check the other side to because red
-       //if statement for readability only, will always run
-       if(HUE_VALUE - HUE_RANGE < 0 || HUE_VALUE + HUE_RANGE > 180) {
-           cv::Mat hueMaskUpper;
-           const int UPPER_HUE_VALUE = HUE_VALUE + 180;
-           cv::inRange(channels[0], UPPER_HUE_VALUE - HUE_RANGE, UPPER_HUE_VALUE + HUE_RANGE, hueMaskUpper);
-
-           //bitwise or the masks
-           hueMask = hueMask | hueMaskUpper;
-       }
-
-      //filter out saturation and value limits
-      cv::Mat satMask = channels[1] > MIN_SATURATION;
-      cv::Mat valueMask = channels[2] > MIN_VALUE;
-
-      //apply a mask to filter
-      hueMask = (hueMask & satMask) & valueMask;
-#ifdef DEBUG
-      cv::imshow("red colour", hueMask);
-#endif
-      
-
-      //apply a Canny filter so we get edges of lines
-      cv::Mat cannyImg;
-      cv::Canny(hueMask, cannyImg, 50, 200, 3);
-#ifdef DEBUG
-      cv::imshow("canny", cannyImg);
-#endif
-      std::vector<cv::Vec4i> lines;
-      HoughLinesP(cannyImg, lines, RESOLUTION_PX, RESOLUTION_DEG, MIN_THRESHOLD, MIN_LINE_LENGTH, MAX_LINE_GAP);
+        //red is painfull because it is in the end of the hsv colour circle
+        const int HUE_VALUE = 0;
+        const int HUE_RANGE = 15;
         
-#ifdef DEBUG
+        const int MIN_SATURATION = 70;
+        const int MIN_VALUE  = 100;
+        
+        //check if the colour is in the lower hue range
+        cv::Mat hueMask;
+        cv::inRange(channels[0], HUE_VALUE - HUE_RANGE, HUE_VALUE + HUE_RANGE, hueMask);
+        
+        //we need to check the other side to because red
+        //if statement for readability only, will always run
+        if(HUE_VALUE - HUE_RANGE < 0 || HUE_VALUE + HUE_RANGE > 180) {
+            cv::Mat hueMaskUpper;
+            const int UPPER_HUE_VALUE = HUE_VALUE + 180;
+            cv::inRange(channels[0], UPPER_HUE_VALUE - HUE_RANGE, UPPER_HUE_VALUE + HUE_RANGE, hueMaskUpper);
+
+            //bitwise or the masks
+            hueMask = hueMask | hueMaskUpper;
+        }
+
+        //filter out saturation and value limits
+        cv::Mat satMask = channels[1] > MIN_SATURATION;
+        cv::Mat valueMask = channels[2] > MIN_VALUE;
+
+        //apply a mask to filter
+        hueMask = (hueMask & satMask) & valueMask;
+    #ifdef DEBUG
+        cv::imshow("red colour", hueMask);
+    #endif
+        
+
+        //apply a Canny filter so we get edges of lines
+        cv::Mat cannyImg;
+        cv::Canny(hueMask, cannyImg, 50, 200, 3);
+    #ifdef DEBUG
+        cv::imshow("canny", cannyImg);
+    #endif
+        std::vector<cv::Vec4i> lines;
+        HoughLinesP(cannyImg, lines, RESOLUTION_PX, RESOLUTION_DEG, MIN_THRESHOLD, MIN_LINE_LENGTH, MAX_LINE_GAP);
+        
+    #ifdef DEBUG
         //draw all the lines and display
         for( size_t i = 0; i < lines.size(); i++ ) {
             cv::Vec4i l = lines[i];
@@ -119,32 +119,37 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         }
         
         cv::imshow("lines", img);
-#endif
-      //calculate the gradients of the lines
-      std::vector<double> gradients;
-      for(size_t i =0; i < lines.size(); i++) {
-          const cv::Vec4i l = lines[i];
-          //gradient is (y1-y2)/(x1-x2)
-          gradients.push_back(((float)(l[0]-l[2]))/(l[1]-l[3]));
-#ifdef DEBUG
-          ROS_INFO("%f gradient", gradients.back());
-#endif
-      }
+        ROS_INFO("Next img");
+    #endif
+        //calculate the gradients of the lines
+        std::vector<double> gradients;
+        for(size_t i =0; i < lines.size(); i++) {
+            const cv::Vec4i l = lines[i];
+            //gradient is (y1-y2)/(x1-x2)
+            gradients.push_back(((float)(l[0]-l[2]))/(l[1]-l[3]));
+    #ifdef DEBUG
+            ROS_INFO("%f gradient", gradients.back());
+    #endif
+        }
 
-      sensor_msgs::Imu imuMsg;
-      imuMsg.header = msg->header;
-      //TODO: set covariance on angular vel and lin acc to -1
-      int roll = atan(gradients[0]);
-      int pitch = atan(gradients[1]);
-      tf::Quaternion quat(roll, pitch,0);
-      imuMsg.orientation.x = quat.x();
-      imuMsg.orientation.y = quat.y();
-      imuMsg.orientation.z = quat.z();
-      imuMsg.orientation.w = quat.w();
-      imuPub.publish(imuMsg);
-#ifdef DEBUG
-      cv::waitKey();
-#endif
+        if(gradients.size() >= 2) {
+            sensor_msgs::Imu imuMsg;
+            imuMsg.header = msg->header;
+            zeroCovariances(imuMsg);
+            int roll = atan(gradients[0]);
+            int pitch = atan(gradients[1]);
+            tf::Quaternion quat(roll, pitch,0);
+            imuMsg.orientation.x = quat.x();
+            imuMsg.orientation.y = quat.y();
+            imuMsg.orientation.z = quat.z();
+            imuMsg.orientation.w = quat.w();
+            imuPub.publish(imuMsg);
+       } else {
+           ROS_ERROR("No gradient found");
+       }
+    #ifdef DEBUG
+        cv::waitKey();
+    #endif
 
     } catch (cv_bridge::Exception & e) {
         ROS_ERROR("cv_bridge exception: %s", e.what());
