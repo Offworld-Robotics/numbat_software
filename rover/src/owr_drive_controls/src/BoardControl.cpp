@@ -16,12 +16,15 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <geometry_msgs/Vector3.h>
 #include <std_msgs/Float64.h>
+#include "owr_messages/adc.h"
 #include <limits>
+#include <math.h>
 
 #define MOTOR_MID 1500.0
 #define MOTOR_MAX 1900.0
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
+
 
 #define CLAW_ROTATION_MID 45
 #define CLAW_ROTATION_MAX 90
@@ -105,6 +108,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
+        SWERVE_ACCURACY,
         "/front_left_swerve_controller/command",
         nh,
         "front_left_swerve"
@@ -116,6 +120,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
+        SWERVE_ACCURACY,
         "/front_right_swerve_controller/command",
         nh,
         "front_right_swerve"
@@ -126,6 +131,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
+        SWERVE_ACCURACY,
         "/back_left_swerve_controller/command",
         nh,
         "back_left_swerve"
@@ -137,6 +143,7 @@ BoardControl::BoardControl() :
         SWERVE_MOTOR_MIN_PWM,
         SWERVE_MOTOR_MAX_PWM,
         SWERVE_MOTOR_RPM,
+        SWERVE_ACCURACY,
         "/back_right_swerve_controller/command",
         nh,
         "back_right_swerve"
@@ -148,9 +155,32 @@ BoardControl::BoardControl() :
         ARM_BASE_ROTATE_MOTOR_MIN_PWM,
         ARM_BASE_ROTATE_MOTOR_MAX_PWM,
         ARM_BASE_ROTATE_MOTOR_RPM,
+        ARM_ACCURACY,
         "/arm_base_rotate_controller/command",
         nh,
         "arm_base_rotation"
+    ),
+    armUpperAct(
+        UPPER_MIN_ADC,
+        UPPER_MAX_ADC,
+        UPPER_MIN_POS,
+        UPPER_MAX_POS,
+        ARM_ACT_PWM_MIN, 
+        ARM_ACT_PWM_MAX, 
+        "/upper_arm_act_controller/command", 
+        nh, 
+        "upper_arm_act"
+    ),
+    armLowerAct(
+        LOWER_MIN_ADC,
+        LOWER_MAX_ADC,
+        LOWER_MIN_POS,
+        LOWER_MAX_POS,
+        ARM_ACT_PWM_MIN, 
+        ARM_ACT_PWM_MAX, 
+        "/lower_arm_act_controller/command", 
+        nh, 
+        "lower_arm_act"
     ),
     lidar(
         STATIONARY,
@@ -158,11 +188,11 @@ BoardControl::BoardControl() :
         nh,
         "laser_tilt_joint"
     ),
-    frontLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
-    frontRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
-    backLeftSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
-    backRightSwerveGears(SWERVE_GEARS, SWERVE_N_GEARS),
-    armRotationBaseGear(ARM_BASE_ROTATE_GEARS, ARM_BASE_ROTATE_N_GEARS),
+    frontLeftSwervePotMonitor(SWERVE_POT_L_LIMIT_N_DEG, SWERVE_POT_L_LIMIT_P_DEG, SWERVE_POT_L_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    frontRightSwervePotMonitor(SWERVE_POT_R_LIMIT_N_DEG, SWERVE_POT_R_LIMIT_P_DEG, SWERVE_POT_R_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
+    backLeftSwervePotMonitor(SWERVE_POT_L_LIMIT_N_DEG, SWERVE_POT_L_LIMIT_P_DEG, SWERVE_POT_L_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
+    backRightSwervePotMonitor(SWERVE_POT_R_LIMIT_N_DEG, SWERVE_POT_R_LIMIT_P_DEG, SWERVE_POT_R_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
+    armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS, ARM_POT_CENTER),
     asyncSpinner(SPINNER_THREADS)
     {
 
@@ -177,6 +207,7 @@ BoardControl::BoardControl() :
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
     voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
     velSubscriber = nh.subscribe<nav_msgs::Odometry>("/odometry/filtered", 1, &BoardControl::velCallback, this, transportHints);
+    adcStatusPublisher = nh.advertise<owr_messages::adc>("/owr/adc", 10, true);
     leftDrive = MOTOR_MID;
     rightDrive = MOTOR_MID; 
     armTop = MOTOR_MID;
@@ -196,6 +227,8 @@ BoardControl::BoardControl() :
     rotState = STOP;
     clawState = STOP;
     
+    adcMsgSeq = 0;
+    
     currentVel.linear.x = 0;
     currentVel.linear.y = 0;
     currentVel.linear.z = 0;
@@ -209,6 +242,11 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&frontRightSwerve);
     jMonitor.addJoint(&lidar);
     jMonitor.addJoint(&armBaseRotate);
+    jMonitor.addJoint(&armLowerAct);
+    jMonitor.addJoint(&armUpperAct);
+    
+    
+    armRotateAngle = 0.0;
     
     //velocity setup
     currentVel.linear.x = std::numeric_limits<double >::quiet_NaN();
@@ -217,6 +255,11 @@ BoardControl::BoardControl() :
 int clawRotScale(int raw) {
     return ((float)raw/(float)CLAW_ROTATION_MAX)*1000.0 + 1000;
 }
+
+int reverseClawRotScale(int actual) {
+    return (actual - 1000)*CLAW_ROTATION_MAX/1000.0; 
+}
+
 int cameraRotScale(int raw) {
     return ((float)raw/(float)CAMERA_ROTATION_MAX)*1000.0 + 1000;
 }
@@ -227,6 +270,12 @@ void cap(int *a, int low, int high) {
     *a = *a > high ? high : *a;
 }
 
+void capf(float *a, float low, float high) {
+    *a = *a < low ? low : *a;
+    *a = *a > high ? high : *a;
+}
+
+
 #define UPDATE_RATE 10 //Hz
 #define SECONDS_2_NS 1000000000
 #define UPDATE_RATE_NS ((1/UPDATE_RATE)*SECONDS_2_NS)
@@ -235,6 +284,7 @@ void cap(int *a, int low, int high) {
 
 void BoardControl::run() {
     std::string board;
+    bool firstRun = true;
     nh.param<std::string>("board_tty", board, TTY);
     ROS_INFO("connecting to board on %s", board.c_str());
     Bluetongue* steve = new Bluetongue(board.c_str());
@@ -298,11 +348,11 @@ void BoardControl::run() {
             cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
             if (clawState  == OPEN) {
-                clawGrip += 5;
+                clawGrip += 2;
             } else if (clawState  == CLOSE) {
-                clawGrip -=  5;
+                clawGrip -=  2;
             }
-            cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
+            //cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr;
@@ -319,33 +369,45 @@ void BoardControl::run() {
             double updateRateHZ = 1.0/( updateRateNSec / SECONDS_2_NS);
             ROS_INFO("Update Rate NSec: %f, HZ: %f", updateRateNSec, updateRateHZ);
             lastUpdate = ros::Time::now();
-            
+            publishADC(s); 
             jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
-            armRotationBaseGear.updatePos(s.enc0, lastUpdate);
-            frontLeftSwerveGears.updatePos(-s.enc0, lastUpdate);
-            frontRightSwerveGears.updatePos(s.enc5, lastUpdate);
+            /*armRotationBasePotMonitor.updatePos(s.enc0, lastUpdate);*/
+            //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
+            frontLeftSwervePotMonitor.updatePos(s.swerveLeft, lastUpdate);
+            frontRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
+            armRotationBasePotMonitor.updatePos(s.pot0, lastUpdate);
             
+            if(firstRun) {
+	        armRotateAngle = armRotationBasePotMonitor.getPosition();
+                clawGrip = reverseClawRotScale(s.clawActual);
+                firstRun = false;
+            }
             //do joint calculations
-            //TODO: check if empty
             swerveMotorVels swerveState = doVelTranslation(&(currentVel));
             pwmFLW = frontLeftWheel.velToPWM(swerveState.frontLeftMotorV);
             pwmFRW = frontRightWheel.velToPWM(swerveState.frontRightMotorV);
             pwmBLW = backLeftWheel.velToPWM(swerveState.backLeftMotorV);
             pwmBRW = backRightWheel.velToPWM(swerveState.backRightMotorV);
             //TODO: this should actually be the angle from the encoders
-            pwmFRS = frontRightSwerve.posToPWM(frontRightSwerveGears.getPosition(), updateRateHZ);
-            pwmFLS =  frontLeftSwerve.posToPWM(frontLeftSwerveGears.getPosition(), updateRateHZ);
-            pwmLIDAR = lidar.velToPWM();
+            pwmFRS = frontRightSwerve.posToPWM(frontRightSwervePotMonitor.getPosition(), updateRateHZ);
+            pwmFLS =  frontLeftSwerve.posToPWM(-frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
+            pwmLIDAR = lidar.velToPWM(updateRateHZ);
             
             //adjust the arm position
             armRotateAngle += armRotateRate;
-            pwmArmRot = (armRotateRate * 500) + 1500;
-            ROS_INFO("Arm Rotate %d", pwmArmRot);	
-            //pwmArmRot = armBaseRotate.posToPWM(armRotateAngle, 			 armRotationBaseGear.getPosition(), updateRateHZ); //TODO: add in actual current position
+            armRotateAngle = fmax(armRotationBasePotMonitor.getMinAngle(),fmin(armRotationBasePotMonitor.getMaxAngle(), armRotateAngle));
+            //pwmArmRot = (armRotateRate * 500) + 1500;
+            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle,armRotationBasePotMonitor.getPosition(), updateRateHZ); 
+            ROS_INFO("Arm Rotate %d", pwmArmRot);
             
             //for now do this for actuators
-            pwmArmTop = armTop;
-            pwmArmBottom = armBottom;
+            //pwmArmTop = armTop;
+            pwmArmTop = armUpperAct.velToPWM(armTop);
+            armUpperAct.updatePos(s.armUpper);
+            
+            //pwmArmBottom = armBottom;
+            pwmArmBottom = armLowerAct.velToPWM(armBottom);
+            armLowerAct.updatePos(s.armLower);
             
             //and keep everything else the same
             //pwmClawRotate = clawRotScale(clawRotate);
@@ -372,6 +434,7 @@ void BoardControl::run() {
         ROS_ERROR("Lost usb connection to Bluetongue");
         ROS_ERROR("Trying to reconnect every %d ms", RECONNECT_DELAY);
         bool success = false;
+        firstRun = true;
         while (ros::ok() && !success) {
             usleep(RECONNECT_DELAY * 1000);
             success = steve->reconnect();
@@ -414,6 +477,36 @@ void BoardControl::publishVoltmeter(double voltage) {
     voltmeterPublisher.publish(msg);
 }
 
+void BoardControl::publishADC(status s) {
+   owr_messages::adc adcMsg;
+   adcMsg.pot.push_back(s.swerveLeft);
+   adcMsg.potFrame.push_back("front_left_swerve");
+   adcMsg.pot.push_back(s.swerveRight);
+   adcMsg.potFrame.push_back("front_right_swerve");
+   adcMsg.pot.push_back(s.pot0);
+   adcMsg.potFrame.push_back("pot0");
+   adcMsg.pot.push_back(s.pot1);
+   adcMsg.potFrame.push_back("pot1");
+   adcMsg.pot.push_back(s.pot2);
+   adcMsg.potFrame.push_back("pot2");
+   adcMsg.pot.push_back(s.pot3);
+   adcMsg.potFrame.push_back("pot3");
+   adcMsg.pot.push_back(s.armLower);
+   adcMsg.potFrame.push_back("armLower");
+   adcMsg.pot.push_back(s.armUpper);
+   adcMsg.potFrame.push_back("armUpper");
+   adcMsg.pot.push_back(s.clawActual);
+   adcMsg.potFrame.push_back("clawActual");
+   adcMsg.pot.push_back(s.clawEffort);
+   adcMsg.potFrame.push_back("clawEffort");
+   adcMsg.pot.push_back(clawRotScale(clawGrip));
+   adcMsg.potFrame.push_back("clawGrip");
+   adcMsg.header.stamp = ros::Time::now();
+   adcMsg.header.seq = (++adcMsgSeq);
+   adcStatusPublisher.publish<owr_messages::adc>(adcMsg);
+}
+    
+
 void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
     if((*storedState) != joyState) {
         //TODO: switch feed
@@ -454,17 +547,17 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
     //Handle arm rotation
     //armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
-    armRotateRate = joy->axes[ARM_ROTATE];
+    armRotateRate = (joy->axes[ARM_ROTATE]*ARM_ROTATE_RATE);
     //armIncRate = top * 5;
     armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
     armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
     
     if(joy->buttons[FL_SWERVE_RESET]) {
-        frontLeftSwerveGears.resetPos();
+        frontLeftSwervePotMonitor.resetPos();
         ROS_INFO("Reset Front left Swerve");
     }
     if (joy->buttons[FR_SWERVE_RESET]) {
-        frontRightSwerveGears.resetPos();
+        frontRightSwervePotMonitor.resetPos();
         ROS_INFO("Reset Front right Swerve");
     }
 }

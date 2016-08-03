@@ -3,8 +3,8 @@
  * Original Author: Sam S
  * Editors: Harry J.E Day, Sean Thompson
  * ROS_NODE:owr_joystick_filter
-             * ros package: 
-     */
+ * ros package: 
+ */
      
 
 //#include "bluesat_owr_protobuf/Message1Relay.h"
@@ -20,8 +20,6 @@
 #include <stdio.h>
 
 #include <geometry_msgs/Twist.h>
-
-
 
 #define TOPIC "/owr/position"
 //minum number of lat/long inputs to calculate the heading
@@ -40,6 +38,11 @@
 // DEADZONES for thumbsticks, these will require tuning through testing
 #define DEADZONE_RADIAL_STICK_L 0.1
 #define DEADZONE_RADIAL_STICK_R 0.1
+
+#define LIDAR_CONTINUOS 1
+#define LIDAR_STATIONARY 2
+#define LIDAR_POSITION 3
+#define LIDAR_MULTIPLIER 0.01
  
 int main(int argc, char ** argv) {
     
@@ -53,18 +56,23 @@ int main(int argc, char ** argv) {
     return EXIT_SUCCESS;   
 }
 
-JoystickFilter::JoystickFilter(const std::string topic) {
+JoystickFilter::JoystickFilter(const std::string topic) :
+    gimbalRate(0.0) {
     altitude = 0;
     latitude = 0;
     longitude = 0;
     pitch = 0;
     roll = 0;
     heading = 0;
+    
+    lidarModeMsg.data = LIDAR_CONTINUOS;
 
 
     //publisher =  node.advertise<owr_messages::position>(topic,10,true);
     publisher = node.advertise<sensor_msgs::Joy>(topic,2,true);
-    velPublisher = node.advertise<geometry_msgs::Twist>("/cmd_vel",1,true);
+    velPublisher = node.advertise<geometry_msgs::Twist>("/cmd_vel",1,false);
+    lidarModePublisher = node.advertise<std_msgs::Int16>("/owr/lidar_gimble_mode", 1, true);
+    lidarPosPublisher = node.advertise<std_msgs::Float64>("/laser_tilt_joint_controller/command",1,true);
     
     //msgsOut.axes = std::vector<float>(20);
     msgsOut.axes.resize(20);
@@ -130,12 +138,23 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     float leftWheelSpeed = 0;
     float rightWheelSpeed = 0;
     //float leftRightMagnitude = std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
+    
+    /*
+     * Toggle lidar mode
+     */
+     if(joy->buttons[BUTTON_LB]) {
+         lidarModeMsg.data = (lidarModeMsg.data + 1) % 3;
+         lidarModePublisher.publish<std_msgs::Int16>(lidarModeMsg);
+     } else if(joy->buttons[BUTTON_RB]) {
+         lidarModeMsg.data =abs((lidarModeMsg.data - 1) % 3);
+         lidarModePublisher.publish<std_msgs::Int16>(lidarModeMsg);
+     }
 
     /*
      * Control Modes
      *
      * Hold Button A
-     *      Thumb Sticks control bottom camera rotation
+     *      Thumb Sticks control lidar position
      *
      *  Hold Button B
      *      Thumb Sticks control top camera rotation
@@ -144,7 +163,11 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
      *      Active by default
      *      
      */
+    gimbalRate = 0.0;
     if (joy->buttons[BUTTON_A]) {
+        //IMPORTANT: this will do nothing if the lidar is not is position mode
+        gimbalRate = joy->axes[STICK_L_UD];
+        
         // Thumb sticks control camera rotation while A Button is held
 
         msgsOut.axes[CAMERA_BOTTOM_ROTATE] = joy->axes[STICK_L_LR];
@@ -258,7 +281,13 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
 //main loop
 void JoystickFilter::spin() {
+    ros::Rate r(20);
     while(ros::ok()) {
+        
+        lidarPos.data += gimbalRate * LIDAR_MULTIPLIER;
+        lidarPosPublisher.publish<std_msgs::Float64>(lidarPos);
+        
+        r.sleep();
         ros::spinOnce();
     }
 }
