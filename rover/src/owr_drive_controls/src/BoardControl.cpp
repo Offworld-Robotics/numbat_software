@@ -25,7 +25,6 @@
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
 
-#define ARM_ROTATE_RATE 0.04
 
 #define CLAW_ROTATION_MID 45
 #define CLAW_ROTATION_MAX 90
@@ -161,6 +160,28 @@ BoardControl::BoardControl() :
         nh,
         "arm_base_rotation"
     ),
+    armUpperAct(
+        UPPER_MIN_ADC,
+        UPPER_MAX_ADC,
+        UPPER_MIN_POS,
+        UPPER_MAX_POS,
+        ARM_ACT_PWM_MIN, 
+        ARM_ACT_PWM_MAX, 
+        "/upper_arm_act_controller/command", 
+        nh, 
+        "upper_arm_act"
+    ),
+    armLowerAct(
+        LOWER_MIN_ADC,
+        LOWER_MAX_ADC,
+        LOWER_MIN_POS,
+        LOWER_MAX_POS,
+        ARM_ACT_PWM_MIN, 
+        ARM_ACT_PWM_MAX, 
+        "/lower_arm_act_controller/command", 
+        nh, 
+        "lower_arm_act"
+    ),
     lidar(
         STATIONARY,
         "/laser_tilt_joint_controller/command",
@@ -221,6 +242,9 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&frontRightSwerve);
     jMonitor.addJoint(&lidar);
     jMonitor.addJoint(&armBaseRotate);
+    jMonitor.addJoint(&armLowerAct);
+    jMonitor.addJoint(&armUpperAct);
+    
     
     armRotateAngle = 0.0;
     
@@ -231,6 +255,11 @@ BoardControl::BoardControl() :
 int clawRotScale(int raw) {
     return ((float)raw/(float)CLAW_ROTATION_MAX)*1000.0 + 1000;
 }
+
+int reverseClawRotScale(int actual) {
+    return (actual - 1000)*CLAW_ROTATION_MAX/1000.0; 
+}
+
 int cameraRotScale(int raw) {
     return ((float)raw/(float)CAMERA_ROTATION_MAX)*1000.0 + 1000;
 }
@@ -255,6 +284,7 @@ void capf(float *a, float low, float high) {
 
 void BoardControl::run() {
     std::string board;
+    bool firstRun = true;
     nh.param<std::string>("board_tty", board, TTY);
     ROS_INFO("connecting to board on %s", board.c_str());
     Bluetongue* steve = new Bluetongue(board.c_str());
@@ -322,7 +352,7 @@ void BoardControl::run() {
             } else if (clawState  == CLOSE) {
                 clawGrip -=  2;
             }
-            cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
+            //cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr;
@@ -347,6 +377,11 @@ void BoardControl::run() {
             frontRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
             armRotationBasePotMonitor.updatePos(s.pot0, lastUpdate);
             
+            if(firstRun) {
+	        armRotateAngle = armRotationBasePotMonitor.getPosition();
+                clawGrip = reverseClawRotScale(s.clawActual);
+                firstRun = false;
+            }
             //do joint calculations
             swerveMotorVels swerveState = doVelTranslation(&(currentVel));
             pwmFLW = frontLeftWheel.velToPWM(swerveState.frontLeftMotorV);
@@ -356,7 +391,7 @@ void BoardControl::run() {
             //TODO: this should actually be the angle from the encoders
             pwmFRS = frontRightSwerve.posToPWM(frontRightSwervePotMonitor.getPosition(), updateRateHZ);
             pwmFLS =  frontLeftSwerve.posToPWM(-frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
-            pwmLIDAR = lidar.velToPWM();
+            pwmLIDAR = lidar.velToPWM(updateRateHZ);
             
             //adjust the arm position
             armRotateAngle += armRotateRate;
@@ -366,8 +401,13 @@ void BoardControl::run() {
             ROS_INFO("Arm Rotate %d", pwmArmRot);
             
             //for now do this for actuators
-            pwmArmTop = armTop;
-            pwmArmBottom = armBottom;
+            //pwmArmTop = armTop;
+            pwmArmTop = armUpperAct.velToPWM(armTop);
+            armUpperAct.updatePos(s.armUpper);
+            
+            //pwmArmBottom = armBottom;
+            pwmArmBottom = armLowerAct.velToPWM(armBottom);
+            armLowerAct.updatePos(s.armLower);
             
             //and keep everything else the same
             //pwmClawRotate = clawRotScale(clawRotate);
@@ -394,6 +434,7 @@ void BoardControl::run() {
         ROS_ERROR("Lost usb connection to Bluetongue");
         ROS_ERROR("Trying to reconnect every %d ms", RECONNECT_DELAY);
         bool success = false;
+        firstRun = true;
         while (ros::ok() && !success) {
             usleep(RECONNECT_DELAY * 1000);
             success = steve->reconnect();
@@ -450,6 +491,16 @@ void BoardControl::publishADC(status s) {
    adcMsg.potFrame.push_back("pot2");
    adcMsg.pot.push_back(s.pot3);
    adcMsg.potFrame.push_back("pot3");
+   adcMsg.pot.push_back(s.armLower);
+   adcMsg.potFrame.push_back("armLower");
+   adcMsg.pot.push_back(s.armUpper);
+   adcMsg.potFrame.push_back("armUpper");
+   adcMsg.pot.push_back(s.clawActual);
+   adcMsg.potFrame.push_back("clawActual");
+   adcMsg.pot.push_back(s.clawEffort);
+   adcMsg.potFrame.push_back("clawEffort");
+   adcMsg.pot.push_back(clawRotScale(clawGrip));
+   adcMsg.potFrame.push_back("clawGrip");
    adcMsg.header.stamp = ros::Time::now();
    adcMsg.header.seq = (++adcMsgSeq);
    adcStatusPublisher.publish<owr_messages::adc>(adcMsg);

@@ -3,6 +3,6 @@
     
         <param name="voltmeter_frame" value="pot0" />
         <param name="voltmeter_offset" value="0" />
-        <param name="voltmeter_scale" value="0.06666666666666667" />
+        <param name="voltmeter_scale" value="0.00060975609" />
     </node>
 </launch>

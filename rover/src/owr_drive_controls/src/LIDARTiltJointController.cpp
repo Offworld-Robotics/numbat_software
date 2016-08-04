@@ -21,8 +21,19 @@
 //if this is not defined do it just based on pwm
 // #define DO_VEL_ADJUST
 
+static double pwmToPos(double pwm) {
+    double lidarRads;
+    lidarRads = pwm - LIDAR_HORIZ;
+    lidarRads = lidarRads * DEG_PER_PWM;//Find angle in degrees
+    lidarRads = lidarRads * M_PI/180.0;//Convert to radians
+    return lidarRads;
+}
+
 
 LIDARTiltJointController::LIDARTiltJointController(LIDARTiltMode aMode, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
+    //initalise mode subscriber
+    modeSub = nh.subscribe("/owr/lidar_gimble_mode", 10, &LIDARTiltJointController::setModeCallback, this);
+    
     angle = LIDAR_HORIZ;
     currentDirection = FORWARDS;
     mode = aMode;
@@ -30,6 +41,7 @@ LIDARTiltJointController::LIDARTiltJointController(LIDARTiltMode aMode, char * t
     lastAngularVelocity = std::numeric_limits< double >::infinity();
     
     lastPWM = LIDAR_HORIZ;
+    lastHz = LIDAR_FREQ;
 }
 
 /*
@@ -40,7 +52,7 @@ LIDARTiltJointController::LIDARTiltJointController(LIDARTiltMode aMode, char * t
  *        - currentAngle - the angle of the rover to the ground (incline)
  * 
  */
-int LIDARTiltJointController::velToPWM(double requestedValue) {
+int LIDARTiltJointController::velToPWM(double requestedValue, double hz) {
     int pwm;
     printf("mode %d\n", mode);
     if(mode == CONTINUOUS) {
@@ -54,7 +66,7 @@ int LIDARTiltJointController::velToPWM(double requestedValue) {
         } else {
             angle += PWM_SHIFT * (1 - (2 * currentDirection)); // equivalent of, if(forward), increment, if(backward) decrement
         }
-        lastAngularVelocity = (PWM_SHIFT * LIDAR_FREQ) * DEG_PER_PWM * (M_PI/180);
+        lastAngularVelocity = (PWM_SHIFT * hz) * DEG_PER_PWM * (M_PI/180);
         
         pwm = angle;
         printf("pwm %d\n", pwm);
@@ -63,21 +75,36 @@ int LIDARTiltJointController::velToPWM(double requestedValue) {
         lastAngularVelocity = 0;
     } else { //position
         pwm = (requestedValue * 180.0) / (DEG_PER_PWM * M_PI) + LIDAR_HORIZ;
-        //TODO: implement lastAngularVelocity here
+        lastAngularVelocity  = (((lastPWM - LIDAR_HORIZ) * DEG_PER_PWM * (M_PI/180.0)) - requestedValue) * hz;
+	ROS_INFO("pwm %d requested %f", pwm, requestedValue);
     }
+    if(
+        (stopP && lastPWM > pwm) ||
+        (stopN && lastPWM < pwm)
+    ) {
+        ROS_ERROR("Stop");
+        return lastPWM;
+    }
+    lastHz = hz;
     lastPWM = pwm;
 //     printf("pwm %d\n", pwm);
     return pwm;
 }
 
 
-int LIDARTiltJointController::velToPWM ( ) {
+int LIDARTiltJointController::velToPWM (double hz ) {
     //safe value
     if (isnan(requestedValue) && mode == POSITION) {
             return lastPWM;
     }
-    return velToPWM(requestedValue);
+    return velToPWM(requestedValue, hz);
 }
+
+void LIDARTiltJointController::setModeCallback(const std_msgs::Int16 modeMsg) {
+    mode = (LIDARTiltMode) modeMsg.data;
+    ROS_INFO("Mode %d",(int) mode);
+}
+
 
 // Sends rviz an angle (radians) representing the current position of the lidar
 // gimbal. Angle is measured from horizontal (1330:pwm = 0 rads), with tilting
@@ -87,14 +114,11 @@ jointInfo LIDARTiltJointController::extrapolateStatus(ros::Time sessionStart, ro
     
     double lidarRads;
     double lidarVel;
-    lidarRads = lastPWM - LIDAR_HORIZ;
-    lidarRads = lidarRads * DEG_PER_PWM;//Find angle in degrees
-    lidarRads = lidarRads * M_PI/180.0;//Convert to radians
-    
+    lidarRads = pwmToPos(lastPWM);
     
     //NO extrapolation for position or stationary modes yet
     if(mode == POSITION) {
-        lidarVel = (PWM_SHIFT * LIDAR_FREQ) * DEG_PER_PWM * (M_PI/180); // find velocity in rad/s
+        lidarVel = (PWM_SHIFT * lastHz) * DEG_PER_PWM * (M_PI/180); // find velocity in rad/s
         
         if(currentDirection == BACKWARDS){
             lidarVel = lidarVel * (-1);
@@ -108,7 +132,7 @@ jointInfo LIDARTiltJointController::extrapolateStatus(ros::Time sessionStart, ro
             //DO NOTHING, should stop at this point
             lidarVel = 0;
         } else if (atPosition > extrapolationTime) {
-            lidarVel = (PWM_SHIFT * LIDAR_FREQ) * DEG_PER_PWM * (M_PI/180); // find velocity in rad/s
+            lidarVel = (PWM_SHIFT * lastHz) * DEG_PER_PWM * (M_PI/180); // find velocity in rad/s
             float secondsToPoint = (atPosition - extrapolationTime).toSec();
             //NOTE: this assumes that we did not start closer to the point then the full time it takes us to reach it.
             lidarRads -= lidarRads - lidarVel * secondsToPoint;

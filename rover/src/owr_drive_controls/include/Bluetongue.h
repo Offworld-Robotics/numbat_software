@@ -63,10 +63,16 @@ struct status {
     double swerveLeft; // Swerve Positions from potentiometers
     double swerveRight;
     
+    double armUpper;
+    double armLower;
+    
     double pot0; // TODO: implement and rename when being used.
     double pot1;
     double pot2;
     double pot3;
+
+    double clawActual;
+    double clawEffort;
 };
     
 class Bluetongue {
