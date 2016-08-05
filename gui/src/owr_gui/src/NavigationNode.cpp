@@ -12,6 +12,9 @@
 */
 
 #include "NavigationNode.h"
+#include <tf2/transform_datatypes.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
 #include <fstream>
 
 // Include for the image_trasport pkg which will allow us to use compressed
@@ -136,6 +139,9 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 
 //this function constantly updates the value of tiltX and tiltY by obtaining the messages from msg->orientation
 void NavigationNode::imuUpdate(const sensor_msgs::Imu::ConstPtr& msg) {
-	this->tiltX = msg->orientation.x;
-	this->tiltY = msg->orientation.y;
+    tf2::Matrix3x3 quat(tf2::Quaternion(msg->orientation.x, msg->orientation.y, msg->orientation.z, msg->orientation.w));
+    double roll, pitch, yaw;
+    quat.getRPY(roll, pitch, yaw);
+    this->tiltX = pitch;
+    this->tiltY = roll;
 }
