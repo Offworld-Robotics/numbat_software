@@ -8,8 +8,7 @@ PS1=" "
 export PS1
 
 source ~/.bashrc
-source ~/owr_software/gui/devel/setup.bash
-export ROS_MASTER_URI=http://192.168.1.10:11311
+source ~/owr_software/rover/devel/setup.bash
 
 cd `dirname $0`
 

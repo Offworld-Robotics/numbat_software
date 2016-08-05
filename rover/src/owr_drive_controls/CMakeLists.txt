@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  ecl_threads
 )
 
 ## System dependencies are found with CMake's conventions
@@ -38,7 +39,7 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add "message_generation" and every package in MSG_DEP_SET to
 ##     find_package(catkin REQUIRED COMPONENTS ...)
 ##   * add "message_runtime" and every package in MSG_DEP_SET to
-##     catkin_package(CATKIN_DEPENDS ...)
+##      catkin_package(...)
 ##   * uncomment the add_*_files sections below as needed
 ##     and list every .msg/.srv/.action file to be processed
 ##   * uncomment the generate_messages entry below
@@ -81,9 +82,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS include 
   LIBRARIES owr_drive_controls
-  CATKIN_DEPENDS owr_messages roscpp rospy std_msgs
+  CATKIN_DEPENDS owr_messages roscpp rospy std_msgs ecl_threads
   DEPENDS system_lib
 )
 
@@ -96,6 +97,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   include
+  ../owr_joystick_filter/include/
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -106,24 +108,13 @@ include_directories(
 
 ## Declare a cpp executable
 
-add_executable(owr_drive_controls_node src/joyConverter.cpp)
-target_link_libraries(owr_drive_controls_node ${catkin_LIBRARIES})
 
-add_executable(owr_drive_arduino src/arduinoJoy.cpp)
-target_link_libraries(owr_drive_arduino ${catkin_LIBRARIES})
-
-add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp)
+add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp src/JointMonitor.cpp src/JointVelocityController.cpp src/LIDARTiltJointController.cpp src/JointSpeedBasedPositionController.cpp src/JointController.cpp src/swerveDrive.cpp src/GearPositionTracker.cpp src/PotPositionTracker.cpp src/PositionTracker.cpp src/JointArmVelocityController.cpp)
 target_link_libraries(owr_drive_board ${catkin_LIBRARIES})
 
-add_executable(owr_drive_arm_pos src/clawControl.cpp)
-target_link_libraries(owr_drive_arm_pos ${catkin_LIBRARIES})
-
-add_executable(owr_drive_arm_inc src/armControlIncremental.cpp)
-target_link_libraries(owr_drive_arm_inc ${catkin_LIBRARIES})
-
-add_executable(owr_arduino_mag_node src/ArduinoMagControl.cpp)
-add_dependencies(owr_arduino_mag_node owr_messages_gencpp)
-target_link_libraries(owr_arduino_mag_node ${catkin_LIBRARIES})
+add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/swerveDrive.cpp)
+add_dependencies(cmd_vel_2_joints owr_messages)
+target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -178,6 +169,11 @@ target_link_libraries(owr_arduino_mag_node ${catkin_LIBRARIES})
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
-
+catkin_add_gtest(testJointController test/testJointVelocityController.cpp src/JointController.cpp src/JointVelocityController.cpp)
+target_link_libraries(testJointController ${catkin_LIBRARIES})
+catkin_add_gtest(testJointPosController test/testJointSpeedBasedPositionController.cpp src/JointController.cpp src/JointSpeedBasedPositionController.cpp)
+target_link_libraries(testJointPosController ${catkin_LIBRARIES})
+catkin_add_gtest(testLIDARController test/testLIDAR.cpp src/JointController.cpp src/LIDARTiltJointController.cpp)
+target_link_libraries(testLIDARController ${catkin_LIBRARIES})
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)

@@ -8,20 +8,27 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/Twist.h>
+// #include <geometry_msgs/TwistWithCovariance.h>
+#include <nav_msgs/Odometry.h>
+#include <owr_messages/board.h>
 #include <termios.h>
 #include <stdio.h>
-#include "buttons.h"
+
 #include "Bluetongue.h"
+
+#include "JointsMonitor.hpp"
+#include "JointController.hpp"
+#include "JointSpeedBasedPositionController.hpp"
+#include "LIDARTiltJointController.hpp"
+#include "PotPositionTracker.hpp"
+#include "JointArmVelocityController.hpp"
+
 
 using namespace std; 
 
 
 //serial IO
 #define TTY "/dev/ttyACM0"
-
-#define OPEN  0
-#define STOP  1
-#define CLOSE 2
 
 //the minimum number of satelites required to make the fix valid
 #define MIN_SATELITES 3
@@ -32,33 +39,33 @@ class BoardControl {
         void run();
         
     private:
-        void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
-        void armCallback(const sensor_msgs::Joy::ConstPtr& joy);
+        void controllerCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
-        void velCallback(const geometry_msgs::Twist::ConstPtr& vel);
+        void velCallback(const nav_msgs::Odometry::ConstPtr& vel);
 
         void publishGPS(GPSData gps);
-        void publishMag(MagData mag);
-        void publishIMU(IMUData imu);
         void publishBattery(double batteryVoltage);
         void publishVoltmeter(double voltage);
+        void publishADC(status s);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
 
-	    ros::Subscriber velSubscriber;
+        ros::Subscriber velSubscriber;
         ros::Publisher gpsPublisher;
-        ros::Publisher magPublisher;
-        ros::Publisher gyroPublisher;
-        ros::Publisher accPublisher;
         ros::Publisher battVoltPublisher;
         ros::Publisher voltmeterPublisher;
+        ros::Publisher boardStatusPublisher;
+        ros::Publisher adcStatusPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
+        ros::AsyncSpinner asyncSpinner;
+        
         float leftDrive, rightDrive;
         //arm top, bottom
         int armTop, armBottom;
-        float armRotate;
+        float armRotateAngle;
+        float armRotateRate;
         int armIncRate;
         int cameraBottomRotate, cameraBottomTilt, cameraTopRotate,
             cameraTopTilt;
@@ -70,9 +77,11 @@ class BoardControl {
         //claw stuff
         int clawState;
         int rotateState;
-        int clawRotate;
+        int clawRotate; // pwm
         int clawGrip;
-        int rotState;
+        int rotState; // On-Off
+        //number of adc messages published
+        int adcMsgSeq;
         //int clawState;
         
         //to keep track of button states. It is possible press could change it
@@ -80,6 +89,21 @@ class BoardControl {
         
         //serial i0
         FILE * fd;
+        
+        //current velocity from imu
+        geometry_msgs::Twist currentVel;
+        
+        //new joints stuff
+        JointsMonitor jMonitor;
+        JointVelocityController frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel;
+        JointSpeedBasedPositionController frontLeftSwerve, frontRightSwerve, backLeftSwerve, backRightSwerve;
+        JointSpeedBasedPositionController armBaseRotate;
+        LIDARTiltJointController lidar;
+        PotPositionTracker frontLeftSwervePotMonitor, frontRightSwervePotMonitor, backLeftSwervePotMonitor, backRightSwervePotMonitor;
+        PotPositionTracker armRotationBasePotMonitor;
+        JointArmVelocityController armUpperAct, armLowerAct;
+        //TODO: add lidar, actuators here.
+        
 };
 
 #endif
