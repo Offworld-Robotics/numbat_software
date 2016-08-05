@@ -46,37 +46,47 @@ void LocalPlanner::run(){
             // To: arg1 = "base_link" 
             // At the time: arg2 = navPath->header.stamp
             // The object we put the resulting transform: arg3 = currPosition
-            tfListener.lookupTransform("map","base_link", navPath->header.stamp, currPosition);
+            tfListener.lookupTransform("map","base_link", navPath.header.stamp, currPosition);
             
             
             //TODO: Insert local Lidar obstacle handling
             
             
             // Create a vector from currPosition to first <Pose> within navPath
-            tf::Vector3 desiredVector( navPath.poses[0].position.x - currPosition.transform.translation.x,
-                                       navPath.poses[0].position.y - currPosition.transform.translation.y, 
+            tf::Vector3 desiredVector( navPath.poses[0].pose.position.x - currPosition.getOrigin().x(),
+                                       navPath.poses[0].pose.position.y - currPosition.getOrigin().y(), 
                                        0);
             
             // Find the orientation of the rover
-            tf::Matrix3x3 m(currPosition.transform.rotation).getRPY( roll, pitch, yaw);
+            tf::Matrix3x3 m(currPosition.getRotation());
+            
+            m.getRPY( roll, pitch, yaw);
             
             // Calculate a heading vector from the yaw (which is in radians)
             tf::Vector3 headingVector( navX = cos(yaw), navY = sin(yaw), 0);
             
             // Take the cross-product of the desired and heading vectors to determine turning direction
+            // TODO: ensure headingVector has z=0
             tf::Vector3 cross = desiredVector.cross(headingVector);
             
+            //Normalise vector
+            //TODO: use this to define turn speed
+            //cross.normalise;
+            
             // The result of the cross product will be a vector normal to the 2 vectors
-            if(cross.z == 0.0f) {
-                driveX = 0.7;
+            if(cross.z() == 0.0f) {
+                driveX = MAX_SPEED;
                 driveY = 0;
-            } else if(cross.z > 0 || cross.z == -0.0f) {
-                driveX = 0.7;
+            } else if(cross.z() > 0 || cross.z() == -0.0f) {
+                driveX = MAX_SPEED;
                 driveY = 1;
             } else {
-                driveX = 0.7;
+                driveX = MAX_SPEED;
                 driveY = -1;
             }
+        
+        ros::spinOnce();
+        
         }
     }
 }
@@ -90,9 +100,6 @@ LocalPlanner::LocalPlanner() {
     //Subscribe to lidar obstacle detection
     //lidarSubscriber = nh.subscribe<INSERT_MSG>(LIDAR_TOPIC, 1, &LocalPlanner::lidarCallback, this);
     
-    //Subscribe to current orientation of the rover
-    //orientSubscriber = nh.subscribe<INSERT_MSG>(ORIENT_TOPIC, 1, &LocalPlanner::orientCallback, this);
-    
     //Setup twist publisher to cmdVelToJoints
     twistPublisher = nh.advertise<geometry_msgs::Twist>(TWIST_TOPIC, 1, true);
     
@@ -100,11 +107,12 @@ LocalPlanner::LocalPlanner() {
 }
 
 
-LocalPlanner::pathCallback(const nav_msgs::Path::ConstPtr& pathIn){
-    navPath = pathIn;
+void LocalPlanner::pathCallback(const nav_msgs::Path::ConstPtr& pathIn){
+    navPath.header = pathIn->header;
+    navPath.poses = pathIn->poses;
     received = TRUE;
 }
 
-LocalPlanner::lidarCallback(){
+void LocalPlanner::lidarCallback(){
     //TODO: Lidar handling
 }

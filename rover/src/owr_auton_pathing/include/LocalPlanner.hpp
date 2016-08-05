@@ -16,38 +16,37 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <tf/transform_listener.h>
-#include <Vector3.h>
 #include <cmath>
 
+
 #define PATH_TOPIC "owr_auton_pathing"
-#define TWIST_TOPIC 
-#define LIDAR_TOPIC
-#define ORIENT_TOPIC
+#define TWIST_TOPIC "owr_auton_twist"
+#define LIDAR_TOPIC "NULL"
+#define MAX_SPEED 0.7
+#define FALSE 0
+#define TRUE 1
 
 class LocalPlanner {
     
     public:
         LocalPlanner();
+        void run();
         
     protected:
         void pathCallback(const nav_msgs::Path::ConstPtr& pathIn);
         void lidarCallback();
-        void orientCallback();
+        
     private:
         ros::NodeHandle nh;
         
-        void run();
         
         // For receiving and storing an a astar Path
         ros::Subscriber pathSubscriber;
-        ros::nav_msgs::Path navPath;
+        nav_msgs::Path navPath;
         bool received;
         
         // For receiving obstacle information from a lidar
         ros::Subscriber lidarSubscriber;
-        
-        //Subscribe to the current orientation
-        ros::Subscriber oreintSubscriber;
         
         // Publish a Twist msg to cmdVelToJoints
         ros::Publisher twistPublisher;
