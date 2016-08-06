@@ -15,10 +15,10 @@ int main (int argc, char *argv[]) {
     return 0;
 }
 
-Astar::Astar(const std::string topic) {
+Astar::Astar(const std::string topic) : node(), mapSubscriber(node, "map", 1), tfFilter(mapSubscriber, tfListener, "base_link", 1) {
     // shouldn't need to set any values..?
     // check topic names!
-    mapSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::mapCallback, this);
+    //mapSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::mapCallback, this);
     pathPublisher = node.advertise<nav_msgs::Path>(topic, 2, true);
     
     goalSubscriber = node.subscribe<geometry_msgs::PointStamped>("owr_auton_pathing/astargoal", 2, &Astar::setGoalCallback, this);
@@ -27,9 +27,8 @@ Astar::Astar(const std::string topic) {
     go = false;
     goSubscriber = node.subscribe<std_msgs::Bool>("owr_auton_pathing/astarstart", 2, &Astar::setGoCallback, this);
     
-    //tfFilter(aStarSubscriber, tfListener, "map", 1);
-    //ROS_INFO("registering transform listener");
-    //tfFilter.registerCallback(boost::bind(&Astar::, this, _1));
+    ROS_INFO("registering transform listener");
+    tfFilter.registerCallback(boost::bind(&Astar::mapCallback, this, _1));
 }
 
 void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
@@ -41,11 +40,9 @@ void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
         //goal.x = 2206;
         //goal.y = 2060;
         
-        //tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
+        tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
         
-        //ROS_INFO("tf = (%f, %f)\n", transform.getOrigin().getX(), transform.getOrigin().getY());
-        
-        
+        ROS_INFO("tf = (%f, %f)\n", transform.getOrigin().getX(), transform.getOrigin().getY());
         
         start.isStart = true;
         start.x = 2024;
@@ -67,7 +64,7 @@ void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
         makeGrid((int8_t*)gridData->data.data(), gridData->info);
         
         findPath();         // do aStar algorithm, get the path
-        //printGrid();
+        printGrid();
         // idk
         finalPath.header = gridData->header;
         finalPath.header.stamp = ros::Time::now();
@@ -91,8 +88,8 @@ void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
 void Astar::setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint) {
     
     goal.isGoal = true;
-    goal.x = thePoint->point.x;
-    goal.y = thePoint->point.y;
+    goal.x = 20*(thePoint->point.x + 101.25);
+    goal.y = 20*(thePoint->point.y + 101.25);
     ROS_INFO("Astar goal at (%d, %d)", goal.x, goal.y);
     
 }

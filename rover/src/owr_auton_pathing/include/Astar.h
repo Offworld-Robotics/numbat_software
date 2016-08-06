@@ -11,6 +11,7 @@
 #include <tf/transform_listener.h>
 #include <tf/message_filter.h>
 #include <std_msgs/Bool.h>
+#include <message_filters/subscriber.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,13 +83,14 @@ class Astar {
     private:
         
         ros::NodeHandle node;         // ros::NodeHandle nh;
-        ros::Subscriber mapSubscriber;
+        message_filters::Subscriber<nav_msgs::OccupancyGrid> mapSubscriber;
         ros::Subscriber goalSubscriber;
         ros::Subscriber goSubscriber;
         
+        // transform stuff
         tf::TransformListener tfListener;
         tf::StampedTransform transform;
-        //tf::MessageFilter<geometry_msgs::PointStamped> tfFilter;
+        tf::MessageFilter<nav_msgs::OccupancyGrid> tfFilter;
         
         //nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
         nav_msgs::Path finalPath;               // finalPath for us to publish
