@@ -18,25 +18,34 @@ int main (int argc, char *argv[]) {
 Astar::Astar(const std::string topic) {
     // shouldn't need to set any values..?
     // check topic names!
-    aStarSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::aStarCallback, this);
+    mapSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::mapCallback, this);
     pathPublisher = node.advertise<nav_msgs::Path>(topic, 2, true);
     
-    goalSubscriber = node.subscribe<geometry_msgs::Point>("goal", 2, &Astar::setGoalCallback, this);
-    //goSubscriber = node.subscribe<bool>("go", 2, &Astar::setGoCallback, this);
+    goalSubscriber = node.subscribe<geometry_msgs::PointStamped>("owr_auton_pathing/astargoal", 2, &Astar::setGoalCallback, this);
+    
+    // false by default; use callback to update
+    go = false;
+    goSubscriber = node.subscribe<std_msgs::Bool>("owr_auton_pathing/astarstart", 2, &Astar::setGoCallback, this);
+    
+    //tfFilter(aStarSubscriber, tfListener, "map", 1);
+    //ROS_INFO("registering transform listener");
+    //tfFilter.registerCallback(boost::bind(&Astar::, this, _1));
 }
 
-void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
+void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
     // if it's a nogo, don't go!
     if (go == true) {
     
-        goal.isGoal = true;
-        goal.x = 2206;
-        goal.y = 2060;
+        //goal.isGoal = true;
+        //goal.x = 2206;
+        //goal.y = 2060;
         
         //tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
         
-        ROS_INFO("tf = (%f, %f)\n", transform.getOrigin().getX(), transform.getOrigin().getY());
+        //ROS_INFO("tf = (%f, %f)\n", transform.getOrigin().getX(), transform.getOrigin().getY());
+        
+        
         
         start.isStart = true;
         start.x = 2024;
@@ -74,30 +83,26 @@ void Astar::aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
         
         // no idea how to publish a path lelele?
         pathPublisher.publish(finalPath);
-        
+        ROS_INFO("Published a path");
     }
     
 }
 
-void Astar::setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint) {
+void Astar::setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint) {
     
-    //-------- test data ------
     goal.isGoal = true;
-    goal.x = 5;
-    goal.y = 5;
-    //-------------------------
-    
-    //goal.x = thePoint->x;
-    //goal.y = thePoint->y;
+    goal.x = thePoint->point.x;
+    goal.y = thePoint->point.y;
+    ROS_INFO("Astar goal at (%d, %d)", goal.x, goal.y);
     
 }
 
-void Astar::setGoCallback(const bool& goOrNo) {
+void Astar::setGoCallback(const std_msgs::Bool::ConstPtr& goOrNo) {
     
-    //-------- test data ------
-    go = true;
-    //go = goOrNo;
-    
+    go = goOrNo->data;
+    if (go == false) {
+        ROS_INFO("Astar paused");
+    }
 }
 
 //ros's main loop thing?

@@ -9,6 +9,8 @@
 #include <geometry_msgs/Transform.h>
 #include <nav_msgs/Path.h>
 #include <tf/transform_listener.h>
+#include <tf/message_filter.h>
+#include <std_msgs/Bool.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,12 +82,13 @@ class Astar {
     private:
         
         ros::NodeHandle node;         // ros::NodeHandle nh;
-        ros::Subscriber aStarSubscriber;
+        ros::Subscriber mapSubscriber;
         ros::Subscriber goalSubscriber;
         ros::Subscriber goSubscriber;
         
-        //tf::TransformListener tfListener;
+        tf::TransformListener tfListener;
         tf::StampedTransform transform;
+        //tf::MessageFilter<geometry_msgs::PointStamped> tfFilter;
         
         //nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
         nav_msgs::Path finalPath;               // finalPath for us to publish
@@ -105,9 +108,9 @@ class Astar {
         // do I go or no?
         bool go;
         
-        void aStarCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
-        void setGoalCallback(const geometry_msgs::Point::ConstPtr& thePoint);
-        void setGoCallback(const bool& goOrNo);
+        void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
+        void setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint);
+        void setGoCallback(const std_msgs::Bool::ConstPtr& goOrNo);
         
         void findPath();                          // main loop
         
