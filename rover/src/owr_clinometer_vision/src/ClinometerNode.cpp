@@ -23,10 +23,11 @@
 
 #define COVARIANCE_SIZE 9
 
-#define DEBUG
+//#define DEBUG
 
 static inline void zeroCovariances(sensor_msgs::Imu & imu);
 static double doLineDetection(cv::Mat img);
+static inline double gradient(cv::Vec4i line);
 
 int main(int argc, char ** argv) {
 
@@ -72,10 +73,10 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
 
         //red is painfull because it is in the end of the hsv colour circle
         const int HUE_VALUE = 0;
-        const int HUE_RANGE = 12;
+        const int HUE_RANGE = 15;
 
-        const int MIN_SATURATION = 60;
-        const int MIN_VALUE  = 100;
+        const int MIN_SATURATION = 55;
+        const int MIN_VALUE  = 80;
 
         //check if the colour is in the lower hue range
         cv::Mat hueMask;
@@ -111,13 +112,19 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         rollImg = hueMask.clone();
         pitchImg = hueMask.clone();
         ROS_INFO("x %d, y %d", rollImg.size().width, rollImg.size().height);
-        const cv::Rect rollRect(0, 80 , 150,80 );
+        const cv::Rect rollRect(10, 80 , 140,80 );
         double roll  = doLineDetection(rollImg(rollRect));
         const cv::Rect pitchRect(170, 80 , 150,80 );
         double pitch = doLineDetection(pitchImg(pitchRect));
+#ifdef DEBUG
+        cv::rectangle(hsvImg, rollRect, cv::Scalar(255,255,255), 3); 
+        cv::rectangle(hsvImg, pitchRect, cv::Scalar(255,255,255), 3);
+        cv::imshow("rects", hsvImg);
+#endif
 
         sensor_msgs::Imu imuMsg;
         imuMsg.header = msg->header;
+        imuMsg.header.frame_id = "base_link";
         zeroCovariances(imuMsg);
         /*roll = angles[0];
         } else {
@@ -130,7 +137,7 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         imuMsg.orientation.z = quat.z();
         imuMsg.orientation.w = quat.w();
         imuPub.publish(imuMsg);
-#ifdef DEBUG
+#ifdef DEBUG_WAIT
         cv::waitKey();
 #endif
 
@@ -158,7 +165,7 @@ static inline void zeroCovariances(sensor_msgs::Imu & imu) {
 static double doLineDetection(cv::Mat img) {
     const float MAX_ANGLE = 0.872665; //50deg in radians
     const float GRADIENT_MATCH_ERROR = 0.1; //1 radian error margin
-    const float CIRC_RADIUS = 10;
+    const float CIRC_RADIUS = 7;
 
     //apply a Canny filter so we get edges of lines
     cv::Mat cannyImg;
@@ -186,7 +193,7 @@ static double doLineDetection(cv::Mat img) {
         const cv::Vec4i l = lines[i];
         
         //gradient is (y1-y2)/(x1-x2)
-        double angle = atan(((float)(l[1]-l[3])/(l[0]-l[2]))); 
+        double angle = gradient(l);
 #ifdef DEBUG
         ROS_INFO("%f gradient", angle);
 #endif
@@ -203,35 +210,58 @@ static double doLineDetection(cv::Mat img) {
 #ifdef DEBUG
     cv::imshow("lines", debugImg);
     ROS_INFO("Next img");
+#ifdef DEBUG_WAIT
     cv::waitKey();
+#endif
 #endif
     if(angles.size() > 0) {
         std::vector<double> chosenAngles;
         for(int i = 0; i < angles.size(); ++i) {
             for(int j = 0; j < angles.size(); ++j) {
                 if(fabs(angles[i] - angles[j]) < GRADIENT_MATCH_ERROR) {
-                    //check if the line passes through the center (ish)
-                    //use the shortest distance from point to line formula
-                    //http://math.stackexchange.com/questions/275529/check-if-line-intersects-with-circles-perimeter
-                    const int centerY = cannyImg.size().height/2;
-                    const int centerX = cannyImg.size().height/2;
-                    const int numerator = fabs(
-                        (goodLines[j][2] - goodLines[i][0])*centerX +
-                        (goodLines[j][3] - goodLines[i][1])*centerY +
-                        (goodLines[i][0] - goodLines[j][2])*goodLines[i][1] +
-                        (goodLines[i][1] - goodLines[j][3])*goodLines[j][0] 
-                    );
-                    const int denominator = sqrt(
-                        pow(goodLines[j][2] - goodLines[i][0], 2) +
-                        pow(goodLines[i][1] - goodLines[j][3], 2)
-                    );
-                    if((numerator/denominator) <= CIRC_RADIUS) {
-                        chosenAngles.push_back(angles[i]);
+                    bool found = false;
+                    cv::Vec4i goodLine;
+                    //there are four possible lines, we want the one with the matching gradient (if it exists)
+                    for(int k = 0; k < 2; ++k) {
+                        for(int m = 0; m < 2; ++m) {
+                            cv::Vec4i l1(goodLines[i][k*2], goodLines[i][(k*2)+1], goodLines[j][m*2], goodLines[j][(m*2)+1]);
+                            if(fabs(angles[i] - gradient(l1)) < GRADIENT_MATCH_ERROR) {
+                                found = true;
+                                goodLine = l1;
+                                break;
+                            }
+                        }
+                    }
+                    if(!found) {
+                        ROS_INFO("Line not valid");
+                    } else {
+                        //check if the line passes through the center (ish)
+                        //use the shortest distance from point to line formula
+                        //http://math.stackexchange.com/questions/275529/check-if-line-intersects-with-circles-perimeter
+                        const int centerY = cannyImg.size().height/2;
+                        const int centerX = cannyImg.size().height/2;
+                        const int numerator = fabs(
+                            (goodLine[2] - goodLine[0])*centerX +
+                            (goodLine[1] - goodLine[3])*centerY +
+                            (goodLine[0] - goodLine[2])*goodLine[1] +
+                            (goodLine[3] - goodLine[1])*goodLine[0] 
+                        );
+                        const int denominator = sqrt(
+                            pow(goodLine[2] - goodLine[0], 2) +
+                            pow(goodLine[1] - goodLine[3], 2)
+                        );
+                        if((numerator/denominator) <= CIRC_RADIUS) {
+                            chosenAngles.push_back(gradient(goodLine));
+                            ROS_INFO("Good line found m: %f, x1: %d, y1 %d, x2 %d, y2 %d", angles[i], goodLine[0], goodLine[1], goodLine[2], goodLine[3]);
 #ifdef DEBUG
-                        cv::line(debugImg, cv::Point(goodLines[i][0], goodLines[i][1]), cv::Point(goodLines[j][2], goodLines[j][3]), cv::Scalar(255,0,0), 3, CV_AA);
+                            cv::line(debugImg, cv::Point(goodLine[0], goodLine[1]), cv::Point(goodLine[2], goodLine[3]), cv::Scalar(255,0,0), 3, CV_AA);
 #endif
+                        }
                     }
                 }
+#ifdef DEBUG
+                    cv::imshow("good lines", debugImg);
+#endif
             }
         }
         if(chosenAngles.size() > 0) {
@@ -245,4 +275,9 @@ static double doLineDetection(cv::Mat img) {
         return std::numeric_limits<double>::infinity();
     }
 
+}
+
+
+static inline double gradient(cv::Vec4i l) {
+     return atan(((float)(l[1]-l[3])/(l[0]-l[2]))); 
 }
