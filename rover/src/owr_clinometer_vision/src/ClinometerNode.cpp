@@ -24,6 +24,7 @@
 #define COVARIANCE_SIZE 9
 
 //#define DEBUG
+//#define DEBUG_WAIT
 
 static inline void zeroCovariances(sensor_msgs::Imu & imu);
 static double doLineDetection(cv::Mat img);
@@ -121,22 +122,27 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         cv::rectangle(hsvImg, pitchRect, cv::Scalar(255,255,255), 3);
         cv::imshow("rects", hsvImg);
 #endif
-
-        sensor_msgs::Imu imuMsg;
-        imuMsg.header = msg->header;
-        imuMsg.header.frame_id = "base_link";
-        zeroCovariances(imuMsg);
-        /*roll = angles[0];
-        } else {
-           ROS_ERROR("No gradient found");
-        }
-        int pitch = angles[1];*/
-        tf::Quaternion quat(roll, pitch,0);
-        imuMsg.orientation.x = quat.x();
-        imuMsg.orientation.y = quat.y();
-        imuMsg.orientation.z = quat.z();
-        imuMsg.orientation.w = quat.w();
-        imuPub.publish(imuMsg);
+	if(!std::isinf(roll) && !std::isinf(pitch)) {
+		sensor_msgs::Imu imuMsg;
+		imuMsg.header = msg->header;
+		imuMsg.header.frame_id = "base_link";
+		zeroCovariances(imuMsg);
+		/*roll = angles[0];
+		} else {
+		   ROS_ERROR("No gradient found");
+		}
+		int pitch = angles[1];*/
+		tf::Quaternion quat(roll, pitch,0);
+		imuMsg.orientation.x = quat.x();
+		imuMsg.orientation.y = quat.y();
+		imuMsg.orientation.z = quat.z();
+		imuMsg.orientation.w = quat.w();
+		//according to Chris S this should be the same as angular velocity
+		imuMsg.orientation_covariance = {0.0001024733000162488, 0.0001024733000162488, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0001024733000162488};
+		imuPub.publish(imuMsg);
+	} else {
+ 		ROS_WARN("failed to publish pitch %f, roll %f", pitch, roll);
+	}
 #ifdef DEBUG_WAIT
         cv::waitKey();
 #endif
@@ -165,7 +171,7 @@ static inline void zeroCovariances(sensor_msgs::Imu & imu) {
 static double doLineDetection(cv::Mat img) {
     const float MAX_ANGLE = 0.872665; //50deg in radians
     const float GRADIENT_MATCH_ERROR = 0.1; //1 radian error margin
-    const float CIRC_RADIUS = 7;
+    const float CIRC_RADIUS = 10;
 
     //apply a Canny filter so we get edges of lines
     cv::Mat cannyImg;
@@ -279,5 +285,6 @@ static double doLineDetection(cv::Mat img) {
 
 
 static inline double gradient(cv::Vec4i l) {
-     return atan(((float)(l[1]-l[3])/(l[0]-l[2]))); 
+     const float DEG_MULTIPLIER = 10;
+     return atan(((float)(l[1]-l[3])/(l[0]-l[2]))) * DEG_MULTIPLIER; 
 }
