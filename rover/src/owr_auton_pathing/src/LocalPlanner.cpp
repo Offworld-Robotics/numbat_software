@@ -36,9 +36,11 @@ void LocalPlanner::run(){
             // Message to be sent, defining the new direction of travel
             geometry_msgs::Twist vel_msg;
             
-            double navX, navY;
+            double navX = 0.0;
+            double navY = 0.0;
             double roll, pitch, yaw;
             double driveX, driveY;
+            double distance;
             
             
             // Query the listener for a specific transform, that being:
@@ -53,8 +55,8 @@ void LocalPlanner::run(){
             
             
             // Create a vector from currPosition to first <Pose> within navPath
-            tf::Vector3 desiredVector( navPath.poses[0].pose.position.x - currPosition.getOrigin().x(),
-                                       navPath.poses[0].pose.position.y - currPosition.getOrigin().y(), 
+            tf::Vector3 desiredVector( navPath.poses[count].pose.position.x - currPosition.getOrigin().x(),
+                                       navPath.poses[count].pose.position.y - currPosition.getOrigin().y(), 
                                        0);
             
             // Find the orientation of the rover
@@ -66,26 +68,46 @@ void LocalPlanner::run(){
             tf::Vector3 headingVector( navX = cos(yaw), navY = sin(yaw), 0);
             
             // Take the cross-product of the desired and heading vectors to determine turning direction
-            // TODO: ensure headingVector has z=0
             tf::Vector3 cross = desiredVector.cross(headingVector);
+            
+            
+            distance = desiredVector.length();
             
             //Normalise vector
             //TODO: use this to define turn speed
-            //cross.normalise;
+            cross.normalize();
             
-            // The result of the cross product will be a vector normal to the 2 vectors
-            if(cross.z() == 0.0f) {
-                driveX = MAX_SPEED;
-                driveY = 0;
-            } else if(cross.z() > 0 || cross.z() == -0.0f) {
-                driveX = MAX_SPEED;
-                driveY = 1;
+            if(distance > 0.8){
+                
+                // The result of the cross product will be a vector normal to the 2 vectors
+                //TODO: ensure straight forward has a dead-zone
+                if(cross.getZ() == 0.0f) {
+                    driveX = MAX_SPEED;
+                    driveY = 0;
+                } else if(cross.getZ() > 0 || cross.getZ() == -0.0f) {
+                    driveX = MAX_SPEED;
+                    driveY = 1;
+                } else {
+                    driveX = MAX_SPEED;
+                    driveY = -1;
+                }
+                
+                if( abs( cross.getZ( ) ) <= 0.3){
+                    driveY = 2 * driveY * cross.z();
+                }
+            } else if (count < navPath.poses.size()){
+                count++;
             } else {
-                driveX = MAX_SPEED;
-                driveY = -1;
+                driveX = 0;
+                driveY = 0;
             }
-        
-        ros::spinOnce();
+            
+            vel_msg.linear.x = driveX;
+            vel_msg.linear.y = driveY;
+            
+            twistPublisher.publish(vel_msg);
+            
+            ros::spinOnce();
         
         }
     }
@@ -103,6 +125,8 @@ LocalPlanner::LocalPlanner() {
     //Setup twist publisher to cmdVelToJoints
     twistPublisher = nh.advertise<geometry_msgs::Twist>(TWIST_TOPIC, 1, true);
     
+    count = 0;
+    
     received = FALSE;
 }
 
@@ -111,6 +135,7 @@ void LocalPlanner::pathCallback(const nav_msgs::Path::ConstPtr& pathIn){
     navPath.header = pathIn->header;
     navPath.poses = pathIn->poses;
     received = TRUE;
+    count = 0;
 }
 
 void LocalPlanner::lidarCallback(){

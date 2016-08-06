@@ -44,6 +44,7 @@ class LocalPlanner {
         ros::Subscriber pathSubscriber;
         nav_msgs::Path navPath;
         bool received;
+        int count;
         
         // For receiving obstacle information from a lidar
         ros::Subscriber lidarSubscriber;
