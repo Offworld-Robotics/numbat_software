@@ -9,7 +9,7 @@
 #include "Button.h"
 #include <GL/freeglut.h>
 #include <ros/ros.h>
-#include <string>
+#include <std_msgs/Header.h>
 
 #define PI 3.1415926535897932384626433832795
 
@@ -22,7 +22,7 @@
 class AutoMapGUI : public GLUTWindow {
 	public:
 		AutoMapGUI(int width, int height, int *argc, char **argv);
-		void updateGrid(char *grid, int width, int height);
+		void updateGrid(char *grid, int width, int height, std_msgs::Header header);
 		
 	private:
 		// GLUT essential functions
@@ -43,19 +43,25 @@ class AutoMapGUI : public GLUTWindow {
 		unsigned char *gridData;
 		int gridCols;
 		int gridRows;
+		static std_msgs::Header lastGridHeader;
 		
 		bool showHelp;
 		
 		char textBuffer[BUFFER_SIZE];
 		int bufferIndex;
+		void extractGoalCoords();
+		bool validGoalCoords;
 		
 		Button startButton;
-		Button pauseButton;
 		Button stopButton;
-		
+		Button goalButton;
+
 		static void sendStartMessage();
-		static void sendPauseMessage();
 		static void sendStopMessage();
+		static void sendGoalMessage();
+		
+		static int goalGridRow;
+		static int goalGridCol;
 		
 };
 
