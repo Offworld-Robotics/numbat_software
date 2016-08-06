@@ -7,17 +7,12 @@ Current Build Directory Index=0
 ProjectRootRelative=./
 
 [CMake][CMake Build Directory 0]
-Build Directory Path=file:///home/ros/owr_software/rover/build/
-Build Type=
+Build Directory Path=file:///home/ros/owr_software/rover/src/build
+Build Type=Debug
 CMake Binary=file:///usr/bin/cmake
 Environment Profile=
-Extra Arguments=-DCATKIN_DEVEL_PREFIX=../devel -DCMAKE_INSTALL_PREFIX=../install
-Install Directory=file:///home/ros/owr_software/rover/install
-
-[Defines And Includes][Compiler]
-Name=GCC
-Path=gcc
-Type=GCC
+Extra Arguments=
+Install Directory=file:///usr/local
 
 [Project]
 VersionControlSupport=kdevgit

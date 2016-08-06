@@ -1,0 +1,3 @@
+[Project]
+Manager=KDevCMakeManager
+Name=owr_camera_control

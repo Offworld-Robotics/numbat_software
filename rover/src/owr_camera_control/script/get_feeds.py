@@ -25,10 +25,22 @@ def talker():
         (out, err) = proc.communicate()
         a = out.split() # Get all directory strings inside /dev/
         for word in a:
-            if re.search("video", word): # Check if word is a video device
-                nums = re.findall(r'\d+', word)
+            #if re.search("video", word): # Check if word is a video device
+	    if re.search("cam", word):
+                #nums = re.findall(r'\d+', word)
                 
-                camNum = int(nums[0]) # Return the number of the video device
+                #camNum = int(nums[0]) # Return the number of the video device
+                if re.search("left", word):
+		    camNum = 0
+		elif re.search("right", word):
+		    camNum = 1
+		elif re.search("arm", word):
+		    camNum = 2
+		elif re.search("add", word):
+		    camNum = 3
+                else 
+		    camNum = 3
+                
                 topics = rospy.get_published_topics()
                 topics = numpy.array(topics)
                 # Fill out the information for the stream
