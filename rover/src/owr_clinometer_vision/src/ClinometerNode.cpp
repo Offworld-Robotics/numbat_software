@@ -11,19 +11,19 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <math.h>
 
-#define RESOLUTION_PX 3
+#define RESOLUTION_PX 5
 
 #define DEG_1 (CV_PI/180.0)
 #define RESOLUTION_DEG DEG_1
 
-#define MIN_THRESHOLD 40
-#define MIN_LINE_LENGTH 20
-#define MAX_LINE_GAP 15
-#define BG_INTENSITY_THRESHOLD 150
+#define MIN_THRESHOLD 30
+#define MIN_LINE_LENGTH 8
+#define MAX_LINE_GAP 5
 
 #define COVARIANCE_SIZE 9
 
-//#define DEBUG
+#define DEBUG
+#define DEBUG_WAIT
 
 static inline void zeroCovariances(sensor_msgs::Imu & imu);
 static double doLineDetection(cv::Mat img);
@@ -75,8 +75,8 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         const int HUE_VALUE = 0;
         const int HUE_RANGE = 15;
 
-        const int MIN_SATURATION = 55;
-        const int MIN_VALUE  = 80;
+        const int MIN_SATURATION = 60;
+        const int MIN_VALUE  = 100;
 
         //check if the colour is in the lower hue range
         cv::Mat hueMask;
@@ -131,12 +131,16 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
            ROS_ERROR("No gradient found");
         }
         int pitch = angles[1];*/
-        tf::Quaternion quat(roll, pitch,0);
-        imuMsg.orientation.x = quat.x();
-        imuMsg.orientation.y = quat.y();
-        imuMsg.orientation.z = quat.z();
-        imuMsg.orientation.w = quat.w();
-        imuPub.publish(imuMsg);
+        if(!std::isinf(roll) && !std::isinf(pitch)) {
+            tf::Quaternion quat(roll, pitch, 0);
+            imuMsg.orientation.x = quat.x();
+            imuMsg.orientation.y = quat.y();
+            imuMsg.orientation.z = quat.z();
+            imuMsg.orientation.w = quat.w();
+            imuPub.publish(imuMsg);
+        } else {
+            ROS_ERROR("Failed to publish valid imu. roll %f, pitch %f", roll, pitch);
+        }
 #ifdef DEBUG_WAIT
         cv::waitKey();
 #endif
@@ -164,12 +168,13 @@ static inline void zeroCovariances(sensor_msgs::Imu & imu) {
 
 static double doLineDetection(cv::Mat img) {
     const float MAX_ANGLE = 0.872665; //50deg in radians
-    const float GRADIENT_MATCH_ERROR = 0.1; //1 radian error margin
-    const float CIRC_RADIUS = 7;
+    const float GRADIENT_MATCH_ERROR = 0.2; //1 radian error margin
+    const float CIRC_RADIUS = 5;
+    const int CANNY_KERNEL_SIZE = 7;
 
     //apply a Canny filter so we get edges of lines
     cv::Mat cannyImg;
-    cv::Canny(img, cannyImg, 50, 200, 3);
+    cv::Canny(img, cannyImg, 50, 200, CANNY_KERNEL_SIZE);
 #ifdef DEBUG
     cv::imshow("canny", cannyImg);
 #endif
@@ -178,7 +183,7 @@ static double doLineDetection(cv::Mat img) {
 
 #ifdef DEBUG
     cv::Mat debugImg;
-    cv::cvtColor(img, debugImg, CV_GRAY2RGB);
+    cv::cvtColor(cannyImg, debugImg, CV_GRAY2RGB);
     //draw all the lines and display
     for( size_t i = 0; i < lines.size(); i++ ) {
         cv::Vec4i l = lines[i];
@@ -210,9 +215,6 @@ static double doLineDetection(cv::Mat img) {
 #ifdef DEBUG
     cv::imshow("lines", debugImg);
     ROS_INFO("Next img");
-#ifdef DEBUG_WAIT
-    cv::waitKey();
-#endif
 #endif
     if(angles.size() > 0) {
         std::vector<double> chosenAngles;
@@ -264,6 +266,9 @@ static double doLineDetection(cv::Mat img) {
 #endif
             }
         }
+#ifdef DEBUG_WAIT
+        cv::waitKey();
+#endif
         if(chosenAngles.size() > 0) {
             return chosenAngles[0];
         } else {
@@ -271,6 +276,9 @@ static double doLineDetection(cv::Mat img) {
             return std::numeric_limits<double>::infinity() * -1;
         }
     } else {
+#ifdef DEBUG_WAIT
+        cv::waitKey();
+#endif
         ROS_ERROR("No lines found");
         return std::numeric_limits<double>::infinity();
     }
