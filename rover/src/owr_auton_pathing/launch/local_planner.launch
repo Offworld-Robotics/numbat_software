@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="owr_auton_pathing" type="owr_local_planner" name="local_planner" />
+</launch>

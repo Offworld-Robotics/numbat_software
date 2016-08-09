@@ -17,6 +17,10 @@
 #include <geometry_msgs/Twist.h>
 #include <tf/transform_listener.h>
 #include <cmath>
+#include <message_filters/subscriber.h>
+#include <tf/message_filter.h>
+#include <nav_msgs/OccupancyGrid.h>
+
 
 
 #define PATH_TOPIC "owr_auton_pathing"
@@ -52,9 +56,17 @@ class LocalPlanner {
         // Publish a Twist msg to cmdVelToJoints
         ros::Publisher twistPublisher;
         
-        // Transform listener used to determine current position (using map frame and 'base_link')
+        // transform stuffs
+        message_filters::Subscriber<nav_msgs::OccupancyGrid> mapSubscriber;
         tf::TransformListener tfListener;
+        tf::StampedTransform transform;
+        tf::MessageFilter<nav_msgs::OccupancyGrid> tfFilter;
+        
+        void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
+        
+        double scaleMap(double value);
         
         // Transform result holder, will hold current position.
         tf::StampedTransform currPosition;
+        
 };
