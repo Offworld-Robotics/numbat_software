@@ -11,20 +11,19 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <math.h>
 
-#define RESOLUTION_PX 3
+#define RESOLUTION_PX 5 
 
 #define DEG_1 (CV_PI/180.0)
 #define RESOLUTION_DEG DEG_1
 
-#define MIN_THRESHOLD 40
-#define MIN_LINE_LENGTH 20
-#define MAX_LINE_GAP 15
-#define BG_INTENSITY_THRESHOLD 150
+#define MIN_THRESHOLD 20
+#define MIN_LINE_LENGTH 13
+#define MAX_LINE_GAP 8
 
 #define COVARIANCE_SIZE 9
 
-//#define DEBUG
-//#define DEBUG_WAIT
+#define DEBUG
+#define DEBUG_WAIT
 
 static inline void zeroCovariances(sensor_msgs::Imu & imu);
 static double doLineDetection(cv::Mat img);
@@ -76,7 +75,7 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         const int HUE_VALUE = 0;
         const int HUE_RANGE = 15;
 
-        const int MIN_SATURATION = 55;
+        const int MIN_SATURATION = 100;
         const int MIN_VALUE  = 80;
 
         //check if the colour is in the lower hue range
@@ -104,7 +103,7 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         cv::imshow("red colour", hueMask);
 #endif
         //denoising
-        cv::medianBlur(hueMask,hueMask,5);
+        cv::medianBlur(hueMask,hueMask,3);
 #ifdef DEBUG
         cv::imshow("denoise", hueMask);
 #endif
@@ -138,7 +137,7 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
 		imuMsg.orientation.z = quat.z();
 		imuMsg.orientation.w = quat.w();
 		//according to Chris S this should be the same as angular velocity
-		imuMsg.orientation_covariance = {0.0001024733000162488, 0.0001024733000162488, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0001024733000162488};
+		imuMsg.orientation_covariance = {1.0,1.0,  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
 		imuPub.publish(imuMsg);
 	} else {
  		ROS_WARN("failed to publish pitch %f, roll %f", pitch, roll);
@@ -169,9 +168,9 @@ static inline void zeroCovariances(sensor_msgs::Imu & imu) {
 
 
 static double doLineDetection(cv::Mat img) {
-    const float MAX_ANGLE = 0.872665; //50deg in radians
-    const float GRADIENT_MATCH_ERROR = 0.1; //1 radian error margin
-    const float CIRC_RADIUS = 10;
+    const float MAX_ANGLE = 1.5;
+    const float GRADIENT_MATCH_ERROR = 0.3; //1 radian error margin
+    const float CIRC_RADIUS = 5;
 
     //apply a Canny filter so we get edges of lines
     cv::Mat cannyImg;
