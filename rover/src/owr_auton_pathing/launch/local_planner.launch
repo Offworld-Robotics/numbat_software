@@ -1,3 +1,4 @@
 <launch>
-    <node pkg="owr_auton_pathing" type="owr_local_planner" name="local_planner" />
+    <node pkg="owr_auton_pathing" type="owr_local_planner" name="owr_local_planner" output="screen">
+    </node>
 </launch>

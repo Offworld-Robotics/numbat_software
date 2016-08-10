@@ -32,14 +32,12 @@ void LocalPlanner::run(){
         if(!received){
             ros::spinOnce();
         } else {
-            
             // Message to be sent, defining the new direction of travel
             geometry_msgs::Twist vel_msg;
             
             double roll, pitch, yaw;
             double driveX, driveY;
             double distance;
-            
             
             
             //TODO: Insert local Lidar obstacle handling
@@ -110,7 +108,6 @@ void LocalPlanner::run(){
 
 
 LocalPlanner::LocalPlanner() : nh(), mapSubscriber(nh, "map", 1), tfFilter(mapSubscriber, tfListener, "base_link", 1) {
-    
     // Setup subscriber to astar path
     pathSubscriber = nh.subscribe<nav_msgs::Path>(PATH_TOPIC, 1, &LocalPlanner::pathCallback, this);
     
