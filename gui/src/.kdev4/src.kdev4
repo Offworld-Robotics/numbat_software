@@ -1,0 +1,7 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x06\x00g\x00u\x00i)
+
+[CMake][CMake Build Directory 0]
+Build Type=
+CMake Binary=file:///usr/bin/cmake
+Install Directory=file:///home/ros/owr_software/gui/install
