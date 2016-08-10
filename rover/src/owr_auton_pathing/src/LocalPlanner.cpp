@@ -62,9 +62,7 @@ void LocalPlanner::run(){
             tf::Vector3 desiredVector( scaleMap(navPath.poses[count].pose.position.x) - scaleMap(currPosition.getOrigin().x()),
                                        scaleMap(navPath.poses[count].pose.position.y) - scaleMap(currPosition.getOrigin().y()), 
                                        0);
-            
-            ROS_INFO("desired x: %f y: %f", desiredVector.getX(), desiredVector.getY());
-            ROS_INFO("currPosition x: %f y: %f", currPosition.getOrigin().x(), currPosition.getOrigin().y());
+
             
             // Find the orientation of the rover
             tf::Matrix3x3 m(currPosition.getRotation());
