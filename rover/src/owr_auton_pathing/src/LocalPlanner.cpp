@@ -65,7 +65,7 @@ void LocalPlanner::run(){
             resultantAngle = (desiredAngle - headingAngle)/M_PI;
             
             // Ensure the resultantAngle lies in (-180, 180]. Equivalent of using mod
-            // function but avoids possible issue that mod function will influence sign
+            // function but avoids possible issue that mod function will influence sign of result
             resultantAngle += (resultantAngle>180) ? -360 : (resultantAngle<-180) ? 360 : 0;
             
             // Take as fraction, (-1,1]
