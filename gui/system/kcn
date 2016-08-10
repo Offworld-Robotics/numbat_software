@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if echo $DEVPATH | grep -q 3-4
+then
+  #left
+  kill `ps -C camera_node -f | grep left | sed s/' '' '*/' '/g | cut -d ' ' -f2`
+else
+  #right
+  kill `ps -C camera_node -f | grep right | sed s/' '' '*/' '/g | cut -d ' ' -f2`
+fi
+

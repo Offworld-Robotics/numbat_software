@@ -288,7 +288,7 @@ curses.wrapper(MainLoop)
 
 # if we're using tmux, kill the server
 if 'TMUX' in os.environ or 'TMUXPROCMON' in os.environ:
-  p = subprocess.Popen("tmux kill-session -t prm", shell=True)
+  p = subprocess.Popen("tmux kill-session -t prm2", shell=True)
 
 
 curses.nocbreak()

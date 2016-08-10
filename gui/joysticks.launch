@@ -7,5 +7,6 @@
   <node pkg="joy" type="joy_node" name="arm_joy" >
     <remap from="joy" to="arm_joy" />
     <param name="dev" type="string" value="/dev/input/js1" />
+    <param name="deadzone" type="double" value="0.25" />
   </node>
 </launch>

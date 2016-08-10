@@ -1,17 +1,23 @@
 /*
- * Rellay Node for transmitting using the protobuf protocol
- * Author: Harry J.E Day for Bluesat OWR
- * Date: 2/08/2014
+ * Filters the Joysticks 
+ *  ie takes input from gamepad and sends appropriate control messages to 
+ *  rover systems
+ * Original Author: Sam S
+ * Editors: Harry J.E Day, Sean Thompson
+ * ROS_NODE:owr_joystick_filter
  */
  
-#ifndef POS_CONTROL_H
-#define POS_CONTROL_H
+#ifndef JOYSTICK_FILTER_H
+#define JOYSTICK_FILTER_H
 
 #include <ros/ros.h>
+#include <Eigen/Core>
 #include "owr_messages/position.h"
 #include "owr_messages/heading.h"
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Joy.h>
+#include <std_msgs/Int16.h>
+#include <std_msgs/Float64.h>
 
 class JoystickFilter {
     
@@ -34,8 +40,12 @@ class JoystickFilter {
         //ros::Subscriber sub;
         ros::NodeHandle node;         // ros::NodeHandle nh;
         ros::Publisher  velPublisher;
+        ros::Publisher lidarModePublisher;
+        ros::Publisher lidarPosPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
+        
+        double gimbalRate;
 
         sensor_msgs::Joy msgsOut;
         
@@ -54,14 +64,23 @@ class JoystickFilter {
         std::list<double> latitudes;
         std::list<double> longitudes;
         int cam0Button, cam1Button, cam2Button, cam3Button;
+        std_msgs::Int16 lidarModeMsg;
+        std_msgs::Float64 lidarPos;
+
         
-
-
-        
-        //to keep track of button states. It is possible press could change it
-
-   
+        // working data for thumbsticks calculated on each input callback
+        // LEFT Thumb Stick
+        Eigen::Vector2d rawLStick;
+        double rawMagLStick;
+        double deadZoneCorrectedMagL;
+        double deadzoneRescaledLStickMag;
+        Eigen::Vector2d rescaledLStick;
+        // RIGHT Thumb Stick
+        Eigen::Vector2d rawRStick;
+        double rawMagRStick;
+        double deadZoneCorrectedMagR;
+        double deadzoneRescaledRStickMag;
+        Eigen::Vector2d rescaledRStick;
 };
 
-
-#endif
+#endif //JOYSTICK_FILTER_H
