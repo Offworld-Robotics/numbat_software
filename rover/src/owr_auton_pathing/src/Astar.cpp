@@ -16,81 +16,44 @@ int main (int argc, char *argv[]) {
 }
 
 Astar::Astar(const std::string topic) : node(), mapSubscriber(node, "map", 1), tfFilter(mapSubscriber, tfListener, "base_link", 1) {
-    // shouldn't need to set any values..?
-    // check topic names!
+    // TODO put main code in a separate function; have callbacks call it
     //mapSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::mapCallback, this);
     pathPublisher = node.advertise<nav_msgs::Path>(topic, 2, true);
     
     goalSubscriber = node.subscribe<geometry_msgs::PointStamped>("owr_auton_pathing/astargoal", 2, &Astar::setGoalCallback, this);
     
     // false by default; use callback to update
-    go = false;
-    goSubscriber = node.subscribe<std_msgs::Bool>("owr_auton_pathing/astarstart", 2, &Astar::setGoCallback, this);
+    go = true;
+    //goSubscriber = node.subscribe<std_msgs::Bool>("owr_auton_pathing/astarstart", 2, &Astar::setGoCallback, this);
     
-    ROS_INFO("registering transform listener");
     tfFilter.registerCallback(boost::bind(&Astar::mapCallback, this, _1));
 }
 
 void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
-    // if it's a nogo, don't go!
-    if (go == true) {
+    tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
     
-        //goal.isGoal = true;
-        //goal.x = 2206;
-        //goal.y = 2060;
-        
-        tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
-        
-        ROS_INFO("tf = (%f, %f)\n", transform.getOrigin().getX(), transform.getOrigin().getY());
-        
-        start.isStart = true;
-        start.x = 2024;
-        start.y = 2024;
-        
-        if (!goal.isGoal) {
-            ROS_ERROR("Can't find goal!");
-            return;
-        }
-        if (!start.isStart) {
-            ROS_ERROR("Can't find start!");
-            return;
-        }
-        
-        // interpret data and put it in the occupancyGrid
-        //makeGrid((int8_t*)gridData->data.data(), gridData->info);
-        //nav_msgs::OccupancyGrid testData;
-        
-        makeGrid((int8_t*)gridData->data.data(), gridData->info);
-        
-        findPath();         // do aStar algorithm, get the path
-        printGrid();
-        // idk
-        finalPath.header = gridData->header;
-        finalPath.header.stamp = ros::Time::now();
-        convertPath();      //convert aStarPath to the path output we need
-        
-        //std::cout << "occupancyGrid width = " << occupancyGrid.size() << std::endl;
-        //std::cout << "occupancyGrid height = " << occupancyGrid[0].size() << std::endl;
-        //std::cout << "start = (" << start.x << ", " << start.y << ") = " << (int)occupancyGrid[start.x][start.y] << std::endl;
-        //std::cout << "goal = (" << goal.x << ", " << goal.y << ") = " << (int)occupancyGrid[goal.x][goal.y] << std::endl;
-        //std::cout << "(2020, 2024) = " << (int)occupancyGrid[2020][2024] << std::endl;
-        
-        clearPaths();
-        
-        // no idea how to publish a path lelele?
-        pathPublisher.publish(finalPath);
-        ROS_INFO("Published a path");
-    }
+    start.x = MAGIC_FACTOR*(transform.getOrigin().getX() + MAGIC_OFFSET);
+    start.x = MAGIC_FACTOR*(transform.getOrigin().getY() + MAGIC_OFFSET);
+    start.isStart = true;
     
+    ROS_INFO("base_link at (%f, %f)", transform.getOrigin().getX(), transform.getOrigin().getY());
+    ROS_INFO("Rover tf at (%d, %d)", start.x, start.y);
+    
+    makeGrid((int8_t*)gridData->data.data(), gridData->info);
+    
+    finalPath.header = gridData->header;
+    finalPath.header.stamp = ros::Time::now();
+    doSearch();
 }
 
 void Astar::setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint) {
     
     goal.isGoal = true;
-    goal.x = 20*(thePoint->point.x + 101.25);
-    goal.y = 20*(thePoint->point.y + 101.25);
+    goal.x = MAGIC_FACTOR*(thePoint->point.x + MAGIC_OFFSET);
+    goal.y = MAGIC_FACTOR*(thePoint->point.y + MAGIC_OFFSET);
     ROS_INFO("Astar goal at (%d, %d)", goal.x, goal.y);
+    doSearch();
     
 }
 
@@ -99,6 +62,26 @@ void Astar::setGoCallback(const std_msgs::Bool::ConstPtr& goOrNo) {
     go = goOrNo->data;
     if (go == false) {
         ROS_INFO("Astar paused");
+    } else {
+        ROS_INFO("Astar doing");
+        doSearch();
+    }
+}
+
+void Astar::doSearch() {
+    // if it's a nogo, don't go!
+    if (go == true && goal.isGoal && start.isStart) {
+        
+        if (!findPath()) { // do aStar algorithm, get the path
+            ROS_ERROR("No path found!");
+            return;
+        }
+        printGrid();        // testing only
+        convertPath();      // convert aStarPath to the path output we need
+        
+        clearPaths();
+        pathPublisher.publish(finalPath);
+        ROS_INFO("Published a path");
     }
 }
 
@@ -229,7 +212,7 @@ void Astar::printGrid(){
 }
 /*------------------------------------*/
 
-void Astar::findPath() {
+bool Astar::findPath() {
     currentPos = start;           // set our current position to the start position
     
     while(currentPos != goal) {
@@ -238,8 +221,7 @@ void Astar::findPath() {
         computeNeighbors();                 // get neighbors of current position
         
         if(openSet.empty()) {               // or if there is no solution (no more valid points)
-            ROS_ERROR("No path found!");
-            return;
+            return false;
         }
         
         //std::cout << "openSet.top() xy = (" << openSet[0].x << ", " << openSet[0].y << ")" << std::endl;
@@ -257,6 +239,7 @@ void Astar::findPath() {
             break;
         }
     }
+    return true;
 }
 
 void Astar::computeNeighbors () {
@@ -388,8 +371,8 @@ void Astar::convertPath() {
     finalPath.poses.resize(aStarPath.size());
     for (unsigned int i = 0; i < aStarPath.size(); ++i) {
         thisPose.header.seq = i;
-        thisPose.pose.position.x = ((double)aStarPath[i].x/20) - 101.25;
-        thisPose.pose.position.y = ((double)aStarPath[i].y/20) - 101.25;
+        thisPose.pose.position.x = ((double)aStarPath[i].x/MAGIC_FACTOR) - MAGIC_OFFSET;
+        thisPose.pose.position.y = ((double)aStarPath[i].y/MAGIC_FACTOR) - MAGIC_OFFSET;
         
         finalPath.poses[i] = thisPose;
     }

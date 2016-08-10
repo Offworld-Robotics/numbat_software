@@ -26,6 +26,9 @@
 #define SIZE_OF_GRID 5000
 #define IMPASS 255
 
+#define MAGIC_OFFSET 101.25
+#define MAGIC_FACTOR 20
+
 class point {
     public:
         int x;
@@ -92,6 +95,15 @@ class Astar {
         tf::StampedTransform transform;
         tf::MessageFilter<nav_msgs::OccupancyGrid> tfFilter;
         
+        // these call doSearch after receiving new information
+        void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
+        void setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint);
+        void setGoCallback(const std_msgs::Bool::ConstPtr& goOrNo);
+        
+        // do I go or no?
+        void doSearch(void);
+        bool go;
+        
         //nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
         nav_msgs::Path finalPath;               // finalPath for us to publish
         
@@ -107,14 +119,7 @@ class Astar {
         point start;
         point currentPos;
         
-        // do I go or no?
-        bool go;
-        
-        void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
-        void setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint);
-        void setGoCallback(const std_msgs::Bool::ConstPtr& goOrNo);
-        
-        void findPath();                          // main loop
+        bool findPath();                          // main astar loop, returns true if successful
         
         void makeGrid(int8_t data[], nav_msgs::MapMetaData info);
         
