@@ -22,11 +22,24 @@
 #include <nav_msgs/OccupancyGrid.h>
 
 
-
+//Topic names
 #define PATH_TOPIC "owr_auton_pathing"
 #define TWIST_TOPIC "owr_auton_twist"
 #define LIDAR_TOPIC "NULL"
+
+// Constants used by planner
 #define MAX_SPEED 0.7
+
+#define MAX_ANGLE 10 //in degrees
+#define MAX_TURN MAX_ANGLE / 180
+
+#define MIN_DISTANCE_TO_GOAL 0.8 // in metres
+
+// TODO: If a deadzone is desired, implement these
+//#define MIN_ANGLE 0
+//#define MIN_TURN MIN_ANGLE/180
+
+
 #define FALSE 0
 #define TRUE 1
 

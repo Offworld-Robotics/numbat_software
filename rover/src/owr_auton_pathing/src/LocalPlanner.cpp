@@ -39,6 +39,7 @@ void LocalPlanner::run(){
             double driveX, driveY;
             double distance;
             
+            double headingAngle, desiredAngle, resultantAngle;
             
             //TODO: Insert local Lidar obstacle handling
             
@@ -56,33 +57,53 @@ void LocalPlanner::run(){
             // Calculate a heading vector from the yaw (which is in radians)
             tf::Vector3 headingVector( cos(yaw), sin(yaw), 0);
             
+            //Calculate the angle between the two vectors (-pi,pi]:
+            desiredAngle = std::atan2(desiredVector.getY(),desiredVector.getX());
+            headingAngle = std::atan2(headingVector.getY(),headingVector.getX());
+            
+            // (-2pi, 2pi], then convert to degrees (-180,180]
+            resultantAngle = (desiredAngle - headingAngle)/M_PI;
+            
+            // Ensure the resultantAngle lies in (-180, 180]. Equivalent of using mod
+            // function but avoids possible issue that mod function will influence sign
+            resultantAngle += (resultantAngle>180) ? -360 : (resultantAngle<-180) ? 360 : 0;
+            
+            // Take as fraction, (-1,1]
+            resultantAngle = resultantAngle/180;
+            
             // Take the cross-product of the desired and heading vectors to determine turning direction
-            tf::Vector3 cross = desiredVector.cross(headingVector);
+            tf::Vector3 cross = headingVector.cross(desiredVector);
             
             
             distance = desiredVector.length();
             
             //Normalise vector
-            //TODO: use this to define turn speed
+            //TODO: remove if unneeded
             cross.normalize();
             
-            if(distance > 0.8){
+            if(distance > MIN_DISTANCE_TO_GOAL){
                 
                 // The result of the cross product will be a vector normal to the 2 vectors
-                if( cross.getZ() >= 0.2 || cross.getZ() == -0.0f) {
+                if( resultantAngle > 0 || resultantAngle == -0.0f) {
+                    
+                    // Go left
                     driveX = MAX_SPEED;
                     driveY = 1;
-                } else if (cross.getZ() > -0.2 && cross.getZ() < 0.2) {
-                    driveX = MAX_SPEED;
-                    driveY = 0;
-                } else {
+                } else if (resultantAngle < 0) {
+                    
+                    // Go right
                     driveX = MAX_SPEED;
                     driveY = -1;
+                } else {
+                
+                    //Go straight forward
+                    driveX = MAX_SPEED;
+                    driveY = 0;
                 }
                 
                 // Adjust turn to be relative to desired vector
-                if( abs( cross.getZ( ) ) <= 0.3){
-                    driveY = 2 * driveY * cross.z();
+                if( abs( resultantAngle) <= MAX_TURN){
+                    driveY = 2 * driveY * resultantAngle;
                 }
             } else if (count < navPath.poses.size()){
                 // We have got close enough to current pose, begin navigation to next pose
