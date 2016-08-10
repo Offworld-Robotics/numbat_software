@@ -28,6 +28,20 @@ int main (int argc, char *argv[]) {
 void LocalPlanner::run(){
     while(ros::ok()){
         
+        nav_msgs::Path testPath;
+        
+        testPath.poses.resize(1);
+        
+        geometry_msgs::PoseStamped thisPose;
+        
+        thisPose.pose.position.x = 2024;
+        thisPose.pose.position.y = 2024;
+        
+        testPath.poses[0] = thisPose;
+        
+        testPublisher.publish(testPath);
+        
+        
         //if no message has yet been received, wait, otherwise, use navPath to determine a twist
         if(!received){
             ros::spinOnce();
@@ -49,6 +63,9 @@ void LocalPlanner::run(){
                                        scaleMap(navPath.poses[count].pose.position.y) - scaleMap(currPosition.getOrigin().y()), 
                                        0);
             
+            ROS_INFO("desired x: %f y: %f", desiredVector.getX(), desiredVector.getY());
+            ROS_INFO("currPosition x: %f y: %f", currPosition.getOrigin().x(), currPosition.getOrigin().y());
+            
             // Find the orientation of the rover
             tf::Matrix3x3 m(currPosition.getRotation());
             
@@ -61,8 +78,9 @@ void LocalPlanner::run(){
             desiredAngle = std::atan2(desiredVector.getY(),desiredVector.getX());
             headingAngle = std::atan2(headingVector.getY(),headingVector.getX());
             
+            
             // (-2pi, 2pi], then convert to degrees (-180,180]
-            resultantAngle = (desiredAngle - headingAngle)/M_PI;
+            resultantAngle = 180.0 * (desiredAngle - headingAngle)/M_PI;
             
             // Ensure the resultantAngle lies in (-180, 180]. Equivalent of using mod
             // function but avoids possible issue that mod function will influence sign of result
@@ -70,6 +88,7 @@ void LocalPlanner::run(){
             
             // Take as fraction, (-1,1]
             resultantAngle = resultantAngle/180;
+            
             
             // Take the cross-product of the desired and heading vectors to determine turning direction
             tf::Vector3 cross = headingVector.cross(desiredVector);
@@ -134,6 +153,9 @@ LocalPlanner::LocalPlanner() : nh(), mapSubscriber(nh, "map", 1), tfFilter(mapSu
     
     //Subscribe to lidar obstacle detection
     //lidarSubscriber = nh.subscribe<INSERT_MSG>(LIDAR_TOPIC, 1, &LocalPlanner::lidarCallback, this);
+    
+    
+    testPublisher = nh.advertise<nav_msgs::Path>(TEST_PATH, 1, true);
     
     //Setup twist publisher to cmdVelToJoints
     twistPublisher = nh.advertise<geometry_msgs::Twist>(TWIST_TOPIC, 1, true);

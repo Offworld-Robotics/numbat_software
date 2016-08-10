@@ -23,9 +23,11 @@
 
 
 //Topic names
-#define PATH_TOPIC "owr_auton_pathing"
-#define TWIST_TOPIC "owr_auton_twist"
+#define PATH_TOPIC "owr_auton_pathing" // Subcribe to the astar path
+#define TWIST_TOPIC "/cmd_vel" // Twist being published to the drive controller
 #define LIDAR_TOPIC "NULL"
+
+#define TEST_PATH "/testPath"
 
 // Constants used by planner
 
@@ -58,6 +60,8 @@ class LocalPlanner {
     private:
         ros::NodeHandle nh;
         
+        // For showing the format of a navPath in topic monitor
+        ros::Publisher testPublisher;
         
         // For receiving and storing an a astar Path
         ros::Subscriber pathSubscriber;
