@@ -7,6 +7,7 @@ project(owr_positioning)
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
     roscpp
+  rospy
   sensor_msgs
   std_msgs
   geometry_msgs
@@ -87,7 +88,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES owr_positioning
-  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry tf
+  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry tf rospy
   DEPENDS system_lib
 )
 
