@@ -24,12 +24,12 @@
 
 //Topic names
 #define PATH_TOPIC "owr_auton_pathing"
-#define TWIST_TOPIC "owr_auton_twist"
+#define TWIST_TOPIC "/cmd_vel"
 #define LIDAR_TOPIC "NULL"
 
 // Constants used by planner
 
-#define MAX_SPEED 0.7 //Max speed [0,1] of the rover. The autonomous will always drive at this speed
+#define MAX_SPEED 0.4 //Max speed [0,1] of the rover. The autonomous will always drive at this speed
 
 // NOTE: Only edit MAX_ANGLE ***********
 #define MAX_ANGLE 10                //in degrees, defines the range in which rover will stop
