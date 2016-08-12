@@ -28,27 +28,29 @@ int main (int argc, char *argv[]) {
 void LocalPlanner::run(){
     while(ros::ok()){
         
-        nav_msgs::Path testPath;
+        //nav_msgs::Path testPath;
         
-        testPath.poses.resize(1);
+        //testPath.poses.resize(1);
         
-        geometry_msgs::PoseStamped thisPose;
+        //geometry_msgs::PoseStamped thisPose;
         
-        thisPose.pose.position.x = 2024;
-        thisPose.pose.position.y = 2024;
+        //thisPose.pose.position.x = 2024;
+        //thisPose.pose.position.y = 2024;
         
-        testPath.poses[0] = thisPose;
+        //testPath.poses[0] = thisPose;
         
-        testPublisher.publish(testPath);
+        //testPublisher.publish(testPath);
         
+        double driveX = 0.0;
+        double driveY = 0.0;
+        
+        // Message to be sent, defining the new direction of travel
+        geometry_msgs::Twist vel_msg;
         
         //if no message has yet been received, wait, otherwise, use navPath to determine a twist
         if(!received){
             ros::spinOnce();
-        } else {
-            // Message to be sent, defining the new direction of travel
-            geometry_msgs::Twist vel_msg;
-            
+        } else if (count < navPath.poses.size()) {
             double roll, pitch, yaw;
             double driveX, driveY;
             double distance;
@@ -59,10 +61,17 @@ void LocalPlanner::run(){
             
             
             // Create a vector from currPosition to first <Pose> within navPath
-            tf::Vector3 desiredVector( scaleMap(navPath.poses[count].pose.position.x) - scaleMap(currPosition.getOrigin().x()),
-                                       scaleMap(navPath.poses[count].pose.position.y) - scaleMap(currPosition.getOrigin().y()), 
-                                       0);
-
+            //tf::Vector3 desiredVector( scaleMap(navPath.poses[count].pose.position.x) - scaleMap(currPosition.getOrigin().x()),
+            //                           scaleMap(navPath.poses[count].pose.position.y) - scaleMap(currPosition.getOrigin().y()), 
+            //                           0);
+            
+            
+            tf::Vector3 desiredVector( scaleMap(navPath.poses[count].pose.position.x) - scaleMap(2024.0),
+                                       scaleMap(navPath.poses[count].pose.position.y) - scaleMap(2024.0), 
+                                       0.0);
+            
+            //ROS_INFO("Inputs 2 %f, %d", navPath.poses[count].pose.position.x, count);
+            //ROS_INFO("Desired Vector x: %f y: %f", desiredVector.getX(), desiredVector.getY());
             
             // Find the orientation of the rover
             tf::Matrix3x3 m(currPosition.getRotation());
@@ -72,20 +81,24 @@ void LocalPlanner::run(){
             // Calculate a heading vector from the yaw (which is in radians)
             tf::Vector3 headingVector( cos(yaw), sin(yaw), 0);
             
+            //ROS_INFO("Heading Vector x: %f y: %f", headingVector.getX(), headingVector.getY());
+            
             //Calculate the angle between the two vectors (-pi,pi]:
             desiredAngle = std::atan2(desiredVector.getY(),desiredVector.getX());
             headingAngle = std::atan2(headingVector.getY(),headingVector.getX());
             
+            //ROS_INFO("DANGLE %f", 180.0*desiredAngle/M_PI);
+            //ROS_INFO("HANGLE %f", 180.0*headingAngle/M_PI);
             
             // (-2pi, 2pi], then convert to degrees (-180,180]
             resultantAngle = 180.0 * (desiredAngle - headingAngle)/M_PI;
             
             // Ensure the resultantAngle lies in (-180, 180]. Equivalent of using mod
             // function but avoids possible issue that mod function will influence sign of result
-            resultantAngle += (resultantAngle>180) ? -360 : (resultantAngle<-180) ? 360 : 0;
+            resultantAngle += (resultantAngle>180.0) ? -360.0 : (resultantAngle<-180) ? 360.0 : 0.0;
             
             // Take as fraction, (-1,1]
-            resultantAngle = resultantAngle/180;
+            resultantAngle = resultantAngle/180.0;
             
             
             // Take the cross-product of the desired and heading vectors to determine turning direction
@@ -94,6 +107,9 @@ void LocalPlanner::run(){
             
             distance = desiredVector.length();
             
+            //ROS_INFO("distance %f", distance);
+            //ROS_INFO("angle %f", resultantAngle);
+            
             //Normalise vector
             //TODO: remove if unneeded
             cross.normalize();
@@ -101,46 +117,51 @@ void LocalPlanner::run(){
             if(distance > MIN_DISTANCE_TO_GOAL){
                 
                 // The result of the cross product will be a vector normal to the 2 vectors
-                if( resultantAngle > 0 || resultantAngle == -0.0f) {
-                    
-                    // Go left
+                if( resultantAngle == 0.0) {
                     driveX = MAX_SPEED;
-                    driveY = 1;
-                } else if (resultantAngle < 0) {
-                    
-                    // Go right
+                    driveY = 0.0;
+                    //ROS_INFO("go forwards %f %f", driveX, driveY);
+                } else if (resultantAngle < 0.0) {
                     driveX = MAX_SPEED;
-                    driveY = -1;
+                    driveY = -1.0;
+                    //ROS_INFO("go right %f %f", driveX, driveY);
                 } else {
-                
-                    //Go straight forward
                     driveX = MAX_SPEED;
-                    driveY = 0;
+                    driveY = 1.0;
+                    //ROS_INFO("go left %f %f", driveX, driveY);
                 }
+                
+                //ROS_INFO("preadjust %f %f, %f, %f, %f", driveX, driveY, resultantAngle, fabs(resultantAngle), MAX_TURN);
                 
                 // Adjust turn to be relative to desired vector
-                if( abs( resultantAngle) <= MAX_TURN){
-                    driveY = 2 * driveY * resultantAngle;
+                if( fabs( resultantAngle) <= MAX_TURN){
+                    driveY = 2.0 * driveY * fabs(resultantAngle);
+                    //ROS_INFO("adjust %f %f", driveX, driveY);
                 }
-            } else if (count < navPath.poses.size()){
+                vel_msg.linear.x = driveX;
+                vel_msg.linear.y = driveY;
+            } else {
                 // We have got close enough to current pose, begin navigation to next pose
                 count++;
                 driveX = 0;
                 driveY = 0;
-            } else {
-                // We have reached goal, DONT MOVE!!! 
-                driveX = 0;
-                driveY = 0;
-            }
-            
+                //ROS_INFO("next pose %f %f", driveX, driveY);
+                vel_msg.linear.x = driveX;
+                vel_msg.linear.y = driveY;
+            } 
+        } else {
+            // We have reached goal, DONT MOVE!!! 
+            //ROS_INFO(" WE THERE");
+            driveX = 0;
+            driveY = 0;
             vel_msg.linear.x = driveX;
             vel_msg.linear.y = driveY;
-            
-            twistPublisher.publish(vel_msg);
-            
-            ros::spinOnce();
-        
         }
+        //ROS_INFO("output %f %f", driveX, driveY);
+        
+        twistPublisher.publish(vel_msg);
+        
+        ros::spinOnce();
     }
 }
 
@@ -170,6 +191,8 @@ LocalPlanner::LocalPlanner() : nh(), mapSubscriber(nh, "map", 1), tfFilter(mapSu
 void LocalPlanner::pathCallback(const nav_msgs::Path::ConstPtr& pathIn){
     navPath.header = pathIn->header;
     navPath.poses = pathIn->poses;
+    
+    ROS_INFO("Inputs 1 %f", pathIn->poses[0].pose.position.x);
     received = TRUE;
     count = 0;
 }

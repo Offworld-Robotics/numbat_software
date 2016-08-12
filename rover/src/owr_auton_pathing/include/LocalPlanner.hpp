@@ -31,11 +31,11 @@
 
 // Constants used by planner
 
-#define MAX_SPEED 0.7 //Max speed [0,1] of the rover. The autonomous will always drive at this speed
+#define MAX_SPEED 0.3 //Max speed [0,1] of the rover. The autonomous will always drive at this speed
 
 // NOTE: Only edit MAX_ANGLE ***********
 #define MAX_ANGLE 10                //in degrees, defines the range in which rover will stop
-#define MAX_TURN MAX_ANGLE / 180    //turning 90deg and instead turn relative to the angle offset
+#define MAX_TURN (MAX_ANGLE / 180.0)    //turning 90deg and instead turn relative to the angle offset
 
 #define MIN_DISTANCE_TO_GOAL 0.8 // in metres
 
