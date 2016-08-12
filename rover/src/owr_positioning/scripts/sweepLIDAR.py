@@ -30,7 +30,7 @@ if __name__ == '__main__':
             pos = rangeMax
         elif pos < rangeMin:
             direction = 1
-            pos = rangeMax
+            pos = rangeMin
 
         pub.publish(pos)
         rate.sleep()

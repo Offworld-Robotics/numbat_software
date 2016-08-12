@@ -11,19 +11,19 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <math.h>
 
-#define RESOLUTION_PX 5
+#define RESOLUTION_PX 7 
 
 #define DEG_1 (CV_PI/180.0)
 #define RESOLUTION_DEG DEG_1
 
-#define MIN_THRESHOLD 20
-#define MIN_LINE_LENGTH 13
+#define MIN_THRESHOLD 30
+#define MIN_LINE_LENGTH 11
 #define MAX_LINE_GAP 8
 
 #define COVARIANCE_SIZE 9
 
-#define DEBUG
-#define DEBUG_WAIT
+//#define DEBUG
+//#define DEBUG_WAIT
 
 static inline void zeroCovariances(sensor_msgs::Imu & imu);
 static double doLineDetection(cv::Mat img);
@@ -73,10 +73,10 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
 
         //red is painfull because it is in the end of the hsv colour circle
         const int HUE_VALUE = 0;
-        const int HUE_RANGE = 15;
+        const int HUE_RANGE = 8;
 
         const int MIN_SATURATION = 60;
-        const int MIN_VALUE  = 100;
+        const int MIN_VALUE  = 80;
 
         //check if the colour is in the lower hue range
         cv::Mat hueMask;
@@ -112,9 +112,9 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         rollImg = hueMask.clone();
         pitchImg = hueMask.clone();
         ROS_INFO("x %d, y %d", rollImg.size().width, rollImg.size().height);
-        const cv::Rect rollRect(10, 80 , 140,80 );
+        const cv::Rect rollRect(15, 80 , 135,80 );
         double roll  = doLineDetection(rollImg(rollRect));
-        const cv::Rect pitchRect(170, 80 , 150,80 );
+        const cv::Rect pitchRect(175, 80 , 145,80 );
         double pitch = doLineDetection(pitchImg(pitchRect));
 #ifdef DEBUG
         cv::rectangle(hsvImg, rollRect, cv::Scalar(255,255,255), 3); 
@@ -122,9 +122,10 @@ void ClinometerNode::imageCallback(const sensor_msgs::Image_< std::allocator< vo
         cv::imshow("rects", hsvImg);
 #endif
 	if(!std::isinf(roll) && !std::isinf(pitch)) {
+                
 		sensor_msgs::Imu imuMsg;
 		imuMsg.header = msg->header;
-		imuMsg.header.frame_id = "base_link";
+		imuMsg.header.frame_id = "clinometer";
 		zeroCovariances(imuMsg);
 		/*roll = angles[0];
 		} else {
@@ -165,17 +166,15 @@ static inline void zeroCovariances(sensor_msgs::Imu & imu) {
 
 }
 
-
-
 static double doLineDetection(cv::Mat img) {
     const float MAX_ANGLE = 1.5;
     const float GRADIENT_MATCH_ERROR = 0.3; //1 radian error margin
-    const float CIRC_RADIUS = 5;
-    const int CANNY_KERNEL_SIZE = 7;
+    const float CIRC_RADIUS = 1;
+    const int CANNY_KERNEL_SIZE = 3;
 
     //apply a Canny filter so we get edges of lines
-    cv::Mat cannyImg;
-    cv::Canny(img, cannyImg, 50, 200, CANNY_KERNEL_SIZE);
+    cv::Mat cannyImg = img;
+    //cv::Canny(img, cannyImg, 50, 200, CANNY_KERNEL_SIZE);
 #ifdef DEBUG
     cv::imshow("canny", cannyImg);
 #endif
@@ -190,6 +189,7 @@ static double doLineDetection(cv::Mat img) {
         cv::Vec4i l = lines[i];
         cv::line(debugImg, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 3, CV_AA);
     }
+    unsigned char lineColour = 0;
 #endif
 
     //calculate the angles of the lines
@@ -207,7 +207,8 @@ static double doLineDetection(cv::Mat img) {
             angles.push_back(angle);
             goodLines.push_back(l);
 #ifdef DEBUG
-            cv::line(debugImg, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,255,0), 3, CV_AA);
+	    lineColour+=5;
+            cv::line(debugImg, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(lineColour,255,0), 3, CV_AA);
 #endif
         }
     }
@@ -272,7 +273,13 @@ static double doLineDetection(cv::Mat img) {
         cv::waitKey();
 #endif
         if(chosenAngles.size() > 0) {
-            return chosenAngles[0];
+            double minGradient = chosenAngles[0];
+            for(int i = 0; i < chosenAngles.size(); ++i) {
+                if(fabs(minGradient) > fabs(chosenAngles[i]) ){
+                    minGradient = chosenAngles[i];
+                }
+            }
+            return minGradient;
         } else {
             ROS_ERROR("No Good lines found");
             return std::numeric_limits<double>::infinity() * -1;
