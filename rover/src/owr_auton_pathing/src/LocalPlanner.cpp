@@ -28,19 +28,6 @@ int main (int argc, char *argv[]) {
 void LocalPlanner::run(){
     while(ros::ok()){
         
-        //nav_msgs::Path testPath;
-        
-        //testPath.poses.resize(1);
-        
-        //geometry_msgs::PoseStamped thisPose;
-        
-        //thisPose.pose.position.x = 2024;
-        //thisPose.pose.position.y = 2024;
-        
-        //testPath.poses[0] = thisPose;
-        
-        //testPublisher.publish(testPath);
-        
         double driveX = 0.0;
         double driveY = 0.0;
         
@@ -48,7 +35,7 @@ void LocalPlanner::run(){
         geometry_msgs::Twist vel_msg;
         
         //if no message has yet been received, wait, otherwise, use navPath to determine a twist
-        if(!received){
+        if(!receivedPath){
             ros::spinOnce();
         } else if (count < navPath.poses.size()) {
             double roll, pitch, yaw;
@@ -56,8 +43,6 @@ void LocalPlanner::run(){
             double distance;
             
             double headingAngle, desiredAngle, resultantAngle;
-            
-            //TODO: Insert local Lidar obstacle handling
             
             
             // Create a vector from currPosition to first <Pose> within navPath
@@ -73,15 +58,21 @@ void LocalPlanner::run(){
             //ROS_INFO("Inputs 2 %f, %d", navPath.poses[count].pose.position.x, count);
             //ROS_INFO("Desired Vector x: %f y: %f", desiredVector.getX(), desiredVector.getY());
             
+            //TEST DATA**************************** TODO: remove
+            tf::Quaternion q( -0.002, -0.749, 0.250, 0.613);
+            currPosition.setRotation( q);
+            
             // Find the orientation of the rover
-            tf::Matrix3x3 m(currPosition.getRotation());
+            tf::Matrix3x3 m (currPosition.getRotation());
             
             m.getRPY( roll, pitch, yaw);
             
-            // Calculate a heading vector from the yaw (which is in radians)
-            tf::Vector3 headingVector( cos(yaw), sin(yaw), 0);
+            ROS_INFO("r: %f p: %f y: %f", 180.0*roll/M_PI, 180.0*pitch/M_PI, 180.0*yaw/M_PI);
             
-            //ROS_INFO("Heading Vector x: %f y: %f", headingVector.getX(), headingVector.getY());
+            // Calculate a heading vector from the yaw (which is in radians)
+            tf::Vector3 headingVector( cos(yaw), sin(yaw), 0.0);
+            
+            ROS_INFO("Heading Vector x: %f y: %f", headingVector.getX(), headingVector.getY());
             
             //Calculate the angle between the two vectors (-pi,pi]:
             desiredAngle = std::atan2(desiredVector.getY(),desiredVector.getX());
@@ -148,7 +139,16 @@ void LocalPlanner::run(){
                 //ROS_INFO("next pose %f %f", driveX, driveY);
                 vel_msg.linear.x = driveX;
                 vel_msg.linear.y = driveY;
-            } 
+            }
+            
+            //TODO: Insert local Lidar obstacle handling
+            //TODO: reverse if no turning circle allows object avoidance
+            /*
+            if(receivedLaser){}
+                lidarAvoidance( driveX, driveY, resultantAngle);
+            }
+            */
+            
         } else {
             // We have reached goal, DONT MOVE!!! 
             //ROS_INFO(" WE THERE");
@@ -171,7 +171,7 @@ LocalPlanner::LocalPlanner() : nh(), mapSubscriber(nh, "map", 1), tfFilter(mapSu
     pathSubscriber = nh.subscribe<nav_msgs::Path>(PATH_TOPIC, 1, &LocalPlanner::pathCallback, this);
     
     //Subscribe to lidar obstacle detection
-    //lidarSubscriber = nh.subscribe<INSERT_MSG>(LIDAR_TOPIC, 1, &LocalPlanner::lidarCallback, this);
+    lidarSubscriber = nh.subscribe<sensor_msgs::LaserScan>(LIDAR_TOPIC, 1, &LocalPlanner::scanCallback, this);
     
     
     testPublisher = nh.advertise<nav_msgs::Path>(TEST_PATH, 1, true);
@@ -184,7 +184,8 @@ LocalPlanner::LocalPlanner() : nh(), mapSubscriber(nh, "map", 1), tfFilter(mapSu
     
     count = 0;
     
-    received = FALSE;
+    receivedPath = FALSE;
+    receivedLaser = FALSE;
 }
 
 // Receive a path from the astar
@@ -193,7 +194,7 @@ void LocalPlanner::pathCallback(const nav_msgs::Path::ConstPtr& pathIn){
     navPath.poses = pathIn->poses;
     
     ROS_INFO("Inputs 1 %f", pathIn->poses[0].pose.position.x);
-    received = TRUE;
+    receivedPath = TRUE;
     count = 0;
 }
 
@@ -203,7 +204,7 @@ void LocalPlanner::pathCallback(const nav_msgs::Path::ConstPtr& pathIn){
 // At the time: arg2 = girdData->header.stamp
 // The object we put the resulting transform: arg3 = currPosition
 void LocalPlanner::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
-    tfListener.lookupTransform("map","base_link", gridData->header.stamp, currPosition);
+    tfListener.lookupTransform("map","base_link",  ros::Time::now(), currPosition);
 }
 
 // Scale map from squares to metres
@@ -211,7 +212,66 @@ double LocalPlanner::scaleMap(double value){
     return 20 * (value + 101.25);
 }
 
-// For lidar handling
-void LocalPlanner::lidarCallback(){
-    //TODO: Lidar handling
+// For lidar handling, store the most recent scan
+void LocalPlanner::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
+    laser.header = scan->header;
+    laser.angle_min = scan->angle_min;
+    laser.angle_max = scan->angle_max;
+    laser.angle_increment = scan->angle_increment;
+    laser.time_increment = scan->time_increment;
+    laser.scan_time = scan->scan_time;
+    laser.range_min = scan->range_min;
+    laser.range_max = scan->range_max;
+    
+    sensor_msgs::LaserScan objects;
+    laserFilter.update(*scan, objects);
+    
+    laser.ranges = objects.ranges;
+    laser.intensities = scan->intensities;
+    receivedLaser = TRUE;
 }
+
+// Object avoidance function. Takes in the desired direction of movement,
+// uses the laser Scan for object detection and adjusts the movement if a collision might occur
+/*void lidarAvoidance( double& valX, double& valY, double destAngle){
+    
+    bool collision = FALSE;
+    
+    if(valY >= 2 * MAX_TURN){
+        //Detect if a left turn will result in a collision. This is done my claculating whether following
+        // the current turn results in collision with an object.
+        //TODO: add page on wiki explaining logic herein:
+        //TODO: take into account laser.angle_min is negative
+        //TODO: take into account destAngle beyond lidar range
+        
+        for(int i = (( laser.angle_min / laser.angle_increment) - ( DELTA_TURN_ANGLE / laser.angle_increment)); i < laser.ranges.size() && ((i * laser.angle_increment) <= (destAngle * M_PI) + (2 * DELTA_TURN_ANGLE); i++){
+            if(i < (( laser.angle_min / laser.angle_increment)){
+                collision = (laser.ranges[i] <= MIN_RANGE_OUTER_TURN);
+            } else {
+                collision = (laser.ranges[i] <= 2.0 * MAX_TURN * cos(M_PI/2.0 - (i * laser.angle_increment) - DELTA_TURN_ANGLE));
+            }
+        }
+        
+    } else if (valY < -2 * MAX_TURN){
+        //Detect if a right turn will result in collision
+        
+        for(int i = (( laser.angle_min / laser.angle_increment)) + (destAngle * M_PI) - (2 * DELTA_TURN_ANGLE); i < (( laser.angle_min / laser.angle_increment) + ( DELTA_TURN_ANGLE / laser.angle_increment)); i++){
+            if(i > (( laser.angle_min / laser.angle_increment)){
+                collision = (laser.ranges[i] <= MIN_RANGE_OUTER_TURN);
+            } else {
+                collision = (laser.ranges[i] <= 2.0 * MAX_TURN * -cos(-M_PI/2.0 + (i * laser.angle_increment) - DELTA_TURN_ANGLE));
+            }
+        }
+        
+    } else {
+        //Detect if straight forward will result in collision
+        
+        for (int i = (( laser.angle_min / laser.angle_increment)) - (M_PI / laser.angle_increment); i <= (( laser.angle_min / laser.angle_increment)) + (M_PI / laser.angle_increment) && i < laser.ranges.size(); i++){
+            if(i < ( laser.angle_min / laser.angle_increment)){
+                collision = (laser.ranges[i] < cos((( laser.angle_min / laser.angle_increment)) - (M_PI / laser.angle_increment) + i * laser.angle_increment)); //TODO: sign of cos result
+            } else {
+                collision = (laser.ranges[i] < cos((( laser.angle_min / laser.angle_increment)) - (M_PI / laser.angle_increment) + i * laser.angle_increment)); //TODO: continue if bothered
+            }
+        }
+    }
+}*/
