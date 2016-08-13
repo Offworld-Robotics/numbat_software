@@ -204,7 +204,7 @@ void LocalPlanner::pathCallback(const nav_msgs::Path::ConstPtr& pathIn){
 // At the time: arg2 = girdData->header.stamp
 // The object we put the resulting transform: arg3 = currPosition
 void LocalPlanner::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
-    tfListener.lookupTransform("map","base_link",  ros::Time::now(), currPosition);
+    tfListener.lookupTransform("map","base_link",  ros::Time(), currPosition);
 }
 
 // Scale map from squares to metres
@@ -223,10 +223,10 @@ void LocalPlanner::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     laser.range_min = scan->range_min;
     laser.range_max = scan->range_max;
     
-    sensor_msgs::LaserScan objects;
-    laserFilter.update(*scan, objects);
+    //sensor_msgs::LaserScan objects;
+    //laserFilter.update(*scan, objects);
     
-    laser.ranges = objects.ranges;
+    laser.ranges = scan->ranges;
     laser.intensities = scan->intensities;
     receivedLaser = TRUE;
 }
