@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   tf
+  laser_filters
 )
 
 ## System dependencies are found with CMake's conventions
@@ -84,7 +85,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES owr_auton_pathing
-#  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs
+#  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs laser_filters
 #  DEPENDS system_lib
 )
 
