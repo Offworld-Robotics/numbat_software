@@ -46,33 +46,33 @@ void LocalPlanner::run(){
             
             
             // Create a vector from currPosition to first <Pose> within navPath
-            //tf::Vector3 desiredVector( scaleMap(navPath.poses[count].pose.position.x) - scaleMap(currPosition.getOrigin().x()),
-            //                           scaleMap(navPath.poses[count].pose.position.y) - scaleMap(currPosition.getOrigin().y()), 
-            //                           0);
+            tf::Vector3 desiredVector( scaleMap(navPath.poses[count].pose.position.x) - scaleMap(currPosition.getOrigin().x()),
+                                       scaleMap(navPath.poses[count].pose.position.y) - scaleMap(currPosition.getOrigin().y()), 
+                                       0);
             
             
-            tf::Vector3 desiredVector( scaleMap(navPath.poses[count].pose.position.x) - scaleMap(2024.0),
-                                       scaleMap(navPath.poses[count].pose.position.y) - scaleMap(2024.0), 
-                                       0.0);
+            //tf::Vector3 desiredVector( scaleMap(navPath.poses[count].pose.position.x) - scaleMap(2024.0),
+            //                           scaleMap(navPath.poses[count].pose.position.y) - scaleMap(2024.0), 
+            //                           0.0);
             
             //ROS_INFO("Inputs 2 %f, %d", navPath.poses[count].pose.position.x, count);
             //ROS_INFO("Desired Vector x: %f y: %f", desiredVector.getX(), desiredVector.getY());
             
             //TEST DATA**************************** TODO: remove
-            tf::Quaternion q( -0.002, -0.749, 0.250, 0.613);
-            currPosition.setRotation( q);
+            //tf::Quaternion q( -0.002, -0.749, 0.250, 0.613);
+            //currPosition.setRotation( q);
             
             // Find the orientation of the rover
             tf::Matrix3x3 m (currPosition.getRotation());
             
             m.getRPY( roll, pitch, yaw);
             
-            ROS_INFO("r: %f p: %f y: %f", 180.0*roll/M_PI, 180.0*pitch/M_PI, 180.0*yaw/M_PI);
+            //ROS_INFO("r: %f p: %f y: %f", 180.0*roll/M_PI, 180.0*pitch/M_PI, 180.0*yaw/M_PI);
             
             // Calculate a heading vector from the yaw (which is in radians)
             tf::Vector3 headingVector( cos(yaw), sin(yaw), 0.0);
             
-            ROS_INFO("Heading Vector x: %f y: %f", headingVector.getX(), headingVector.getY());
+            //ROS_INFO("Heading Vector x: %f y: %f", headingVector.getX(), headingVector.getY());
             
             //Calculate the angle between the two vectors (-pi,pi]:
             desiredAngle = std::atan2(desiredVector.getY(),desiredVector.getX());
@@ -193,7 +193,7 @@ void LocalPlanner::pathCallback(const nav_msgs::Path::ConstPtr& pathIn){
     navPath.header = pathIn->header;
     navPath.poses = pathIn->poses;
     
-    ROS_INFO("Inputs 1 %f", pathIn->poses[0].pose.position.x);
+    //ROS_INFO("Inputs 1 %f", pathIn->poses[0].pose.position.x);
     receivedPath = TRUE;
     count = 0;
 }
@@ -209,7 +209,7 @@ void LocalPlanner::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData
 
 // Scale map from squares to metres
 double LocalPlanner::scaleMap(double value){
-    return 20 * (value + 101.25);
+    return value;
 }
 
 // For lidar handling, store the most recent scan
