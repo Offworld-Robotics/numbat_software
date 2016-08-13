@@ -141,14 +141,6 @@ void LocalPlanner::run(){
                 vel_msg.linear.y = driveY;
             }
             
-            //TODO: Insert local Lidar obstacle handling
-            //TODO: reverse if no turning circle allows object avoidance
-            /*
-            if(receivedLaser){}
-                lidarAvoidance( driveX, driveY, resultantAngle);
-            }
-            */
-            
         } else {
             // We have reached goal, DONT MOVE!!! 
             //ROS_INFO(" WE THERE");
@@ -186,6 +178,11 @@ LocalPlanner::LocalPlanner() : nh(), mapSubscriber(nh, "map", 1), tfFilter(mapSu
     
     receivedPath = FALSE;
     receivedLaser = FALSE;
+    //fLCollision = FALSE;
+    //fRCollision = FALSE;
+    //fCollision = FALSE;
+    //bLCollision = FALSE;
+    //bRCollision = FALSE;
 }
 
 // Receive a path from the astar
@@ -229,17 +226,64 @@ void LocalPlanner::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     laser.ranges = objects.ranges;
     laser.intensities = scan->intensities;
     receivedLaser = TRUE;
+    
+    //LocalPlanner::lidarAvoidance();
 }
+
+/*
 
 // Object avoidance function. Takes in the desired direction of movement,
 // uses the laser Scan for object detection and adjusts the movement if a collision might occur
-/*void lidarAvoidance( double& valX, double& valY, double destAngle){
+void LocalPlanner::lidarAvoidance( void){
     
-    bool collision = FALSE;
+    //fLFCollision = FALSE;
+    fLHCollision = FALSE;
+    fRHCollision = FALSE;
+    //fRFCollision = FALSE;
+    fCollision = FALSE;
+    bRCollision = FALSE;
+    bLCollision = FALSE;
+    
+    double angle = 0.0;
+    
+    int scanSize = laser.ranges.size();
+    int indexCentre = - (laser.angle_min) / laser.angle_increment;
+    int indexDiffR = indexCentre - ( DIFF_TURN_ANGLE / laser.angle_increment);
+    int indexDiffL = indexCentre + ( DIFF_TURN_ANGLE / laser.angle_increment);
+    int indexPIL = indexCentre + ( M_PI / laser.angle_increment);
+    int indexPIR = indexCentre - ( M_PI / laser.angle_increment);
+    int indexHalfPIL = indexCentre + ( M_PI / (2.0 * laser.angle_increment));
+    int indexHalfPIR = indexCentre - ( M_PI / ( 2.0 * laser.angle_increment));
+    
+    
+    for(int i = 0; i <= scanSize; i++){
+        if( i <= indexPIR){
+            angle = (indexPIR - i ) * laser.angle_increment;
+            bRCollision = ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle));
+        } else if (i <= indexHalfPIR){
+            angle = ( i - indexPIR) * laser.angle_increment;
+            //fRFCollision = ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle))
+        } else if ( i < indexDiffR) {
+            angle = ( i - indexPIR) * laser.angle_increment;
+            fRHCollision = ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle));
+        } else if ( i < indexCentre){
+            angle = ( i - indexPIR) * laser.angle_increment;
+            fRHCollision = ( fRHCollision || ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle)));
+        } else if (i <= indexDiffL){
+            
+        } else if ( i < indexHalfPIL) {
+            
+        } else if ( i < indexDiffL){
+            
+        } else {
+            
+        }
+    }
+    
     
     if(valY >= 2 * MAX_TURN){
         //Detect if a left turn will result in a collision. This is done my claculating whether following
-        // the current turn results in collision with an object.
+        //the current turn results in collision with an object.
         //TODO: add page on wiki explaining logic herein:
         //TODO: take into account laser.angle_min is negative
         //TODO: take into account destAngle beyond lidar range
@@ -274,4 +318,4 @@ void LocalPlanner::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
             }
         }
     }
-}*/
+} */
