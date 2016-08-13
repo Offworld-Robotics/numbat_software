@@ -86,6 +86,10 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 	//ROS_INFO("Updated info");
 }
 
+void NavigationGUI::updateVoltage(float volts) {
+	voltage = volts;
+}
+
 void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 	// use the Video_Feed_Frame object method
 	videoScreen->setNewStreamFrame(frame, width, height);
@@ -177,6 +181,7 @@ void NavigationGUI::display() {
 		drawBattery();
 		drawSignal();
 		drawUltrasonic();
+		drawVolts();
 	}
 
 	glutSwapBuffers();
@@ -576,4 +581,18 @@ void NavigationGUI::special_keyup(int keycode, int x, int y) {
 
 void NavigationGUI::keyup(unsigned char key, int x, int y) {
 
+}
+
+// draw Voltage
+void NavigationGUI::drawVolts() {
+	glPushMatrix();
+
+	char text[30];
+
+	glTranslated(currWinW/2.0-30,-50, 0);
+	glColor4f(1, 0, 0, ALPHA);
+	sprintf(text, "%.2fV", voltage);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+
+	glPopMatrix();
 }

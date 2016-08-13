@@ -12,6 +12,7 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Image.h>
 #include "owr_messages/status.h"
+#include "owr_messages/voltage.h"
 #include "NavigationGUI.h"
 #include <image_transport/image_transport.h>
 
@@ -28,6 +29,7 @@ class NavigationNode {
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveBatteryMsg(const owr_messages::status::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
+		void receiveVoltageMsg(const owr_messages::voltage::ConstPtr& msg);
 		
 	private:
 		NavigationGUI *gui;
@@ -35,12 +37,14 @@ class NavigationNode {
 		ros::Subscriber batterySub;
 		image_transport::Subscriber videoSub[TOTAL_FEEDS];
 		ros::Subscriber feedsSub;
+		ros::Subscriber voltSub; // voltmeter callback
 		
 		float battery;
 		float signal;
 		float tiltX;
 		float tiltY;
 		float ultrasonic;
+		float voltage;
 		double altitude;
 		unsigned char feeds[TOTAL_FEEDS];
 		vector3D target;
