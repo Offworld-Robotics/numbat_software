@@ -32,9 +32,9 @@ Astar::Astar(const std::string topic) : node(), mapSubscriber(node, "map", 1), t
 void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
     tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
-    
-    start.x = MAGIC_FACTOR*(transform.getOrigin().getX() + MAGIC_OFFSET);
-    start.x = MAGIC_FACTOR*(transform.getOrigin().getY() + MAGIC_OFFSET);
+   
+    start.x = (int)round(transform.getOrigin().getX() + GRID_OFFSET)*GRID_FACTOR;
+    start.x = (int)round(transform.getOrigin().getY() + GRID_OFFSET)*GRID_FACTOR;
     start.isStart = true;
     
     ROS_INFO("base_link at (%f, %f)", transform.getOrigin().getX(), transform.getOrigin().getY());
@@ -44,16 +44,22 @@ void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
     finalPath.header = gridData->header;
     finalPath.header.stamp = ros::Time::now();
-    doSearch();
+    
+    if (go == true) {
+        doSearch();
+    }
 }
 
 void Astar::setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint) {
     
     goal.isGoal = true;
-    goal.x = MAGIC_FACTOR*(thePoint->point.x + MAGIC_OFFSET);
-    goal.y = MAGIC_FACTOR*(thePoint->point.y + MAGIC_OFFSET);
+    goal.x = GRID_FACTOR*(thePoint->point.x + GRID_OFFSET);
+    goal.y = GRID_FACTOR*(thePoint->point.y + GRID_OFFSET);
     ROS_INFO("Astar goal at (%d, %d)", goal.x, goal.y);
-    doSearch();
+    
+    if (go == true) {
+        doSearch();
+    }
     
 }
 
@@ -115,23 +121,36 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
     for (unsigned int i = 0; i < (info.width * info.height); ++i) {
         value = data[i];
         
-        //if (value != 50 && value > 0) {
-        //    std::cout << (int)value << std::endl;
-        //}
-        
         if (value < 0) {
             value = 100;    // set unknowns to somewhat passable
         }
         occupancyGrid[x][y] = value;    // set the value
         
-        x ++;   //always increment x
+        // radius thingy thing
+        if (value > IMPASS_THRESHOLD) {
+            occupancyGrid[x][y] = IMPASS;
+            // loop through all points potentially in the circle
+            for (unsigned int c = -IMPASS_RADIUS+1; r < IMPASS_RADIUS; r ++) {
+                for (unsigned int r = IMPASS_RADIUS-1; r > -IMPASS_RADIUS; r--) {
+                    int cx = x+c;
+                    int ry = y+r;
+                    // make sure the point is in the circle and not outside the occupancyGrid
+                    if (cx < occupancyGrid.size() && cx >= 0 && ry < occupancyGrid[0].size() && ry >=0
+                        && sqrt((c*c)+(r*r)) <= IMPASS_RADIUS && occupancyGrid[cx][ry] < IMPASS_THRESHOLD) {
+                        occupancyGrid[cx][ry] = IMPASS_THRESHOLD;
+                    }
+                }
+            }
+        }
         
+        x ++;   //always increment x
         // if we're at a multiple of the width, move to the next line
         if (x == info.width) {
             y ++;
             x = 0;  // reset x to the start of the row
         }
     }
+    
 }
 
 void Astar::setGridEndPoints(int sx, int sy, int gx,int gy) {
@@ -371,8 +390,8 @@ void Astar::convertPath() {
     finalPath.poses.resize(aStarPath.size());
     for (unsigned int i = 0; i < aStarPath.size(); ++i) {
         thisPose.header.seq = i;
-        thisPose.pose.position.x = ((double)aStarPath[i].x/MAGIC_FACTOR) - MAGIC_OFFSET;
-        thisPose.pose.position.y = ((double)aStarPath[i].y/MAGIC_FACTOR) - MAGIC_OFFSET;
+        thisPose.pose.position.x = ((double)aStarPath[i].x/GRID_FACTOR) - GRID_OFFSET;
+        thisPose.pose.position.y = ((double)aStarPath[i].y/GRID_FACTOR) - GRID_OFFSET;
         
         finalPath.poses[i] = thisPose;
     }

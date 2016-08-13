@@ -25,9 +25,10 @@
 
 #define SIZE_OF_GRID 5000
 #define IMPASS 255
-
-#define MAGIC_OFFSET 101.25
-#define MAGIC_FACTOR 20
+#define IMPASS_THRESHOLD 200
+#define IMPASS_RADIUS 16
+#define GRID_OFFSET 101.25
+#define GRID_FACTOR 20
 
 class point {
     public:
