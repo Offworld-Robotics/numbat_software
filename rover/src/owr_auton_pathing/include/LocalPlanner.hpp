@@ -23,7 +23,6 @@
 #include <sensor_msgs/LaserScan.h>
 #include <time.h>
 
-
 #include <laser_filters/median_filter.h>
 
 //Topic names
@@ -47,7 +46,7 @@
 
 #define MAX_TURN_RADIUS 2.0 //in metres, take into account rover is X m wide
 
-#define DELTA_TURN_ANGLE 20.0 * (M_PI / 180.0) // How much leeway is given on either side of scan
+#define DIFF_TURN_ANGLE 20.0 * (M_PI / 180.0) // How much leeway is given on either side of scan
 #define MIN_RANGE_OUTER_TURN 0.5 //metres. Leeway given for rover on outer side of turning circle
 
 #define FALSE 0
@@ -100,4 +99,15 @@ class LocalPlanner {
         tf::StampedTransform currPosition;
         
         laser_filters::LaserMedianFilter laserFilter;
+        //TODO: laser array filter
+        
+        
+        void lidarAvoidance( void);
+        //fLFCollision = FALSE;
+        bool fLHCollision;
+        bool fRHCollision;
+        //fRFCollision = FALSE;
+        bool fCollision;
+        bool bRCollision;
+        bool bLCollision;
 };
