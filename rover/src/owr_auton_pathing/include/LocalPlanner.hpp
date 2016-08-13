@@ -23,7 +23,6 @@
 #include <sensor_msgs/LaserScan.h>
 #include <time.h>
 
-
 #include <laser_filters/median_filter.h>
 
 //Topic names

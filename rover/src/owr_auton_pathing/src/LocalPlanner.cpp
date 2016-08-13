@@ -20,12 +20,13 @@ int main (int argc, char *argv[]) {
     LocalPlanner planner;
     
     planner.run();
-    
+    ros::Rate loop_rate(10);
     return 0;
 }
 
 
 void LocalPlanner::run(){
+    ros::Rate loop_rate(10);
     while(ros::ok()){
         
         double driveX = 0.0;
@@ -154,6 +155,7 @@ void LocalPlanner::run(){
         twistPublisher.publish(vel_msg);
         
         ros::spinOnce();
+        loop_rate.sleep();
     }
 }
 
