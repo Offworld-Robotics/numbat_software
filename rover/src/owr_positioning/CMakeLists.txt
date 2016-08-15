@@ -108,6 +108,7 @@ include_directories(
 # add_library(owr_positioning
 ## Declare a cpp executable
 add_executable(orientation src/ExtractOrientation.cpp)
+add_executable(utm_tf src/UTMTransform.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -116,6 +117,9 @@ add_executable(orientation src/ExtractOrientation.cpp)
 target_link_libraries(orientation
    ${catkin_LIBRARIES}
 )
+target_link_libraries(utm_tf
+        ${catkin_LIBRARIES}
+        )
 #   src/${PROJECT_NAME}/owr_positioning.cpp
 # )
 
