@@ -4,7 +4,10 @@ SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{manufacturer}=="S
 
 SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{product}=="URG-Series USB Driver", SYMLINK+="hokuyo", GROUP="dialout", MODE="666"
 
+<<<<<<< HEAD
+SUBSYSTEM=="usb", ATTRS{idVendor}=="045e", ACTION=="add", SYMLINK+="clinocam0", GROUP="video", MODE="666"
+=======
 SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{product}=="MTi-10 IMU", SYMLINK+="xsens0", GROUP="dialout", MODE="666"
 
 
-SUBSYSTEM=="video4linux", ATTRS{idVendor}=="045e", ACTION=="add", SYMLINK+="clinocam0", GROUP="video", MODE="666"
+>>>>>>> origin/OWRS-175-Convert-Hector-SLAM-to-3D

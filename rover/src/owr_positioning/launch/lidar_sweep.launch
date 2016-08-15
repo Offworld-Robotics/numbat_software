@@ -1,6 +1,6 @@
 <launch>
-    <param name="lidar_sweep/min" value="0.0"/>
+    <param name="lidar_sweep/min" value="0.2"/>
     <param name="lidar_sweep/max" value="0.7859"/>
-    <param name="lidar_sweep/increment_second" value="0.009"/>
+    <param name="lidar_sweep/increment_second" value="0.0"/>
     <node pkg="owr_positioning" type="sweepLIDAR.py" name="lidar_sweep"></node>
 </launch>
