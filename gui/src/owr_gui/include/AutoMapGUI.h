@@ -40,28 +40,36 @@ class AutoMapGUI : public GLUTWindow {
 		
 		GLuint gridTexture;
 		
+		void drawGrid();
+		void drawTextBuffer();
+		void drawHelpText();
+		
 		unsigned char *gridData;
-		int gridCols;
-		int gridRows;
-		static std_msgs::Header lastGridHeader;
+		unsigned int gridCols;
+		unsigned int gridRows;
+		std_msgs::Header lastGridHeader;
 		
 		bool showHelp;
 		
 		char textBuffer[BUFFER_SIZE];
-		int bufferIndex;
+		unsigned int bufferIndex;
 		void extractGoalCoords();
 		bool validGoalCoords;
 		
 		Button startButton;
 		Button stopButton;
 		Button goalButton;
-
-		static void sendStartMessage();
-		static void sendStopMessage();
-		static void sendGoalMessage();
 		
-		static int goalGridRow;
-		static int goalGridCol;
+		ros::Publisher startStopPublisher;
+		ros::Publisher goalPublisher;
+
+		void sendStartMessage();
+		void sendStopMessage();
+		void sendGoalMessage();
+		
+		unsigned int goalGridRow;
+		unsigned int goalGridCol;
+		void drawGoalMarker();
 		
 };
 
