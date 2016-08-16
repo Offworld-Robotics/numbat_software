@@ -13,6 +13,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Pose.h>
 #include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/transform_listener.h>
 #include <geometry_msgs/TransformStamped.h>
 
 class UTMTransform {
@@ -24,6 +25,8 @@ class UTMTransform {
         ros::NodeHandle nh;
         ros::Subscriber newPosSub;
         tf2_ros::TransformBroadcaster tfBroadcast;
+        tf2_ros::Buffer tfBuffer;
+        tf2_ros::TransformListener tfListener;
         geometry_msgs::TransformStamped currentTransform;
 
         
