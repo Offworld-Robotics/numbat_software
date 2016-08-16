@@ -37,7 +37,7 @@ void UTMTransform::newPositionCallback(const geometry_msgs::Pose::ConstPtr& msg)
     //lookup the transform from map to rover
     try {
         tf2::Transform roverLocalTransform, newPosMapTransform;
-        tf2::fromMsg(msg, roverLocalTransform);
+        tf2::fromMsg(*msg, roverLocalTransform);
         tfBuffer.transform(roverLocalTransform, newPosMapTransform, "base_link", ros::Time(0), "map");
 
         geometry_msgs::Transform newTf;

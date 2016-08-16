@@ -13,10 +13,9 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
    message_filters
     laser_geometry
-    tf
     tf2
     tf2_geometry_msgs
-
+    tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -91,7 +90,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES owr_positioning
-  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry rospy tf2 tf2_geometry_msgs
+  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry rospy tf2 tf2_geometry_msgs tf2_ros
   DEPENDS system_lib
 )
 
