@@ -36,13 +36,16 @@ UTMTransform::UTMTransform() : tfBuffer(), tfListener(tfBuffer) {
 void UTMTransform::newPositionCallback(const geometry_msgs::Pose::ConstPtr& msg) {
     //lookup the transform from map to rover
     try {
-        tf2::Transform roverLocalTransform, newPosMapTransform;
-        tf2::fromMsg(*msg, roverLocalTransform);
-        tfBuffer.transform(roverLocalTransform, newPosMapTransform, "base_link", ros::Time(0), "map");
+        //tf2::Transform baseLinkToBase = tfBuffer.get
+        geometry_msgs::PoseStamped newPose;
+        newPose.pose = *msg;
+        newPose.header.frame_id = "map";
+        newPose.header.stamp = ros::Time(0);
+        tfBuffer.transform(newPose, newPose, "map");
+        tf2::Transform newTf;
+        tf2::fromMsg(newPose.pose, newTf);
 
-        geometry_msgs::Transform newTf;
-        newTf = tf2::toMsg(newPosMapTransform.inverse());
-        currentTransform.transform = newTf;
+        currentTransform.transform = tf2::toMsg(newTf.inverse());
 
     } catch (tf2::TransformException & ex) {
         ROS_WARN("%s", ex.what());
