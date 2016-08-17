@@ -115,11 +115,11 @@ void LocalPlanner::run(){
                     //ROS_INFO("go forwards %f %f", driveX, driveY);
                 } else if (resultantAngle < 0.0) {
                     driveX = MAX_SPEED;
-                    driveY = -1.0;
+                    driveY = 1.0;
                     //ROS_INFO("go right %f %f", driveX, driveY);
                 } else {
                     driveX = MAX_SPEED;
-                    driveY = 1.0;
+                    driveY = -1.0;
                     //ROS_INFO("go left %f %f", driveX, driveY);
                 }
                 
