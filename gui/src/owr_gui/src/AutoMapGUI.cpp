@@ -29,9 +29,10 @@ int main(int argc, char **argv) {
 
 AutoMapGUI::AutoMapGUI(int width, int height, int *argc, char **argv) :
 	GLUTWindow(width, height, argc, argv, "AutoMap"),
-	startButton(width-200, -400, 200, 100, 0, 0, 1, "Start", NULL, NULL),
-	stopButton(width-200, -600, 200, 100, 0, 0, 1, "Stop", NULL, NULL),
-	goalButton(width-200, -800, 200, 100, 0, 0, 1, "Publish Goal", NULL, NULL)
+	setStartButton(width-200, -300, 200, 100, 0, 0, 1, "Set Start Cell", NULL, NULL),
+	setGoalButton(width-200, -450, 200, 100, 0, 0, 1, "Set Goal Cell", NULL, NULL),
+	startButton(width-200, -600, 200, 100, 0, 0, 1, "Start", NULL, NULL),
+	stopButton(width-200, -750, 200, 100, 0, 0, 1, "Stop", NULL, NULL)
 	{
 	autoMapNode = new AutoMapNode(this);
 	
@@ -55,8 +56,8 @@ AutoMapGUI::AutoMapGUI(int width, int height, int *argc, char **argv) :
 	textBuffer[0] = '\0';
 	bufferIndex = 0;
 	
-	validGoalCoords = false;
-	goalGridRow = goalGridCol = std::numeric_limits<unsigned int>::max();
+	validBufferCoords = false;
+	bufferGridRow = bufferGridCol = std::numeric_limits<unsigned int>::max();
 	
 	ros::NodeHandle n;
 	startStopPublisher = n.advertise<std_msgs::Bool>("/owr_auton_pathing/astarstart", 10);
@@ -96,15 +97,18 @@ void AutoMapGUI::drawHelpText() {
 	glColor3f(0,0,1);
 	glRecti(0, 0, 1000, -500);
 	glColor3f(1,1,1);
-	char text1[] = "Type space separated integers for the row and column of the goal.";
+	char text1[] = "Type space separated integers for the row and column of the cell of interest.";
 	glRasterPos2i(50, -50);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, reinterpret_cast<const unsigned char *>(text1));
-	char text2[] = "If the goal is valid, a marker will appear on the map.";
+	char text2[] = "If the cell is valid, a marker will appear on the map.";
 	glRasterPos2i(50, -100);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, reinterpret_cast<const unsigned char *>(text2));
-	char text3[] = "If the goal is valid, click the Publish Goal button to send it to ROS.";
+	char text3[] = "Click the Set Start Cell button to send starting point info to ROS.";
 	glRasterPos2i(50, -150);
 	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, reinterpret_cast<const unsigned char *>(text3));
+	char text4[] = "Click the Set Goal Cell button to send goal point info to ROS.";
+	glRasterPos2i(50, -200);
+	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, reinterpret_cast<const unsigned char *>(text4));
 	glPopMatrix();
 }
 
@@ -132,19 +136,19 @@ void AutoMapGUI::drawTextBuffer() {
 	char txt[50] = {0};
 	glColor3f(1, 1, 1);
 	sprintf(txt, "Input buffer: %s", textBuffer);
-	glRasterPos2i(-5, -6);
+	glRasterPos2i(0, 0);
 	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(txt));
-	glRasterPos2i(-5, -56);
+	glRasterPos2i(0, -50);
 	sprintf(txt, "Grid size: rows = %d, cols = %d", gridRows, gridCols);
 	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(txt));
 	
-	glRasterPos2i(-5, -106);
-	if(validGoalCoords) {
+	glRasterPos2i(0, -100);
+	if(validBufferCoords) {
 		glColor3f(0, 0, 1);
-		sprintf(txt, "Intended goal: row = %d, col = %d", goalGridRow, goalGridCol);
+		sprintf(txt, "Buffer cell: row = %d, col = %d", bufferGridRow, bufferGridCol);
 	} else {
 		glColor3f(1, 0, 0);
-		sprintf(txt, "Intended goal: invalid");
+		sprintf(txt, "Buffer cell: invalid");
 	}
 	
 	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(txt));
@@ -157,12 +161,13 @@ void AutoMapGUI::display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	drawGrid();
-	drawGoalMarker();
+	drawBufferMarker();
 	drawTextBuffer();
 	
+	setStartButton.draw();
+	setGoalButton.draw();
 	startButton.draw();
 	stopButton.draw();
-	goalButton.draw();
 	
 	if(showHelp) {
 		drawHelpText();
@@ -171,12 +176,12 @@ void AutoMapGUI::display() {
 	glutSwapBuffers();
 }
 
-void AutoMapGUI::drawGoalMarker() {
-	if(!validGoalCoords) {
+void AutoMapGUI::drawBufferMarker() {
+	if(!validBufferCoords) {
 		return;
 	}
-	double x = (((double)goalGridCol + 0.5)/(double)gridCols)*(double)currWinH;
-	double y = (((double)goalGridRow + 0.5)/(double)gridRows)*-(double)currWinH;
+	double x = (((double)bufferGridCol + 0.5)/(double)gridCols)*(double)currWinH;
+	double y = (((double)bufferGridRow + 0.5)/(double)gridRows)*-(double)currWinH;
 	glPushMatrix();
 	glTranslated(x, y, 0);
 	
@@ -206,29 +211,29 @@ void AutoMapGUI::keydown(unsigned char key, int x, int y) {
 			textBuffer[bufferIndex] = '\0';
 		}
 	}
-	extractGoalCoords();
+	extractBufferCoords();
 }
 
-void AutoMapGUI::extractGoalCoords() {
+void AutoMapGUI::extractBufferCoords() {
 	std::stringstream ss(textBuffer);
 	bool read;
 	unsigned int tmpRow, tmpCol;
 	read = (ss >> tmpRow);
 	if(!read) {
-		validGoalCoords = false;
+		validBufferCoords = false;
 		return;
 	}
 	read = (ss >> tmpCol);
 	if(!read) {
-		validGoalCoords = false;
+		validBufferCoords = false;
 		return;
 	}
 	if(tmpRow < gridRows && tmpCol < gridCols) {
-		goalGridRow = tmpRow;
-		goalGridCol = tmpCol;
-		validGoalCoords = true;
+		bufferGridRow = tmpRow;
+		bufferGridCol = tmpCol;
+		validBufferCoords = true;
 	} else {
-		validGoalCoords = false;
+		validBufferCoords = false;
 	}
 }
 
@@ -245,7 +250,7 @@ void AutoMapGUI::mouse(int button, int state, int x, int y) {
 			sendStartMessage();
 		} else if(stopButton.isInside(x, y)) {
 			sendStopMessage();
-		} else if(goalButton.isInside(x, y)) {
+		} else if(setGoalButton.isInside(x, y)) {
 			sendGoalMessage();
 		}
 	}
@@ -268,15 +273,15 @@ void AutoMapGUI::sendStopMessage() {
 }
 
 void AutoMapGUI::sendGoalMessage() {
-	if(!validGoalCoords) {
+	if(!validBufferCoords) {
 		ROS_INFO("publish goal failed: invalid coordinates");
 		return;
 	}
-	ROS_INFO("publishing goal: row = %d, col = %d", goalGridRow, goalGridCol);
+	ROS_INFO("publishing goal: row = %d, col = %d", bufferGridRow, bufferGridCol);
 	geometry_msgs::PointStamped msg;
 	msg.header = lastGridHeader;
-	msg.point.x = goalGridCol;
-	msg.point.y = goalGridRow;
+	msg.point.x = bufferGridCol;
+	msg.point.y = bufferGridRow;
 	msg.point.z = 0;
 	goalPublisher.publish(msg);
 	ros::spinOnce();

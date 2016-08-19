@@ -24,6 +24,12 @@ Button::Button(double x, double y, double width, double height, float r, float g
 	this->downFunc = downFunc;
 	this->upFunc = upFunc;
 	this->isClicked = false;
+	
+	int textBitmapSize = 0;
+	for(int i = 0;i < strlen(txt);i++) {
+		textBitmapSize += glutBitmapWidth(GLUT_BITMAP_HELVETICA_18, txt[i]);
+	}
+	textPosOffset = textBitmapSize/2.0;
 }
 
 void Button::draw() {
@@ -38,7 +44,7 @@ void Button::draw() {
 	glColor3f(r, g, b);
 	glRectd(-halfWidth, -halfHeight, halfWidth, halfHeight);
 	glColor3f(1, 1, 1);
-	glRasterPos2i(-5, -6);
+	glRasterPos2i(-textPosOffset, -9);
 	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(label.c_str()));
 	glPopMatrix();
 }

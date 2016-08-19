@@ -53,12 +53,13 @@ class AutoMapGUI : public GLUTWindow {
 		
 		char textBuffer[BUFFER_SIZE];
 		unsigned int bufferIndex;
-		void extractGoalCoords();
-		bool validGoalCoords;
+		void extractBufferCoords();
+		bool validBufferCoords;
 		
 		Button startButton;
 		Button stopButton;
-		Button goalButton;
+		Button setStartButton;
+		Button setGoalButton;
 		
 		ros::Publisher startStopPublisher;
 		ros::Publisher goalPublisher;
@@ -67,9 +68,9 @@ class AutoMapGUI : public GLUTWindow {
 		void sendStopMessage();
 		void sendGoalMessage();
 		
-		unsigned int goalGridRow;
-		unsigned int goalGridCol;
-		void drawGoalMarker();
+		unsigned int bufferGridRow;
+		unsigned int bufferGridCol;
+		void drawBufferMarker();
 		
 };
 

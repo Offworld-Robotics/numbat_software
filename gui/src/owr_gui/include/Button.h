@@ -21,6 +21,7 @@ class Button {
 	double halfHeight;
 	float r, g, b;
 	std::string label;
+	double textPosOffset;
 	bool isClicked;
 	void (*downFunc)(void);
 	void (*upFunc)(void);
