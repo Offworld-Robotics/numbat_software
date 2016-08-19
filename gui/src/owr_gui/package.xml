@@ -55,7 +55,7 @@
   <export>
     <!-- You can specify that this package is a metapackage here: -->
     <!-- <metapackage/> -->
-	<cpp lflags="-lGL -lGLU -lglut"/>
+	<cpp lflags="-lGL -lGLU -lglut -lGLEW"/>
     <!-- Other tools can request additional information be placed here -->
 
   </export>
