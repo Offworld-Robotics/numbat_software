@@ -273,10 +273,7 @@ if "task" in config:
     i = i + 1 
     task["num"] = i
     task["key"] = ord('A') 
-    if i < 10:
-      task["key"] = ord('0') + i
-    else:
-      task["key"] = ord('a') - 10 + i
+    task["key"] = ord('A') - 10 + i
 
 
 # launch status thread
@@ -336,6 +333,8 @@ def MainLoop(args):
         StartStop(c - ord('0'))
       elif c >= ord('a') and c <= ord('p'):
         StartStop(c - ord('a')+10)
+      elif c >= ord('A') and c <= ord('Z'):
+        StartStop(c - ord('A')+10)
     except:
       errorCount = errorCount + 1
 

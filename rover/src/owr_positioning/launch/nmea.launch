@@ -1,0 +1,9 @@
+<launch>
+    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="nmea_gps" output="screen">
+        <param name="port" value="/dev/ttyUSB1"/>
+        <param name="baud" value="9600" />
+        <!-- gives velocity -->
+        <param name="useRMC" value="true"/>
+        <remap from="fix" to="/gps/fix"/>
+    </node>
+</launch>
