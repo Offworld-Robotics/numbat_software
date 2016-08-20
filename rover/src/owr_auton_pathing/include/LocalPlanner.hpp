@@ -49,6 +49,8 @@
 #define DIFF_TURN_ANGLE 20.0 * (M_PI / 180.0) // How much leeway is given on either side of scan
 #define MIN_RANGE_OUTER_TURN 0.5 //metres. Leeway given for rover on outer side of turning circle
 
+#define HALF_ROVER_WIDTH 0.8
+
 #define FALSE 0
 #define TRUE 1
 
