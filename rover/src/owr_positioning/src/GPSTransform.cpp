@@ -29,7 +29,7 @@ int main(int argc, char ** argv) {
 GPSTransform::GPSTransform() : tfBuffer(), tfListener(tfBuffer) {
     
     newPosSub = nh.subscribe("/gps/fix",1,&GPSTransform::newPositionCallback, this);
-    newPosSub = nh.subscribe("/owr/sensors/heading",1,&GPSTransform::newMagCallback, this);
+    newMagSub = nh.subscribe("/owr/sensors/heading",1,&GPSTransform::newMagCallback, this);
     currentTransform.header.frame_id = "world";
     currentTransform.child_frame_id = "map";
     currentTransform.header.seq = 0;

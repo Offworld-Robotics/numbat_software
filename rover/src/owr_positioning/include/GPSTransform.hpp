@@ -27,6 +27,7 @@ class GPSTransform {
         geometry_msgs::Vector3 convertToUTM(const sensor_msgs::NavSatFix & msg);
         ros::NodeHandle nh;
         ros::Subscriber newPosSub;
+        ros::Subscriber newMagSub;
         tf2_ros::TransformBroadcaster tfBroadcast;
         tf2_ros::Buffer tfBuffer;
         tf2_ros::TransformListener tfListener;
