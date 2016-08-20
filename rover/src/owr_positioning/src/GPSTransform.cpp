@@ -9,7 +9,7 @@
 
 #include "GPSTransform.hpp"
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <cmath>
 
@@ -29,6 +29,7 @@ int main(int argc, char ** argv) {
 GPSTransform::GPSTransform() : tfBuffer(), tfListener(tfBuffer) {
     
     newPosSub = nh.subscribe("/gps/fix",1,&GPSTransform::newPositionCallback, this);
+    newPosSub = nh.subscribe("/owr/sensors/heading",1,&GPSTransform::newMagCallback, this);
     currentTransform.header.frame_id = "world";
     currentTransform.child_frame_id = "map";
     currentTransform.header.seq = 0;
@@ -49,6 +50,11 @@ void GPSTransform::newPositionCallback(const sensor_msgs::NavSatFix::ConstPtr& m
         ros::Duration(1.0).sleep();
     }
 }
+
+void GPSTransform::newMagCallback ( const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg ) {
+    currentTransform.transform.rotation = msg->pose.pose.orientation;
+}
+
 
 geometry_msgs::Vector3 GPSTransform::convertToUTM(const sensor_msgs::NavSatFix &msg) {
     // this function is based on the algorithm here http://www.movable-type.co.uk/scripts/latlong-utm-mgrs.html

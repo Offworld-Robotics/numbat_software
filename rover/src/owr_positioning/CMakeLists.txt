@@ -113,6 +113,7 @@ include_directories(
 add_executable(orientation src/ExtractOrientation.cpp)
 add_executable(utm_tf src/UTMTransform.cpp)
 add_executable(gps_tf src/GPSTransform.cpp)
+add_executable(mag src/MagnetConverter.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -125,6 +126,10 @@ target_link_libraries(gps_tf
    ${catkin_LIBRARIES}
 )
 target_link_libraries(utm_tf
+        ${catkin_LIBRARIES}
+        )
+
+target_link_libraries(mag
         ${catkin_LIBRARIES}
         )
 #   src/${PROJECT_NAME}/owr_positioning.cpp
