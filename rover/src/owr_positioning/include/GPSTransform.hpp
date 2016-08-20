@@ -15,12 +15,14 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
 #include <sensor_msgs/NavSatFix.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 
 class GPSTransform {
     public:
         GPSTransform();
         void spin();
         void newPositionCallback(const sensor_msgs::NavSatFix::ConstPtr & msg);
+        void newMagCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr & msg);
     private:
         geometry_msgs::Vector3 convertToUTM(const sensor_msgs::NavSatFix & msg);
         ros::NodeHandle nh;

@@ -8,7 +8,7 @@
 //#include "bluesat_owr_protobuf/Message1Relay.h"
 #include "MagnetConverter.h" 
 
-#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <tf2/LinearMath/Quaternion.h>
 
 #include <iostream>
@@ -33,8 +33,8 @@ int main(int argc, char ** argv) {
 }
 
 MagnetConverter::MagnetConverter(const std::string topic) {
-    subscriber = node.subscribe("/mag", 5, &MagnetConverter::receiveMsg, this); // mangnet stuff
-    publisher =  node.advertise<geometry_msgs::PoseStamped>("/owr/sensors/heading", 10);
+    subscriber = node.subscribe("/mti/sensor/magentic", 5, &MagnetConverter::receiveMsg, this); // mangnet stuff
+    publisher =  node.advertise<geometry_msgs::PoseWithCovarianceStamped>("/owr/sensors/heading", 10);
 }
 
 geometry_msgs::Quaternion hamiltonProduct(geometry_msgs::Quaternion q1, geometry_msgs::Quaternion q2) {
@@ -62,22 +62,22 @@ void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 
     ROS_INFO("recived");
     //We need orientation set
     //TODO: set valuews
-    geometry_msgs::PoseStamped poseStamped;
+    geometry_msgs::PoseWithCovarianceStamped poseStamped;
 
     poseStamped.header.frame_id = "base_link";
     poseStamped.header.stamp = ros::Time(0);
 
-    poseStamped.pose.position.x = 0;
-    poseStamped.pose.position.y = 0;
-    poseStamped.pose.position.z = 0;
+    poseStamped.pose.pose.position.x = 0;
+    poseStamped.pose.pose.position.y = 0;
+    poseStamped.pose.pose.position.z = 0;
 
     tf2::Quaternion q;
     q.setEuler(heading, 0, 0);
 
-    poseStamped.pose.orientation.x = q.x();
-    poseStamped.pose.orientation.y = q.y();
-    poseStamped.pose.orientation.z = q.z();
-    poseStamped.pose.orientation.w = q.w();
+    poseStamped.pose.pose.orientation.x = q.x();
+    poseStamped.pose.pose.orientation.y = q.y();
+    poseStamped.pose.pose.orientation.z = q.z();
+    poseStamped.pose.pose.orientation.w = q.w();
 
     publisher.publish(poseStamped);
 }
