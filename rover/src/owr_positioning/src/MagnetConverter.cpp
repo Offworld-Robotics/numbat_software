@@ -8,6 +8,9 @@
 //#include "bluesat_owr_protobuf/Message1Relay.h"
 #include "MagnetConverter.h" 
 
+#include <geometry_msgs/PoseStamped.h>
+#include <tf2/LinearMath/Quaternion.h>
+
 #include <iostream>
 #include <list>
 #include <cmath>
@@ -31,7 +34,7 @@ int main(int argc, char ** argv) {
 
 MagnetConverter::MagnetConverter(const std::string topic) {
     subscriber = node.subscribe("/mag", 5, &MagnetConverter::receiveMsg, this); // mangnet stuff
-    publisher =  node.advertise<owr_messages::heading>("/owr/heading", 10);
+    publisher =  node.advertise<geometry_msgs::PoseStamped>("/owr/sensors/heading", 10);
 }
 
 geometry_msgs::Quaternion hamiltonProduct(geometry_msgs::Quaternion q1, geometry_msgs::Quaternion q2) {
@@ -55,13 +58,28 @@ void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 
     //geometry_msgs::Vector3 absDir = hamiltonProduct(magQuart,imu.orientation);
     //double heading = atan2(1,0) - atan2(absDir.y,absDir.x);
     double heading = atan2(magQuart.x,magQuart.y);
-    
+
     ROS_INFO("recived");
     //We need orientation set
     //TODO: set valuews
-    owr_messages::heading msg2;
-    msg2.heading = heading;
-    publisher.publish(msg2);
+    geometry_msgs::PoseStamped poseStamped;
+
+    poseStamped.header.frame_id = "base_link";
+    poseStamped.header.stamp = ros::Time(0);
+
+    poseStamped.pose.position.x = 0;
+    poseStamped.pose.position.y = 0;
+    poseStamped.pose.position.z = 0;
+
+    tf2::Quaternion q;
+    q.setEuler(heading, 0, 0);
+
+    poseStamped.pose.orientation.x = q.x();
+    poseStamped.pose.orientation.y = q.y();
+    poseStamped.pose.orientation.z = q.z();
+    poseStamped.pose.orientation.w = q.w();
+
+    publisher.publish(poseStamped);
 }
 
 
