@@ -143,12 +143,13 @@ void AutoMapGUI::drawTextBuffer() {
 	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(txt));
 	
 	glRasterPos2i(0, -100);
+	int pos = sprintf(txt, "Specified cell: ");
 	if(validBufferCoords) {
 		glColor3f(0, 0, 1);
-		sprintf(txt, "Buffer cell: row = %d, col = %d", bufferGridRow, bufferGridCol);
+		sprintf(txt+pos, "row = %d, col = %d", bufferGridRow, bufferGridCol);
 	} else {
 		glColor3f(1, 0, 0);
-		sprintf(txt, "Buffer cell: invalid");
+		sprintf(txt+pos, "invalid");
 	}
 	
 	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(txt));
