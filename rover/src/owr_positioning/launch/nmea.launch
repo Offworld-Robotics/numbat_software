@@ -3,7 +3,7 @@
         <param name="port" value="/dev/ttyUSB1"/>
         <param name="baud" value="9600" />
         <!-- gives velocity -->
-        <param name="useRMC" value="true"/>
+        <param name="useRMC" value="false"/>
         <remap from="fix" to="/gps/fix"/>
     </node>
 </launch>
