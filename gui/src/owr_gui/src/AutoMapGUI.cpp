@@ -78,6 +78,7 @@ void AutoMapGUI::updateGrid(char *grid, int cols, int rows, std_msgs::Header hea
 		}
 		glBindTexture(GL_TEXTURE_2D, gridTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, gridCols, gridRows, 0, GL_RGB, GL_UNSIGNED_BYTE, gridData);
+		extractBufferCoords();
 	}
 }
 
@@ -122,8 +123,8 @@ void AutoMapGUI::drawGrid() {
 	glBegin(GL_QUADS);
 		glTexCoord2d(0, 1); glVertex2d(0, 0);
 		glTexCoord2d(0, 0); glVertex2d(0, -currWinH);
-		glTexCoord2d(1, 0); glVertex2d(currWinH, -currWinH);
-		glTexCoord2d(1, 1); glVertex2d(currWinH, 0);
+		glTexCoord2d(1, 0); glVertex2d(currWinH*1.3, -currWinH);
+		glTexCoord2d(1, 1); glVertex2d(currWinH*1.3, 0);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
@@ -132,15 +133,15 @@ void AutoMapGUI::drawGrid() {
 
 void AutoMapGUI::drawTextBuffer() {
 	glPushMatrix();
-	glTranslated(currWinW - 350, -100, 0);
+	glTranslated(currWinW - 400, -100, 0);
 	char txt[50] = {0};
 	glColor3f(1, 1, 1);
 	sprintf(txt, "Input buffer: %s", textBuffer);
 	glRasterPos2i(0, 0);
-	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(txt));
+	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, reinterpret_cast<const unsigned char *>(txt));
 	glRasterPos2i(0, -50);
 	sprintf(txt, "Grid size: rows = %d, cols = %d", gridRows, gridCols);
-	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(txt));
+	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, reinterpret_cast<const unsigned char *>(txt));
 	
 	glRasterPos2i(0, -100);
 	int pos = sprintf(txt, "Specified cell: ");
@@ -152,7 +153,7 @@ void AutoMapGUI::drawTextBuffer() {
 		sprintf(txt+pos, "invalid");
 	}
 	
-	glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>(txt));
+	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, reinterpret_cast<const unsigned char *>(txt));
 	
 	glPopMatrix();
 }
@@ -160,10 +161,12 @@ void AutoMapGUI::drawTextBuffer() {
 void AutoMapGUI::display() {
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
-
+	
 	drawGrid();
 	drawBufferMarker();
 	drawTextBuffer();
+	
+	drawDividingLine();
 	
 	setStartButton.draw();
 	setGoalButton.draw();
@@ -177,11 +180,19 @@ void AutoMapGUI::display() {
 	glutSwapBuffers();
 }
 
+void AutoMapGUI::drawDividingLine() {
+	glColor3f(0, 1, 0);
+	glBegin(GL_LINES);
+	glVertex2d(currWinH*1.3, 0);
+	glVertex2d(currWinH*1.3, -currWinH);
+	glEnd();
+}
+
 void AutoMapGUI::drawBufferMarker() {
 	if(!validBufferCoords) {
 		return;
 	}
-	double x = (((double)bufferGridCol + 0.5)/(double)gridCols)*(double)currWinH;
+	double x = (((double)bufferGridCol + 0.5)/(double)gridCols)*((double)currWinH*1.3);
 	double y = (((double)bufferGridRow + 0.5)/(double)gridRows)*-(double)currWinH;
 	glPushMatrix();
 	glTranslated(x, y, 0);

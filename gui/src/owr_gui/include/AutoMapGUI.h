@@ -43,6 +43,7 @@ class AutoMapGUI : public GLUTWindow {
 		void drawGrid();
 		void drawTextBuffer();
 		void drawHelpText();
+		void drawDividingLine();
 		
 		unsigned char *gridData;
 		unsigned int gridCols;
