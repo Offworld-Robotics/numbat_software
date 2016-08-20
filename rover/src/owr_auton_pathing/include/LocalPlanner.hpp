@@ -42,7 +42,7 @@
 #define MAX_TURN (MAX_ANGLE / 180.0)    //turning 90deg and instead turn relative to the angle offset
 
 // Define when we are close enough to the target
-#define MIN_DISTANCE_TO_GOAL 0.8 // in metres
+#define MIN_DISTANCE_TO_GOAL 1.5 // in metres
 
 #define MAX_TURN_RADIUS 2.0 //in metres, take into account rover is X m wide
 
