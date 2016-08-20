@@ -116,61 +116,94 @@ void Astar::getMap() {
         return;
     }
     
-    cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "Display window", image );                   // Show our image inside it.
-    
-    cv::waitKey(0);                                          // Wait for a keystroke in the window
-    
     int tot;
     int howmany = 0;
-    
-    //blur image
-    for ( int i = 1; i < 11; i += 2 )
-        cv::GaussianBlur(image, bimage, cv::Size( i, i ), 0, 0 );
-    
-    cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "Display window", bimage );                   // Show our image inside it.
-    
-    cv::waitKey(0);                                          // Wait for a keystroke in the window
-    
+    double alpha = 1.5f;
+        
     for(int c=0; c < image.cols; ++c) {
         for(int r=0; r < image.rows; ++r) {
-            
-            //if (image.at<uchar>(r,c) > 250)
-            
+            image.at<uchar>(r,c) = cv::saturate_cast<uchar>(alpha*(image.at<uchar>(r,c)));
+            if (image.at<uchar>(r,c) > 250) image.at<uchar>(r,c) = 0;
+        }
+    }
+    
+    //blur image with cv's GaussianBlur
+    for ( int i = 1; i < 21; i += 2 ) cv::GaussianBlur(image, bimage, cv::Size(i, i), 0, 0);
+    
+    // This gives us the gradient/ differential map. Whatever its called. High pass filter?
+    for(int c=0; c < image.cols; ++c) {
+        for(int r=0; r < image.rows; ++r) {
             // loop through adjacent pixels
-            for(int co=-15; co <= 15; ++co) {
-                for(int ro=-15; ro <= 15; ++ro) {
+            for(int co=-11; co <= 11; ++co) {
+                for(int ro=-11; ro <= 11; ++ro) {
+                    // if within a circle around our pixel,
                     if (r+ro < image.rows && c+co < image.cols
-                        && r+ro >= 0 && c+co >= 0 && (ro != 0 || co != 0))
+                        && r+ro >= 0 && c+co >= 0 && (ro != 0 || co != 0)
+                        && sqrt((ro*ro)+(co+co)) <= 11)
                     {
+                        // count em up for cases where we go over the edge (so the average is computed accurately)
                         howmany ++;
+                        // add to the total
                         tot += abs(bimage.at<uchar>(r,c) - bimage.at<uchar>(r+ro,c+co));
                     }
                 }
             }
             // get average and stick in new image
-            fimage.at<uchar>(r,c) = tot/howmany;
-            // reset tot
+            fimage.at<uchar>(r,c) = cv::saturate_cast<uchar>(tot/howmany);
+            // reset stuff
             howmany = 0;
             tot = 0;
         }
     }
+    printf ("made diff map\n");
     
+    // linear filter to bump up the whites
+    for(int c=0; c < image.cols; ++c) {
+        for(int r=0; r < image.rows; ++r) {
+            fimage.at<uchar>(r,c) = cv::saturate_cast<uchar>(1.8f*(fimage.at<uchar>(r,c)));
+        }
+    }
+    printf ("brightened\n");
+    
+    
+    // Do the radius thing - this will surround impassable pixels with almost impassable pixels 
+    // This gives a buffer zone for the rover
+    for(int c=0; c < image.cols; ++c) {
+        for(int r=0; r < image.rows; ++r) {
+            // if the pixel is over our threshold
+            if (fimage.at<uchar>(r,c) > 100) {
+                // loop through adjacent pixels
+                for(int co=-6; co <= 6; ++co) {
+                    for(int ro=-6; ro <= 6; ++ro) {
+                        // make sure its within a circle around our pixel, and lower than the threshold
+                        if (r+ro < image.rows && c+co < image.cols
+                            && r+ro >= 0 && c+co >= 0 && (ro != 0 || co != 0)
+                            && sqrt((ro*ro)+(co+co)) <= 6 && fimage.at<uchar>(r+ro,c+co) < 100) {
+                            // set to threshold
+                            fimage.at<uchar>(r+ro,c+co) = 100;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    printf ("did radius thing\n");
     cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
     cv::imshow( "Display window", fimage );                   // Show our image inside it.
-    
     cv::waitKey(0);                                          // Wait for a keystroke in the window
+    
+    // TESTING ONLY lel:
+    exit (0);
+    
     // free da memory
     image.release();
     bimage.release();
-    exit(0);
     
     // resize occupancyGrid
-    occupancyGrid.resize(image.cols);
+    occupancyGrid.resize(fimage.cols);
     //set entire grid to impassable
     for(unsigned int i = 0; i < occupancyGrid.size(); ++i) {
-        occupancyGrid[i].resize(image.rows);
+        occupancyGrid[i].resize(fimage.rows);
         for(unsigned int j = 0; j < occupancyGrid[i].size(); ++j) {
             occupancyGrid[i][j] = IMPASS;
         }
@@ -182,31 +215,11 @@ void Astar::getMap() {
     int y = 0;
     unsigned char value;
     // loopy loop through each pixel in greyscale
-    for(int y=0; y<image.rows; y++) {
-        for(int x=0; x<image.cols; x++) {
-            value = (int)image.at<uchar>(x,y);
-            
-            if (value < 10 || value > 245) {
-                value = IMPASS;    // (hopefully?) set areas outside the map to impassable
-            }
-            occupancyGrid[x][y] = value;
-            
-            // radius thingy thing
-            if (value > IMPASS_THRESHOLD) {
-                occupancyGrid[x][y] = IMPASS;
-                // loop through all points potentially in the circle
-                for (int c = -IMPASS_RADIUS+1; c < IMPASS_RADIUS; c ++) {
-                    for (int r = IMPASS_RADIUS-1; r > -IMPASS_RADIUS; r--) {
-                        int cx = x+c;
-                        int ry = y+r;
-                        // make sure the point is in the circle and not outside the occupancyGrid
-                        if (cx < occupancyGrid.size() && cx >= 0 && ry < occupancyGrid[0].size() && ry >=0
-                            && sqrt((c*c)+(r*r)) <= IMPASS_RADIUS && occupancyGrid[cx][ry] < IMPASS_THRESHOLD) {
-                            occupancyGrid[cx][ry] = IMPASS_THRESHOLD;
-                        }
-                    }
-                }
-            }
+    for(int r=0; r < fimage.rows; r++) {
+        for(int c=0; c < fimage.cols; c++) {
+            // pretty sure this is the right way around
+            value = (int)fimage.at < uchar>(r,c);
+            occupancyGrid[c][r] = value;
             
         }
     }
