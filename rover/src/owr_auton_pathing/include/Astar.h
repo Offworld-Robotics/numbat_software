@@ -23,12 +23,17 @@
 #include <algorithm>    // find
 //#include <array>
 
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include "opencv2/imgproc/imgproc.hpp"
+
 #define SIZE_OF_GRID 5000
 #define IMPASS 255
 #define IMPASS_THRESHOLD 200
 #define IMPASS_RADIUS 16
 #define GRID_OFFSET 101.25
 #define GRID_FACTOR 20
+#define IMG_PATH "/home/ros/owr_software/map.tif"
 
 class point {
     public:
@@ -122,7 +127,8 @@ class Astar {
         
         bool findPath();                          // main astar loop, returns true if successful
         
-        void makeGrid(int8_t data[], nav_msgs::MapMetaData info);
+        void getMap(); // load map from geotif file
+        void makeGrid(int8_t data[], nav_msgs::MapMetaData info); // get map from occupancyGrid
         
         void getPath();                           // Reconstruct path back to start
         void convertPath();

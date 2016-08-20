@@ -18,6 +18,8 @@ int main (int argc, char *argv[]) {
 Astar::Astar(const std::string topic) : node(), mapSubscriber(node, "map", 1), tfFilter(mapSubscriber, tfListener, "base_link", 1) {
     // TODO put main code in a separate function; have callbacks call it
     //mapSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::mapCallback, this);
+    getMap();
+    
     pathPublisher = node.advertise<nav_msgs::Path>(topic, 2, true);
     
     goalSubscriber = node.subscribe<geometry_msgs::PointStamped>("owr_auton_pathing/astargoal", 2, &Astar::setGoalCallback, this);
@@ -40,7 +42,8 @@ void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     ROS_INFO("base_link at (%f, %f)", transform.getOrigin().getX(), transform.getOrigin().getY());
     ROS_INFO("Rover tf at (%d, %d)", start.x, start.y);
     
-    makeGrid((int8_t*)gridData->data.data(), gridData->info);
+    // this gets the map from SLAM, which we're not doing anymore
+    //makeGrid((int8_t*)gridData->data.data(), gridData->info);
     
     finalPath.header = gridData->header;
     finalPath.header.stamp = ros::Time::now();
@@ -99,8 +102,118 @@ void Astar::spin() {
     }
 }
 
-void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
+// each pixel is 0.090375m
+void Astar::getMap() {
+    // load image from file
+    cv::Mat image;
+    image = cv::imread(IMG_PATH, CV_LOAD_IMAGE_GRAYSCALE);   // Read the file
+    cv::Mat bimage = image.clone();
+    cv::Mat fimage = image.clone();
     
+    if(!image.data)                              // Check for invalid input
+    {
+        ROS_ERROR ("Could not open or find %s", IMG_PATH);
+        return;
+    }
+    
+    cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+    cv::imshow( "Display window", image );                   // Show our image inside it.
+    
+    cv::waitKey(0);                                          // Wait for a keystroke in the window
+    
+    int tot;
+    int howmany = 0;
+    
+    //blur image
+    for ( int i = 1; i < 11; i += 2 )
+        cv::GaussianBlur(image, bimage, cv::Size( i, i ), 0, 0 );
+    
+    cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+    cv::imshow( "Display window", bimage );                   // Show our image inside it.
+    
+    cv::waitKey(0);                                          // Wait for a keystroke in the window
+    
+    for(int c=0; c < image.cols; ++c) {
+        for(int r=0; r < image.rows; ++r) {
+            
+            //if (image.at<uchar>(r,c) > 250)
+            
+            // loop through adjacent pixels
+            for(int co=-15; co <= 15; ++co) {
+                for(int ro=-15; ro <= 15; ++ro) {
+                    if (r+ro < image.rows && c+co < image.cols
+                        && r+ro >= 0 && c+co >= 0 && (ro != 0 || co != 0))
+                    {
+                        howmany ++;
+                        tot += abs(bimage.at<uchar>(r,c) - bimage.at<uchar>(r+ro,c+co));
+                    }
+                }
+            }
+            // get average and stick in new image
+            fimage.at<uchar>(r,c) = tot/howmany;
+            // reset tot
+            howmany = 0;
+            tot = 0;
+        }
+    }
+    
+    cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
+    cv::imshow( "Display window", fimage );                   // Show our image inside it.
+    
+    cv::waitKey(0);                                          // Wait for a keystroke in the window
+    // free da memory
+    image.release();
+    bimage.release();
+    exit(0);
+    
+    // resize occupancyGrid
+    occupancyGrid.resize(image.cols);
+    //set entire grid to impassable
+    for(unsigned int i = 0; i < occupancyGrid.size(); ++i) {
+        occupancyGrid[i].resize(image.rows);
+        for(unsigned int j = 0; j < occupancyGrid[i].size(); ++j) {
+            occupancyGrid[i][j] = IMPASS;
+        }
+    }
+    
+    // populate occupancyGrid
+    
+    int x = 0;
+    int y = 0;
+    unsigned char value;
+    // loopy loop through each pixel in greyscale
+    for(int y=0; y<image.rows; y++) {
+        for(int x=0; x<image.cols; x++) {
+            value = (int)image.at<uchar>(x,y);
+            
+            if (value < 10 || value > 245) {
+                value = IMPASS;    // (hopefully?) set areas outside the map to impassable
+            }
+            occupancyGrid[x][y] = value;
+            
+            // radius thingy thing
+            if (value > IMPASS_THRESHOLD) {
+                occupancyGrid[x][y] = IMPASS;
+                // loop through all points potentially in the circle
+                for (int c = -IMPASS_RADIUS+1; c < IMPASS_RADIUS; c ++) {
+                    for (int r = IMPASS_RADIUS-1; r > -IMPASS_RADIUS; r--) {
+                        int cx = x+c;
+                        int ry = y+r;
+                        // make sure the point is in the circle and not outside the occupancyGrid
+                        if (cx < occupancyGrid.size() && cx >= 0 && ry < occupancyGrid[0].size() && ry >=0
+                            && sqrt((c*c)+(r*r)) <= IMPASS_RADIUS && occupancyGrid[cx][ry] < IMPASS_THRESHOLD) {
+                            occupancyGrid[cx][ry] = IMPASS_THRESHOLD;
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+}
+
+void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
+
     if((info.width >= SIZE_OF_GRID) || (info.height >= SIZE_OF_GRID)) {
         ROS_ERROR("nav_msgs::OccupancyGrid is too big!");
         return;
@@ -114,10 +227,11 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
         }
     }
     
+    
     int x = 0;
     int y = 0;
     char value;
-    
+        
     for (unsigned int i = 0; i < (info.width * info.height); ++i) {
         value = data[i];
         
@@ -130,8 +244,8 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
         if (value > IMPASS_THRESHOLD) {
             occupancyGrid[x][y] = IMPASS;
             // loop through all points potentially in the circle
-            for (unsigned int c = -IMPASS_RADIUS+1; r < IMPASS_RADIUS; r ++) {
-                for (unsigned int r = IMPASS_RADIUS-1; r > -IMPASS_RADIUS; r--) {
+            for (int c = -IMPASS_RADIUS+1; c < IMPASS_RADIUS; c ++) {
+                for (int r = IMPASS_RADIUS-1; r > -IMPASS_RADIUS; r--) {
                     int cx = x+c;
                     int ry = y+r;
                     // make sure the point is in the circle and not outside the occupancyGrid

@@ -6,10 +6,11 @@ project(owr_auton_pathing)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
-    roscpp
+  roscpp
   sensor_msgs
   std_msgs
   tf
+  cv_bridge
 )
 
 ## System dependencies are found with CMake's conventions
