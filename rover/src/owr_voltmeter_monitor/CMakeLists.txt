@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(owr_mtig)
+project(owr_voltmeter_monitor)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -7,7 +7,6 @@ project(owr_mtig)
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
   roscpp
-  rospy
   std_msgs
 )
 
@@ -29,10 +28,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## * Let MSG_DEP_SET be the set of packages whose message types you use in
 ##   your messages/services/actions (e.g. std_msgs, actionlib_msgs, ...).
 ## * In the file package.xml:
+##   * add a build_depend tag for "message_generation"
 ##   * add a build_depend and a run_depend tag for each package in MSG_DEP_SET
-##   * If MSG_DEP_SET isn't empty the following dependencies might have been
-##     pulled in transitively but can be declared for certainty nonetheless:
-##     * add a build_depend tag for "message_generation"
+##   * If MSG_DEP_SET isn't empty the following dependency has been pulled in
+##     but can be declared for certainty nonetheless:
 ##     * add a run_depend tag for "message_runtime"
 ## * In this file (CMakeLists.txt):
 ##   * add "message_generation" and every package in MSG_DEP_SET to
@@ -71,6 +70,26 @@ find_package(catkin REQUIRED COMPONENTS
 #   std_msgs
 # )
 
+################################################
+## Declare ROS dynamic reconfigure parameters ##
+################################################
+
+## To declare and build dynamic reconfigure parameters within this
+## package, follow these steps:
+## * In the file package.xml:
+##   * add a build_depend and a run_depend tag for "dynamic_reconfigure"
+## * In this file (CMakeLists.txt):
+##   * add "dynamic_reconfigure" to
+##     find_package(catkin REQUIRED COMPONENTS ...)
+##   * uncomment the "generate_dynamic_reconfigure_options" section below
+##     and list every .cfg file to be processed
+
+## Generate dynamic reconfigure parameters in the 'cfg' folder
+# generate_dynamic_reconfigure_options(
+#   cfg/DynReconf1.cfg
+#   cfg/DynReconf2.cfg
+# )
+
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -81,10 +100,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES owr_mtig
-  CATKIN_DEPENDS owr_messages roscpp rospy std_msgs
-  DEPENDS system_lib
+#  INCLUDE_DIRS include
+#  LIBRARIES owr_voltmeter_monitor
+#  CATKIN_DEPENDS owr_messages roscpp std_msgs
+#  DEPENDS system_lib
 )
 
 ###########
@@ -95,30 +114,31 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  include
   ${catkin_INCLUDE_DIRS}
+  include
 )
 
-## Declare a cpp library
-# add_library(owr_drive_controls
-#   src/${PROJECT_NAME}/owr_drive_controls.cpp
+## Declare a C++ library
+# add_library(owr_voltmeter_monitor
+#   src/${PROJECT_NAME}/owr_voltmeter_monitor.cpp
 # )
 
-## Declare a cpp executable
+## Add cmake target dependencies of the library
+## as an example, code may need to be generated before libraries
+## either from message generation or dynamic reconfigure
+# add_dependencies(owr_voltmeter_monitor ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-#Example
-#add_executable(owr_mtig_node src/<owr_mtig>.cpp)
-#target_link_libraries(owr_mtig_node ${catkin_LIBRARIES})
+## Declare a C++ executable
+add_executable(owr_voltmeter_monitor src/VoltmeterMonitor.cpp)
 
-
-## Add cmake target dependencies of the executable/library
-## as an example, message headers may need to be generated before nodes
-# add_dependencies(owr_drive_controls_node owr_drive_controls_generate_messages_cpp)
+## Add cmake target dependencies of the executable
+## same as for the library above
+# add_dependencies(owr_voltmeter_monitor ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(owr_drive_controls_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(owr_voltmeter_monitor
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
@@ -135,7 +155,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS owr_drive_controls owr_drive_controls_node
+# install(TARGETS owr_voltmeter_monitor owr_voltmeter_monitor_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -160,7 +180,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_owr_drive_controls.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_owr_voltmeter_monitor.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

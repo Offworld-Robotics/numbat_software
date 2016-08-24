@@ -56,6 +56,7 @@ void JointsMonitor::endCycle(ros::Time endTime) {
 	    pwmMsg.pwm = info.pwm;
 	    pwmMsg.currentVel = info.velocity;
 	    pwmMsg.currentPos = info.position;
+            pwmMsg.targetPos = info.targetPos;
             statusMsg.joints.push_back(pwmMsg);
 
             //TODO: add to debug message
