@@ -526,7 +526,7 @@ void NavigationGUI::drawSignal() {
 void NavigationGUI::keydown(unsigned char key, int x, int y) {
 	if (key == 27) {
 		exit(0);
-	} else if (key >= '0' && key <= '3') {
+	} else if (key >= '0' && key <= '7') {
 		toggleStream(key - '0');
 	} /*else if (key == 'q') {
 		printGPSPath();

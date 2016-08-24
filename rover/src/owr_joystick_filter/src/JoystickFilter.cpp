@@ -164,9 +164,9 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
      *      
      */
     gimbalRate = 0.0;
+    //IMPORTANT: this will do nothing if the lidar is not is position mode
+    gimbalRate = joy->axes[STICK_CH_UD];
     if (joy->buttons[BUTTON_A]) {
-        //IMPORTANT: this will do nothing if the lidar is not is position mode
-        gimbalRate = joy->axes[STICK_L_UD];
         
         // Thumb sticks control camera rotation while A Button is held
 
