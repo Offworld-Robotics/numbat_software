@@ -14,9 +14,9 @@ def run():
     #print telnet.communicate("bluetounge\nbluetoung\n/usr/www/signal.cgi");
     connection.open("192.168.1.20")
     connection.read_until("login:")
-    connection.write("bluetounge\n")
+    connection.write("bluetongue\n")
     connection.read_until("Password:")
-    connection.write("bluetoung\n")
+    connection.write("bluetongue\n")
     connection.read_until("XM.v5.5.8#")
     connection.write("/usr/www/signal.cgi\n")
     

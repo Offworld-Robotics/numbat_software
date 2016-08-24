@@ -62,6 +62,10 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	videoSub[1] = imgTrans.subscribe("/cam1", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
 	videoSub[2] = imgTrans.subscribe("/cam2", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
 	videoSub[3] = imgTrans.subscribe("/cam3", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
+	videoSub[4] = imgTrans.subscribe("/cam4", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
+	videoSub[5] = imgTrans.subscribe("/cam5", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
+	videoSub[6] = imgTrans.subscribe("/cam6", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
+	videoSub[7] = imgTrans.subscribe("/cam7", 1, &NavigationNode::receiveVideoMsg, this, image_transport::TransportHints("compressed"));
 
 }
 
