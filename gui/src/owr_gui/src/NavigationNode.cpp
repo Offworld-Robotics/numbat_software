@@ -41,7 +41,7 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	gpsSub = n.subscribe("/gps/fix", 1000, &NavigationNode::receiveGpsMsg, this); // GPS related data
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
-	voltSub = n.subscribe("/voltmeter", 1000, &NavigationNode::receiveVoltageMsg, this);
+	voltSub = n.subscribe("/owr/voltmeter", 1000, &NavigationNode::receiveVoltageMsg, this);
 
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
@@ -133,11 +133,12 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
 }
 
-void NavigationNode::receiveVoltageMsg(const owr_messages::voltage::ConstPtr& msg) {
+void NavigationNode::receiveVoltageMsg(const std_msgs::Float32::ConstPtr& msg) {
 	assert(msg); // 
 	
 	//ROS_INFO("received a message");
 	//ROS_INFO("voltage %f", msg->voltage);
-	voltage = msg->voltage;
+	voltage = msg->data;
 	gui->updateVoltage(voltage);
+    ROS_INFO("voltage %f", voltage);
 }

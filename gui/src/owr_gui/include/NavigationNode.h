@@ -15,6 +15,7 @@
 #include "owr_messages/voltage.h"
 #include "NavigationGUI.h"
 #include <image_transport/image_transport.h>
+#include <std_msgs/Float32.h>
 
 // The message structs needed for availableFeeds
 #include "owr_messages/activeCameras.h"
@@ -29,7 +30,7 @@ class NavigationNode {
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveBatteryMsg(const owr_messages::status::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
-		void receiveVoltageMsg(const owr_messages::voltage::ConstPtr& msg);
+		void receiveVoltageMsg(const std_msgs::Float32::ConstPtr& msg);
 		
 	private:
 		NavigationGUI *gui;
