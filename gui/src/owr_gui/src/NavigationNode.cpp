@@ -145,7 +145,7 @@ void NavigationNode::receiveWheelPosMsg(const sensor_msgs::JointState::ConstPtr&
 	for(int jointNo = 0;jointNo < msg->name.size();jointNo++) {
 		ROS_INFO("%s", msg->name[jointNo].c_str());
 		if(msg->name[jointNo].compare(leftWheelName) == 0) {
-			left = msg->position[jointNo];
+			left = -msg->position[jointNo];
 			foundLeft = true;
 		} else if(msg->name[jointNo].compare(rightWheelName) == 0) {
 			right = msg->position[jointNo];
