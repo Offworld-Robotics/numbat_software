@@ -63,10 +63,10 @@ geometry_msgs::Vector3 GPSTransform::convertToUTM(const sensor_msgs::NavSatFix &
     double falseNorthing = 10000e4;
 
     // calculates the longitudinal zone
-    double zone = std::floor((msg.longitude + 180) / 6.0) + 1.0;
+    double zone = std::floor((msg.longitude + 180.) / 6.0) + 1.; 
 
     // calculate the longitude of the central merridian in radians
-    const double lambda0 = ((zone-1)*6 - 180 + 3) * (M_PI/180.0);
+    const double lambda0 = ((zone-1.)*6. - 180. + 3.) * (M_PI/180.);
 
     // we don't need to handle Norway or Svalbard. If either of these cases become a thing, refer to above link
 
@@ -75,7 +75,7 @@ geometry_msgs::Vector3 GPSTransform::convertToUTM(const sensor_msgs::NavSatFix &
     const double longRadians = msg.longitude * (M_PI/180.0) - lambda0;
 
     //WGS84 elipsoid
-    const int a = 6378137;
+    const double a = 6378137;
     const double b = 6356752.314245;
     const double f =  1.0/298.257223563;
 
@@ -83,8 +83,8 @@ geometry_msgs::Vector3 GPSTransform::convertToUTM(const sensor_msgs::NavSatFix &
 
     // calc easting and northing
 
-    double e = std::sqrt(f * (2-f)); //eccentricity
-    double northing = f / (2 - f); // flattening
+    double e = std::sqrt(f * (2.-f)); //eccentricity
+    double northing = f / (2. - f); // flattening
     double n2 = northing * northing;
     double n3 = northing * n2;
     double n4 = northing * n3;
@@ -95,24 +95,24 @@ geometry_msgs::Vector3 GPSTransform::convertToUTM(const sensor_msgs::NavSatFix &
     double sinLon = std::sin(longRadians);
     double tanLon = std::tan(longRadians);
 
-    double capT = std::tan(latRadians); // angle on conformal spehere
-    double o = std::sinh(e * atanh(e * capT /std::sqrt(1+capT * capT )));
+    double t = std::tan(latRadians); // angle on conformal spehere
+    double o = std::sinh(e * atanh(e * t/std::sqrt(1+t*t)));
 
-    double tPrime = capT  * std::sqrt(1+o*o) - o*std::sqrt(1 + capT  * capT );
+    double tPrime = t * std::sqrt(1+o*o) - o*sqrt(1 + t * t);
 
     double squiglePrime = std::atan2(tPrime, cosLon);
     double nPrime = asinh(sinLon / std::sqrt(tPrime * tPrime + cosLon * cosLon));
 
-    double capA = a/(1+northing) * (1 + 1/4*n2 + 1/64*n4 + 1/256*n6);
+    double capA = a/(1+northing) * (1. + 1./4.0*n2 + 1./64.*n4 + 1./256.*n6);
 
     double alpha[] = {
             std::numeric_limits<double>::quiet_NaN(),
-            1.0/2*northing - 2.0/3*n2 + 5.0/16*n3 +   41.0/180*n4 -     127.0/288*n5 +      7891.0/37800*n6,
-            13.0/48*n2 -  3.0/5*n3 + 557.0/1440*n4 +     281.0/630*n5 - 1983433.0/1935360*n6,
-            61.0/240*n3 -  103.0/140*n4 + 15061.0/26880*n5 +   167603.0/181440*n6,
-            49561.0/161280*n4 -     179.0/168*n5 + 6601661.0/7257600*n6,
-            34729.0/80640*n5 - 3418889.0/1995840*n6,
-            212378941.0/319334400*n6
+            1./2*northing - 2./3*n2 + 5./16*n3 +   41./180*n4 -     127./288*n5 +      7891./37800*n6,
+            13./48*n2 -  3./5*n3 + 557./1440*n4 +     281./630*n5 - 1983433./1935360*n6,
+            61./240*n3 -  103./140*n4 + 15061./26880*n5 +   167603./181440*n6,
+            49561./161280*n4 -     179./168*n5 + 6601661./7257600*n6,
+            34729./80640*n5 - 3418889./1995840*n6,
+            212378941./319334400*n6
     };
 
     double squigle = squiglePrime;
@@ -143,7 +143,7 @@ geometry_msgs::Vector3 GPSTransform::convertToUTM(const sensor_msgs::NavSatFix &
     //scale
 
     double sinLat = std::sin(latRadians);
-    double kPrime = std::sqrt(1 - e*e*sinLat*sinLat) * std::sqrt(1 + capT  * capT ) / std::sqrt(tPrime * tPrime * cosLon * cosLon);
+    double kPrime = std::sqrt(1 - e*e*sinLat*sinLat) * std::sqrt(1 + t * t) / std::sqrt(tPrime * tPrime * cosLon * cosLon);
     double kPrimePrime = capA / a * std::sqrt(pPrime * pPrime + qPrime * qPrime);
 
     double k = utmCentralScale * kPrime * kPrimePrime;

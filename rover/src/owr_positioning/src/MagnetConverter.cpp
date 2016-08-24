@@ -33,7 +33,7 @@ int main(int argc, char ** argv) {
 }
 
 MagnetConverter::MagnetConverter(const std::string topic) {
-    subscriber = node.subscribe("/mti/sensor/magentic", 5, &MagnetConverter::receiveMsg, this); // mangnet stuff
+    subscriber = node.subscribe("/mti/sensor/magnetic", 5, &MagnetConverter::receiveMsg, this); // mangnet stuff
     publisher =  node.advertise<geometry_msgs::PoseWithCovarianceStamped>("/owr/sensors/heading", 10);
 }
 
@@ -46,16 +46,16 @@ geometry_msgs::Quaternion hamiltonProduct(geometry_msgs::Quaternion q1, geometry
     return ret;
 }
 
-void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3 const> & msg) {
+void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3Stamped const> & msg) {
     //Normalized vector
-    float norm = sqrt(pow(msg->x,2) + pow(msg->y,2) + pow(msg->z,2));
+    float norm = sqrt(pow(msg->vector.x,2) + pow(msg->vector.y,2) + pow(msg->vector.z,2));
     geometry_msgs::Quaternion magQuart;
-    magQuart.x = msg->x/norm;
-    magQuart.y = -msg->y/norm;
-    magQuart.z = msg->z/norm;
+    magQuart.x = msg->vector.x/norm;
+    magQuart.y = -msg->vector.y/norm;
+    magQuart.z = msg->vector.z/norm;
     magQuart.w = 0;
     //sensor_msgs::Imu imu;
-    //geometry_msgs::Vector3 absDir = hamiltonProduct(magQuart,imu.orientation);
+    //geometry_msgs::Vector3Stamped absDir = hamiltonProduct(magQuart,imu.orientation);
     //double heading = atan2(1,0) - atan2(absDir.y,absDir.x);
     const double DEG_90 = 1.5708;
     const double MAG_DEVIATION =  0.218166;
