@@ -126,13 +126,6 @@ add_dependencies(auto bluesat_owr_protobuf)
 target_link_libraries(auto ${catkin_LIBRARIES} GL GLU glut)
 
 
-#add_executable(image_converter src/ImageConverter.cpp)
-#add_dependencies(image_converter ${catkin_EXPORTED_TARGETS})
-#add_dependencies(image_converter bluesat_owr_protobuf_generate_messages_cpp)
-#add_dependencies(image_converter bluesat_owr_protobuf)
-#add_dependencies(image_converter owr_messages_gencpp)
-#add_dependencies(image_converter cv_bridge) 
-
 ## Declare a cpp library
 # add_library(owr_gui
 #   src/${PROJECT_NAME}/owr_gui.cpp

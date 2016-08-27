@@ -91,26 +91,33 @@ void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 	videoScreen->setNewStreamFrame(frame, width, height);
 	
 	if (snapShot) {
-		if (sizeof(frame) > 0) {
+		/*if (sizeof(frame) > 0) {
 			unsigned char* top = &frame[0];
 			unsigned char* bottom = &frame[sizeof(frame) - 1];
-			while (top < (height/2)) {
+			while (top < bottom) {
 				unsigned char temp = *top;
 				*top = *bottom;
 				*bottom = temp;
 				top++;
 				bottom--;
 			}
-		}
-		/*int x;
-		int y;
-		for (x = 0; x < width; x++) {
-			for (y = 0; y < height/2; y++) {
-				int temp = frame[x][y];
-				frame[x][y] = frame[x][height - y];
-				frame[x][height - y] = temp;
-			}
 		}*/
+
+		int i = 0;
+		while (i < ((width*height - 1)*3)/2) {
+			int temp;
+			temp = frame[i];
+			frame[i] = frame[(width*height - 1)*3 - i];
+			frame[(width*height - 1)*3 - i] = temp;
+			i++;
+		}
+		
+		for (int i = 0; i < (width*height - 1)*3; i+=3) {
+			int temp;
+			temp = frame[i];
+			frame[i] = frame[i+2];
+			frame[i+2] = temp;		
+		}
 		saveBMPFile("snapimage", frame, width, height);
 		snapShot = false;
 	}
