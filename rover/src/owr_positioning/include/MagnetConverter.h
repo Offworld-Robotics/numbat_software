@@ -11,6 +11,7 @@
 #include "owr_messages/heading.h"
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/Vector3Stamped.h>
+#include <std_msgs/Float64.h>
 
 class MagnetConverter {
     
@@ -20,7 +21,7 @@ class MagnetConverter {
     protected:
         
         void receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3Stamped const> & msg);
-        ros::Publisher  publisher;   
+        ros::Publisher  publisher, pubDebug;   
         ros::Subscriber subscriber;  
     
     private:
