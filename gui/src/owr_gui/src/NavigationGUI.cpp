@@ -90,6 +90,32 @@ void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 	// use the Video_Feed_Frame object method
 	videoScreen->setNewStreamFrame(frame, width, height);
 	
+	if (snapShot) {
+		if (sizeof(frame) > 0) {
+			unsigned char* top = &frame[0];
+			unsigned char* bottom = &frame[sizeof(frame) - 1];
+			while (top < (height/2)) {
+				unsigned char temp = *top;
+				*top = *bottom;
+				*bottom = temp;
+				top++;
+				bottom--;
+			}
+		}
+		/*int x;
+		int y;
+		for (x = 0; x < width; x++) {
+			for (y = 0; y < height/2; y++) {
+				int temp = frame[x][y];
+				frame[x][y] = frame[x][height - y];
+				frame[x][height - y] = temp;
+			}
+		}*/
+		saveBMPFile("snapimage", frame, width, height);
+		snapShot = false;
+	}
+
+
 	//ROS_INFO("Updated video");
 }
 
@@ -537,6 +563,8 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 		videoScreen->zoom(ZOOM_OUT);
 	} else if (key == 'a') {
                 displayTilt = !displayTilt;
+	} else if (key == 'j') {
+		snapShot = true;
         }
 }
 

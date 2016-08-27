@@ -1,0 +1,4 @@
+/*
+	ScreenShot Node
+	Will take a screen shot of video feed
+*/
