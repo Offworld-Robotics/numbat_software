@@ -31,8 +31,10 @@
 #define IMPASS 255
 #define IMPASS_THRESHOLD 200
 #define IMPASS_RADIUS 16
-#define GRID_OFFSET 101.25
+//101.25f
+#define GRID_OFFSET 0
 #define GRID_FACTOR 20
+#define GRID_SCALE 0.093f
 #define IMG_PATH "/home/ros/owr_software/map.tif"
 
 class point {
@@ -89,10 +91,12 @@ class Astar {
     };
     protected:
         ros::Publisher  pathPublisher;
+        ros::Publisher  mapPublisher;
     private:
         
         ros::NodeHandle node;         // ros::NodeHandle nh;
-        message_filters::Subscriber<nav_msgs::OccupancyGrid> mapSubscriber;
+        message_filters::Subscriber<nav_msgs::OccupancyGrid> tfSubscriber;
+        ros::Subscriber mapSubscriber;
         ros::Subscriber goalSubscriber;
         ros::Subscriber goSubscriber;
         
@@ -102,6 +106,7 @@ class Astar {
         tf::MessageFilter<nav_msgs::OccupancyGrid> tfFilter;
         
         // these call doSearch after receiving new information
+        void tfCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
         void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
         void setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint);
         void setGoCallback(const std_msgs::Bool::ConstPtr& goOrNo);
@@ -110,11 +115,12 @@ class Astar {
         void doSearch(void);
         bool go;
         
-        //nav_msgs::OccupancyGrid inputGrid;      // our inputGrid which we'll convert and search
+        
+        nav_msgs::OccupancyGrid outputGrid;      // our outputGrid to help with testing etc?
         nav_msgs::Path finalPath;               // finalPath for us to publish
         
         comparePoints comp;
-        std::vector<std::vector <unsigned char> > occupancyGrid;
+        std::vector<std::vector <unsigned char> > astarGrid;
         std::vector<point> closedSet;
         std::vector<point> openSet;
         std::vector<point> frontierSet;       // gonna use this to keep track of what goes in and out of openSet (can't see it because its an priorityQueue)
@@ -128,7 +134,7 @@ class Astar {
         bool findPath();                          // main astar loop, returns true if successful
         
         void getMap(); // load map from geotif file
-        void makeGrid(int8_t data[], nav_msgs::MapMetaData info); // get map from occupancyGrid
+        void makeGrid(int8_t data[], nav_msgs::MapMetaData info); // get map from astarGrid
         
         void getPath();                           // Reconstruct path back to start
         void convertPath();
@@ -143,7 +149,7 @@ class Astar {
         double getDist(point point1, point point2);   // Euclidean distance between 2 points
         
         // ----------- testing stuff -------------
-        void createGrid(int sizex, int sizey);     // test - for creating an empty occupancyGrid
+        void createGrid(int sizex, int sizey);     // test - for creating an empty astarGrid
         void setGridEndPoints(int sx, int sy, int gx,int gy); // test - set start and end point
         void setGridStepCosts(char *typeOfObstacle);          // test - set obstacles
         void printGrid();                 // test print whole grid and any other relevant stuff
