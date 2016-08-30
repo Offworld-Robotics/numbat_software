@@ -9,8 +9,6 @@
 
 #include "UTMTransform.hpp"
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#include <geometry_msgs/PoseStamped.h>
-#include <geometry_msgs/TransformStamped.h>
 
 
 int main(int argc, char ** argv) {
