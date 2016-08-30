@@ -32,6 +32,7 @@ class GPSTransform {
         tf2_ros::Buffer tfBuffer;
         tf2_ros::TransformListener tfListener;
         geometry_msgs::TransformStamped currentTransform;
+        bool pubMapBase;
 
         
 
