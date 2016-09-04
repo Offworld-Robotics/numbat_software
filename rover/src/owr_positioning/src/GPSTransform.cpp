@@ -33,7 +33,7 @@ GPSTransform::GPSTransform() : tfBuffer(), tfListener(tfBuffer) {
     currentTransform.header.frame_id = "world";
     currentTransform.child_frame_id = "map";
     currentTransform.header.seq = 0;
-    
+    nh.param<bool>("pub_map_base", pubMapBase, true);
 }
 
 
@@ -154,7 +154,7 @@ geometry_msgs::Vector3 GPSTransform::convertToUTM(const sensor_msgs::NavSatFix &
         y = y + falseNorthing;
     }
 
-    double convergance = y * (M_PI/180);
+    double convergance = capY * (M_PI/180);
     double scale = k;
 
     geometry_msgs::Vector3 pt;
@@ -180,9 +180,11 @@ void GPSTransform::spin() {
     mapTf.transform.translation.z = 0;
 
     while(ros::ok()) {
-        mapTf.header.stamp = ros::Time::now();
-        mapTf.header.seq++;
-        tfBroadcast.sendTransform(mapTf);
+        if(pubMapBase) {
+            mapTf.header.stamp = ros::Time::now();
+            mapTf.header.seq++;
+            tfBroadcast.sendTransform(mapTf);
+        }
         //currentTransform.header.stamp = ros::Time::now();
         currentTransform.header.seq++;
         tfBroadcast.sendTransform(currentTransform);
