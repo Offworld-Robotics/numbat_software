@@ -4,4 +4,5 @@
     </node>
     <node pkg="xsens_driver" type="imu_conversion" name="imu_conversion" output="screen"/>
     <node pkg="owr_positioning" type="orientation" name="orientation" output="screen"/>
+    <node pkg="owr_positioning" type="mag" name="mag" output="screen"/>
 </launch>
