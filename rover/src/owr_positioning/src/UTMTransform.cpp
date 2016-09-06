@@ -29,7 +29,14 @@ UTMTransform::UTMTransform() : tfBuffer(), tfListener(tfBuffer) {
     currentTransform.header.frame_id = "world";
     currentTransform.child_frame_id = "map";
     currentTransform.header.seq = 0;
-    
+    currentTransform.transform.translation.x = 0.0;   
+    currentTransform.transform.translation.y = 0.0;   
+    currentTransform.transform.translation.z = 0.0;   
+    currentTransform.transform.rotation.x = 0.0;
+    currentTransform.transform.rotation.x = 0.0;
+    currentTransform.transform.rotation.y = 0.0;
+    currentTransform.transform.rotation.z = 0.0;
+    currentTransform.transform.rotation.w = 0.0;
 }
 
 
@@ -39,7 +46,7 @@ void UTMTransform::newPositionCallback(const geometry_msgs::Pose::ConstPtr& msg)
         //tf2::Transform baseLinkToBase = tfBuffer.get
         geometry_msgs::PoseStamped newPose;
         newPose.pose = *msg;
-        newPose.header.frame_id = "map";
+        newPose.header.frame_id = "base_link";
         newPose.header.stamp = ros::Time(0);
         tfBuffer.transform(newPose, newPose, "map");
         tf2::Transform newTf;
