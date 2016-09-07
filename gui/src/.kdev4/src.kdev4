@@ -4,9 +4,9 @@ Current Build Directory Index=0
 ProjectRootRelative=./
 
 [CMake][CMake Build Directory 0]
-Build Directory Path=file:///home/ros/owr_software/gui/src/build
+Build Directory Path=file:///home/ros/owr_software/gui/build
 Build Type=Debug
-CMake Binary=file:///usr/bin/cmake
+CMake Binary=file:///opt/ros/indigo/bin/catkin_make
 Environment Profile=
 Extra Arguments=
 Install Directory=

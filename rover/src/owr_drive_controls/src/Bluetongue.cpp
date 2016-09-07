@@ -42,7 +42,7 @@ struct toControlMsg {
 } __attribute__((packed));
 
 //expect RPM is 6/m = 2.513274123rads/s
-#define ENC_MULTIPLIER -0.5
+//#define ENC_MULTIPLIER -0.5
 
 struct toNUCMsg {
     uint16_t magic;
@@ -55,12 +55,20 @@ struct toNUCMsg {
     GPSData gpsData;
     MagData magData;
     IMUData imuData;
-    int16_t enc0; // Angular velocities derived from motor encoders, devide by 1000 to get value sent
-    int16_t enc1;
-    int16_t enc2;
-    int16_t enc3;
-    int16_t enc4;
-    int16_t enc5;
+    
+    uint16_t swerveLeft; // Swerve Positions from potentiometers
+    uint16_t swerveRight;
+    
+    uint16_t pot0; // TODO: implement and rename when being used.
+    uint16_t pot1;
+    uint16_t pot2;
+    uint16_t pot3;
+    
+    uint16_t armLower;
+    uint16_t armUpper;
+    
+    uint16_t clawEffort;
+    uint16_t clawActual;   
 } __attribute__((packed));
 
 bool Bluetongue::reconnect(void) {
@@ -238,8 +246,7 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
 //     ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
 //     ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
 //             mesg.clawRotate);
-//     ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, 
-//             mesg.armBottom, mesg.armRotate);
+     ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);
 //     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
 //             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
     
@@ -264,22 +271,27 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     } else {
         stat.roverOk = true;
     }
-    stat.batteryVoltage = ((resp.vbat / 1024.0) * 3.3) * 5.7;
+    stat.batteryVoltage = ((resp.vbat / 4096.0) * 3.3) * 5.7;
     #ifdef VOLTMETER_ON
     stat.voltmeter = (((resp.voltmeter / 1024.0)*3.3) - 1.65) * (37.2 / 2.2);
     #endif
     stat.gpsData = resp.gpsData;
     stat.magData = resp.magData;
     stat.imuData = resp.imuData;
-    stat.enc0 = resp.enc0 * ENC_MULTIPLIER;
-    stat.enc1 = resp.enc1 * ENC_MULTIPLIER;
-    stat.enc2 = resp.enc2 * ENC_MULTIPLIER;
-    stat.enc3 = resp.enc3 * ENC_MULTIPLIER;
-    stat.enc4 = resp.enc4 * ENC_MULTIPLIER;
-    stat.enc5 = resp.enc5 * ENC_MULTIPLIER;
     
-    ROS_INFO("Encoder speeds %d, %d, %d, %d, %d, %d", resp.enc0, resp.enc1, resp.enc2, resp.enc3, resp.enc4, resp.enc5);
-        
+    // ADC data:
+    stat.swerveLeft = resp.swerveLeft;
+    stat.swerveRight = resp.swerveRight;
+    stat.pot0 = resp.pot0;
+    stat.pot1 = resp.pot1;
+    stat.pot2 = resp.pot2;
+    stat.pot3 = resp.pot3;
+    stat.clawActual = resp.clawActual;
+    stat.clawEffort = resp.clawEffort;
+    ROS_INFO("pot0 %f, pot1 %f, pot2 %f, pot3 %f", stat.pot0, stat.pot1, stat.pot2, stat.pot3);
+    ROS_INFO("ARM POT. left: %d ******* right %d *****", resp.swerveLeft, resp.swerveRight);  
+    ROS_INFO("Claw. efort: %d ******* actual %d ***** target %d", resp.clawEffort, resp.clawActual, mesg.clawGrip);  
+    ROS_INFO("BATTERY VOLTAGE %d -> %f #################", resp.vbat, stat.batteryVoltage);       
 //     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
 //     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
 //     jointMsg.header.seq = timeSeq; // sequence ID

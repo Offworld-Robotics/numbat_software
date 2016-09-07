@@ -9,7 +9,7 @@
 #include <math.h>
 #include <ros/ros.h>
 
-#define VEL_INC 10.2
+#define VEL_INC 0.001 
 #define SMALL_INC 0.001
 #define VEL_ERROR SMALL_INC
 
@@ -36,44 +36,14 @@ static inline double signFMod(double v, double mod) {
 
 //Condition: -PI/2 <= a <= PI/2, -PI/2 <= b <= PI/2
 static inline double calcShortestCircDelta(double a, double b) {
-    
-//     double ab = (a - b);
-//     
-//     //we want numbers to be in the range 
-// //     if(
-// //     if ( (ab + FLOATING_PT_ERROR) >= M_PI && fabs(ab) < (M_PI * 2)) {
-// //         ab = ((M_PI * 2) - ab);
-// //     } else if (ab < -M_PI && fabs(ab) < (M_PI * 2)) {
-// //         ab = ((M_PI * 2) + ab);
-// //     } else {
-// //         printf("error\n");
-// //     }
-//     double ba = (b - a);
-// //     if (ba > M_PI && fabs(ba) < (M_PI * 2)) {
-// //         ba = ((M_PI * 2) - ba);
-// //     } else if (ab < -M_PI && fabs(ab) < (M_PI * 2)) {
-// //         ba = ((M_PI * 2) + ba);
-// //     } else {
-// //         printf("error\n");
-// //     }
-    
-//     double ab = (a - b);
-//     ab = signFMod(ab + M_PI,(M_PI * 2)) - M_PI;
-//     double ba = (b - a);
-//     ba = signFMod(ba + M_PI,(M_PI * 2)) - M_PI;
-// //     printf("ab %f, ba %f\n", ab, ba);
-//     double result = 0;
-//     if(fabs(ba) >= fabs(ab)) {
-//         result  = ab;
-//     } else {
-//         result = ba;
-//     }
-//     return result;
-//     printf("a: %f b: %f\nf: %f\n",a ,b, b-a);
+    double angle = fmod((b-a), M_PI);
+    if(b < a) {
+       angle*=-1.0;
+    } 
     return b-a;
 }
 
-JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radiusIn, const double * gearRatioIn, int nGearsIn,int minPWMIn, int maxPWMIn, int maxRPMIn, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name) {
+JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radiusIn, const double * gearRatioIn, int nGearsIn,int minPWMIn, int maxPWMIn, int maxRPMIn, double accuracy, char * topic, ros::NodeHandle nh, std::string name) : JointController(topic,nh,name), accuracy(accuracy) {
     radius = radiusIn;
     maxPWM = maxPWMIn;
     minPWM = minPWMIn;
@@ -108,6 +78,21 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
  */
 int JointSpeedBasedPositionController::posToPWM(double futurePos, double currentPos, double updateFrequency) {
     
+    //check for infinity - we should stop
+    if(std::isinf<double>(currentPos)) {
+        ROS_ERROR("Current Position is infinity!");
+        return deltaPWM/2 + minPWM;
+    }
+    
+    //check for stops
+    if(
+        (stopP && currentPos > futurePos) ||
+        (stopN && currentPos < futurePos)
+    ) {
+        ROS_ERROR("Stop");
+        return deltaPWM/2 + minPWM;
+    }
+    
     
     //check for invalid values
     if( std::fabs(futurePos) + FLOATING_PT_ERROR > (M_PI * 2)) {
@@ -117,15 +102,15 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     }
     
     //place the two angles in our range
-    futurePos = posRangeConvert(futurePos);
-    currentPos = posRangeConvert(currentPos);
+    //futurePos = posRangeConvert(futurePos);
+    //currentPos = posRangeConvert(currentPos);
     printf("future %f, current %f, update %f\n", futurePos, currentPos, updateFrequency);
     
     double deltaT = 1.0/updateFrequency;
     double aimPosDelta = calcShortestCircDelta(currentPos, futurePos);
     
     //escape if we are close enough
-    if(fabs(aimPosDelta) < (0.15)) {
+    if(fabs(aimPosDelta) < (accuracy)) {
         int pwm = deltaPWM/2 + minPWM; 
         printf("mid pwm %d, posDelta %f\n", pwm, aimPosDelta);
 //         nextPosGuess = currentPos;
@@ -150,7 +135,7 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
          posDelta = calcShortestCircDelta(currentPos, lastKnownPosition);
     }
     currentAngVel = posDelta/deltaT;
-    currentAngVel = currentAngVel * gearMultiplier;
+    currentAngVel = currentAngVel;// * gearMultiplier;
     double targetAngularVel = currentAngVel;
     //Step 2: Calculate the direction to reach the desired position fastest (CW, CCW)
     double radialDistToTarget =  calcShortestCircDelta(futurePos, currentPos);
@@ -161,17 +146,18 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
     
     //are we at zero?
     if(fabs(currentAngVel) > VEL_ERROR) {
+	printf("maxVel: %f, currentAngVel: %f", maxVelocity, currentAngVel);
         printf("non zero vel\n");
         //Are we going in the right direction   
         if(std::signbit(radialDistToTarget) == std::signbit(currentAngVel)) { //compares the sign of the two
-            printf("sign not equal\n");
+            printf("sign equal\n");
             if(targetAngularVel > 0) {
                 targetAngularVel = std::min(currentAngVel+VEL_INC,maxVelocity);
             } else if (targetAngularVel < 0) {
                 targetAngularVel = std::max(currentAngVel-VEL_INC,-maxVelocity);
             }
         } else {
-            printf("sign equal\n");
+            printf("sign not equal\n");
             //this will reverse the sign if it needs to be negative
             if(currentAngVel > 0) {
                 targetAngularVel = VEL_INC;   
@@ -193,7 +179,8 @@ int JointSpeedBasedPositionController::posToPWM(double futurePos, double current
 
     
     //Step 3: will we pass the point this turn
-    double nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
+    //double nextPosGuess = std::fmod((targetAngularVel * updateFrequency), (M_PI * 2));
+    double nextPosGuess = posRangeConvert(targetAngularVel * updateFrequency);
     
     double nextPosDelta = calcShortestCircDelta(nextPosGuess, currentPos);
     printf("nextPosGuess %f nextPosDelta %f\n", nextPosGuess, nextPosDelta);
@@ -266,6 +253,7 @@ jointInfo JointSpeedBasedPositionController::extrapolateStatus(ros::Time session
     info.velocity = aimVel; //TODO: extrapolate based on delta
     info.pwm = lastPWM;
     info.jointName = name;
+    info.targetPos = lastAimPosition;
     return info;
 }
     
