@@ -55,15 +55,16 @@ void ERCMapPub::getGeoData() {
         adfGeoTransform[0], adfGeoTransform[3]);
         ROS_INFO("Pixel Size = (%.6f,%.6f)",
         adfGeoTransform[1], adfGeoTransform[5]);
+        
+        // get our pixel resolution and UTM origin coordinates
+        outputGrid.info.resolution = std::abs(adfGeoTransform[1]);
+        outputGrid.info.origin.position.x = adfGeoTransform[0];
+        outputGrid.info.origin.position.y = adfGeoTransform[3];
+        
     } else {
         ROS_ERROR ("Could not get geo data from \"%s\"",IMG_PATH);
     }
-    // get our pixel resolution and UTM origin coordinates
-    // couldn't get abs() to work so here's a little thingy thing instead
-    //outputGrid.info.resolution = adfGeoTransform[1] < 0 ? -1.0f * adfGeoTransform[1] : adfGeoTransform[1];
-    outputGrid.info.resolution = std::abs(adfGeoTransform[1]);
-    outputGrid.info.origin.position.x = adfGeoTransform[0];
-    outputGrid.info.origin.position.y = adfGeoTransform[3];
+    
     // hopefully this all works lel
 }
 
