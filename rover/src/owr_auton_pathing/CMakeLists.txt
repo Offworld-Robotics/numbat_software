@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   cv_bridge
-  
+  #lgdal
 )
 
 ## System dependencies are found with CMake's conventions
@@ -119,7 +119,7 @@ target_link_libraries(owr_astar ${catkin_LIBRARIES})
 
 add_dependencies(owr_erc_map_pub owr_messages)
 add_dependencies(owr_erc_map_pub owr_messages_gencpp)
-target_link_libraries(owr_erc_map_pub ${catkin_LIBRARIES})
+target_link_libraries(owr_erc_map_pub ${catkin_LIBRARIES} gdal m)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(owr_auton_pathing_node

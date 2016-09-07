@@ -16,8 +16,9 @@ int main (int argc, char *argv[]) {
 }
 
 ERCMapPub::ERCMapPub(const std::string topic) {
-    getMap();
     getGeoData();
+    getMap();
+    
     mapPublisher = node.advertise<nav_msgs::OccupancyGrid>("owr_erc_map", 2, true);
 
     ROS_INFO ("Publishing a map");
@@ -37,25 +38,33 @@ void ERCMapPub::getGeoData() {
     GDALAllRegister();
     poDataset = (GDALDataset *)GDALOpen(IMG_PATH, GA_ReadOnly);
     if(poDataset == NULL) {
-        ROS_INFO ("Unknown format \"%s\"\n",IMG_PATH);
+        ROS_ERROR ("Unknown format \"%s\"",IMG_PATH);
         return;
     }
-    
     double adfGeoTransform[6];
-    printf( "Driver: %s/%s\n\n",
-    poDataset->GetDriver()->GetDescription(), 
-    poDataset->GetDriver()->GetMetadataItem( GDAL_DMD_LONGNAME ) );
-    printf( "Size is %dx%dx%d\n\n", 
-    poDataset->GetRasterXSize(), poDataset->GetRasterYSize(),
-    poDataset->GetRasterCount());
-    if(poDataset->GetProjectionRef() != NULL)
-        printf("Projection is `%s'\n\n", poDataset->GetProjectionRef());
-    if(poDataset->GetGeoTransform( adfGeoTransform ) == CE_None) {
-        printf("Origin = (%.6f,%.6f)\n\n",
+    // printf( "Driver: %s/%s\n\n",
+    // poDataset->GetDriver()->GetDescription(), 
+    // poDataset->GetDriver()->GetMetadataItem( GDAL_DMD_LONGNAME ) );
+    // printf( "Size is %dx%dx%d\n\n", 
+    // poDataset->GetRasterXSize(), poDataset->GetRasterYSize(),
+    // poDataset->GetRasterCount());
+    // if(poDataset->GetProjectionRef() != NULL)
+    // printf("Projection is `%s'\n\n", poDataset->GetProjectionRef());
+    if(poDataset->GetGeoTransform(adfGeoTransform) == CE_None) {
+        ROS_INFO("Origin = (%.6f,%.6f)",
         adfGeoTransform[0], adfGeoTransform[3]);
-        printf("Pixel Size = (%.6f,%.6f)\n\n",
+        ROS_INFO("Pixel Size = (%.6f,%.6f)",
         adfGeoTransform[1], adfGeoTransform[5]);
-    } 
+    } else {
+        ROS_ERROR ("Could not get geo data from \"%s\"",IMG_PATH);
+    }
+    // get our pixel resolution and UTM origin coordinates
+    // couldn't get abs() to work so here's a little thingy thing instead
+    //outputGrid.info.resolution = adfGeoTransform[1] < 0 ? -1.0f * adfGeoTransform[1] : adfGeoTransform[1];
+    outputGrid.info.resolution = std::abs(adfGeoTransform[1]);
+    outputGrid.info.origin.position.x = adfGeoTransform[0];
+    outputGrid.info.origin.position.y = adfGeoTransform[3];
+    // hopefully this all works lel
 }
 
 void ERCMapPub::getMap() {
@@ -100,7 +109,7 @@ void ERCMapPub::getMap() {
                         // count em up for cases where we go over the edge (so the average is computed accurately)
                         howmany ++;
                         // add to the total
-                        tot += abs(bimage.at<uchar>(r,c) - bimage.at<uchar>(r+ro,c+co));
+                        tot += std::abs(bimage.at<uchar>(r,c) - bimage.at<uchar>(r+ro,c+co));
                     }
                 }
             }
@@ -154,9 +163,6 @@ void ERCMapPub::getMap() {
     
     outputGrid.info.width=fimage.cols;
     outputGrid.info.height=fimage.rows;
-    // each pixel is 0.090375m
-    // TODO get geotiff data for resolution
-    outputGrid.info.resolution = 0.090375;
     outputGrid.info.map_load_time = ros::Time::now();
     // resize the data vector to the right size (???????)
     std::vector<int8_t> vec;

@@ -15,13 +15,11 @@
 #include <tf/message_filter.h>
 #include <message_filters/subscriber.h>
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 
-#include <cmath>        // pow and stuff
+#include <cmath>        // abs
 #include <vector>       // vector
 #include <algorithm>    // find
 //#include <array>
@@ -41,12 +39,12 @@
 // TODO get from geotiff/UTM transform or arg/thing(for map.tif)
 #define GRID_OFFSET 0
 #define GRID_FACTOR 20
-#define GRID_SCALE 0.093f
 #define IMG_PATH "/home/ros/owr_software/map.tif"
 
 class ERCMapPub {
     protected:
         ros::Publisher  mapPublisher;
+        float abs(double adfGeoTransform);
     private:
         ros::NodeHandle node;         // ros::NodeHandle nh;2
         
