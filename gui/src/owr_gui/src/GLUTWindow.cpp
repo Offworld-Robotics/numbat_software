@@ -121,11 +121,12 @@ void GLUTWindow::fillBMPHeader(unsigned char *data, int width, int height) {
 	data[0x2B] = 0x16;
 }
 
-void GLUTWindow::saveBMPFile(char *filename, unsigned char *data, int width, int height) {
+void GLUTWindow::saveBMPFile(std::string filename, unsigned char *data, int width, int height) {
 	int datasize = width*height*3;
-	FILE *f = fopen(filename, "w");
+        const char * fullFilename = (getenv("HOME") + ("/" + filename)).c_str();
+	FILE *f = fopen(fullFilename, "w");
 	if (f == NULL) {
-		printf("Failed to open %s for writing.\n", filename);
+		printf("Failed to open %s for writing.\n", fullFilename);
 		return;
 	}
 	unsigned char *bmp = (unsigned char *)malloc(datasize + BMP_HEADER_SIZE);

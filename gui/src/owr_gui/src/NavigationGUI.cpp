@@ -32,6 +32,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	ros::NodeHandle node;
 	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	navigationNode = new NavigationNode(this);
+        
+        shotNum = 0;
 	
 	glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
@@ -118,7 +120,9 @@ void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 			frame[i] = frame[i+2];
 			frame[i+2] = temp;		
 		}
-		saveBMPFile("snapimage", frame, width, height);
+		std::ostringstream out;  
+                out << "snapimage" << ++shotNum << ".bmp";
+		saveBMPFile(out.str(), frame, width, height);
 		snapShot = false;
 	}
 
@@ -572,6 +576,7 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
                 displayTilt = !displayTilt;
 	} else if (key == 'j') {
 		snapShot = true;
+                ROS_INFO("snapshot");
         }
 }
 
