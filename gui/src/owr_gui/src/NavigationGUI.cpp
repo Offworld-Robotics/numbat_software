@@ -32,6 +32,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	ros::NodeHandle node;
 	streamPub = node.advertise<owr_messages::stream>("owr/control/activateFeeds", 1000);
 	navigationNode = new NavigationNode(this);
+        
+        shotNum = 0;
 	
 	glClearColor(1, 1, 1, 0);
 	glShadeModel(GL_FLAT);
@@ -90,6 +92,41 @@ void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 	// use the Video_Feed_Frame object method
 	videoScreen->setNewStreamFrame(frame, width, height);
 	
+	if (snapShot) {
+		/*if (sizeof(frame) > 0) {
+			unsigned char* top = &frame[0];
+			unsigned char* bottom = &frame[sizeof(frame) - 1];
+			while (top < bottom) {
+				unsigned char temp = *top;
+				*top = *bottom;
+				*bottom = temp;
+				top++;
+				bottom--;
+			}
+		}*/
+
+		int i = 0;
+		while (i < ((width*height - 1)*3)/2) {
+			int temp;
+			temp = frame[i];
+			frame[i] = frame[(width*height - 1)*3 - i];
+			frame[(width*height - 1)*3 - i] = temp;
+			i++;
+		}
+		
+		for (int i = 0; i < (width*height - 1)*3; i+=3) {
+			int temp;
+			temp = frame[i];
+			frame[i] = frame[i+2];
+			frame[i+2] = temp;		
+		}
+		std::ostringstream out;  
+                out << "snapimage" << ++shotNum << ".bmp";
+		saveBMPFile(out.str(), frame, width, height);
+		snapShot = false;
+	}
+
+
 	//ROS_INFO("Updated video");
 }
 
@@ -537,6 +574,9 @@ void NavigationGUI::keydown(unsigned char key, int x, int y) {
 		videoScreen->zoom(ZOOM_OUT);
 	} else if (key == 'a') {
                 displayTilt = !displayTilt;
+	} else if (key == 'j') {
+		snapShot = true;
+                ROS_INFO("snapshot");
         }
 }
 
