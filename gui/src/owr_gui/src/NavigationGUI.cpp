@@ -90,6 +90,12 @@ void NavigationGUI::updateVoltage(float volts) {
 	voltage = volts;
 }
 
+void NavigationGUI::updateADC(float effort, float actual, float target) {
+	actual_claw = actual;
+	effort_claw = effort;
+	target_claw = target;
+}
+
 void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 	// use the Video_Feed_Frame object method
 	videoScreen->setNewStreamFrame(frame, width, height);
@@ -182,6 +188,7 @@ void NavigationGUI::display() {
 		drawSignal();
 		drawUltrasonic();
 		drawVolts();
+		drawADC();
 	}
 
 	glutSwapBuffers();
@@ -595,4 +602,26 @@ void NavigationGUI::drawVolts() {
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 
 	glPopMatrix();
+}
+
+
+void NavigationGUI::drawADC() {
+
+	glPushMatrix();
+	glTranslated(currWinW - currWinW/10.0, -currWinH/2.0, 0);
+	glColor4f(0, 1, 0, TEXTBOX_ALPHA);
+	glBegin(GL_QUADS);
+	glVertex2d(-10, 24);
+	glVertex2d(-10, -75);
+	glVertex2d(200, -75);
+	glVertex2d(200, 24);
+	glEnd();
+
+	char text[60];
+	glColor4f(1, 0, 0, ALPHA);
+	sprintf(text, "Target: %.2f \nActual: %.2f \nEffort: %.2f",target_claw, actual_claw, effort_claw);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0); 
+
+	glPopMatrix();
+
 }

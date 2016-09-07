@@ -62,6 +62,7 @@ class NavigationGUI : public GLUTWindow {
 		void updateVoltage(float voltage);
 		void updateVideo(unsigned char *frame, int width, int height);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
+		void updateADC(float effort, float actual, float target);
 		
 	private:
 		// GLUT essential functions
@@ -96,7 +97,7 @@ class NavigationGUI : public GLUTWindow {
 		void drawSignal();
 		void drawUltrasonic();
 		void drawVolts();
-		
+		void drawADC();
 		// pointer to the ROS handler
 		void *navigationNode;
 		
@@ -107,6 +108,9 @@ class NavigationGUI : public GLUTWindow {
 		float tiltY; // tilt of forward-back in degrees
 		float ultrasonic;
 		float voltage; // voltage from voltmeter
+		float actual_claw; 
+		float effort_claw;
+		float target_claw; 
 		vector3D currentPos;
 		
 		double pathRotation; // angle to rotate GPS path when drawing
