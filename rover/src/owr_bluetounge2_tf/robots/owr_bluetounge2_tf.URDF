@@ -5,7 +5,7 @@
         name="base_footprint_joint"
         type="fixed">
         <origin
-        xyz="0 0 0 "
+        xyz="0 0 .3 "
         rpy="0 0 0" />
         <parent
         link="base_footprint" />
@@ -29,6 +29,17 @@
         <axis
         xyz="0 0 0" />
     </joint>
+  <link name="clinometer"/>
+  <joint 
+        name="clinometer_joint"
+        type="fixed"
+   >
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <child link="clinometer"/>
+      <parent link="base_link"/>
+      <axis xyz="0 0 0" />
+   </joint>
+  
   <link
     name="chassis">
     <inertial>

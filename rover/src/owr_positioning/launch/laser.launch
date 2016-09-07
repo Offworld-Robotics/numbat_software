@@ -1,6 +1,6 @@
 <launch>
     
-    <node pkg="hokuyo_node" type="hokuyo_node" name="laser" output="screen" >
+    <node pkg="urg_node" type="urg_node" name="laser" output="screen" >
 	    <param name="port" value="/dev/hokuyo"/>
 	    <param name="frame_id" value="lidar_frame"/>
     </node>

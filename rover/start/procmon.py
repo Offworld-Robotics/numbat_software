@@ -48,11 +48,16 @@ def GetProc(pnum):
     i = i + 1
     if i == pnum:
       return proc
+  if 'task' in config:
+    for task in config["task"]:
+      i = i + 1
+      if i == pnum:
+        return task
 
   return None
 
 def GetProcByName(name):
-  for proc in config["monitor"]:
+  for proc in config["monitor"] + config["task"]:
     if proc['name'] == name:
       return proc;
  
@@ -64,7 +69,11 @@ def AreDependenciesOk(proc):
   if 'deps' in proc:
     for d in proc['deps']:
       dproc = GetProcByName(d)
-      if dproc['pid'] == "":
+      if not dproc["task"] and dproc['pid'] == "":
+        ok = False
+        break;
+      # WARN: this will loop infinetly on circular dependencies
+      elif not AreDependenciesOk(dproc):
         ok = False
         break;
 
@@ -73,7 +82,30 @@ def AreDependenciesOk(proc):
 
 def StartStop(pnum):
   proc = GetProc(pnum)
-  StartStopProc(proc)
+  if not proc["task"]:
+    StartStopProc(proc)
+  else:
+    StartTask(proc)
+
+def StartTask(task, autoDelay=0):
+   for proc in config["monitor"]:
+     if proc["name"] in task["deps"]:
+       
+      if proc['status'] in ['', 'Stopped', 'Terminated', 'Respawning']:
+        if "delay" in proc:
+          proc["status"] = "Queued"
+          proc["queuetill"] = time.time() + proc['delay']
+        else:
+          if autoDelay == 0:
+            StartStop(proc['num'])
+          else:
+            proc["status"] = "Queued"
+            proc["queuetill"] = time.time() + autoDelay
+          autoDelay = autoDelay + 1
+   for proc in config["task"]:
+     if proc["name"] in task["deps"]:
+       StartTask(proc, autoDelay)
+     
 
 def StartStopProc(proc):
   pid = proc['pid']
@@ -166,7 +198,6 @@ def Display():
   if errorCount > 0:
     stdscr.addstr(1, 30, " {0} ".format(errorCount), curses.color_pair(3))
 
-
   i = 0
   for proc in config["monitor"]:
     i = i + 1
@@ -195,6 +226,17 @@ def Display():
         stdscr.addstr(i + 2, 65, " ERR ", curses.color_pair(2))
       else:
         stdscr.addstr(i + 2, 65, stat['line'] + "      ")
+
+  if "task" in config:
+    i = i + 2
+    stdscr.addstr(i + 2, 52, "Tasks")
+    i += 1
+    stdscr.addstr(i + 2, 52, "-----")
+    
+    for task in config["task"]:
+      i = i + 1
+      stdscr.addstr(i + 2, 52, "{0}) {1}".format(chr(task['key']), task["name"]))
+      stdscr.addstr(i + 2, 70, "{0}".format("    ").center(5), curses.color_pair(1) if AreDependenciesOk(task) else curses.color_pair(2))
       
   stdscr.refresh()
 
@@ -217,11 +259,21 @@ i = 0
 # assign process number and button
 for proc in config["monitor"]:
   i = i + 1
+  proc["task"] = False
   proc["num"] = i
   if i < 10:
     proc["key"] = ord('0') + i
   else:
     proc["key"] = ord('a') - 10 + i
+
+
+if "task" in config:
+  for task in config["task"]:
+    task["task"] = True
+    i = i + 1 
+    task["num"] = i
+    task["key"] = ord('A') 
+    task["key"] = ord('A') - 10 + i
 
 
 # launch status thread
@@ -279,8 +331,10 @@ def MainLoop(args):
         respawn = not respawn
       elif c >= ord('1') and c <= ord('9'):
         StartStop(c - ord('0'))
-      elif c >= ord('a') and c <= ord('m'):
+      elif c >= ord('a') and c <= ord('p'):
         StartStop(c - ord('a')+10)
+      elif c >= ord('A') and c <= ord('Z'):
+        StartStop(c - ord('A')+10)
     except:
       errorCount = errorCount + 1
 

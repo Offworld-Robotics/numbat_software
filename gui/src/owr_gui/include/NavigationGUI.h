@@ -19,7 +19,7 @@
 #define WINDOW_W 1855
 #define WINDOW_H 917
 
-#define TOTAL_FEEDS 4
+#define TOTAL_FEEDS 8 
 
 #define FEED_ACTIVE_BUTTON_R 0
 #define FEED_ACTIVE_BUTTON_G 153
