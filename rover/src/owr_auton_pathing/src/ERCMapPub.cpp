@@ -10,49 +10,56 @@ int main (int argc, char *argv[]) {
     
     ros::init(argc, argv, "owr_erc_map_pub");
     //std::cout << "ros init'd" << std::endl;
-    Astar compMap("owr_auton_pathing");
+    ERCMapPub compMap("owr_auton_pathing");
     compMap.spin();
     return 0;
 }
 
 ERCMapPub::ERCMapPub(const std::string topic) {
     getMap();
-    
+    getGeoData();
     mapPublisher = node.advertise<nav_msgs::OccupancyGrid>("owr_erc_map", 2, true);
-    
-    // TODO ????
-    tfFilter.registerCallback(boost::bind(&ERCMapPub::tfCallback, this, _1));
-}
 
-
-
-// gets a transform from SLAM (between map and base_link)
-void ERCMapPub::tfCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
-    
-    tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
-   
-    ROS_INFO("base_link at (%f, %f)", transform.getOrigin().getX(), transform.getOrigin().getY());
-    
-    // this gets the map from SLAM, which we're not doing anymore
-    //makeGrid((int8_t*)gridData->data.data(), gridData->info);
-    
-    //TODO make sure this works
-    // ??? geotiff origin? a pose in the real world of the centre of the map
-    outputGrid.info.origin.position = gridData->info.origin.position;
-    outputGrid.header = gridData->header;
+    ROS_INFO ("Publishing a map");
+    mapPublisher.publish(outputGrid);
     
 }
 
 //ros's main loop thing?
 void ERCMapPub::spin() {
-    //std::cout << "spinning" << std::endl;
     while(ros::ok()) {
         ros::spinOnce();
     }
 }
 
+void ERCMapPub::getGeoData() {
+    GDALDataset *poDataset;
+    GDALAllRegister();
+    poDataset = (GDALDataset *)GDALOpen(IMG_PATH, GA_ReadOnly);
+    if(poDataset == NULL) {
+        ROS_INFO ("Unknown format \"%s\"\n",IMG_PATH);
+        return;
+    }
+    
+    double adfGeoTransform[6];
+    printf( "Driver: %s/%s\n\n",
+    poDataset->GetDriver()->GetDescription(), 
+    poDataset->GetDriver()->GetMetadataItem( GDAL_DMD_LONGNAME ) );
+    printf( "Size is %dx%dx%d\n\n", 
+    poDataset->GetRasterXSize(), poDataset->GetRasterYSize(),
+    poDataset->GetRasterCount());
+    if(poDataset->GetProjectionRef() != NULL)
+        printf("Projection is `%s'\n\n", poDataset->GetProjectionRef());
+    if(poDataset->GetGeoTransform( adfGeoTransform ) == CE_None) {
+        printf("Origin = (%.6f,%.6f)\n\n",
+        adfGeoTransform[0], adfGeoTransform[3]);
+        printf("Pixel Size = (%.6f,%.6f)\n\n",
+        adfGeoTransform[1], adfGeoTransform[5]);
+    } 
+}
 
 void ERCMapPub::getMap() {
+    
     // load image from file
     cv::Mat image;
     image = cv::imread(IMG_PATH, CV_LOAD_IMAGE_GRAYSCALE);   // Read the file
@@ -145,20 +152,10 @@ void ERCMapPub::getMap() {
     image.release();
     bimage.release();
     
-    // resize astarGrid
-    astarGrid.resize(fimage.cols);
-    //set entire grid to impassable
-    for(unsigned int i = 0; i < astarGrid.size(); ++i) {
-        astarGrid[i].resize(fimage.rows);
-        for(unsigned int j = 0; j < astarGrid[i].size(); ++j) {
-            astarGrid[i][j] = IMPASS;
-        }
-    }
-    
-    
     outputGrid.info.width=fimage.cols;
     outputGrid.info.height=fimage.rows;
     // each pixel is 0.090375m
+    // TODO get geotiff data for resolution
     outputGrid.info.resolution = 0.090375;
     outputGrid.info.map_load_time = ros::Time::now();
     // resize the data vector to the right size (???????)
@@ -174,6 +171,8 @@ void ERCMapPub::getMap() {
         for(int c=0; c < fimage.cols; c++) {
             // pretty sure this is the right way around
             value = (int)fimage.at < uchar>(r,c);
+            // TODO replace magic number. This just maps [0,255] to [0,100]
+            value /= 2.55f;
             //astarGrid[c][r] = value;
             // populate the grid we're going to publish
             outputGrid.data[i] = value;

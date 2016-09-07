@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   cv_bridge
+  
 )
 
 ## System dependencies are found with CMake's conventions
@@ -108,7 +109,7 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(owr_astar src/Astar.cpp)
-add_executable(owr_astar src/ERCMapPub.cpp)
+add_executable(owr_erc_map_pub src/ERCMapPub.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes

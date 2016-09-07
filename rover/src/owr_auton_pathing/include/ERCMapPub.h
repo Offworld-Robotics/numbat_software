@@ -15,6 +15,8 @@
 #include <tf/message_filter.h>
 #include <message_filters/subscriber.h>
 
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -23,10 +25,12 @@
 #include <vector>       // vector
 #include <algorithm>    // find
 //#include <array>
-
+// image processing
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
+// geotiff data
+#include <gdal/gdal_priv.h>
 
 #define SIZE_OF_GRID 5000
 #define IMPASS 255
@@ -44,26 +48,13 @@ class ERCMapPub {
     protected:
         ros::Publisher  mapPublisher;
     private:
-        ros::NodeHandle node;         // ros::NodeHandle nh;
-        message_filters::Subscriber<nav_msgs::OccupancyGrid> tfSubscriber;
-        ros::Subscriber mapSubscriber;
-        
-        // transform stuff
-        tf::TransformListener tfListener;
-        tf::StampedTransform transform;
-        tf::MessageFilter<nav_msgs::OccupancyGrid> tfFilter;
-        
-        // these call doSearch after receiving new information
-        void tfCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
-        void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData);
-        void setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint);
+        ros::NodeHandle node;         // ros::NodeHandle nh;2
         
         nav_msgs::OccupancyGrid outputGrid;      // our outputGrid to help with testing etc?
-        
+        void getGeoData();
         void getMap(); // load map from geotif file
-        void makeGrid(int8_t data[], nav_msgs::MapMetaData info); // get map from astarGrid
     public:
-        Astar(const std::string topic);
+        ERCMapPub(const std::string topic);
         void spin();
 };
 
