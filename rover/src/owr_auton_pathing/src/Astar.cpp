@@ -1,7 +1,7 @@
 /* A Star search
  * By Nuno Das Neves
- * Date 5/3/2016 - 19/3/2016
- * A* path plan based off LIDAR point-cloud
+ * Date 5/3/2016 - 9/9/2016
+ * A* path plan based off SLAM occupancy grid
  */
 
 #include "Astar.h"

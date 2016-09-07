@@ -108,12 +108,17 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(owr_astar src/Astar.cpp)
+add_executable(owr_astar src/ERCMapPub.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 add_dependencies(owr_astar owr_messages)
 add_dependencies(owr_astar owr_messages_gencpp)
 target_link_libraries(owr_astar ${catkin_LIBRARIES})
+
+add_dependencies(owr_erc_map_pub owr_messages)
+add_dependencies(owr_erc_map_pub owr_messages_gencpp)
+target_link_libraries(owr_erc_map_pub ${catkin_LIBRARIES})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(owr_auton_pathing_node
