@@ -39,7 +39,7 @@ void Astar::tfCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     tfListener.lookupTransform("owr_auton_pathing/erc_map","base_link", gridData->header.stamp, transform);
     // TODO may need offset/scale factor
     start.x = (int)round(transform.getOrigin().getX()/gridResolution);
-    start.x = (int)round(transform.getOrigin().getY()/gridResolution);
+    start.y = (int)round(transform.getOrigin().getY()/gridResolution);
     start.isStart = true;
     
     ROS_INFO("base_link at (%f, %f)", transform.getOrigin().getX(), transform.getOrigin().getY());
@@ -64,6 +64,9 @@ void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     finalPath.header = gridData->header;
     finalPath.header.stamp = ros::Time::now();
     
+    start.x = (int)round(gridData->info.width/2/gridResolution);
+    start.y = (int)round(gridData->info.height/2/gridResolution);
+    start.isStart = true;
     //makeGrid(gridData->data, gridData->info);
     
     if (go == true) {
