@@ -42,9 +42,9 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	gpsSub = n.subscribe("/gps/fix", 1000, &NavigationNode::receiveGpsMsg, this); // GPS related data
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
-	
+	voltSub = n.subscribe("/owr/voltmeter", 1000, &NavigationNode::receiveVoltageMsg, this);
+	adcSub = n.subscribe("/owr/adc", 1000, &NavigationNode::receiveClawMsg, this);
 	lidarModeSub = n.subscribe("/owr/lidar_gimble_mode", 1000, &NavigationNode::receiveLidarMsg, this);
-	
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// created yet, will wait til it has w/o doing anything
@@ -135,6 +135,45 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
 }
 
+void NavigationNode::receiveVoltageMsg(const std_msgs::Float32::ConstPtr& msg) {
+	assert(msg); // 
+	
+	//ROS_INFO("received a message");
+	//ROS_INFO("voltage %f", msg->voltage);
+	voltage = msg->data;
+	gui->updateVoltage(voltage);
+    ROS_INFO("voltage %f", voltage);
+}
+
+void NavigationNode::receiveClawMsg(const owr_messages::adc::ConstPtr& msg) {
+
+	assert(msg); 
+	pot_vals = msg->pot;
+	pot_names = msg->potFrame;
+
+	int effort_index;
+	int target_index;
+	int actual_index;
+
+	effort_index = find(pot_names.begin(), pot_names.end(), "clawEffort") - pot_names.begin();
+	target_index = find(pot_names.begin(), pot_names.end(), "clawGrip") - pot_names.begin();
+	actual_index = find(pot_names.begin(), pot_names.end(), "clawActual") - pot_names.begin();
+
+	float effort = pot_vals[effort_index];
+	float actual = pot_vals[actual_index];
+	float target = pot_vals[target_index];
+
+	ROS_INFO("EFFORT: %f", effort);
+	ROS_INFO("ACTUAL: %f", actual);
+	ROS_INFO("TARGET: %f", target);
+
+	ROS_INFO("EFFORT INDEX: %d", effort_index);
+	ROS_INFO("ACTUAL INDEX: %d", actual_index);
+	ROS_INFO("TARGET INDEX: %d", target_index);
+
+	gui->updateADC(effort, actual, target);
+
+}
 
 void NavigationNode::receiveLidarMsg(const std_msgs::Int16::ConstPtr& msg) {
 	assert(msg);

@@ -92,6 +92,16 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 	//ROS_INFO("Updated info");
 }
 
+void NavigationGUI::updateVoltage(float volts) {
+	voltage = volts;
+}
+
+void NavigationGUI::updateADC(float effort, float actual, float target) {
+	actual_claw = actual;
+	effort_claw = effort;
+	target_claw = target;
+}
+
 void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 	// use the Video_Feed_Frame object method
 	videoScreen->setNewStreamFrame(frame, width, height);
@@ -218,6 +228,8 @@ void NavigationGUI::display() {
 		drawBattery();
 		drawSignal();
 		drawUltrasonic();
+		drawVolts();
+		drawADC();
 		drawLidarTilt();
 	}
 
@@ -649,5 +661,41 @@ void NavigationGUI::special_keyup(int keycode, int x, int y) {
 }
 
 void NavigationGUI::keyup(unsigned char key, int x, int y) {
+
+}
+
+// draw Voltage
+void NavigationGUI::drawVolts() {
+	glPushMatrix();
+
+	char text[30];
+
+	glTranslated(currWinW/2.0-30,-50, 0);
+	glColor4f(1, 0, 0, ALPHA);
+	sprintf(text, "%.2fV", voltage);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+
+	glPopMatrix();
+}
+
+
+void NavigationGUI::drawADC() {
+
+	glPushMatrix();
+	glTranslated(currWinW - currWinW/10.0, -currWinH/2.0, 0);
+	glColor4f(0, 1, 0, TEXTBOX_ALPHA);
+	glBegin(GL_QUADS);
+	glVertex2d(-10, 24);
+	glVertex2d(-10, -75);
+	glVertex2d(200, -75);
+	glVertex2d(200, 24);
+	glEnd();
+
+	char text[60];
+	glColor4f(1, 0, 0, ALPHA);
+	sprintf(text, "Target: %.2f \nActual: %.2f \nEffort: %.2f",target_claw, actual_claw, effort_claw);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0); 
+
+	glPopMatrix();
 
 }

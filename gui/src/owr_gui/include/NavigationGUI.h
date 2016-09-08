@@ -54,14 +54,15 @@
 #define ALPHA 1.0 // transparency factor
 #define TEXTBOX_ALPHA 0.001
 
-
 class NavigationGUI : public GLUTWindow {
 
 	public:
 		NavigationGUI(int width, int height, int *argc, char **argv);
 		void updateInfo(float battery, float signal, float ultrasonic, ListNode current, vector3D target, float lidar);
+		void updateVoltage(float voltage);		
 		void updateVideo(unsigned char *frame, int width, int height);
 		void updateFeedsStatus(unsigned char *feeds, int numOnline);
+		void updateADC(float effort, float actual, float target);
 		
 	private:
 		// GLUT essential functions
@@ -95,10 +96,9 @@ class NavigationGUI : public GLUTWindow {
 		void drawBattery();
 		void drawSignal();
 		void drawUltrasonic();
-		
-		
+		void drawVolts();
+		void drawADC();
 		void drawLidarTilt();
-		
 		// pointer to the ROS handler
 		void *navigationNode;
 		
@@ -109,6 +109,10 @@ class NavigationGUI : public GLUTWindow {
 		float tiltY; // tilt of forward-back in degrees
 		float ultrasonic;
 		float lidarTilt;
+		float voltage; // voltage from voltmeter
+		float actual_claw; 
+		float effort_claw;
+		float target_claw; 
 		vector3D currentPos;
 		
 		double pathRotation; // angle to rotate GPS path when drawing
