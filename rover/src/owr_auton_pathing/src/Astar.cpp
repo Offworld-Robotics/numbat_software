@@ -16,20 +16,16 @@ int main (int argc, char *argv[]) {
 }
 
 // TODO fix for transform
-Astar::Astar(const std::string topic) : node(), tfSubscriber(node, "map", 1), tfFilter(tfSubscriber, tfListener, "base_link", 1) {
-    getMap();
-    mapSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("map", 2, &Astar::mapCallback, this);
+Astar::Astar(const std::string topic) : node(), tfSubscriber(node, "owr_auton_pathing/erc_map", 1), tfFilter(tfSubscriber, tfListener, "base_link", 1) {
     
-    mapPublisher = node.advertise<nav_msgs::OccupancyGrid>("astarOccupancyGrid", 2, true);
+    mapSubscriber = node.subscribe<nav_msgs::OccupancyGrid>("owr_auton_pathing/erc_map", 2, &Astar::mapCallback, this);
     pathPublisher = node.advertise<nav_msgs::Path>("astarPath", 2, true);
-    
-    goalSubscriber = node.subscribe<geometry_msgs::PointStamped>("owr_auton_pathing/astargoal", 2, &Astar::setGoalCallback, this);
+    goalSubscriber = node.subscribe<geometry_msgs::PointStamped>("owr_auton_pathing/astar_goal", 2, &Astar::setGoalCallback, this);
     
     // TODO fix this: should be false by default; use callback to update
     go = true;
     //goSubscriber = node.subscribe<std_msgs::Bool>("owr_auton_pathing/astarstart", 2, &Astar::setGoCallback, this);
     
-    // TODO this is for getting the tranform PUT THIS BACK!
     tfFilter.registerCallback(boost::bind(&Astar::tfCallback, this, _1));
 }
 
@@ -37,33 +33,30 @@ Astar::Astar(const std::string topic) : node(), tfSubscriber(node, "map", 1), tf
 
 // gets a transform from SLAM (between map and base_link)
 void Astar::tfCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
+    // allll the spaghetti. Should refactor all this shit later
+    gridResolution = gridData->info.resolution;
     
-    tfListener.lookupTransform("map","base_link", gridData->header.stamp, transform);
-   
-    start.x = (int)round(transform.getOrigin().getX() + GRID_OFFSET)*GRID_FACTOR;
-    start.x = (int)round(transform.getOrigin().getY() + GRID_OFFSET)*GRID_FACTOR;    
+    tfListener.lookupTransform("owr_auton_pathing/erc_map","base_link", gridData->header.stamp, transform);
+    // TODO may need offset/scale factor
+    start.x = (int)round(transform.getOrigin().getX()/gridResolution);
+    start.x = (int)round(transform.getOrigin().getY()/gridResolution);
     start.isStart = true;
     
     ROS_INFO("base_link at (%f, %f)", transform.getOrigin().getX(), transform.getOrigin().getY());
     ROS_INFO("Rover tf at (%d, %d)", start.x, start.y);
     
-    // this gets the map from SLAM, which we're not doing anymore
-    //makeGrid((int8_t*)gridData->data.data(), gridData->info);
+    // this gets the map...
+    makeGrid((int8_t*)gridData->data.data(), gridData->info);
     
     finalPath.header = gridData->header;
     finalPath.header.stamp = ros::Time::now();
-    
-    //TODO make sure this works
-    // ??? geotiff origin? a pose in the real world of the centre of the map
-    outputGrid.info.origin.position = gridData->info.origin.position;
-    outputGrid.header = gridData->header;
     
     if (go == true) {
         doSearch();
     }
 }
 
-// just gets a map from SLAM
+// gets a map from SLAM
 void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     
     ROS_INFO ("Got a SLAM map");
@@ -71,8 +64,7 @@ void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     finalPath.header = gridData->header;
     finalPath.header.stamp = ros::Time::now();
     
-    outputGrid.info.origin.position = gridData->info.origin.position;
-    outputGrid.header = gridData->header;
+    //makeGrid(gridData->data, gridData->info);
     
     if (go == true) {
         doSearch();
@@ -80,10 +72,10 @@ void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
 }
 
 void Astar::setGoalCallback(const geometry_msgs::PointStamped::ConstPtr& thePoint) {
-    
+    // TODO may need an offset/factor
     goal.isGoal = true;
-    goal.x = (1/GRID_SCALE)*(thePoint->point.x + GRID_OFFSET);
-    goal.y = (1/GRID_SCALE)*(thePoint->point.y + GRID_OFFSET);
+    goal.x = (int)round(thePoint->point.x/gridResolution);
+    goal.y = (int)round(thePoint->point.y/gridResolution);
     ROS_INFO("Astar goal at (%d, %d)", goal.x, goal.y);
     
     if (go == true) {
@@ -98,7 +90,7 @@ void Astar::setGoCallback(const std_msgs::Bool::ConstPtr& goOrNo) {
     if (go == false) {
         ROS_INFO("Astar paused");
     } else {
-        ROS_INFO("Astar doing");
+        ROS_INFO("Astar A*ing");
         doSearch();
     }
 }
@@ -107,10 +99,6 @@ void Astar::doSearch() {
     
     // if it's a nogo, don't go!
     if (go == true && goal.isGoal && start.isStart) {
-        
-        // publish the occupancyGrid we generated
-        ROS_INFO ("Publishing a map");
-        mapPublisher.publish(outputGrid);
         
         ROS_INFO("Attempting to find path...");
         if (!findPath()) { // do aStar algorithm, get the path
@@ -134,144 +122,8 @@ void Astar::spin() {
     }
 }
 
-
-void Astar::getMap() {
-    // load image from file
-    cv::Mat image;
-    image = cv::imread(IMG_PATH, CV_LOAD_IMAGE_GRAYSCALE);   // Read the file
-    cv::Mat bimage = image.clone();
-    cv::Mat fimage = image.clone();
-    
-    if(!image.data)                              // Check for invalid input
-    {
-        ROS_ERROR ("Could not open or find %s", IMG_PATH);
-        return;
-    }
-    
-    int tot;
-    int howmany = 0;
-    double alpha = 1.5f;
-        
-    for(int c=0; c < image.cols; ++c) {
-        for(int r=0; r < image.rows; ++r) {
-            image.at<uchar>(r,c) = cv::saturate_cast<uchar>(alpha*(image.at<uchar>(r,c)));
-            if (image.at<uchar>(r,c) > 250) image.at<uchar>(r,c) = 0;
-        }
-    }
-    
-    //blur image with cv's GaussianBlur
-    for ( int i = 1; i < 21; i += 2 ) cv::GaussianBlur(image, bimage, cv::Size(i, i), 0, 0);
-    
-    // This gives us the gradient/ differential map. Whatever its called. High pass filter?
-    for(int c=0; c < image.cols; ++c) {
-        for(int r=0; r < image.rows; ++r) {
-            // loop through adjacent pixels
-            for(int co=-11; co <= 11; ++co) {
-                for(int ro=-11; ro <= 11; ++ro) {
-                    // if within a circle around our pixel,
-                    if (r+ro < image.rows && c+co < image.cols
-                        && r+ro >= 0 && c+co >= 0 && (ro != 0 || co != 0)
-                        && sqrt((ro*ro)+(co+co)) <= 11)
-                    {
-                        // count em up for cases where we go over the edge (so the average is computed accurately)
-                        howmany ++;
-                        // add to the total
-                        tot += abs(bimage.at<uchar>(r,c) - bimage.at<uchar>(r+ro,c+co));
-                    }
-                }
-            }
-            // get average and stick in new image
-            fimage.at<uchar>(r,c) = cv::saturate_cast<uchar>(tot/howmany);
-            // reset stuff
-            howmany = 0;
-            tot = 0;
-        }
-    }
-    ROS_INFO ("made diff map");
-    
-    // linear filter to bump up the whites
-    for(int c=0; c < image.cols; ++c) {
-        for(int r=0; r < image.rows; ++r) {
-            fimage.at<uchar>(r,c) = cv::saturate_cast<uchar>(1.8f*(fimage.at<uchar>(r,c)));
-        }
-    }
-    ROS_INFO ("brightened");
-    
-    
-    // Do the radius thing - this will surround impassable pixels with almost impassable pixels 
-    // This gives a buffer zone for the rover
-    for(int c=0; c < image.cols; ++c) {
-        for(int r=0; r < image.rows; ++r) {
-            // if the pixel is over our threshold
-            if (fimage.at<uchar>(r,c) > 100) {
-                // loop through adjacent pixels
-                for(int co=-6; co <= 6; ++co) {
-                    for(int ro=-6; ro <= 6; ++ro) {
-                        // make sure its within a circle around our pixel, and lower than the threshold
-                        if (r+ro < image.rows && c+co < image.cols
-                            && r+ro >= 0 && c+co >= 0 && (ro != 0 || co != 0)
-                            && sqrt((ro*ro)+(co+co)) <= 6 && fimage.at<uchar>(r+ro,c+co) < 100) {
-                            // set to threshold
-                            fimage.at<uchar>(r+ro,c+co) = 100;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    ROS_INFO ("did radius thing");
-    //cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );// Create a window for display.
-    //cv::imshow( "Display window", fimage );                   // Show our image inside it.
-    //cv::waitKey(0);                                          // Wait for a keystroke in the window
-    
-    // free da memory
-    image.release();
-    bimage.release();
-    
-    // resize astarGrid
-    astarGrid.resize(fimage.cols);
-    //set entire grid to impassable
-    for(unsigned int i = 0; i < astarGrid.size(); ++i) {
-        astarGrid[i].resize(fimage.rows);
-        for(unsigned int j = 0; j < astarGrid[i].size(); ++j) {
-            astarGrid[i][j] = IMPASS;
-        }
-    }
-    
-    
-    outputGrid.info.width=fimage.cols;
-    outputGrid.info.height=fimage.rows;
-    // each pixel is 0.090375m
-    outputGrid.info.resolution = 0.090375;
-    outputGrid.info.map_load_time = ros::Time::now();
-    // resize the data vector to the right size (???????)
-    std::vector<int8_t> vec;
-    vec.resize(fimage.rows*fimage.cols);
-    outputGrid.data = vec;
-    
-    // TODO remove these; use transform instead
-    start.x = fimage.cols/2;
-    start.y = fimage.rows/2;
-    //start.isStart = true;
-    
-    int i = 0;
-    unsigned char value;
-    // loopy loop through each pixel in greyscale
-    
-    for(int r=0; r < fimage.rows; r++) {
-        for(int c=0; c < fimage.cols; c++) {
-            // pretty sure this is the right way around
-            value = (int)fimage.at < uchar>(r,c);
-            astarGrid[c][r] = value;
-            // populate the grid we're going to publish
-            outputGrid.data[i] = value;
-            i++;
-        }
-    }
-}
-
 void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
-
+    
     if((info.width >= SIZE_OF_GRID) || (info.height >= SIZE_OF_GRID)) {
         ROS_ERROR("nav_msgs::OccupancyGrid is too big!");
         return;
@@ -284,7 +136,6 @@ void Astar::makeGrid(int8_t data[], nav_msgs::MapMetaData info) {
             astarGrid[i][j] = IMPASS;
         }
     }
-    
     
     int x = 0;
     int y = 0;
@@ -334,74 +185,6 @@ void Astar::setGridEndPoints(int sx, int sy, int gx,int gy) {
     goal.x = gx;
     goal.y = gy;
 }
-
-/* //------ testing mainly ------------
-void Astar::setGridStepCosts(char *typeOfObstacle) {
-    
-    // set initial costs to 1
-    for(unsigned int i = 0; i < astarGrid.size(); ++i) {
-        for(unsigned int j = 0; j < astarGrid[i].size(); ++j) {
-            astarGrid[i][j]=1;
-        }
-    }
-    
-    int size = astarGrid.size();
-    
-    // add obstacles based on grid size
-    if (typeOfObstacle  == "middle"){   // add a block in the middle
-        if ((size % 2) == 0) {
-            int start = (size/2) - 1;
-            int end = (size/2) + 1;
-            for(unsigned int p = start; p < end; ++p) {
-                astarGrid[p][start] = IMPASS;
-                astarGrid[p][start+1] = IMPASS;
-            }
-        } else {
-             astarGrid[size/2][size/2] = IMPASS;
-        }
-    } else if (typeOfObstacle == "line") {  // add a line in the middle
-        int start = (size/3);
-        int end = (start*2) - 1;
-        for(unsigned int p = start; p < end; ++p) {
-            astarGrid[size/2][p] = IMPASS;
-        }
-    }
-    
-}
-*/
-void Astar::printGrid(){
-    std::cout << std::endl;
-    // this is how these loops should be set up for correct indexing (pretty sure) i = x; j = y
-    /*for(unsigned int j = 0; j < astarGrid[0].size(); ++j) {
-      for(unsigned int i = 0; i < astarGrid.size(); ++i) {
-        point printPoint(i,j);
-        if (start.x == i && start.y == j) {
-            std::cout << "S ";      // S for start
-        } else if (goal.x == i && goal.y == j) {
-            std::cout << "G ";      // G for goal
-        } else if (astarGrid[i][j] == IMPASS) {
-            std::cout << "B ";      // B for block
-        } else if(std::find(aStarPath.begin(), aStarPath.end(), printPoint) != aStarPath.end()){
-            std::cout << "# ";      // # for final path
-        } else {
-            std::cout << "- ";      // - for empty (passable) grid square
-        }
-      }
-      std::cout << std::endl;
-    }
-    std::cout << std::endl;
-    */
-    // print out the actual path
-    std::cout << "aStarPath = [";
-    for (unsigned int i = 0; i < aStarPath.size(); ++i) {
-        std::cout << "(" << aStarPath[i].x << "," << aStarPath[i].y << ")";
-        if (i < aStarPath.size() - 1) {
-            std::cout << ", ";
-        }
-    }
-    std::cout << "]" << std::endl;
-}
-/*------------------------------------*/
 
 bool Astar::findPath() {
     currentPos = start;           // set our current position to the start position
@@ -560,9 +343,9 @@ void Astar::convertPath() {
     finalPath.poses.resize(aStarPath.size());
     for (unsigned int i = 0; i < aStarPath.size(); ++i) {
         thisPose.header.seq = i;
-        // math/meth
-        thisPose.pose.position.x = ((double)aStarPath[i].x/(1/GRID_SCALE)) - GRID_OFFSET;
-        thisPose.pose.position.y = ((double)aStarPath[i].y/(1/GRID_SCALE)) - GRID_OFFSET;
+        // TODO may need grid offset/scale factor
+        thisPose.pose.position.x = (double)aStarPath[i].x*gridResolution;
+        thisPose.pose.position.y = (double)aStarPath[i].y*gridResolution;
         
         finalPath.poses[i] = thisPose;
     }
@@ -574,3 +357,38 @@ void Astar::clearPaths() {
     frontierSet.clear();
     aStarPath.clear();
 }
+
+/*------------------------------------*/
+void Astar::printGrid(){
+    std::cout << std::endl;
+    // this is how these loops should be set up for correct indexing (pretty sure) i = x; j = y
+    /*for(unsigned int j = 0; j < astarGrid[0].size(); ++j) {
+      for(unsigned int i = 0; i < astarGrid.size(); ++i) {
+        point printPoint(i,j);
+        if (start.x == i && start.y == j) {
+            std::cout << "S ";      // S for start
+        } else if (goal.x == i && goal.y == j) {
+            std::cout << "G ";      // G for goal
+        } else if (astarGrid[i][j] == IMPASS) {
+            std::cout << "B ";      // B for block
+        } else if(std::find(aStarPath.begin(), aStarPath.end(), printPoint) != aStarPath.end()){
+            std::cout << "# ";      // # for final path
+        } else {
+            std::cout << "- ";      // - for empty (passable) grid square
+        }
+      }
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    */
+    // print out the actual path
+    std::cout << "aStarPath = [";
+    for (unsigned int i = 0; i < aStarPath.size(); ++i) {
+        std::cout << "(" << aStarPath[i].x << "," << aStarPath[i].y << ")";
+        if (i < aStarPath.size() - 1) {
+            std::cout << ", ";
+        }
+    }
+    std::cout << "]" << std::endl;
+}
+/*------------------------------------*/

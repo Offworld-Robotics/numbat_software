@@ -2,13 +2,14 @@
  * By Nuno Das Neves
  * Date 1/9/2016 - 8/9/2016
  * Opens a geotiff map file and publishes it as an occupancyGrid
+ * Uses UTM coordinates from geotiff as origin; ie you need a UTM transform for it to work
  */
 
 #include "ERCMapPub.h"
 
 int main (int argc, char *argv[]) {
     
-    ros::init(argc, argv, "owr_erc_map_pub");
+    ros::init(argc, argv, "owr_erc_map");
     //std::cout << "ros init'd" << std::endl;
     ERCMapPub compMap("owr_auton_pathing");
     compMap.spin();
@@ -19,8 +20,8 @@ ERCMapPub::ERCMapPub(const std::string topic) {
     getGeoData();
     getMap();
     
-    mapPublisher = node.advertise<nav_msgs::OccupancyGrid>("owr_erc_map", 2, true);
-
+    mapPublisher = node.advertise<nav_msgs::OccupancyGrid>("owr_auton_pathing/erc_map", 2, true);
+    
     ROS_INFO ("Publishing a map");
     mapPublisher.publish(outputGrid);
     

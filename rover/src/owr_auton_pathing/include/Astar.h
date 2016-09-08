@@ -16,26 +16,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <assert.h>
 
 #include <cmath>        // pow and stuff
 #include <vector>       // vector
 #include <algorithm>    // find
 //#include <array>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include "opencv2/imgproc/imgproc.hpp"
-
 #define SIZE_OF_GRID 5000
 #define IMPASS 255
 #define IMPASS_THRESHOLD 200
 #define IMPASS_RADIUS 16
-//101.25f
-#define GRID_OFFSET 0
-#define GRID_FACTOR 20
-#define GRID_SCALE 0.093f
-#define IMG_PATH "/home/ros/owr_software/map.tif"
 
 class point {
     public:
@@ -91,7 +81,6 @@ class Astar {
     };
     protected:
         ros::Publisher  pathPublisher;
-        ros::Publisher  mapPublisher;
     private:
         
         ros::NodeHandle node;         // ros::NodeHandle nh;
@@ -115,12 +104,12 @@ class Astar {
         void doSearch(void);
         bool go;
         
-        
-        nav_msgs::OccupancyGrid outputGrid;      // our outputGrid to help with testing etc?
         nav_msgs::Path finalPath;               // finalPath for us to publish
         
         comparePoints comp;
         std::vector<std::vector <unsigned char> > astarGrid;
+        double gridResolution;
+        
         std::vector<point> closedSet;
         std::vector<point> openSet;
         std::vector<point> frontierSet;       // gonna use this to keep track of what goes in and out of openSet (can't see it because its an priorityQueue)
@@ -133,7 +122,6 @@ class Astar {
         
         bool findPath();                          // main astar loop, returns true if successful
         
-        void getMap(); // load map from geotif file
         void makeGrid(int8_t data[], nav_msgs::MapMetaData info); // get map from astarGrid
         
         void getPath();                           // Reconstruct path back to start
