@@ -28,6 +28,7 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	tiltX = 30;
 	tiltY = 30;
 	ultrasonic = 0;
+	lidar = 0;
 	
 	//Initialise the feeds array
 	for(int i = 0; i < TOTAL_FEEDS; i++)
@@ -41,6 +42,9 @@ NavigationNode::NavigationNode(NavigationGUI *newgui) {
 	gpsSub = n.subscribe("/gps/fix", 1000, &NavigationNode::receiveGpsMsg, this); // GPS related data
 	batterySub = n.subscribe("/status/battery", 1000, &NavigationNode::receiveBatteryMsg, this); // Power left on the battery
 	feedsSub = n.subscribe("/owr/control/availableFeeds", 1000, &NavigationNode::receiveFeedsStatus, this);
+	
+	lidarModeSub = n.subscribe("/owr/lidar_gimble_mode", 1000, &NavigationNode::receiveLidarMsg, this);
+	
 	
 	// Subscribe to all topics that will be published to by cameras, if the topic hasnt been
 	// created yet, will wait til it has w/o doing anything
@@ -109,7 +113,7 @@ void NavigationNode::receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg) 
 	l->lat = msg->latitude;
 	l->lon = msg->longitude;
 	l->alt = msg->altitude;
-	gui->updateInfo(battery, signal, ultrasonic, l, target);
+	gui->updateInfo(battery, signal, ultrasonic, l, target, lidar);
 }
 
 
@@ -120,7 +124,7 @@ void NavigationNode::receiveBatteryMsg(const owr_messages::status::ConstPtr& msg
 	//ROS_INFO("voltage %f", msg->voltage);
 	signal = msg->signal;
 	battery = msg->battery;
-	gui->updateInfo(battery, signal, ultrasonic, NULL, target);
+	gui->updateInfo(battery, signal, ultrasonic, NULL, target, lidar);
 }
 
 void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
@@ -129,4 +133,13 @@ void NavigationNode::receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg) {
 	//ROS_INFO("received video frame");
 	
 	gui->updateVideo((unsigned char *)msg->data.data(), msg->width, msg->height);
+}
+
+
+void NavigationNode::receiveLidarMsg(const std_msgs::Int16::ConstPtr& msg) {
+	assert(msg);
+	
+	//ROS_INFO("received video frame");
+	lidar = msg->data;
+	gui->updateInfo(battery, signal, ultrasonic, NULL, target, lidar);
 }

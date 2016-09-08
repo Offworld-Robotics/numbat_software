@@ -14,10 +14,12 @@
 #include "owr_messages/status.h"
 #include "NavigationGUI.h"
 #include <image_transport/image_transport.h>
+#include <std_msgs/Int16.h>
 
 // The message structs needed for availableFeeds
 #include "owr_messages/activeCameras.h"
 #include "owr_messages/stream.h"
+
 
 class NavigationNode {
 
@@ -28,11 +30,15 @@ class NavigationNode {
 		void receiveGpsMsg(const sensor_msgs::NavSatFix::ConstPtr& msg);
 		void receiveBatteryMsg(const owr_messages::status::ConstPtr& msg);
 		void receiveVideoMsg(const sensor_msgs::Image::ConstPtr& msg);
+		void receiveLidarMsg(const std_msgs::Int16::ConstPtr& msg);
 		
 	private:
 		NavigationGUI *gui;
 		ros::Subscriber gpsSub;
 		ros::Subscriber batterySub;
+		
+		ros::Subscriber lidarModeSub;
+		
 		image_transport::Subscriber videoSub[TOTAL_FEEDS];
 		ros::Subscriber feedsSub;
 		
@@ -41,6 +47,7 @@ class NavigationNode {
 		float tiltX;
 		float tiltY;
 		float ultrasonic;
+		float lidar;
 		double altitude;
 		unsigned char feeds[TOTAL_FEEDS];
 		vector3D target;
