@@ -124,6 +124,10 @@ class NavigationGUI : public GLUTWindow {
 		double cursorSpin;
 		bool displayOverlay;
                 bool displayTilt;
+		
+		// video snapshot variable
+		bool snapShot;
+                int shotNum;
 		//ros stuff
 		ros::Publisher streamPub;
 		void toggleStream(int feed);

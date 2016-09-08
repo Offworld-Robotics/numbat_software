@@ -1,0 +1,4 @@
+SUBSYSTEM=="input", KERNEL=="js[0-9]*", ACTION=="add",ATTRS{serial}=="CA575D26", SYMLINK+="arm_joystick",  GROUP="dialout", MODE="666"
+SUBSYSTEM=="input", KERNEL=="js[0-9]*", ACTION=="add", ATTRS{name}=="Generic X-Box pad", SYMLINK+="arm_joystick",  GROUP="dialout", MODE="666"
+SUBSYSTEM=="input", KERNEL=="js[0-9]*", ACTION=="add", ATTRS{serial}=="1789644", SYMLINK+="drive_joystick",  GROUP="dialout", MODE="666"
+
