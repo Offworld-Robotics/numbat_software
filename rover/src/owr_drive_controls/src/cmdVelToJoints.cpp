@@ -80,7 +80,7 @@ void CmdVelToJoints::run() {
  *      motor angles all = 0
  * 
  */
-
+/*
 //for a full explanation of this logic please see the scaned notes at
 //https://bluesat.atlassian.net/browse/OWRS-203
 void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
@@ -93,4 +93,30 @@ void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
     frontRightAng = vels.frontRightAng;
     ROS_INFO("target %f,%f,%f. fl %f, fr %f, bl %f, br %f, fls %f, frs %f", velMsg->linear.x, velMsg->linear.y, velMsg->linear.z, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng);
 }
-
+*/
+// THIS IS THE SKID ONE
+//for a full explanation of this logic please see the scaned notes at
+//https://bluesat.atlassian.net/browse/OWRS-203
+void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
+    // forward throttle deadzone to prevent accidental turning
+    double throttle = std::abs(velMsg->linear.x) < SKID_STEER_THROTTLE_DEADZONE ? 0 : velMsg->linear.x;
+    // steering deadzone; ie don't steer if the control stick is not much to the left of right
+    if (std::abs(velMsg->linear.y) < SKID_STEER_DEADZONE) {
+        frontLeftMotorV = throttle;
+        frontRightMotorV = throttle;
+        backLeftMotorV = throttle;
+        backRightMotorV = throttle;
+    // Otherwise we turn on the spot, based on how far right/left the control stick is pushed
+    } else {
+        frontLeftMotorV = velMsg->linear.y;
+        frontRightMotorV = -velMsg->linear.y;
+        backLeftMotorV = velMsg->linear.y;
+        backRightMotorV = -velMsg->linear.y;
+    }
+    // not implemented, probably a better way to do this:
+    // y=0; left/right forward
+    // y=0.2-0.4; right stationary
+    // y=0.4-1; right reverse = x
+    // and vice versa for <0
+    ROS_INFO("target %f,%f,%f. fl %f, fr %f, bl %f, br %f, fls %f, frs %f", velMsg->linear.x, velMsg->linear.y, velMsg->linear.z, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng);
+}

@@ -10,7 +10,10 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <cmath>
 
+#define SKID_STEER_DEADZONE 0.2f
+#define SKID_STEER_THROTTLE_DEADZONE 0.1f
 #define TOPIC "/cmd_vel"
 
 class CmdVelToJoints {
