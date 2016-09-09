@@ -67,7 +67,6 @@ void Astar::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& gridData) {
     start.x = (int)round(gridData->info.width/2/gridResolution);
     start.y = (int)round(gridData->info.height/2/gridResolution);
     start.isStart = true;
-    //makeGrid(gridData->data, gridData->info);
     
     if (go == true) {
         doSearch();
