@@ -46,10 +46,10 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 
 
 // Nuno and Denis did these lololololol!
-#define ARM_POT_CENTER 1963
-#define ARM_POT_LIMIT_N_DEG 1160
-#define ARM_POT_LIMIT_P_DEG 2783
-#define ARM_POT_REVOLUTION 820
+#define ARM_POT_CENTER 306.0
+#define ARM_POT_LIMIT_N_DEG 105
+#define ARM_POT_LIMIT_P_DEG 516.0
+#define ARM_POT_REVOLUTION 205
 #define ARM_POT_TURNS 22 
 #define ARM_ACCURACY 0.0
 
