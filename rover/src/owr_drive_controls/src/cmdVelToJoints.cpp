@@ -72,7 +72,7 @@ void CmdVelToJoints::run() {
     }
 }
 
-
+/* OLD REGULAR CODE:
 /*
  * Expectations (none automated tests)
  * Casse when linear.y is 0
@@ -94,12 +94,17 @@ void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
     ROS_INFO("target %f,%f,%f. fl %f, fr %f, bl %f, br %f, fls %f, frs %f", velMsg->linear.x, velMsg->linear.y, velMsg->linear.z, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng);
 }
 */
-// THIS IS THE SKID ONE
+
+// THIS IS THE SKID ONE:
+//
 //for a full explanation of this logic please see the scaned notes at
 //https://bluesat.atlassian.net/browse/OWRS-203
 void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
     // forward throttle deadzone to prevent accidental turning
     double throttle = std::abs(velMsg->linear.x) < SKID_STEER_THROTTLE_DEADZONE ? 0 : velMsg->linear.x;
+    
+    /*
+    // SIMPLE IMPLEMENTATION, should work fine:
     // steering deadzone; ie don't steer if the control stick is not much to the left of right
     if (std::abs(velMsg->linear.y) < SKID_STEER_DEADZONE) {
         frontLeftMotorV = throttle;
@@ -112,7 +117,35 @@ void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
         frontRightMotorV = -velMsg->linear.y;
         backLeftMotorV = velMsg->linear.y;
         backRightMotorV = -velMsg->linear.y;
+        
     }
+    */
+    // HOPEFULLY BETTER implementation (may need some magic numbers to make it actually feel smooth)
+    // figure out whether we're going left, right or centre, and how fast to do so
+    char lr = velMsg->linear.y > SKID_STEER_DEADZONE ? SKID_RIGHT : (velMsg->linear.y < -SKID_STEER_DEADZONE ? SKID_LEFT : SKID_CENTRE); // SKID_CENTRE, SKID_LEFT, SKID_RIGHT
+    double yaw = std::abs(velMsg->linear.y);
+    
+    switch (lr) {
+        case SKID_CENTRE:
+            frontLeftMotorV = throttle;
+            frontRightMotorV = throttle;
+            backLeftMotorV = throttle;
+            backRightMotorV = throttle;
+            break;
+        case SKID_RIGHT:
+            frontLeftMotorV = throttle + (std::abs(throttle) > SKID_STEER_THROTTLE_DEADZONE ? 0 : yaw);
+            frontRightMotorV = throttle - yaw*(throttle >= 0 ? 1 : -1);
+            backLeftMotorV = throttle + (std::abs(throttle) > SKID_STEER_THROTTLE_DEADZONE ? 0 : yaw);
+            backRightMotorV = throttle - yaw*(throttle >= 0 ? 1 : -1);
+            break;
+        case SKID_LEFT:
+            frontLeftMotorV = throttle - yaw*(throttle >= 0 ? 1 : -1);
+            frontRightMotorV = throttle + (std::abs(throttle) > SKID_STEER_THROTTLE_DEADZONE ? 0 : yaw);
+            backLeftMotorV = throttle - yaw*(throttle >= 0 ? 1 : -1);
+            backRightMotorV = throttle + (std::abs(throttle) > SKID_STEER_THROTTLE_DEADZONE ? 0 : yaw);
+            break;
+    }
+    
     // not implemented, probably a better way to do this:
     // y=0; left/right forward
     // y=0.2-0.4; right stationary

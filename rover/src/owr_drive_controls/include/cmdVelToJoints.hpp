@@ -14,6 +14,10 @@
 
 #define SKID_STEER_DEADZONE 0.2f
 #define SKID_STEER_THROTTLE_DEADZONE 0.1f
+#define SKID_CENTRE 0
+#define SKID_RIGHT 1
+#define SKID_LEFT -1
+#define SKID_STEER_OFFSET 1
 #define TOPIC "/cmd_vel"
 
 class CmdVelToJoints {
