@@ -49,6 +49,8 @@ NavigationGUI::NavigationGUI(int width, int height, int *argc, char **argv) : GL
 	tiltX = 0; // tilt of left-right in degrees
 	tiltY = 0; // tilt of forward-back in degrees
 	ultrasonic = 10;
+	lidarTilt = 0;
+	
 	memset(&currentPos, 0, sizeof(currentPos));
 	pathRotation = 90;
 	prevRotation = 90;
@@ -76,7 +78,7 @@ void NavigationGUI::reshape(int w, int h) {
 	videoScreen->setNewWindowSize(w, h);
 }
 
-void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, vector3D t) {
+void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cur, vector3D t, float lidar) {
 	battery = bat;
 	signal = sig;
 	
@@ -84,8 +86,20 @@ void NavigationGUI::updateInfo(float bat, float sig, float ultrason, ListNode cu
 	
 	target = t;
 	ultrasonic = ultrason;
+	lidarTilt = lidar;
+	
 	
 	//ROS_INFO("Updated info");
+}
+
+void NavigationGUI::updateVoltage(float volts) {
+	voltage = volts;
+}
+
+void NavigationGUI::updateADC(float effort, float actual, float target) {
+	actual_claw = actual;
+	effort_claw = effort;
+	target_claw = target;
 }
 
 void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
@@ -214,6 +228,9 @@ void NavigationGUI::display() {
 		drawBattery();
 		drawSignal();
 		drawUltrasonic();
+		drawVolts();
+		drawADC();
+		drawLidarTilt();
 	}
 
 	glutSwapBuffers();
@@ -374,8 +391,9 @@ void NavigationGUI::toggleStream(int feed) {
 }
 
 // draw the ultrasonic
+// Has been replaced by the LIDAR_MODE display, have left function for future use.
 void NavigationGUI::drawUltrasonic() {
-	char text[50];
+	/*char text[50];
 	glPushMatrix();
 	glTranslated(100, 20 - currWinH, 0);	
 
@@ -391,7 +409,7 @@ void NavigationGUI::drawUltrasonic() {
 		sprintf(text, "Ultrasonic: %.1fm", ultrasonic);
 	glColor4f(1, 0, 0, ALPHA);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
-	glPopMatrix();
+	glPopMatrix();*/
 }
 
 // draw the buttons
@@ -555,6 +573,34 @@ void NavigationGUI::drawSignal() {
 	glPopMatrix();
 }
 
+// Draw the lidar's tilt
+
+void NavigationGUI::drawLidarTilt() {
+    char text[50];
+    glPushMatrix();
+	glTranslated(100, 10 - currWinH, 0);
+
+    // draw text for lidar value
+    
+    glTranslated(-50, 50, 0);
+    glColor4f(0, 1, 0, TEXTBOX_ALPHA);
+    glRecti(-30, 30, 250, -30);
+    
+    if (lidarTilt == 0) {
+        sprintf(text, "Lidar Mode: sweep");
+    } else if (lidarTilt == 1) {
+        sprintf(text, "Lidar Mode: stationary");
+    } else if (lidarTilt == 2) {
+        sprintf(text, "Lidar Mode: joy_control");
+    } else {
+        sprintf(text, "Lidar Mode: invalid");
+    }
+    glColor4f(1, 0, 0, ALPHA);
+    drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+    glPopMatrix();
+}
+
+
 void NavigationGUI::keydown(unsigned char key, int x, int y) {
 	if (key == 27) {
 		exit(0);
@@ -615,5 +661,41 @@ void NavigationGUI::special_keyup(int keycode, int x, int y) {
 }
 
 void NavigationGUI::keyup(unsigned char key, int x, int y) {
+
+}
+
+// draw Voltage
+void NavigationGUI::drawVolts() {
+	glPushMatrix();
+
+	char text[30];
+
+	glTranslated(currWinW/2.0-30,-50, 0);
+	glColor4f(1, 0, 0, ALPHA);
+	sprintf(text, "%.2fV", voltage);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
+
+	glPopMatrix();
+}
+
+
+void NavigationGUI::drawADC() {
+
+	glPushMatrix();
+	glTranslated(currWinW - currWinW/10.0, -currWinH/2.0, 0);
+	glColor4f(0, 1, 0, TEXTBOX_ALPHA);
+	glBegin(GL_QUADS);
+	glVertex2d(-10, 24);
+	glVertex2d(-10, -75);
+	glVertex2d(200, -75);
+	glVertex2d(200, 24);
+	glEnd();
+
+	char text[60];
+	glColor4f(1, 0, 0, ALPHA);
+	sprintf(text, "Target: %.2f \nActual: %.2f \nEffort: %.2f",target_claw, actual_claw, effort_claw);
+	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0); 
+
+	glPopMatrix();
 
 }
