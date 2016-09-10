@@ -34,7 +34,7 @@ pub = None
 
 prev_time = None
 
-pixels_per_metre_traversed = 400
+pixels_per_metre_traversed = 2310
 
 linear_velocity_scale = 1.0/pixels_per_metre_traversed
 rotation_velocity_scale = 1.0
