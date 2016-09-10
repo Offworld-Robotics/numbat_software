@@ -34,7 +34,8 @@ int main(int argc, char ** argv) {
 
 MagnetConverter::MagnetConverter(const std::string topic) {
     subscriber = node.subscribe("/mti/sensor/magnetic", 5, &MagnetConverter::receiveMsg, this); // mangnet stuff
-    publisher =  node.advertise<geometry_msgs::PoseWithCovarianceStamped>("/owr/sensors/heading", 10);
+    publisher =  node.advertise<geometry_msgs::PoseWithCovarianceStamped>("/owr/sensors/heading", 1);
+    pubDebug = node.advertise<std_msgs::Float64>("/owr/sensors/heading_debug", 1);
 }
 
 geometry_msgs::Quaternion hamiltonProduct(geometry_msgs::Quaternion q1, geometry_msgs::Quaternion q2) {
@@ -48,7 +49,7 @@ geometry_msgs::Quaternion hamiltonProduct(geometry_msgs::Quaternion q1, geometry
 
 void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3Stamped const> & msg) {
     //Normalized vector
-    float norm = sqrt(pow(msg->vector.x,2) + pow(msg->vector.y,2) + pow(msg->vector.z,2));
+    /*float norm = sqrt(pow(msg->vector.x,2) + pow(msg->vector.y,2) + pow(msg->vector.z,2));
     geometry_msgs::Quaternion magQuart;
     magQuart.x = msg->vector.x/norm;
     magQuart.y = -msg->vector.y/norm;
@@ -60,10 +61,14 @@ void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3S
     const double DEG_90 = 1.5708;
     const double MAG_DEVIATION =  0.218166;
     double heading = atan2(magQuart.x,magQuart.y) + MAG_DEVIATION - DEG_90;
+    std_msgs::Float64 debugMsg;
+    debugMsg.data = heading;
+    pubDebug.publish(debugMsg);
    
-    ROS_INFO("recived %f", heading);
+    //ROS_INFO("recived %f", heading);
     //We need orientation set
     //TODO: set valuews
+    */
     geometry_msgs::PoseWithCovarianceStamped poseStamped;
 
     poseStamped.header.frame_id = "base_link";
@@ -74,7 +79,12 @@ void MagnetConverter::receiveMsg(const boost::shared_ptr<geometry_msgs::Vector3S
     poseStamped.pose.pose.position.z = 0;
 
     tf2::Quaternion q;
+    double heading = atan2(msg->vector.y, msg->vector.x);
     q.setEuler(heading, 0, 0);
+
+    std_msgs::Float64 debugMsg;
+    debugMsg.data = heading;
+    pubDebug.publish(debugMsg);
 
     poseStamped.pose.pose.orientation.x = q.x();
     poseStamped.pose.pose.orientation.y = q.y();

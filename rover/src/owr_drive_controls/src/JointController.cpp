@@ -10,8 +10,9 @@
 
 JointController::JointController(char * topic, ros::NodeHandle nh, std::string jointName) :
     stopP(false), stopN(false) {
-     sub = nh.subscribe<std_msgs::Float64>(topic,2, &JointController::callback, this);
-     subStop = nh.subscribe<owr_messages::stop>("/owr/saftey_stop/" + jointName,2, &JointController::stopCallback, this);
+     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+     sub = nh.subscribe<std_msgs::Float64>(topic,2, &JointController::callback, this, transportHints);
+     subStop = nh.subscribe<owr_messages::stop>("/owr/saftey_stop/" + jointName,2, &JointController::stopCallback, this, transportHints);
      this->nh = nh;
      requestedValue = std::numeric_limits<double >::quiet_NaN();
      name = jointName;
