@@ -7,12 +7,15 @@ project(owr_positioning)
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
     roscpp
+  rospy
   sensor_msgs
   std_msgs
   geometry_msgs
    message_filters
     laser_geometry
-    tf
+    tf2
+    tf2_geometry_msgs
+    tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -87,7 +90,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES owr_positioning
-  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry tf
+  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry rospy tf2 tf2_geometry_msgs tf2_ros
   DEPENDS system_lib
 )
 
@@ -105,29 +108,33 @@ include_directories(
 
 ## Declare a cpp library
 # add_library(owr_positioning
-#   src/${PROJECT_NAME}/owr_positioning.cpp
-# )
-
 ## Declare a cpp executable
-add_executable(owr_positioning_node src/PositionController.cpp)
+add_executable(orientation src/ExtractOrientation.cpp)
+add_executable(utm_tf src/UTMTransform.cpp)
+add_executable(gps_tf src/GPSTransform.cpp)
+add_executable(mag src/MagnetConverter.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(owr_positioning_node owr_messages)
-add_dependencies(owr_positioning_node owr_messages_gencpp)
-target_link_libraries(owr_positioning_node ${catkin_LIBRARIES})
 
-add_executable(owr_magnet_node src/MagnetCoverter.cpp)
-add_dependencies(owr_magnet_node owr_messages_gencpp)
-target_link_libraries(owr_magnet_node ${catkin_LIBRARIES})
+## Specify libraries to link a library or executable target against
+target_link_libraries(orientation
+   ${catkin_LIBRARIES}
+)
+target_link_libraries(gps_tf
+   ${catkin_LIBRARIES}
+)
+target_link_libraries(utm_tf
+        ${catkin_LIBRARIES}
+        )
 
-add_executable(owr_fusion_node src/SensorFusion.cpp)
-add_dependencies(owr_fusion_node owr_messages_gencpp)
-target_link_libraries(owr_fusion_node ${catkin_LIBRARIES})
+target_link_libraries(mag
+        ${catkin_LIBRARIES}
+        )
+#   src/${PROJECT_NAME}/owr_positioning.cpp
+# )
 
 
-add_executable(owr_object_avoidance src/ObjectAvoidance.cpp)
-target_link_libraries(owr_object_avoidance ${catkin_LIBRARIES})
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(owr_positioning_node
 #   ${catkin_LIBRARIES}

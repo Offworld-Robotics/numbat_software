@@ -1,0 +1,8 @@
+<launch>
+    <node pkg="owr_voltmeter_monitor" type="owr_voltmeter_monitor" name="owr_voltmeter_monitor" output="screen">
+    
+        <param name="voltmeter_frame" value="pot0" />
+        <param name="voltmeter_offset" value="0" />
+        <param name="voltmeter_scale" value="0.00060975609" />
+    </node>
+</launch>

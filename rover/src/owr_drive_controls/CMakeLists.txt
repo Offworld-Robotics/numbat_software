@@ -109,7 +109,7 @@ include_directories(
 ## Declare a cpp executable
 
 
-add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp src/JointMonitor.cpp src/JointVelocityController.cpp src/LIDARTiltJointController.cpp src/JointSpeedBasedPositionController.cpp src/JointController.cpp src/swerveDrive.cpp src/GearPositionTracker.cpp)
+add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp src/JointMonitor.cpp src/JointVelocityController.cpp src/LIDARTiltJointController.cpp src/JointSpeedBasedPositionController.cpp src/JointController.cpp src/swerveDrive.cpp src/GearPositionTracker.cpp src/PotPositionTracker.cpp src/PositionTracker.cpp src/JointArmVelocityController.cpp)
 target_link_libraries(owr_drive_board ${catkin_LIBRARIES})
 
 add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/swerveDrive.cpp)

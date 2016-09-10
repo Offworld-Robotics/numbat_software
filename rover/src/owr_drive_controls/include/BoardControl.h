@@ -20,7 +20,9 @@
 #include "JointController.hpp"
 #include "JointSpeedBasedPositionController.hpp"
 #include "LIDARTiltJointController.hpp"
-#include "GearPositionTracker.hpp"
+#include "PotPositionTracker.hpp"
+#include "JointArmVelocityController.hpp"
+
 
 using namespace std; 
 
@@ -44,6 +46,7 @@ class BoardControl {
         void publishGPS(GPSData gps);
         void publishBattery(double batteryVoltage);
         void publishVoltmeter(double voltage);
+        void publishADC(status s);
         //void sendMessage(float lf, float lm, float lb, float rf, float rm, float rb);
         ros::NodeHandle nh;
         ros::Publisher  velPublisher;
@@ -53,6 +56,7 @@ class BoardControl {
         ros::Publisher battVoltPublisher;
         ros::Publisher voltmeterPublisher;
         ros::Publisher boardStatusPublisher;
+        ros::Publisher adcStatusPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
         ros::AsyncSpinner asyncSpinner;
@@ -76,6 +80,8 @@ class BoardControl {
         int clawRotate; // pwm
         int clawGrip;
         int rotState; // On-Off
+        //number of adc messages published
+        int adcMsgSeq;
         //int clawState;
         
         //to keep track of button states. It is possible press could change it
@@ -93,8 +99,9 @@ class BoardControl {
         JointSpeedBasedPositionController frontLeftSwerve, frontRightSwerve, backLeftSwerve, backRightSwerve;
         JointSpeedBasedPositionController armBaseRotate;
         LIDARTiltJointController lidar;
-        GearPositionTracker frontLeftSwerveGears, frontRightSwerveGears, backLeftSwerveGears, backRightSwerveGears;
-        GearPositionTracker armRotationBaseGear;
+        PotPositionTracker frontLeftSwervePotMonitor, frontRightSwervePotMonitor, backLeftSwervePotMonitor, backRightSwervePotMonitor;
+        PotPositionTracker armRotationBasePotMonitor;
+        JointArmVelocityController armUpperAct, armLowerAct;
         //TODO: add lidar, actuators here.
         
 };

@@ -9,7 +9,8 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
   sensor_msgs
   std_msgs
-  
+  tf
+  laser_filters
 )
 
 ## System dependencies are found with CMake's conventions
@@ -84,7 +85,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES owr_auton_pathing
-#  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs
+#  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs laser_filters
 #  DEPENDS system_lib
 )
 
@@ -106,13 +107,13 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(owr_auton_pathing_node src/PathingController.cpp)
+add_executable(owr_local_planner src/LocalPlanner.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(owr_auton_pathing_node owr_messages)
-add_dependencies(owr_auton_pathing_node owr_messages_gencpp)
-target_link_libraries(owr_auton_pathing_node ${catkin_LIBRARIES})
+add_dependencies(owr_local_planner owr_messages)
+add_dependencies(owr_local_planner owr_messages_gencpp)
+target_link_libraries(owr_local_planner ${catkin_LIBRARIES})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(owr_auton_pathing_node

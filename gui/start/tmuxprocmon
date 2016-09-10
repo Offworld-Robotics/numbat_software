@@ -8,14 +8,14 @@
 # which he developed.
 
 source $HOME/.bashrc
-source $HOME/owr_software/gui/devel/setup.bash
 export TMUXPROCMON=1
 cd "$(dirname "$0")"
+source ../devel/setup.bash
 
 tmux new-session -d -s prm2 "env ./procmon.py $1"
 #tmux rename-window 'procmon'
-tmux split-window -h -d 'exec tail -n 0 -F /tmp/procmon.log'
-tmux split-window -v -t 0 -p 20 -d 'exec htop'
+tmux split-window -h -t prm2 -d 'exec tail -n 0 -F /tmp/procmon.log'
+tmux split-window -v -t prm2 -p 20 -d 'exec htop'
 tmux source-file tmuxprocmon.conf
 tmux attach-session -t prm2
 #tmux -2 attach-session -t prm
