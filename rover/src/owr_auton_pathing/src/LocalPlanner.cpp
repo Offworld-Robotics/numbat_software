@@ -20,12 +20,13 @@ int main (int argc, char *argv[]) {
     LocalPlanner planner;
     
     planner.run();
-    
+    ros::Rate loop_rate(10);
     return 0;
 }
 
 
 void LocalPlanner::run(){
+    ros::Rate loop_rate(10);
     while(ros::ok()){
         
         double driveX = 0.0;
@@ -114,11 +115,11 @@ void LocalPlanner::run(){
                     //ROS_INFO("go forwards %f %f", driveX, driveY);
                 } else if (resultantAngle < 0.0) {
                     driveX = MAX_SPEED;
-                    driveY = -1.0;
+                    driveY = 1.0;
                     //ROS_INFO("go right %f %f", driveX, driveY);
                 } else {
                     driveX = MAX_SPEED;
-                    driveY = 1.0;
+                    driveY = -1.0;
                     //ROS_INFO("go left %f %f", driveX, driveY);
                 }
                 
@@ -141,14 +142,6 @@ void LocalPlanner::run(){
                 vel_msg.linear.y = driveY;
             }
             
-            //TODO: Insert local Lidar obstacle handling
-            //TODO: reverse if no turning circle allows object avoidance
-            /*
-            if(receivedLaser){}
-                lidarAvoidance( driveX, driveY, resultantAngle);
-            }
-            */
-            
         } else {
             // We have reached goal, DONT MOVE!!! 
             //ROS_INFO(" WE THERE");
@@ -162,6 +155,7 @@ void LocalPlanner::run(){
         twistPublisher.publish(vel_msg);
         
         ros::spinOnce();
+        loop_rate.sleep();
     }
 }
 
@@ -186,6 +180,11 @@ LocalPlanner::LocalPlanner() : nh(), mapSubscriber(nh, "map", 1), tfFilter(mapSu
     
     receivedPath = FALSE;
     receivedLaser = FALSE;
+    //fLCollision = FALSE;
+    //fRCollision = FALSE;
+    //fCollision = FALSE;
+    //bLCollision = FALSE;
+    //bRCollision = FALSE;
 }
 
 // Receive a path from the astar
@@ -229,49 +228,62 @@ void LocalPlanner::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
     laser.ranges = scan->ranges;
     laser.intensities = scan->intensities;
     receivedLaser = TRUE;
+    
+    //LocalPlanner::lidarAvoidance();
 }
+
+/*
 
 // Object avoidance function. Takes in the desired direction of movement,
 // uses the laser Scan for object detection and adjusts the movement if a collision might occur
-/*void lidarAvoidance( double& valX, double& valY, double destAngle){
+void LocalPlanner::lidarAvoidance( void){
     
-    bool collision = FALSE;
+    //fLFCollision = FALSE;
+    fLHCollision = FALSE;
+    fRHCollision = FALSE;
+    //fRFCollision = FALSE;
+    fCollision = FALSE;
+    bRCollision = FALSE;
+    bLCollision = FALSE;
     
-    if(valY >= 2 * MAX_TURN){
-        //Detect if a left turn will result in a collision. This is done my claculating whether following
-        // the current turn results in collision with an object.
-        //TODO: add page on wiki explaining logic herein:
-        //TODO: take into account laser.angle_min is negative
-        //TODO: take into account destAngle beyond lidar range
-        
-        for(int i = (( laser.angle_min / laser.angle_increment) - ( DELTA_TURN_ANGLE / laser.angle_increment)); i < laser.ranges.size() && ((i * laser.angle_increment) <= (destAngle * M_PI) + (2 * DELTA_TURN_ANGLE); i++){
-            if(i < (( laser.angle_min / laser.angle_increment)){
-                collision = (laser.ranges[i] <= MIN_RANGE_OUTER_TURN);
-            } else {
-                collision = (laser.ranges[i] <= 2.0 * MAX_TURN * cos(M_PI/2.0 - (i * laser.angle_increment) - DELTA_TURN_ANGLE));
-            }
-        }
-        
-    } else if (valY < -2 * MAX_TURN){
-        //Detect if a right turn will result in collision
-        
-        for(int i = (( laser.angle_min / laser.angle_increment)) + (destAngle * M_PI) - (2 * DELTA_TURN_ANGLE); i < (( laser.angle_min / laser.angle_increment) + ( DELTA_TURN_ANGLE / laser.angle_increment)); i++){
-            if(i > (( laser.angle_min / laser.angle_increment)){
-                collision = (laser.ranges[i] <= MIN_RANGE_OUTER_TURN);
-            } else {
-                collision = (laser.ranges[i] <= 2.0 * MAX_TURN * -cos(-M_PI/2.0 + (i * laser.angle_increment) - DELTA_TURN_ANGLE));
-            }
-        }
-        
-    } else {
-        //Detect if straight forward will result in collision
-        
-        for (int i = (( laser.angle_min / laser.angle_increment)) - (M_PI / laser.angle_increment); i <= (( laser.angle_min / laser.angle_increment)) + (M_PI / laser.angle_increment) && i < laser.ranges.size(); i++){
-            if(i < ( laser.angle_min / laser.angle_increment)){
-                collision = (laser.ranges[i] < cos((( laser.angle_min / laser.angle_increment)) - (M_PI / laser.angle_increment) + i * laser.angle_increment)); //TODO: sign of cos result
-            } else {
-                collision = (laser.ranges[i] < cos((( laser.angle_min / laser.angle_increment)) - (M_PI / laser.angle_increment) + i * laser.angle_increment)); //TODO: continue if bothered
-            }
+    double angle = 0.0;
+    
+    int scanSize = laser.ranges.size();
+    int indexCentre = - (laser.angle_min) / laser.angle_increment;
+    int indexDiffR = indexCentre - ( DIFF_TURN_ANGLE / laser.angle_increment);
+    int indexDiffL = indexCentre + ( DIFF_TURN_ANGLE / laser.angle_increment);
+    int indexPIL = indexCentre + ( M_PI / laser.angle_increment);
+    int indexPIR = indexCentre - ( M_PI / laser.angle_increment);
+    int indexHalfPIL = indexCentre + ( M_PI / (2.0 * laser.angle_increment));
+    int indexHalfPIR = indexCentre - ( M_PI / ( 2.0 * laser.angle_increment));
+    
+    
+    for(int i = 0; i <= scanSize; i++){
+        if( i <= indexPIR){
+            angle = (indexPIR - i ) * laser.angle_increment;
+            bRCollision = (bRCollision || ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle)));
+        } else if (i <= indexHalfPIR){
+            angle = ( i - indexPIR) * laser.angle_increment;
+            //fRFCollision = ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle))
+        } else if ( i < indexDiffR) {
+            angle = ( i - indexPIR) * laser.angle_increment;
+            fRHCollision = ( fRHCollision || ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle)));
+        } else if ( i < indexCentre){
+            angle = ( i - indexPIR) * laser.angle_increment;
+            fRHCollision = ( fRHCollision || ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle)));
+            fCollision = (fCollision || (laser.range[i] <= ( HALF_ROVER_WIDTH / cos(angle) )));
+        } else if (i <= indexDiffL){
+            angle = M_PI - (( i - indexCentre) * laser.angle_increment);
+            fLHCollision = ( fLHCollision || ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle)));
+            fCollision = (fCollision || (laser.range[i] <= ( HALF_ROVER_WIDTH / cos(angle) )));
+        } else if ( i < indexHalfPIL) {
+            angle = M_PI - (( i - indexCentre) * laser.angle_increment);
+            fRHCollision = ( fRHCollision || ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle)));
+        } else if ( i < indexPIL){
+            angle = M_PI - (( i - indexCentre) * laser.angle_increment);
+        } else {
+            angle = ( i - indexPIL) * laser.angle_increment;
+            bRCollision = (bRCollision || ( laser.range[i] <= 2.0 * MAX_TURN_RADIUS * cos(angle)));
         }
     }
-}*/
+} */

@@ -294,7 +294,7 @@ void BoardControl::run() {
     int cbr = 0, cbt = 0;
     int pwmFLW, pwmFRW, pwmBLW, pwmBRW, pwmFLS, pwmFRS, pwmBLS, pwmBRS;
     int pwmArmTop, pwmArmBottom, pwmArmRot;
-    int pwmClawRotate, pwmClawGrip;
+    int pwmClawRotate;//, pwmClawGrip;
     int pwmLIDAR;
     int pwmCamBTilt, pwmCamBRot, pwmCamTTilt, pwmCamTRot;
     
@@ -348,9 +348,9 @@ void BoardControl::run() {
             cap(&cameraTopTilt, CAMERA_ROTATION_MIN, CAMERA_ROTATION_MAX);
 
             if (clawState  == OPEN) {
-                clawGrip += 2;
+                clawGrip += 1;
             } else if (clawState  == CLOSE) {
-                clawGrip -=  2;
+                clawGrip -=  1;
             }
             //cap(&clawGrip, CLAW_ROTATION_MIN, CLAW_ROTATION_MAX); 
             
@@ -499,7 +499,7 @@ void BoardControl::publishADC(status s) {
    adcMsg.potFrame.push_back("clawActual");
    adcMsg.pot.push_back(s.clawEffort);
    adcMsg.potFrame.push_back("clawEffort");
-   adcMsg.pot.push_back(clawRotScale(clawGrip));
+   adcMsg.pot.push_back(pwmClawGrip);
    adcMsg.potFrame.push_back("clawGrip");
    adcMsg.header.stamp = ros::Time::now();
    adcMsg.header.seq = (++adcMsgSeq);

@@ -13,7 +13,9 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
    message_filters
     laser_geometry
-    tf
+    tf2
+    tf2_geometry_msgs
+    tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -88,7 +90,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES owr_positioning
-  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry tf rospy
+  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry rospy tf2 tf2_geometry_msgs tf2_ros
   DEPENDS system_lib
 )
 
@@ -108,6 +110,9 @@ include_directories(
 # add_library(owr_positioning
 ## Declare a cpp executable
 add_executable(orientation src/ExtractOrientation.cpp)
+add_executable(utm_tf src/UTMTransform.cpp)
+add_executable(gps_tf src/GPSTransform.cpp)
+add_executable(mag src/MagnetConverter.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -116,6 +121,16 @@ add_executable(orientation src/ExtractOrientation.cpp)
 target_link_libraries(orientation
    ${catkin_LIBRARIES}
 )
+target_link_libraries(gps_tf
+   ${catkin_LIBRARIES}
+)
+target_link_libraries(utm_tf
+        ${catkin_LIBRARIES}
+        )
+
+target_link_libraries(mag
+        ${catkin_LIBRARIES}
+        )
 #   src/${PROJECT_NAME}/owr_positioning.cpp
 # )
 

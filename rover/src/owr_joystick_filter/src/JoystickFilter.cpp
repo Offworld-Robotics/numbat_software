@@ -72,7 +72,7 @@ JoystickFilter::JoystickFilter(const std::string topic) :
     publisher = node.advertise<sensor_msgs::Joy>(topic,2,true);
     velPublisher = node.advertise<geometry_msgs::Twist>("/cmd_vel",1,false);
     lidarModePublisher = node.advertise<std_msgs::Int16>("/owr/lidar_gimble_mode", 1, true);
-    lidarPosPublisher = node.advertise<std_msgs::Float64>("/laser_tilt_joint_controller/command_fail",1,true);
+    lidarPosPublisher = node.advertise<std_msgs::Float64>("/laser_tilt_joint_controller/command",1,true);
     
     //msgsOut.axes = std::vector<float>(20);
     msgsOut.axes.resize(20);
@@ -164,9 +164,9 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
      *      
      */
     gimbalRate = 0.0;
+    //IMPORTANT: this will do nothing if the lidar is not is position mode
+    gimbalRate = joy->axes[STICK_CH_UD];
     if (joy->buttons[BUTTON_A]) {
-        //IMPORTANT: this will do nothing if the lidar is not is position mode
-        gimbalRate = joy->axes[STICK_L_UD];
         
         // Thumb sticks control camera rotation while A Button is held
 
