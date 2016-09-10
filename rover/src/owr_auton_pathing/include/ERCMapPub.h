@@ -6,14 +6,14 @@
 
 #ifndef ERCMAPPUB_H
 #include <ros/ros.h>
+#include <ros/rate.h>
+#include <std_msgs/String.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/MapMetaData.h>
+#include <nav_msgs/Path.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Transform.h>
-#include <tf/transform_listener.h>
-#include <tf/message_filter.h>
-#include <message_filters/subscriber.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,20 +39,29 @@
 // TODO get from geotiff/UTM transform or arg/thing(for map.tif)
 #define GRID_OFFSET 0
 #define GRID_FACTOR 20
-#define IMG_PATH "/home/ros/owr_software/map.tif"
+#define IMG_PATH_GEO "/home/ros/owr_software/map.tif"
+#define IMG_PATH_OCC "/home/ros/owr_software/map_occupancy.tif"
 
 class ERCMapPub {
     protected:
         ros::Publisher  mapPublisher;
-        float abs(double adfGeoTransform);
+        ros::Publisher  pathPublisher;
     private:
         ros::NodeHandle node;         // ros::NodeHandle nh;2
+        ros::Subscriber stringSubscriber;
         
+        nav_msgs::Path outputPath;               // finalPath for us to publish
         nav_msgs::OccupancyGrid outputGrid;      // our outputGrid to help with testing etc?
+        
         void getGeoData();
         void getMap(); // load map from geotif file
+        
+        //get which path we want to do
+        void stringCallback(const std_msgs::String::ConstPtr& whichString);
+        char selectedPath;
     public:
         ERCMapPub(const std::string topic);
+        void publish();
         void spin();
 };
 
