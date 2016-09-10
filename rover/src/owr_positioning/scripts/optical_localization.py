@@ -41,6 +41,17 @@ rotation_velocity_scale = 1.0
 
 def image_callback(image):
 
+    global prev_gray
+    global translation_current
+    global scale_x
+    global scale_y
+    global rotation
+    global bridge
+    global pub
+    global prev_time
+    global linear_velocity_scale
+    global rotation_velocity_scale
+
     try:
         frame = bridge.imgmsg_to_cv2(image, "passthrough")
     except CvBridgeError as e:
@@ -63,22 +74,26 @@ def image_callback(image):
 
             rotation_delta = angle_between(rot1.A1, rot2.A1);
 
-            translation = np.add(translation, translation_delta);
+            translation_current = np.add(translation_current, translation_delta);
             scale_x *= scale_x_delta
             scale_y *= scale_y_delta
             rotation += rotation_delta
 
+            """
             draw_str(vis, (20, 20), 'TX: ' + str(translation_current.item(0,0)))
             draw_str(vis, (20, 40), 'TY: ' + str(translation_current.item(1,0)))
             draw_str(vis, (20, 60), 'SX: ' + str(scale_x))
             draw_str(vis, (20, 80), 'SY: ' + str(scale_y))
             draw_str(vis, (20, 100), 'RAD: ' + str(rotation))
             draw_str(vis, (20, 120), 'DEG: ' + str(np.rad2deg(rotation)))
+            """
 
+            time_scale = 0
             current_time = rospy.Time.now()
+            print(current_time.nsecs)
 
             if prev_time:
-                time_scale = (1.0 / (current_time - prev_time))
+                time_scale = (1.0 / 1e9*(current_time - prev_time).nsecs)
 
             prev_time = current_time
 
