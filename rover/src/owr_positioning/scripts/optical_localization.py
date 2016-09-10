@@ -7,11 +7,10 @@ import rospy
 import roslib
 import numpy as np
 import cv2
-import video
 import math
 import sys
 
-from common import anorm2, draw_str
+from common import draw_str
 from time import clock
 
 from sensor_msgs.msg import Image
