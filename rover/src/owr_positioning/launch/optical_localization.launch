@@ -1,0 +1,7 @@
+<launch>
+	<node pkg="gscam" type="gscam" name="optical_localization_cam" output="screen">
+		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/optical_localization0 ! video/x-raw-rgb,framerate=30/1,width=640,height=480 !ffmpegcolorspace"/>
+		<remap from="/camera/image_raw" to="/optical_localization_cam/image_raw"/>
+	</node>
+    <node pkg="owr_positioning" type="optical_localization.py" name="optical_localization"></node>
+</launch>
