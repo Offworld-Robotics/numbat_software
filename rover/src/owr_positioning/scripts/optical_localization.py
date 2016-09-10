@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Python 2/3 compatibility
-from __future__ import print_function
+#from __future__ import rospy.loginfo_function
 
 import rospy
 import roslib
@@ -19,7 +19,7 @@ from cv_bridge import CvBridge, CvBridgeError
 import tf2_ros
 import tf2_geometry_msgs
 
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TwistWithCovarianceStamped
 
 def angle_between(a,b):
     return np.arctan2(b[1], b[0]) - np.arctan2(a[1], a[0])
@@ -38,9 +38,9 @@ pixels_per_metre_traversed = 2310
 
 linear_velocity_scale = 1.0/pixels_per_metre_traversed
 rotation_velocity_scale = 1.0
+seq = 0
 
 def image_callback(image):
-
     global prev_gray
     global translation_current
     global scale_x
@@ -51,11 +51,12 @@ def image_callback(image):
     global prev_time
     global linear_velocity_scale
     global rotation_velocity_scale
+    global seq
 
     try:
         frame = bridge.imgmsg_to_cv2(image, "passthrough")
     except CvBridgeError as e:
-        print(e)
+        rospy.logerror(e)
 
     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     vis = frame.copy()
@@ -90,37 +91,45 @@ def image_callback(image):
 
             time_scale = 0
             current_time = rospy.Time.now()
-            print(current_time.nsecs)
+            rospy.loginfo(current_time.nsecs)
 
             if prev_time:
-                time_scale = (1.0 / 1e9*(current_time - prev_time).nsecs)
+                time_scale = (1.0 / ((current_time - prev_time).nsecs / 1e9))
 
             prev_time = current_time
 
             try:
-                my_twist = Twist()
-                my_twist.linear.x = translation_delta.item(0,0) * linear_velocity_scale * time_scale
-                my_twist.linear.y = translation_delta.item(1,0) * linear_velocity_scale * time_scale
-                my_twist.linear.z = 0
+                my_twist = TwistWithCovarianceStamped()
+                my_twist.twist.twist.linear.x = translation_delta.item(0,0) * linear_velocity_scale * time_scale
+                my_twist.twist.twist.linear.y = translation_delta.item(1,0) * linear_velocity_scale * time_scale
+                my_twist.twist.twist.linear.z = 0
 
-                my_twist.angular.x = 0
-                my_twist.angular.y = 0
-                my_twist.angular.z = rotation_delta * rotation_velocity_scale * time_scale
+                my_twist.twist.twist.angular.x = 0
+                my_twist.twist.twist.angular.y = 0
+                my_twist.twist.twist.angular.z = rotation_delta * rotation_velocity_scale * time_scale
+
+                for i in range(0,36):
+                    my_twist.twist.covariance[i] = 0
+
+                my_twist.header.stamp = rospy.Time.now()
+                my_twist.header.seq = seq
+                seq+=1
+                my_twist.header.frame_id = "base_link"
 
                 pub.publish(my_twist)
-                rospy.loginfo(my_twist)
+                rospy.loginfo(my_twist.twist.twist)
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
                 rospy.logerr("exception thrown %s", e)
                 return
 
 
     prev_gray = frame_gray
-    cv2.imshow('optical_localization', vis)
+    #cv2.imshow('optical_localization', vis)
 
 if __name__ == '__main__':
     rospy.init_node("optical_localization")
-    rospy.Subscriber("/optical_localization_cam/image_raw", Image, callback=image_callback)
-    pub = rospy.Publisher("/owr/optical_localization_twist", Twist, latch=True, queue_size=10)
+    rospy.Subscriber("/optical_localization_cam/image_raw", Image, callback=image_callback, queue_size=1)
+    pub = rospy.Publisher("/owr/optical_localization_twist", TwistWithCovarianceStamped, latch=True, queue_size=10)
     bridge = CvBridge()
 
     while not rospy.is_shutdown():
