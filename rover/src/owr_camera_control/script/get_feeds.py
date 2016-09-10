@@ -45,6 +45,22 @@ def talker():
                 
                 index += 1
                 
+        camNum = int(7) # Return the number of the video device
+        topics = rospy.get_published_topics()
+        topics = numpy.array(topics)
+        # Fill out the information for the stream
+        s = stream()
+        s.stream = camNum
+        
+        # Check if currently streaming (involves checking current topics
+        s.on = online( topics, 0, "/cam" + str(camNum))
+        
+        cameraList.cameras.append(s)
+        
+        # Increment the num of cameras in the array
+        cameraList.num += 1
+        
+        index += 1
         rospy.loginfo(cameraList)
         pub.publish(cameraList)
         rate.sleep()
