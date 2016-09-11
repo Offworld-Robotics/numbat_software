@@ -28,7 +28,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
 // geotiff data
-#include <gdal/gdal_priv.h>
+//#include <gdal/gdal_priv.h>
 
 #define SIZE_OF_GRID 5000
 #define IMPASS 255
