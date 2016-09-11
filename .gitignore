@@ -27,3 +27,8 @@ msg_gen/
 srv_gen/
 hector_mapping/src/hector_mapping/
 hector_nav_msgs/src/hector_nav_msgs/
+
+#kdevelop#
+##########
+*.kdev44444444444444444444444444444444444444444444/.*
+.kdev*

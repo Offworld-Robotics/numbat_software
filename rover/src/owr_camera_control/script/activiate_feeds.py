@@ -12,10 +12,10 @@ def callback(data):
         rospy.loginfo("turn on /dev/video%d", data.stream)
         rospy.loginfo(rospy.get_param("/rosdistro"))
         if not 'kinetic' in rospy.get_param("/rosdistro"):
-            os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! video/x-raw-rgb,framerate=30/1,width=320,height=240 ! ffmpegcolorspace"
+            os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! video/x-raw-rgb,framerate=30/1,width=640,height=480 ! ffmpegcolorspace"
             rospy.logerr("not kinetic")
         else:
-            os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! videoscale ! video/x-raw,,width=320,height=120 ! videoconvert"
+            os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! videoscale ! video/x-raw,width=320,height=240 ! videoconvert"
         
         print os.environ["GSCAM_CONFIG"]
         #subprocess.Popen([ "rosrun","gscam", "gscam","__name=" + str(data.stream) + "_camera","gscam_publisher:=\/cam" + str(data.stream)])

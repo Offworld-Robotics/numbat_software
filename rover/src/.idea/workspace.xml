@@ -1,0 +1,2396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" assignedExecutableTargets="true" buildAllGenerated="true">
+    <generated>
+      <config projectName="Project" targetName="custom_msgs_genlisp" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_velocityEstimate" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="bond_generate_messages_nodejs" />
+      <config projectName="Project" targetName="custom_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="crosbot_map_genlisp" />
+      <config projectName="Project" targetName="hector_mapping_generate_messages_lisp" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="roscpp_generate_messages_py" />
+      <config projectName="Project" targetName="crosbot_generate_messages_lisp" />
+      <config projectName="Project" targetName="hector_nav_msgs_generate_messages" />
+      <config projectName="Project" targetName="owr_messages_generate_messages" />
+      <config projectName="Project" targetName="crosbot_generate_messages_eus" />
+      <config projectName="Project" targetName="hector_nav_msgs_gencpp" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_XsensQuaternion" />
+      <config projectName="Project" targetName="crosbot_ogmbicp" />
+      <config projectName="Project" targetName="run_tests_owr_drive_controls_gtest_testJointController" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_activeCameras" />
+      <config projectName="Project" targetName="_hector_nav_msgs_generate_messages_check_deps_GetSearchPosition" />
+      <config projectName="Project" targetName="clean_test_results" />
+      <config projectName="Project" targetName="run_tests_owr_drive_controls_gtest_testJointPosController" />
+      <config projectName="Project" targetName="hector_nav_msgs_genpy" />
+      <config projectName="Project" targetName="crosbot_geneus" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="hector_mapping_gennodejs" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_generate_messages" />
+      <config projectName="Project" targetName="custom_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_pwm" />
+      <config projectName="Project" targetName="bond_generate_messages_py" />
+      <config projectName="Project" targetName="ogmbicp" />
+      <config projectName="Project" targetName="hector_trajectory_server" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_status" />
+      <config projectName="Project" targetName="testLIDARController" />
+      <config projectName="Project" targetName="hector_mapping_gencpp" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_genlisp" />
+      <config projectName="Project" targetName="hector_map_server" />
+      <config projectName="Project" targetName="_catkin_empty_exported_target" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="gps_tf" />
+      <config projectName="Project" targetName="actionlib_generate_messages_py" />
+      <config projectName="Project" targetName="crosbot_gencpp" />
+      <config projectName="Project" targetName="crosbot_generate_messages_nodejs" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="roscpp_generate_messages_nodejs" />
+      <config projectName="Project" targetName="owr_voltmeter_monitor" />
+      <config projectName="Project" targetName="_crosbot_map_generate_messages_check_deps_ModifySnap" />
+      <config projectName="Project" targetName="crosbot_map_genpy" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_generate_messages_eus" />
+      <config projectName="Project" targetName="bond_generate_messages_cpp" />
+      <config projectName="Project" targetName="crosbot" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_generate_messages_lisp" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_gnssSample" />
+      <config projectName="Project" targetName="hector_nav_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_board" />
+      <config projectName="Project" targetName="_run_tests_owr_drive_controls" />
+      <config projectName="Project" targetName="crosbot_ui" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_ImuSensorSample" />
+      <config projectName="Project" targetName="utm_tf" />
+      <config projectName="Project" targetName="crosbot_map_geneus" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="testJointController" />
+      <config projectName="Project" targetName="owr_messages_generate_messages_nodejs" />
+      <config projectName="Project" targetName="gps_common_generate_messages_nodejs" />
+      <config projectName="Project" targetName="crosbot_graphslam" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_generate_messages_cpp" />
+      <config projectName="Project" targetName="crosbot_generate_messages_cpp" />
+      <config projectName="Project" targetName="owr_local_planner" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_baroSample" />
+      <config projectName="Project" targetName="crosbot_map" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_gennodejs" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_heading" />
+      <config projectName="Project" targetName="geotiff_node" />
+      <config projectName="Project" targetName="_crosbot_ogmbicp_generate_messages_check_deps_GetRecentScans" />
+      <config projectName="Project" targetName="crosbot_map_gencpp" />
+      <config projectName="Project" targetName="custom_msgs_generate_messages" />
+      <config projectName="Project" targetName="tf_generate_messages_eus" />
+      <config projectName="Project" targetName="imu_conversion" />
+      <config projectName="Project" targetName="owr_messages_geneus" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_genpy" />
+      <config projectName="Project" targetName="diagnostic_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="diagnostic_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="_crosbot_generate_messages_check_deps_ColouredCloudMsg" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_BaroSensorSample" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_adc" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="hector_mapping_generate_messages" />
+      <config projectName="Project" targetName="tf_generate_messages_cpp" />
+      <config projectName="Project" targetName="owr_drive_board" />
+      <config projectName="Project" targetName="owr_messages_gencpp" />
+      <config projectName="Project" targetName="roscpp_generate_messages_eus" />
+      <config projectName="Project" targetName="crosbot_generate_messages_py" />
+      <config projectName="Project" targetName="bond_generate_messages_eus" />
+      <config projectName="Project" targetName="_run_tests_owr_drive_controls_gtest_testJointPosController" />
+      <config projectName="Project" targetName="diagnostic_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="tests" />
+      <config projectName="Project" targetName="_hector_nav_msgs_generate_messages_check_deps_GetDistanceToObstacle" />
+      <config projectName="Project" targetName="custom_msgs_genpy" />
+      <config projectName="Project" targetName="crosbot_genpy" />
+      <config projectName="Project" targetName="_crosbot_generate_messages_check_deps_ColouredPointMsg" />
+      <config projectName="Project" targetName="geotiff_saver" />
+      <config projectName="Project" targetName="bond_generate_messages_lisp" />
+      <config projectName="Project" targetName="custom_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="controller_manager_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="roscpp_generate_messages_cpp" />
+      <config projectName="Project" targetName="nodelet_generate_messages_eus" />
+      <config projectName="Project" targetName="crosbot_map_generate_messages_cpp" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_positionEstimate" />
+      <config projectName="Project" targetName="hector_mapping_geneus" />
+      <config projectName="Project" targetName="_run_tests_owr_drive_controls_gtest" />
+      <config projectName="Project" targetName="hector_geotiff_plugins" />
+      <config projectName="Project" targetName="clinometer_node" />
+      <config projectName="Project" targetName="fastslam" />
+      <config projectName="Project" targetName="diagnostic_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="graphslam" />
+      <config projectName="Project" targetName="hector_nav_msgs_genlisp" />
+      <config projectName="Project" targetName="gps_common_generate_messages_lisp" />
+      <config projectName="Project" targetName="testJointPosController" />
+      <config projectName="Project" targetName="tf_generate_messages_lisp" />
+      <config projectName="Project" targetName="hector_nav_msgs_gennodejs" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_position" />
+      <config projectName="Project" targetName="hector_nav_msgs_geneus" />
+      <config projectName="Project" targetName="crosbot_map_generate_messages_eus" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_camera_angle" />
+      <config projectName="Project" targetName="hector_mapping_genlisp" />
+      <config projectName="Project" targetName="crosbot_generate_messages" />
+      <config projectName="Project" targetName="run_tests_owr_drive_controls_gtest_testLIDARController" />
+      <config projectName="Project" targetName="roscpp_generate_messages_lisp" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="hector_nav_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="tf_generate_messages_py" />
+      <config projectName="Project" targetName="diagnostic_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="hector_mapping_genpy" />
+      <config projectName="Project" targetName="_crosbot_map_generate_messages_check_deps_GetSnap" />
+      <config projectName="Project" targetName="_hector_mapping_generate_messages_check_deps_HectorDebugInfo" />
+      <config projectName="Project" targetName="hector_mapping" />
+      <config projectName="Project" targetName="_hector_nav_msgs_generate_messages_check_deps_GetNormal" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="crosbot_gennodejs" />
+      <config projectName="Project" targetName="owr_messages_genpy" />
+      <config projectName="Project" targetName="actionlib_generate_messages_nodejs" />
+      <config projectName="Project" targetName="hector_mapping_generate_messages_cpp" />
+      <config projectName="Project" targetName="owr_messages_generate_messages_lisp" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_sensorSample" />
+      <config projectName="Project" targetName="imu_attitude_to_tf_node" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_Internal" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_voltage" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="nodelet_generate_messages_cpp" />
+      <config projectName="Project" targetName="gps_common_generate_messages_py" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_GnssSensorSample" />
+      <config projectName="Project" targetName="hector_mapping_generate_messages_eus" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_stop" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="crosbot_map_generate_messages_py" />
+      <config projectName="Project" targetName="controller_manager_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="_run_tests_owr_drive_controls_gtest_testJointController" />
+      <config projectName="Project" targetName="gui" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="actionlib_generate_messages_eus" />
+      <config projectName="Project" targetName="_hector_mapping_generate_messages_check_deps_HectorIterData" />
+      <config projectName="Project" targetName="download_extra_data" />
+      <config projectName="Project" targetName="crosbot_map_generate_messages_nodejs" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="geometry_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="controller_manager_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="actionlib_generate_messages_lisp" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_generate_messages_nodejs" />
+      <config projectName="Project" targetName="crosbot_fastslam" />
+      <config projectName="Project" targetName="owr_messages_generate_messages_eus" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="custom_msgs_gencpp" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="map_to_image_node" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="actionlib_generate_messages_cpp" />
+      <config projectName="Project" targetName="hector_nav_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_generate_messages_py" />
+      <config projectName="Project" targetName="_hector_nav_msgs_generate_messages_check_deps_GetRecoveryInfo" />
+      <config projectName="Project" targetName="gtest_main" />
+      <config projectName="Project" targetName="crosbot_map_generate_messages" />
+      <config projectName="Project" targetName="owr_messages_generate_messages_cpp" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="owr_messages_generate_messages_py" />
+      <config projectName="Project" targetName="orientation" />
+      <config projectName="Project" targetName="_crosbot_map_generate_messages_check_deps_SnapMsg" />
+      <config projectName="Project" targetName="_crosbot_generate_messages_check_deps_ColourMsg" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="_hector_nav_msgs_generate_messages_check_deps_GetRobotTrajectory" />
+      <config projectName="Project" targetName="tf_generate_messages_nodejs" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_motor" />
+      <config projectName="Project" targetName="owr_messages_genlisp" />
+      <config projectName="Project" targetName="_custom_msgs_generate_messages_check_deps_orientationEstimate" />
+      <config projectName="Project" targetName="gps_common_generate_messages_cpp" />
+      <config projectName="Project" targetName="_run_tests_owr_drive_controls_gtest_testLIDARController" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="run_tests_owr_drive_controls" />
+      <config projectName="Project" targetName="gtest" />
+      <config projectName="Project" targetName="controller_manager_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="hector_mapping_generate_messages_py" />
+      <config projectName="Project" targetName="rosgraph_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="owr_joystick_filter_node" />
+      <config projectName="Project" targetName="pose_and_orientation_to_imu_node" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="clean_test_results_owr_drive_controls" />
+      <config projectName="Project" targetName="gps_common_generate_messages_eus" />
+      <config projectName="Project" targetName="localmap" />
+      <config projectName="Project" targetName="doxygen" />
+      <config projectName="Project" targetName="std_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="custom_msgs_geneus" />
+      <config projectName="Project" targetName="custom_msgs_gennodejs" />
+      <config projectName="Project" targetName="owr_auton_pathing_node" />
+      <config projectName="Project" targetName="controller_manager_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="hector_nav_msgs_generate_messages_cpp" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_gencpp" />
+      <config projectName="Project" targetName="hector_mapping_generate_messages_nodejs" />
+      <config projectName="Project" targetName="run_tests" />
+      <config projectName="Project" targetName="cmd_vel_2_joints" />
+      <config projectName="Project" targetName="nodelet_generate_messages_py" />
+      <config projectName="Project" targetName="nodelet_generate_messages_lisp" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_ultrasonic" />
+      <config projectName="Project" targetName="actionlib_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="geotiff_writer" />
+      <config projectName="Project" targetName="tf2_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="_crosbot_generate_messages_check_deps_PointCloudMsg" />
+      <config projectName="Project" targetName="sensor_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="custom_msgs_generate_messages_lisp" />
+      <config projectName="Project" targetName="crosbot_map_gennodejs" />
+      <config projectName="Project" targetName="crosbot_ogmbicp_geneus" />
+      <config projectName="Project" targetName="crosbot_map_generate_messages_lisp" />
+      <config projectName="Project" targetName="run_tests_owr_drive_controls_gtest" />
+      <config projectName="Project" targetName="_owr_messages_generate_messages_check_deps_stream" />
+      <config projectName="Project" targetName="_crosbot_map_generate_messages_check_deps_ListSnaps" />
+      <config projectName="Project" targetName="crosbot_genlisp" />
+      <config projectName="Project" targetName="hector_nav_msgs_generate_messages_py" />
+      <config projectName="Project" targetName="nodelet_generate_messages_nodejs" />
+      <config projectName="Project" targetName="custom_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="nav_msgs_generate_messages_nodejs" />
+      <config projectName="Project" targetName="geo_logger" />
+      <config projectName="Project" targetName="visualization_msgs_generate_messages_eus" />
+      <config projectName="Project" targetName="owr_messages_gennodejs" />
+    </generated>
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="true" GENERATION_PASS_SYSTEM_ENVIRONMENT="true" BUILD_OUTPUT_DIR="build">
+    <ADDITIONAL_GENERATION_ENVIRONMENT>
+      <envs>
+        <env name="CMAKE_PREFIX_PATH" value="/home/hjed/Bluesat/owr_software/rover/devel:/home/hjed/Bluesat/ros_deps/devel:/opt/ros/kinetic" />
+        <env name="ROS_PACKAGE_PATH" value="/opt/ros/kinetic/share:/opt/ros/kinetic/stacks" />
+        <env name="CATKIN_SETUP_DIR" value="/home/hjed/Bluesat/owr_software/rover/devel" />
+        <env name="CATKIN_SHELL" value="bash" />
+        <env name="ROS_ROOT" value="/opt/ros/kinetic/share/ros" />
+        <env name="ROS_ETC_DIR" value="/opt/ros/kinetic/etc/ros" />
+      </envs>
+    </ADDITIONAL_GENERATION_ENVIRONMENT>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="721fa5ce-97ca-4815-a359-45cdb27e0b2d" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/owr_drive_controls/launch/joystick_filters.launch" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/owr_positioning/include/GPSTransform.hpp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/owr_positioning/launch/cse_localisation2d.launch" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/owr_positioning/launch/cse_localisation3d.launch" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/owr_positioning/launch/gps_localisation.launch" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/owr_positioning/launch/gps_solo.launch" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/owr_positioning/launch/nmea.launch" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/owr_positioning/src/GPSTransform.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cse-slam" afterPath="$PROJECT_DIR$/cse-slam" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/xsens_mti_ros_node" afterPath="$PROJECT_DIR$/xsens_mti_ros_node" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/crosbot_graphslam.launch" afterPath="$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/crosbot_graphslam.launch" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/crosbot_graphslam_only.launch" afterPath="$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/crosbot_graphslam_only.launch" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/owr_bluetounge2_tf/robots/owr_bluetounge2_tf.URDF" afterPath="$PROJECT_DIR$/owr_bluetounge2_tf/robots/owr_bluetounge2_tf.URDF" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/owr_positioning/CMakeLists.txt" afterPath="$PROJECT_DIR$/owr_positioning/CMakeLists.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/owr_positioning/launch/imu.launch" afterPath="$PROJECT_DIR$/owr_positioning/launch/imu.launch" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../start/procmon.conf" afterPath="$PROJECT_DIR$/../start/procmon.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../start/procmon.py" afterPath="$PROJECT_DIR$/../start/procmon.py" />
+    </list>
+    <ignored path="src.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="src" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="gps_solo.launch" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/owr_positioning/launch/gps_solo.launch">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="18">
+              <caret line="1" column="74" selection-start-line="1" selection-start-column="74" selection-end-line="1" selection-end-column="74" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cse_localisation2d.launch" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/owr_positioning/launch/cse_localisation2d.launch">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="18">
+              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/owr_clinometer_vision/src/ClinometerNode.cpp" />
+        <option value="$PROJECT_DIR$/owr_positioning/src/sweepLIDAR.py" />
+        <option value="$PROJECT_DIR$/owr_positioning/launch/lidar_sweep.launch" />
+        <option value="$PROJECT_DIR$/owr_positioning/scripts/sweepLIDAR.py" />
+        <option value="$PROJECT_DIR$/owr_positioning/scripts/pointConverter.py" />
+        <option value="$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/crosbot_graphslam_only.launch" />
+        <option value="$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/crosbot_graphslam.launch" />
+        <option value="$PROJECT_DIR$/owr_drive_controls/src/swerveDrive.cpp" />
+        <option value="$PROJECT_DIR$/owr_positioning/include/UTMTransform.hpp" />
+        <option value="$PROJECT_DIR$/owr_positioning/package.xml" />
+        <option value="$PROJECT_DIR$/owr_drive_controls/launch/joystick_filters.launch" />
+        <option value="$PROJECT_DIR$/owr_bluetounge2_tf/robots/owr_bluetounge2_tf.URDF" />
+        <option value="$PROJECT_DIR$/owr_positioning/launch/imu.launch" />
+        <option value="$PROJECT_DIR$/owr_positioning/launch/cse_localisation2d.launch" />
+        <option value="$PROJECT_DIR$/owr_positioning/launch/gps_localisation.launch" />
+        <option value="$PROJECT_DIR$/owr_positioning/launch/nmea.launch" />
+        <option value="$PROJECT_DIR$/owr_positioning/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/owr_positioning/src/UTMTransform.cpp" />
+        <option value="$PROJECT_DIR$/owr_positioning/include/GPSTransform.hpp" />
+        <option value="$PROJECT_DIR$/owr_positioning/src/GPSTransform.cpp" />
+        <option value="$PROJECT_DIR$/owr_positioning/launch/gps_solo.launch" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
+  <component name="ProjectFrameBounds">
+    <option name="width" value="1920" />
+    <option name="height" value="1170" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="owr_positioning" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="owr_positioning" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="launch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
+    <property name="last_opened_file_path" value="/opt/ros/kinetic/lib/python2.7/dist-packages" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="SearchEverywhereHistoryKey" value="BoardControl&#9;null&#9;null&#10;Blueto&#9;FILE&#9;file:///home/hjed/Bluesat/owr_software/rover/src/owr_drive_controls/src/Bluetongue.cpp&#10;cmd&#9;FILE&#9;file:///home/hjed/Bluesat/owr_software/rover/src/owr_drive_controls/src/cmdVelToJoints.cpp&#10;fastslam.la&#9;FILE&#9;file:///home/hjed/Bluesat/owr_software/rover/src/cse-slam/crossbot_fastslam/launch/fastslam.launch&#10;grap&#9;FILE&#9;file:///home/hjed/Bluesat/owr_software/rover/src/cse-slam/crossbot_graphslam/src/graphSlamNode.cpp&#10;LIDARTi&#9;FILE&#9;file:///home/hjed/Bluesat/owr_software/rover/src/owr_drive_controls/include/LIDARTiltJointController.hpp&#10;JO&#9;FILE&#9;file:///home/hjed/Bluesat/owr_software/rover/src/owr_joystick_filter/src/JoystickFilter.cpp&#10;Lidar&#9;FILE&#9;file:///home/hjed/Bluesat/owr_software/rover/src/owr_drive_controls/src/LIDARTiltJointController.cpp&#10;Joys&#9;FILE&#9;file:///home/hjed/Bluesat/owr_software/rover/src/owr_joystick_filter/src/JoystickFilter.cpp&#10;JointContr&#9;FILE&#9;file:///home/hjed/Bluesat/owr_software/rover/src/owr_drive_controls/src/JointController.cpp" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/owr_positioning/scripts" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/owr_positioning/src" />
+      <recent name="$PROJECT_DIR$/owr_positioning/include" />
+      <recent name="$PROJECT_DIR$/owr_positioning/launch" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Build All">
+    <configuration default="true" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" PASS_PARENT_ENVS_2="true" TEST_MODE="SUITE_TEST">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="clean_test_results" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="src" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="src" />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run-script" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="src" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="src" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="src" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="src" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="src" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="testToRun" value="" />
+      <option name="keywords" value="" />
+      <option name="params" value="" />
+      <option name="USE_PARAM" value="false" />
+      <option name="USE_KEYWORD" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="clean_test_results" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="clean_test_results" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="download_extra_data" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="download_extra_data" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="doxygen" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="doxygen" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="run_tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="run_tests" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tests" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="roscpp_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="roscpp_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="roscpp_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="roscpp_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="roscpp_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="roscpp_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="roscpp_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="roscpp_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="roscpp_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="roscpp_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="rosgraph_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="rosgraph_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="rosgraph_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="rosgraph_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="rosgraph_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="rosgraph_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="rosgraph_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="rosgraph_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="rosgraph_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="rosgraph_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_crosbot_generate_messages_check_deps_ColouredCloudMsg" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_crosbot_generate_messages_check_deps_ColouredCloudMsg" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_crosbot_generate_messages_check_deps_ColouredPointMsg" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_crosbot_generate_messages_check_deps_ColouredPointMsg" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_crosbot_generate_messages_check_deps_ColourMsg" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_crosbot_generate_messages_check_deps_ColourMsg" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_crosbot_generate_messages_check_deps_PointCloudMsg" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_crosbot_generate_messages_check_deps_PointCloudMsg" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_gencpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_gencpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_generate_messages" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_generate_messages" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_geneus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_geneus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_genlisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_genlisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_gennodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_gennodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_genpy" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_genpy" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_fastslam" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_fastslam" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="fastslam" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="fastslam" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="fastslam">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_graphslam" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_graphslam" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="crosbot_graphslam">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="graphslam" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="graphslam" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_crosbot_map_generate_messages_check_deps_GetSnap" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_crosbot_map_generate_messages_check_deps_GetSnap" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_crosbot_map_generate_messages_check_deps_ListSnaps" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_crosbot_map_generate_messages_check_deps_ListSnaps" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_crosbot_map_generate_messages_check_deps_ModifySnap" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_crosbot_map_generate_messages_check_deps_ModifySnap" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_crosbot_map_generate_messages_check_deps_SnapMsg" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_crosbot_map_generate_messages_check_deps_SnapMsg" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_gencpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_gencpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_generate_messages" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_generate_messages" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_geneus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_geneus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_genlisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_genlisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_gennodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_gennodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_map_genpy" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_map_genpy" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="localmap" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="localmap" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="localmap">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf2_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf2_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf2_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf2_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf2_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf2_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf2_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf2_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf2_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf2_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tf_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="tf_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_crosbot_ogmbicp_generate_messages_check_deps_GetRecentScans" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_crosbot_ogmbicp_generate_messages_check_deps_GetRecentScans" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="crosbot_ogmbicp">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_gencpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_gencpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_generate_messages" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_generate_messages" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_geneus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_geneus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_genlisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_genlisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_gennodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_gennodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ogmbicp_genpy" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ogmbicp_genpy" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="ogmbicp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="ogmbicp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="crosbot_ui" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="crosbot_ui" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="geo_logger" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="geo_logger" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="geo_logger">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="gui" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="gui" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="gui">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="map_to_image_node" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="map_to_image_node" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="map_to_image_node">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="geotiff_node" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="geotiff_node" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="geotiff_node">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="geotiff_saver" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="geotiff_saver" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="geotiff_saver">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="geotiff_writer" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="geotiff_writer" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_geotiff_plugins" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_geotiff_plugins" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="imu_attitude_to_tf_node" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="imu_attitude_to_tf_node" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="imu_attitude_to_tf_node">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="pose_and_orientation_to_imu_node" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="pose_and_orientation_to_imu_node" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="pose_and_orientation_to_imu_node">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_map_server" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_map_server" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="hector_map_server">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="actionlib_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="actionlib_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="geometry_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="geometry_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="geometry_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="geometry_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="geometry_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="geometry_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="geometry_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="geometry_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="geometry_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="geometry_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nav_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nav_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nav_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nav_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nav_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nav_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nav_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nav_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nav_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nav_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="std_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="std_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="std_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="std_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="std_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="std_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="std_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="std_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="std_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="std_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_hector_mapping_generate_messages_check_deps_HectorDebugInfo" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_hector_mapping_generate_messages_check_deps_HectorDebugInfo" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_hector_mapping_generate_messages_check_deps_HectorIterData" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_hector_mapping_generate_messages_check_deps_HectorIterData" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="hector_mapping">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_gencpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_gencpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_generate_messages" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_generate_messages" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_geneus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_geneus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_genlisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_genlisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_gennodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_gennodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_mapping_genpy" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_mapping_genpy" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="visualization_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="visualization_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="visualization_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="visualization_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="visualization_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="visualization_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="visualization_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="visualization_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="visualization_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="visualization_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_hector_nav_msgs_generate_messages_check_deps_GetDistanceToObstacle" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_hector_nav_msgs_generate_messages_check_deps_GetDistanceToObstacle" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_hector_nav_msgs_generate_messages_check_deps_GetNormal" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_hector_nav_msgs_generate_messages_check_deps_GetNormal" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_hector_nav_msgs_generate_messages_check_deps_GetRecoveryInfo" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_hector_nav_msgs_generate_messages_check_deps_GetRecoveryInfo" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_hector_nav_msgs_generate_messages_check_deps_GetRobotTrajectory" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_hector_nav_msgs_generate_messages_check_deps_GetRobotTrajectory" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_hector_nav_msgs_generate_messages_check_deps_GetSearchPosition" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_hector_nav_msgs_generate_messages_check_deps_GetSearchPosition" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_gencpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_gencpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_generate_messages" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_generate_messages" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_geneus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_geneus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_genlisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_genlisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_gennodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_gennodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_nav_msgs_genpy" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_nav_msgs_genpy" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_catkin_empty_exported_target" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_catkin_empty_exported_target" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="hector_trajectory_server" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="hector_trajectory_server" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="hector_trajectory_server">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_auton_pathing_node" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_auton_pathing_node" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="owr_auton_pathing_node">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="controller_manager_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="controller_manager_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="controller_manager_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="controller_manager_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="controller_manager_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="controller_manager_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="controller_manager_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="controller_manager_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="controller_manager_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="controller_manager_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="bond_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="bond_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="bond_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="bond_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="bond_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="bond_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="bond_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="bond_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="bond_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="bond_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nodelet_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nodelet_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nodelet_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nodelet_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nodelet_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nodelet_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nodelet_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nodelet_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="nodelet_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="nodelet_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="clinometer_node" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="clinometer_node" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="clinometer_node">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_run_tests_owr_drive_controls" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_run_tests_owr_drive_controls" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_run_tests_owr_drive_controls_gtest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_run_tests_owr_drive_controls_gtest" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_run_tests_owr_drive_controls_gtest_testJointController" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_run_tests_owr_drive_controls_gtest_testJointController" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_run_tests_owr_drive_controls_gtest_testJointPosController" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_run_tests_owr_drive_controls_gtest_testJointPosController" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_run_tests_owr_drive_controls_gtest_testLIDARController" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_run_tests_owr_drive_controls_gtest_testLIDARController" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="clean_test_results_owr_drive_controls" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="clean_test_results_owr_drive_controls" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="cmd_vel_2_joints" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="cmd_vel_2_joints" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="cmd_vel_2_joints">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_drive_board" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_drive_board" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="owr_drive_board">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="run_tests_owr_drive_controls" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="run_tests_owr_drive_controls" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="run_tests_owr_drive_controls_gtest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="run_tests_owr_drive_controls_gtest" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="run_tests_owr_drive_controls_gtest_testJointController" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="run_tests_owr_drive_controls_gtest_testJointController" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="run_tests_owr_drive_controls_gtest_testJointPosController" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="run_tests_owr_drive_controls_gtest_testJointPosController" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="run_tests_owr_drive_controls_gtest_testLIDARController" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="run_tests_owr_drive_controls_gtest_testLIDARController" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="testJointController" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="testJointController" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="testJointController">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="testJointPosController" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="testJointPosController" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="testJointPosController">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="testLIDARController" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="testLIDARController" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="testLIDARController">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_joystick_filter_node" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_joystick_filter_node" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="owr_joystick_filter_node">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_activeCameras" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_activeCameras" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_adc" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_adc" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_board" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_board" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_camera_angle" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_camera_angle" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_heading" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_heading" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_motor" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_motor" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_position" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_position" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_pwm" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_pwm" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_status" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_status" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_stop" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_stop" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_stream" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_stream" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_ultrasonic" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_ultrasonic" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_owr_messages_generate_messages_check_deps_voltage" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_owr_messages_generate_messages_check_deps_voltage" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_gencpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_gencpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_generate_messages" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_generate_messages" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_geneus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_geneus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_genlisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_genlisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_gennodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_gennodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_messages_genpy" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_messages_genpy" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="orientation" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="orientation" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="orientation">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_voltmeter_monitor" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_voltmeter_monitor" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="owr_voltmeter_monitor">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_baroSample" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_baroSample" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_BaroSensorSample" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_BaroSensorSample" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_gnssSample" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_gnssSample" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_GnssSensorSample" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_GnssSensorSample" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_ImuSensorSample" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_ImuSensorSample" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_Internal" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_Internal" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_orientationEstimate" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_orientationEstimate" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_positionEstimate" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_positionEstimate" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_sensorSample" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_sensorSample" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_velocityEstimate" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_velocityEstimate" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="_custom_msgs_generate_messages_check_deps_XsensQuaternion" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="_custom_msgs_generate_messages_check_deps_XsensQuaternion" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_gencpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_gencpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_generate_messages" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_generate_messages" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_geneus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_geneus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_genlisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_genlisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_gennodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_gennodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="custom_msgs_genpy" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="custom_msgs_genpy" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="sensor_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="sensor_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="sensor_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="sensor_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="sensor_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="sensor_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="sensor_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="sensor_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="sensor_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="sensor_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="diagnostic_msgs_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="diagnostic_msgs_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="diagnostic_msgs_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="diagnostic_msgs_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="diagnostic_msgs_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="diagnostic_msgs_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="diagnostic_msgs_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="diagnostic_msgs_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="diagnostic_msgs_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="diagnostic_msgs_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="gps_common_generate_messages_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="gps_common_generate_messages_cpp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="gps_common_generate_messages_eus" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="gps_common_generate_messages_eus" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="gps_common_generate_messages_lisp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="gps_common_generate_messages_lisp" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="gps_common_generate_messages_nodejs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="gps_common_generate_messages_nodejs" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="gps_common_generate_messages_py" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="gps_common_generate_messages_py" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="imu_conversion" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="imu_conversion" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="imu_conversion">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="gtest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="gtest" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="gtest_main" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="gtest_main" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="owr_local_planner" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="owr_local_planner" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="owr_local_planner">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="utm_tf" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="utm_tf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="utm_tf">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="gps_tf" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Project" TARGET_NAME="gps_tf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="gps_tf">
+      <envs />
+      <method />
+    </configuration>
+    <list size="253">
+      <item index="0" class="java.lang.String" itemvalue="Application.Build All" />
+      <item index="1" class="java.lang.String" itemvalue="Application.clean_test_results" />
+      <item index="2" class="java.lang.String" itemvalue="Application.download_extra_data" />
+      <item index="3" class="java.lang.String" itemvalue="Application.doxygen" />
+      <item index="4" class="java.lang.String" itemvalue="Application.run_tests" />
+      <item index="5" class="java.lang.String" itemvalue="Application.tests" />
+      <item index="6" class="java.lang.String" itemvalue="Application.roscpp_generate_messages_cpp" />
+      <item index="7" class="java.lang.String" itemvalue="Application.roscpp_generate_messages_eus" />
+      <item index="8" class="java.lang.String" itemvalue="Application.roscpp_generate_messages_lisp" />
+      <item index="9" class="java.lang.String" itemvalue="Application.roscpp_generate_messages_nodejs" />
+      <item index="10" class="java.lang.String" itemvalue="Application.roscpp_generate_messages_py" />
+      <item index="11" class="java.lang.String" itemvalue="Application.rosgraph_msgs_generate_messages_cpp" />
+      <item index="12" class="java.lang.String" itemvalue="Application.rosgraph_msgs_generate_messages_eus" />
+      <item index="13" class="java.lang.String" itemvalue="Application.rosgraph_msgs_generate_messages_lisp" />
+      <item index="14" class="java.lang.String" itemvalue="Application.rosgraph_msgs_generate_messages_nodejs" />
+      <item index="15" class="java.lang.String" itemvalue="Application.rosgraph_msgs_generate_messages_py" />
+      <item index="16" class="java.lang.String" itemvalue="Application._crosbot_generate_messages_check_deps_ColouredCloudMsg" />
+      <item index="17" class="java.lang.String" itemvalue="Application._crosbot_generate_messages_check_deps_ColouredPointMsg" />
+      <item index="18" class="java.lang.String" itemvalue="Application._crosbot_generate_messages_check_deps_ColourMsg" />
+      <item index="19" class="java.lang.String" itemvalue="Application._crosbot_generate_messages_check_deps_PointCloudMsg" />
+      <item index="20" class="java.lang.String" itemvalue="Application.crosbot" />
+      <item index="21" class="java.lang.String" itemvalue="Application.crosbot_gencpp" />
+      <item index="22" class="java.lang.String" itemvalue="Application.crosbot_generate_messages" />
+      <item index="23" class="java.lang.String" itemvalue="Application.crosbot_generate_messages_cpp" />
+      <item index="24" class="java.lang.String" itemvalue="Application.crosbot_generate_messages_eus" />
+      <item index="25" class="java.lang.String" itemvalue="Application.crosbot_generate_messages_lisp" />
+      <item index="26" class="java.lang.String" itemvalue="Application.crosbot_generate_messages_nodejs" />
+      <item index="27" class="java.lang.String" itemvalue="Application.crosbot_generate_messages_py" />
+      <item index="28" class="java.lang.String" itemvalue="Application.crosbot_geneus" />
+      <item index="29" class="java.lang.String" itemvalue="Application.crosbot_genlisp" />
+      <item index="30" class="java.lang.String" itemvalue="Application.crosbot_gennodejs" />
+      <item index="31" class="java.lang.String" itemvalue="Application.crosbot_genpy" />
+      <item index="32" class="java.lang.String" itemvalue="Application.crosbot_fastslam" />
+      <item index="33" class="java.lang.String" itemvalue="Application.fastslam" />
+      <item index="34" class="java.lang.String" itemvalue="Application.crosbot_graphslam" />
+      <item index="35" class="java.lang.String" itemvalue="Application.graphslam" />
+      <item index="36" class="java.lang.String" itemvalue="Application._crosbot_map_generate_messages_check_deps_GetSnap" />
+      <item index="37" class="java.lang.String" itemvalue="Application._crosbot_map_generate_messages_check_deps_ListSnaps" />
+      <item index="38" class="java.lang.String" itemvalue="Application._crosbot_map_generate_messages_check_deps_ModifySnap" />
+      <item index="39" class="java.lang.String" itemvalue="Application._crosbot_map_generate_messages_check_deps_SnapMsg" />
+      <item index="40" class="java.lang.String" itemvalue="Application.actionlib_generate_messages_cpp" />
+      <item index="41" class="java.lang.String" itemvalue="Application.actionlib_generate_messages_eus" />
+      <item index="42" class="java.lang.String" itemvalue="Application.actionlib_generate_messages_lisp" />
+      <item index="43" class="java.lang.String" itemvalue="Application.actionlib_generate_messages_nodejs" />
+      <item index="44" class="java.lang.String" itemvalue="Application.actionlib_generate_messages_py" />
+      <item index="45" class="java.lang.String" itemvalue="Application.crosbot_map" />
+      <item index="46" class="java.lang.String" itemvalue="Application.crosbot_map_gencpp" />
+      <item index="47" class="java.lang.String" itemvalue="Application.crosbot_map_generate_messages" />
+      <item index="48" class="java.lang.String" itemvalue="Application.crosbot_map_generate_messages_cpp" />
+      <item index="49" class="java.lang.String" itemvalue="Application.crosbot_map_generate_messages_eus" />
+      <item index="50" class="java.lang.String" itemvalue="Application.crosbot_map_generate_messages_lisp" />
+      <item index="51" class="java.lang.String" itemvalue="Application.crosbot_map_generate_messages_nodejs" />
+      <item index="52" class="java.lang.String" itemvalue="Application.crosbot_map_generate_messages_py" />
+      <item index="53" class="java.lang.String" itemvalue="Application.crosbot_map_geneus" />
+      <item index="54" class="java.lang.String" itemvalue="Application.crosbot_map_genlisp" />
+      <item index="55" class="java.lang.String" itemvalue="Application.crosbot_map_gennodejs" />
+      <item index="56" class="java.lang.String" itemvalue="Application.crosbot_map_genpy" />
+      <item index="57" class="java.lang.String" itemvalue="Application.localmap" />
+      <item index="58" class="java.lang.String" itemvalue="Application.tf2_msgs_generate_messages_cpp" />
+      <item index="59" class="java.lang.String" itemvalue="Application.tf2_msgs_generate_messages_eus" />
+      <item index="60" class="java.lang.String" itemvalue="Application.tf2_msgs_generate_messages_lisp" />
+      <item index="61" class="java.lang.String" itemvalue="Application.tf2_msgs_generate_messages_nodejs" />
+      <item index="62" class="java.lang.String" itemvalue="Application.tf2_msgs_generate_messages_py" />
+      <item index="63" class="java.lang.String" itemvalue="Application.tf_generate_messages_cpp" />
+      <item index="64" class="java.lang.String" itemvalue="Application.tf_generate_messages_eus" />
+      <item index="65" class="java.lang.String" itemvalue="Application.tf_generate_messages_lisp" />
+      <item index="66" class="java.lang.String" itemvalue="Application.tf_generate_messages_nodejs" />
+      <item index="67" class="java.lang.String" itemvalue="Application.tf_generate_messages_py" />
+      <item index="68" class="java.lang.String" itemvalue="Application._crosbot_ogmbicp_generate_messages_check_deps_GetRecentScans" />
+      <item index="69" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp" />
+      <item index="70" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_gencpp" />
+      <item index="71" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_generate_messages" />
+      <item index="72" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_generate_messages_cpp" />
+      <item index="73" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_generate_messages_eus" />
+      <item index="74" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_generate_messages_lisp" />
+      <item index="75" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_generate_messages_nodejs" />
+      <item index="76" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_generate_messages_py" />
+      <item index="77" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_geneus" />
+      <item index="78" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_genlisp" />
+      <item index="79" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_gennodejs" />
+      <item index="80" class="java.lang.String" itemvalue="Application.crosbot_ogmbicp_genpy" />
+      <item index="81" class="java.lang.String" itemvalue="Application.ogmbicp" />
+      <item index="82" class="java.lang.String" itemvalue="Application.crosbot_ui" />
+      <item index="83" class="java.lang.String" itemvalue="Application.geo_logger" />
+      <item index="84" class="java.lang.String" itemvalue="Application.gui" />
+      <item index="85" class="java.lang.String" itemvalue="Application.map_to_image_node" />
+      <item index="86" class="java.lang.String" itemvalue="Application.geotiff_node" />
+      <item index="87" class="java.lang.String" itemvalue="Application.geotiff_saver" />
+      <item index="88" class="java.lang.String" itemvalue="Application.geotiff_writer" />
+      <item index="89" class="java.lang.String" itemvalue="Application.hector_geotiff_plugins" />
+      <item index="90" class="java.lang.String" itemvalue="Application.imu_attitude_to_tf_node" />
+      <item index="91" class="java.lang.String" itemvalue="Application.pose_and_orientation_to_imu_node" />
+      <item index="92" class="java.lang.String" itemvalue="Application.hector_map_server" />
+      <item index="93" class="java.lang.String" itemvalue="Application.actionlib_msgs_generate_messages_cpp" />
+      <item index="94" class="java.lang.String" itemvalue="Application.actionlib_msgs_generate_messages_eus" />
+      <item index="95" class="java.lang.String" itemvalue="Application.actionlib_msgs_generate_messages_lisp" />
+      <item index="96" class="java.lang.String" itemvalue="Application.actionlib_msgs_generate_messages_nodejs" />
+      <item index="97" class="java.lang.String" itemvalue="Application.actionlib_msgs_generate_messages_py" />
+      <item index="98" class="java.lang.String" itemvalue="Application.geometry_msgs_generate_messages_cpp" />
+      <item index="99" class="java.lang.String" itemvalue="Application.geometry_msgs_generate_messages_eus" />
+      <item index="100" class="java.lang.String" itemvalue="Application.geometry_msgs_generate_messages_lisp" />
+      <item index="101" class="java.lang.String" itemvalue="Application.geometry_msgs_generate_messages_nodejs" />
+      <item index="102" class="java.lang.String" itemvalue="Application.geometry_msgs_generate_messages_py" />
+      <item index="103" class="java.lang.String" itemvalue="Application.nav_msgs_generate_messages_cpp" />
+      <item index="104" class="java.lang.String" itemvalue="Application.nav_msgs_generate_messages_eus" />
+      <item index="105" class="java.lang.String" itemvalue="Application.nav_msgs_generate_messages_lisp" />
+      <item index="106" class="java.lang.String" itemvalue="Application.nav_msgs_generate_messages_nodejs" />
+      <item index="107" class="java.lang.String" itemvalue="Application.nav_msgs_generate_messages_py" />
+      <item index="108" class="java.lang.String" itemvalue="Application.std_msgs_generate_messages_cpp" />
+      <item index="109" class="java.lang.String" itemvalue="Application.std_msgs_generate_messages_eus" />
+      <item index="110" class="java.lang.String" itemvalue="Application.std_msgs_generate_messages_lisp" />
+      <item index="111" class="java.lang.String" itemvalue="Application.std_msgs_generate_messages_nodejs" />
+      <item index="112" class="java.lang.String" itemvalue="Application.std_msgs_generate_messages_py" />
+      <item index="113" class="java.lang.String" itemvalue="Application._hector_mapping_generate_messages_check_deps_HectorDebugInfo" />
+      <item index="114" class="java.lang.String" itemvalue="Application._hector_mapping_generate_messages_check_deps_HectorIterData" />
+      <item index="115" class="java.lang.String" itemvalue="Application.hector_mapping" />
+      <item index="116" class="java.lang.String" itemvalue="Application.hector_mapping_gencpp" />
+      <item index="117" class="java.lang.String" itemvalue="Application.hector_mapping_generate_messages" />
+      <item index="118" class="java.lang.String" itemvalue="Application.hector_mapping_generate_messages_cpp" />
+      <item index="119" class="java.lang.String" itemvalue="Application.hector_mapping_generate_messages_eus" />
+      <item index="120" class="java.lang.String" itemvalue="Application.hector_mapping_generate_messages_lisp" />
+      <item index="121" class="java.lang.String" itemvalue="Application.hector_mapping_generate_messages_nodejs" />
+      <item index="122" class="java.lang.String" itemvalue="Application.hector_mapping_generate_messages_py" />
+      <item index="123" class="java.lang.String" itemvalue="Application.hector_mapping_geneus" />
+      <item index="124" class="java.lang.String" itemvalue="Application.hector_mapping_genlisp" />
+      <item index="125" class="java.lang.String" itemvalue="Application.hector_mapping_gennodejs" />
+      <item index="126" class="java.lang.String" itemvalue="Application.hector_mapping_genpy" />
+      <item index="127" class="java.lang.String" itemvalue="Application.visualization_msgs_generate_messages_cpp" />
+      <item index="128" class="java.lang.String" itemvalue="Application.visualization_msgs_generate_messages_eus" />
+      <item index="129" class="java.lang.String" itemvalue="Application.visualization_msgs_generate_messages_lisp" />
+      <item index="130" class="java.lang.String" itemvalue="Application.visualization_msgs_generate_messages_nodejs" />
+      <item index="131" class="java.lang.String" itemvalue="Application.visualization_msgs_generate_messages_py" />
+      <item index="132" class="java.lang.String" itemvalue="Application._hector_nav_msgs_generate_messages_check_deps_GetDistanceToObstacle" />
+      <item index="133" class="java.lang.String" itemvalue="Application._hector_nav_msgs_generate_messages_check_deps_GetNormal" />
+      <item index="134" class="java.lang.String" itemvalue="Application._hector_nav_msgs_generate_messages_check_deps_GetRecoveryInfo" />
+      <item index="135" class="java.lang.String" itemvalue="Application._hector_nav_msgs_generate_messages_check_deps_GetRobotTrajectory" />
+      <item index="136" class="java.lang.String" itemvalue="Application._hector_nav_msgs_generate_messages_check_deps_GetSearchPosition" />
+      <item index="137" class="java.lang.String" itemvalue="Application.hector_nav_msgs_gencpp" />
+      <item index="138" class="java.lang.String" itemvalue="Application.hector_nav_msgs_generate_messages" />
+      <item index="139" class="java.lang.String" itemvalue="Application.hector_nav_msgs_generate_messages_cpp" />
+      <item index="140" class="java.lang.String" itemvalue="Application.hector_nav_msgs_generate_messages_eus" />
+      <item index="141" class="java.lang.String" itemvalue="Application.hector_nav_msgs_generate_messages_lisp" />
+      <item index="142" class="java.lang.String" itemvalue="Application.hector_nav_msgs_generate_messages_nodejs" />
+      <item index="143" class="java.lang.String" itemvalue="Application.hector_nav_msgs_generate_messages_py" />
+      <item index="144" class="java.lang.String" itemvalue="Application.hector_nav_msgs_geneus" />
+      <item index="145" class="java.lang.String" itemvalue="Application.hector_nav_msgs_genlisp" />
+      <item index="146" class="java.lang.String" itemvalue="Application.hector_nav_msgs_gennodejs" />
+      <item index="147" class="java.lang.String" itemvalue="Application.hector_nav_msgs_genpy" />
+      <item index="148" class="java.lang.String" itemvalue="Application._catkin_empty_exported_target" />
+      <item index="149" class="java.lang.String" itemvalue="Application.hector_trajectory_server" />
+      <item index="150" class="java.lang.String" itemvalue="Application.owr_auton_pathing_node" />
+      <item index="151" class="java.lang.String" itemvalue="Application.controller_manager_msgs_generate_messages_cpp" />
+      <item index="152" class="java.lang.String" itemvalue="Application.controller_manager_msgs_generate_messages_eus" />
+      <item index="153" class="java.lang.String" itemvalue="Application.controller_manager_msgs_generate_messages_lisp" />
+      <item index="154" class="java.lang.String" itemvalue="Application.controller_manager_msgs_generate_messages_nodejs" />
+      <item index="155" class="java.lang.String" itemvalue="Application.controller_manager_msgs_generate_messages_py" />
+      <item index="156" class="java.lang.String" itemvalue="Application.bond_generate_messages_cpp" />
+      <item index="157" class="java.lang.String" itemvalue="Application.bond_generate_messages_eus" />
+      <item index="158" class="java.lang.String" itemvalue="Application.bond_generate_messages_lisp" />
+      <item index="159" class="java.lang.String" itemvalue="Application.bond_generate_messages_nodejs" />
+      <item index="160" class="java.lang.String" itemvalue="Application.bond_generate_messages_py" />
+      <item index="161" class="java.lang.String" itemvalue="Application.nodelet_generate_messages_cpp" />
+      <item index="162" class="java.lang.String" itemvalue="Application.nodelet_generate_messages_eus" />
+      <item index="163" class="java.lang.String" itemvalue="Application.nodelet_generate_messages_lisp" />
+      <item index="164" class="java.lang.String" itemvalue="Application.nodelet_generate_messages_nodejs" />
+      <item index="165" class="java.lang.String" itemvalue="Application.nodelet_generate_messages_py" />
+      <item index="166" class="java.lang.String" itemvalue="Application.clinometer_node" />
+      <item index="167" class="java.lang.String" itemvalue="Application._run_tests_owr_drive_controls" />
+      <item index="168" class="java.lang.String" itemvalue="Application._run_tests_owr_drive_controls_gtest" />
+      <item index="169" class="java.lang.String" itemvalue="Application._run_tests_owr_drive_controls_gtest_testJointController" />
+      <item index="170" class="java.lang.String" itemvalue="Application._run_tests_owr_drive_controls_gtest_testJointPosController" />
+      <item index="171" class="java.lang.String" itemvalue="Application._run_tests_owr_drive_controls_gtest_testLIDARController" />
+      <item index="172" class="java.lang.String" itemvalue="Application.clean_test_results_owr_drive_controls" />
+      <item index="173" class="java.lang.String" itemvalue="Application.cmd_vel_2_joints" />
+      <item index="174" class="java.lang.String" itemvalue="Application.owr_drive_board" />
+      <item index="175" class="java.lang.String" itemvalue="Application.run_tests_owr_drive_controls" />
+      <item index="176" class="java.lang.String" itemvalue="Application.run_tests_owr_drive_controls_gtest" />
+      <item index="177" class="java.lang.String" itemvalue="Application.run_tests_owr_drive_controls_gtest_testJointController" />
+      <item index="178" class="java.lang.String" itemvalue="Application.run_tests_owr_drive_controls_gtest_testJointPosController" />
+      <item index="179" class="java.lang.String" itemvalue="Application.run_tests_owr_drive_controls_gtest_testLIDARController" />
+      <item index="180" class="java.lang.String" itemvalue="Application.testJointController" />
+      <item index="181" class="java.lang.String" itemvalue="Application.testJointPosController" />
+      <item index="182" class="java.lang.String" itemvalue="Application.testLIDARController" />
+      <item index="183" class="java.lang.String" itemvalue="Application.owr_joystick_filter_node" />
+      <item index="184" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_activeCameras" />
+      <item index="185" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_adc" />
+      <item index="186" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_board" />
+      <item index="187" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_camera_angle" />
+      <item index="188" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_heading" />
+      <item index="189" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_motor" />
+      <item index="190" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_position" />
+      <item index="191" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_pwm" />
+      <item index="192" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_status" />
+      <item index="193" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_stop" />
+      <item index="194" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_stream" />
+      <item index="195" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_ultrasonic" />
+      <item index="196" class="java.lang.String" itemvalue="Application._owr_messages_generate_messages_check_deps_voltage" />
+      <item index="197" class="java.lang.String" itemvalue="Application.owr_messages_gencpp" />
+      <item index="198" class="java.lang.String" itemvalue="Application.owr_messages_generate_messages" />
+      <item index="199" class="java.lang.String" itemvalue="Application.owr_messages_generate_messages_cpp" />
+      <item index="200" class="java.lang.String" itemvalue="Application.owr_messages_generate_messages_eus" />
+      <item index="201" class="java.lang.String" itemvalue="Application.owr_messages_generate_messages_lisp" />
+      <item index="202" class="java.lang.String" itemvalue="Application.owr_messages_generate_messages_nodejs" />
+      <item index="203" class="java.lang.String" itemvalue="Application.owr_messages_generate_messages_py" />
+      <item index="204" class="java.lang.String" itemvalue="Application.owr_messages_geneus" />
+      <item index="205" class="java.lang.String" itemvalue="Application.owr_messages_genlisp" />
+      <item index="206" class="java.lang.String" itemvalue="Application.owr_messages_gennodejs" />
+      <item index="207" class="java.lang.String" itemvalue="Application.owr_messages_genpy" />
+      <item index="208" class="java.lang.String" itemvalue="Application.orientation" />
+      <item index="209" class="java.lang.String" itemvalue="Application.owr_voltmeter_monitor" />
+      <item index="210" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_baroSample" />
+      <item index="211" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_BaroSensorSample" />
+      <item index="212" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_gnssSample" />
+      <item index="213" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_GnssSensorSample" />
+      <item index="214" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_ImuSensorSample" />
+      <item index="215" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_Internal" />
+      <item index="216" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_orientationEstimate" />
+      <item index="217" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_positionEstimate" />
+      <item index="218" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_sensorSample" />
+      <item index="219" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_velocityEstimate" />
+      <item index="220" class="java.lang.String" itemvalue="Application._custom_msgs_generate_messages_check_deps_XsensQuaternion" />
+      <item index="221" class="java.lang.String" itemvalue="Application.custom_msgs_gencpp" />
+      <item index="222" class="java.lang.String" itemvalue="Application.custom_msgs_generate_messages" />
+      <item index="223" class="java.lang.String" itemvalue="Application.custom_msgs_generate_messages_cpp" />
+      <item index="224" class="java.lang.String" itemvalue="Application.custom_msgs_generate_messages_eus" />
+      <item index="225" class="java.lang.String" itemvalue="Application.custom_msgs_generate_messages_lisp" />
+      <item index="226" class="java.lang.String" itemvalue="Application.custom_msgs_generate_messages_nodejs" />
+      <item index="227" class="java.lang.String" itemvalue="Application.custom_msgs_generate_messages_py" />
+      <item index="228" class="java.lang.String" itemvalue="Application.custom_msgs_geneus" />
+      <item index="229" class="java.lang.String" itemvalue="Application.custom_msgs_genlisp" />
+      <item index="230" class="java.lang.String" itemvalue="Application.custom_msgs_gennodejs" />
+      <item index="231" class="java.lang.String" itemvalue="Application.custom_msgs_genpy" />
+      <item index="232" class="java.lang.String" itemvalue="Application.sensor_msgs_generate_messages_cpp" />
+      <item index="233" class="java.lang.String" itemvalue="Application.sensor_msgs_generate_messages_eus" />
+      <item index="234" class="java.lang.String" itemvalue="Application.sensor_msgs_generate_messages_lisp" />
+      <item index="235" class="java.lang.String" itemvalue="Application.sensor_msgs_generate_messages_nodejs" />
+      <item index="236" class="java.lang.String" itemvalue="Application.sensor_msgs_generate_messages_py" />
+      <item index="237" class="java.lang.String" itemvalue="Application.diagnostic_msgs_generate_messages_cpp" />
+      <item index="238" class="java.lang.String" itemvalue="Application.diagnostic_msgs_generate_messages_eus" />
+      <item index="239" class="java.lang.String" itemvalue="Application.diagnostic_msgs_generate_messages_lisp" />
+      <item index="240" class="java.lang.String" itemvalue="Application.diagnostic_msgs_generate_messages_nodejs" />
+      <item index="241" class="java.lang.String" itemvalue="Application.diagnostic_msgs_generate_messages_py" />
+      <item index="242" class="java.lang.String" itemvalue="Application.gps_common_generate_messages_cpp" />
+      <item index="243" class="java.lang.String" itemvalue="Application.gps_common_generate_messages_eus" />
+      <item index="244" class="java.lang.String" itemvalue="Application.gps_common_generate_messages_lisp" />
+      <item index="245" class="java.lang.String" itemvalue="Application.gps_common_generate_messages_nodejs" />
+      <item index="246" class="java.lang.String" itemvalue="Application.gps_common_generate_messages_py" />
+      <item index="247" class="java.lang.String" itemvalue="Application.imu_conversion" />
+      <item index="248" class="java.lang.String" itemvalue="Application.gtest" />
+      <item index="249" class="java.lang.String" itemvalue="Application.gtest_main" />
+      <item index="250" class="java.lang.String" itemvalue="Application.owr_local_planner" />
+      <item index="251" class="java.lang.String" itemvalue="Application.utm_tf" />
+      <item index="252" class="java.lang.String" itemvalue="Application.gps_tf" />
+    </list>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="721fa5ce-97ca-4815-a359-45cdb27e0b2d" name="Default" comment="" />
+      <created>1470734588489</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1470734588489</updated>
+      <workItem from="1470734592098" duration="224000" />
+      <workItem from="1470734932404" duration="5993000" />
+      <workItem from="1470918623692" duration="5934000" />
+      <workItem from="1471262987967" duration="50000" />
+      <workItem from="1471263114360" duration="3365000" />
+      <workItem from="1471267864701" duration="6355000" />
+      <workItem from="1471355972491" duration="3525000" />
+      <workItem from="1471600888931" duration="7680000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="33126000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="0" width="1920" height="1170" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/owr_joystick_filter/src/JoystickFilter.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1314">
+          <caret line="73" column="57" selection-start-line="73" selection-start-column="57" selection-end-line="73" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_clinometer_vision/src/ClinometerNode.cpp" />
+    <entry file="file:///opt/ros/kinetic/include/sensor_msgs/Image.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="22" column="12" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_clinometer_vision/src/ClinometerNode.cpp" />
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/src/JointController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="40" selection-start-line="13" selection-start-column="40" selection-end-line="13" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/ros/kinetic/lib/python2.7/dist-packages/tf2_ros/buffer_interface.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/launch/laser.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/launch/lidar_sweep.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="42" selection-start-line="3" selection-start-column="42" selection-end-line="3" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_joystick_filter/src/JoystickFilter.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1332">
+          <caret line="74" column="57" selection-start-line="74" selection-start-column="57" selection-end-line="74" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/include/LIDARTiltJointController.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-54">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/src/LIDARTiltJointController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1854">
+          <caret line="103" column="19" selection-start-line="103" selection-start-column="19" selection-end-line="103" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/scripts/sweepLIDAR.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="558">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/createPointCloud.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cse-slam/crossbot_graphslam/src/graphSlam.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cse-slam/crossbot_graphslam/src/graphSlamCPU.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="27" selection-start-line="6" selection-start-column="27" selection-end-line="6" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cse-slam/crossbot_graphslam/src/graphSlamNode.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1080">
+          <caret line="60" column="54" selection-start-line="60" selection-start-column="54" selection-end-line="60" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cse-slam/crossbot_fastslam/launch/fastslam.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/crosbot_graphslam_kinect.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="43" selection-start-line="7" selection-start-column="43" selection-end-line="7" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/crosbot_graphslam_only.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="14" column="51" selection-start-line="14" selection-start-column="51" selection-end-line="14" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/src/cmdVelToJoints.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="631">
+          <caret line="90" column="42" selection-start-line="90" selection-start-column="42" selection-end-line="90" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_auton_pathing/src/LocalPlanner.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="30" column="27" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/src/swerveDrive.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="27" column="51" selection-start-line="27" selection-start-column="51" selection-end-line="27" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/src/ExtractOrientation.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cse-slam/crossbot_graphslam/launch/crosbot_graphslam.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="738">
+          <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/ros/kinetic/include/tf2_geometry_msgs/tf2_geometry_msgs.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/launch/control_board.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="9" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/launch/joystick_filters.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_bluetounge2_tf/robots/owr_bluetounge2_tf.URDF">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="23" column="22" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/ros/kinetic/include/tf2_ros/buffer_interface.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2646">
+          <caret line="147" column="80" selection-start-line="147" selection-start-column="80" selection-end-line="147" selection-end-column="80" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/ros/kinetic/include/tf2/convert.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="846">
+          <caret line="47" column="38" selection-start-line="47" selection-start-column="38" selection-end-line="47" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/scripts/pointConverter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="18" column="39" selection-start-line="18" selection-start-column="39" selection-end-line="18" selection-end-column="39" />
+          <folding>
+            <element signature="e#123#135#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_auton_pathing/package.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/package.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="900">
+          <caret line="50" column="2" selection-start-line="50" selection-start-column="2" selection-end-line="50" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/launch/imu.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/launch/cse_localisation3d.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/launch/gps_localisation.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="10" column="8" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/src/Bluetongue.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="62" column="17" selection-start-line="62" selection-start-column="17" selection-end-line="62" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/src/BoardControl.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2634">
+          <caret line="53" column="4" selection-start-line="53" selection-start-column="4" selection-end-line="53" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="397">
+          <caret line="123" column="0" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/src/UTMTransform.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-107">
+          <caret line="27" column="21" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="21" />
+          <folding>
+            <element signature="e#205#232#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_drive_controls/include/BoardControl.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="37" column="22" selection-start-line="37" selection-start-column="22" selection-end-line="37" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/ros/kinetic/include/geometry_msgs/Pose.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="40" column="17" selection-start-line="40" selection-start-column="17" selection-end-line="40" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/launch/nmea.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="41" selection-start-line="6" selection-start-column="41" selection-end-line="6" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/ros/kinetic/include/geometry_msgs/TransformStamped.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="58" column="37" selection-start-line="58" selection-start-column="37" selection-end-line="58" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/ros/kinetic/include/tf2/transform_storage.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="43" column="28" selection-start-line="43" selection-start-column="28" selection-end-line="43" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/include/UTMTransform.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="27" column="33" selection-start-line="27" selection-start-column="33" selection-end-line="27" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/include/GPSTransform.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="24" column="30" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
+          <folding>
+            <element signature="e#253#273#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/src/GPSTransform.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+          <folding>
+            <element signature="e#205#232#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/launch/cse_localisation2d.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/owr_positioning/launch/gps_solo.launch">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="74" selection-start-line="1" selection-start-column="74" selection-end-line="1" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
