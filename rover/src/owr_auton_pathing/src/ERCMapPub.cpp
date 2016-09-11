@@ -19,12 +19,12 @@ int main (int argc, char *argv[]) {
 ERCMapPub::ERCMapPub(const std::string topic) {
     selectedPath = -1;
     
-    stringSubscriber = node.subscribe<std_msgs::String>("owr_auton_pathing/path_string", 2, &ERCMapPub::stringCallback, this);
+    stringSubscriber = node.subscribe<std_msgs::String>("erc_path_string", 2, &ERCMapPub::stringCallback, this);
     
     getGeoData();
     getMap();
-    mapPublisher = node.advertise<nav_msgs::OccupancyGrid>("owr_auton_pathing/erc_map", 2, true);
-    pathPublisher = node.advertise<nav_msgs::Path>("owr_auton_pathing/erc_path", 2, true);
+    mapPublisher = node.advertise<nav_msgs::OccupancyGrid>("erc_map", 2, true);
+    pathPublisher = node.advertise<nav_msgs::Path>("owr_auton_pathing", 2, true);
 }
 
 void ERCMapPub::stringCallback(const std_msgs::String::ConstPtr& whichString) {
