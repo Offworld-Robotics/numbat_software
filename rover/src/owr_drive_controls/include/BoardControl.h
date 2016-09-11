@@ -8,6 +8,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Int32.h>
 // #include <geometry_msgs/TwistWithCovariance.h>
 #include <nav_msgs/Odometry.h>
 #include <owr_messages/board.h>
@@ -42,6 +43,7 @@ class BoardControl {
         void controllerCallback(const sensor_msgs::Joy::ConstPtr& joy);
         void switchFeed(int * storedState, int joyState, int feedNum);
         void velCallback(const nav_msgs::Odometry::ConstPtr& vel);
+        void trimCallback(const std_msgs::Int32::ConstPtr& trimMsg);
 
         void publishGPS(GPSData gps);
         void publishBattery(double batteryVoltage);
@@ -59,6 +61,7 @@ class BoardControl {
         ros::Publisher adcStatusPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
+        ros::Subscriber rotateTrimSub;
         ros::AsyncSpinner asyncSpinner;
         
         float leftDrive, rightDrive;
@@ -80,6 +83,7 @@ class BoardControl {
         int clawRotate; // pwm
         int clawGrip;
         int rotState; // On-Off
+        int clawRotateTrim;
         //number of adc messages published
         int adcMsgSeq;
         //int clawState;
