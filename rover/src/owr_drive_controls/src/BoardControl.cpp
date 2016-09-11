@@ -571,6 +571,6 @@ void BoardControl::velCallback(const nav_msgs::Odometry::ConstPtr& vel) {
 
 
 
-void trimCallback(const std_msgs::Int32::ConstPtr& trimMsg) {
+void BoardControl::trimCallback(const std_msgs::Int32::ConstPtr& trimMsg) {
     clawRotateTrim = trimMsg->data;
 }
