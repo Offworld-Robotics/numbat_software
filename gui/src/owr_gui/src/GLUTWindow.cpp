@@ -2,6 +2,7 @@
 #include <GL/freeglut.h>
 #include <cstring>
 #include <cstdio>
+#include <ros/ros.h>
 
 GLUTWindow *GLUTWindow::instance;
 
@@ -123,10 +124,10 @@ void GLUTWindow::fillBMPHeader(unsigned char *data, int width, int height) {
 
 void GLUTWindow::saveBMPFile(std::string filename, unsigned char *data, int width, int height) {
 	int datasize = width*height*3;
-        const char * fullFilename = (getenv("HOME") + ("/" + filename)).c_str();
+        const char * fullFilename = "/home/blusat/snapshot.bmp";//(getenv("HOME") + ("/" + filename)).c_str();
 	FILE *f = fopen(fullFilename, "w");
 	if (f == NULL) {
-		printf("Failed to open %s for writing.\n", fullFilename);
+		ROS_ERROR("Failed to open %s for writing.\n", fullFilename);
 		return;
 	}
 	unsigned char *bmp = (unsigned char *)malloc(datasize + BMP_HEADER_SIZE);
