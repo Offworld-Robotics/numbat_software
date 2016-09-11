@@ -193,7 +193,8 @@ BoardControl::BoardControl() :
     backLeftSwervePotMonitor(SWERVE_POT_L_LIMIT_N_DEG, SWERVE_POT_L_LIMIT_P_DEG, SWERVE_POT_L_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
     backRightSwervePotMonitor(SWERVE_POT_R_LIMIT_N_DEG, SWERVE_POT_R_LIMIT_P_DEG, SWERVE_POT_R_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
     armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS, ARM_POT_CENTER),
-    asyncSpinner(SPINNER_THREADS)
+    asyncSpinner(SPINNER_THREADS),
+    clawRotateTrim(0)
     {
 
     //init button sates
@@ -203,6 +204,7 @@ BoardControl::BoardControl() :
     cam3Button = 0;
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
     joySubscriber = nh.subscribe<sensor_msgs::Joy>("/owr/joysticks",2, &BoardControl::controllerCallback, this, transportHints);
+    rotateTrimSub = nh.subscribe<std_msgs::Int32>("/owr/claw_rotate_trim",1, &BoardControl::trimCallback, this, transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
     voltmeterPublisher = nh.advertise<std_msgs::Float64>("voltmeter", 10);
@@ -360,7 +362,7 @@ void BoardControl::run() {
             s = steve->update(
                 pwmFLW, pwmFRW, pwmBLW, pwmBRW, pwmFLS, pwmFRS,
                 pwmArmTop, pwmArmBottom,pwmArmRot,
-                pwmClawRotate, pwmClawGrip,
+                pwmClawRotate+clawRotateTrim, pwmClawGrip,
                 pwmCamBRot, pwmCamBTilt, pwmCamTRot, pwmCamTTilt,
                 pwmLIDAR
             );
@@ -565,4 +567,10 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
 void BoardControl::velCallback(const nav_msgs::Odometry::ConstPtr& vel) {
     currentVel = (vel->twist.twist);
+}
+
+
+
+void BoardControl::trimCallback(const std_msgs::Int32::ConstPtr& trimMsg) {
+    clawRotateTrim = trimMsg->data;
 }

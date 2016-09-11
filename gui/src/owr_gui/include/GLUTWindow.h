@@ -7,6 +7,7 @@
 */
 
 #include <GL/freeglut.h>
+#include <string>
 
 #define BMP_HEADER_SIZE 0x36
 
@@ -53,7 +54,7 @@ class GLUTWindow {
 		void fillBMPHeader(unsigned char *data, int width, int height);
 		
 		// Save BMP data to a file given its dimensions and a filename
-		void saveBMPFile(char *filename, unsigned char *data, int width, int height);
+		void saveBMPFile(std::string filename, unsigned char *data, int width, int height);
 		
 		// Draws text using a specified font and raster position
 		void drawText(char *text, void *font, int x, int y);

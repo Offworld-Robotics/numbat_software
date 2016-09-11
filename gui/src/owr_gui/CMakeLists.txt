@@ -125,6 +125,7 @@ add_dependencies(auto bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(auto bluesat_owr_protobuf)
 target_link_libraries(auto ${catkin_LIBRARIES} GL GLU glut)
 
+
 ## Declare a cpp library
 # add_library(owr_gui
 #   src/${PROJECT_NAME}/owr_gui.cpp
