@@ -82,6 +82,7 @@ class BoardControl {
         int rotateState;
         int clawRotate; // pwm
         int clawGrip;
+        int pwmClawGrip;
         int rotState; // On-Off
         int clawRotateTrim;
         //number of adc messages published
