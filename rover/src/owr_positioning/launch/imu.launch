@@ -1,6 +1,7 @@
 <launch> 
     <node pkg="xsens_driver" type="mtnode.py" name="mtnode" output="screen">
       <param name="frame_id" value="base_link"/>
+      <param name="device" value="/dev/xsens0"/>
     </node>
     <node pkg="xsens_driver" type="imu_conversion" name="imu_conversion" output="screen"/>
     <node pkg="owr_positioning" type="orientation" name="orientation" output="screen"/>
