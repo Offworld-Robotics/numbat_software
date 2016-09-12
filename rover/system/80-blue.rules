@@ -8,3 +8,4 @@ SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{product}=="MTi-10
 
 
 SUBSYSTEM=="video4linux", ATTRS{idVendor}=="045e", ACTION=="add", SYMLINK+="clinocam0", GROUP="video", MODE="666"
+SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{idProduct}=="2303", ATTRS{manufacturer}=="Prolific Technology Inc.", SYMLINK+="voltmeter",  GROUP="dialout", MODE="666"
