@@ -1,0 +1,16 @@
+<launch>
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf"  output="screen">
+        <param name="base_link_frame" value="base_footprint"/>
+        <param name="odom_frame" value="odom"/>
+        <param name="world_frame" value="odom"/>
+        <param name="twist0" value="/owr/optical_localization_twist"/>
+       <!-- <param name="twist1" value="/owr/sensors/clinometer"/> -->
+        <param name="two_d_mode" value="true"/>
+        <param name="frequency" value="25"/>
+        <rosparam param="twist0_config">[false, false, false, false, false, false, true, true, false, false, false,true, false, false, false ]</rosparam>
+       <!-- <rosparam param="twist1_config">[false, false, false, true, true, true, false, false, false, false, false, false, false, false, false ]</rosparam>-->
+        <!-- make mesurements relative to the first one -->
+        <param name="twist0_relative" value="true"/>
+        <!-- this may not work, as we don't have absolute -->
+    </node>
+</launch>

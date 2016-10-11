@@ -39,6 +39,7 @@
     <!-- Advertising config --> 
     <param name="advertise_map_service" value="true"/>
     
+    <param name="laser_max_distance" value="3"/>
     <param name="scan_subscriber_queue_size" value="$(arg scan_subscriber_queue_size)"/>
     <param name="scan_topic" value="$(arg scan_topic)"/>
     

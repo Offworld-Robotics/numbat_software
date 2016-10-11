@@ -11,6 +11,7 @@ Thumbs.db
 *.orig
 nohup*
 *.swp
+*.swo
 
 # ROS Build directories #
 #########################
@@ -27,3 +28,11 @@ msg_gen/
 srv_gen/
 hector_mapping/src/hector_mapping/
 hector_nav_msgs/src/hector_nav_msgs/
+
+#kdevelop#
+##########
+*.kdev44444444444444444444444444444444444444444444/.*
+.kdev*
+
+#python scripts
+*.pyc

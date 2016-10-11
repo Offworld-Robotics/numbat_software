@@ -3,3 +3,13 @@ SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{product}=="Blueto
 SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{manufacturer}=="Steph McArthur", SYMLINK+="board0",  GROUP="dialout", MODE="666"
 
 SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{product}=="URG-Series USB Driver", SYMLINK+="hokuyo", GROUP="dialout", MODE="666"
+# poland udev rules
+SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{serial}=="AH019MLZ", SYMLINK+="board0", GROUP="dialout", MODE="666" 
+SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{serial}=="A50285BI", SYMLINK+="gps", GROUP="dialout", MODE="666"
+# TODO lidar
+
+SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{product}=="MTi-10 IMU", SYMLINK+="xsens0", GROUP="dialout", MODE="666"
+
+
+SUBSYSTEM=="video4linux", ATTRS{idVendor}=="045e", ACTION=="add", SYMLINK+="clinocam0", GROUP="video", MODE="666"
+SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{idProduct}=="2303", ATTRS{manufacturer}=="Prolific Technology Inc.", SYMLINK+="voltmeter",  GROUP="dialout", MODE="666"

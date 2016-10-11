@@ -2,6 +2,7 @@
 #include <GL/freeglut.h>
 #include <cstring>
 #include <cstdio>
+#include <ros/ros.h>
 
 GLUTWindow *GLUTWindow::instance;
 
@@ -123,10 +124,30 @@ void GLUTWindow::fillBMPHeader(unsigned char *data, int width, int height) {
 
 void GLUTWindow::saveBMPFile(std::string filename, unsigned char *data, int width, int height) {
 	int datasize = width*height*3;
-        const char * fullFilename = (getenv("HOME") + ("/" + filename)).c_str();
+        ROS_INFO("sent %s",filename.c_str());
+        
+        const char *filename_c = filename.c_str();
+        const char *home_c = "/home/blusat/";
+        char *dest = (char*)malloc(strlen(filename_c) + strlen(home_c)+1);
+        
+        memcpy((void*)dest, (void*)home_c, strlen(home_c)+1);
+        strcat(dest, filename_c);
+        
+        char *fullFilename = dest;
+        
+        /*
+        
+        std::ostringstream out;  
+        out << "/home/blusat/" << filename;
+        
+        const char * fullFilename = out.str().data();
+        */
+        
+        ROS_INFO("--%s--", fullFilename);
+        
 	FILE *f = fopen(fullFilename, "w");
 	if (f == NULL) {
-		printf("Failed to open %s for writing.\n", fullFilename);
+		ROS_ERROR("Failed to open %s for writing.\n", fullFilename);
 		return;
 	}
 	unsigned char *bmp = (unsigned char *)malloc(datasize + BMP_HEADER_SIZE);
@@ -139,4 +160,5 @@ void GLUTWindow::saveBMPFile(std::string filename, unsigned char *data, int widt
 	fwrite(bmp, datasize + BMP_HEADER_SIZE, 1, f);
 	fclose(f);
 	free(bmp);
+        free(dest);
 }

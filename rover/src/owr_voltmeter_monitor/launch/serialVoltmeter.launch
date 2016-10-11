@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="owr_voltmeter_monitor" type="serialVoltmeter.py" name="serial_voltmeter" output="screen">
+	</node>
+</launch>
