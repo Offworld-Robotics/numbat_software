@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="CPP_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/moc_crosbotgui.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/moc_crosbotgui.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/moc_joystick.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/moc_joystick.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/moc_opengl.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/moc_opengl.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/nodes/moc_gui.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/nodes/moc_gui.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_map.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_map.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panel.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panel.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panelfactory.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panelfactory.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_pointcloud.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_pointcloud.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_robot.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_robot.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_simple.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_simple.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap2.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap2.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_wasdmouse.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_wasdmouse.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_fastslam.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_fastslam.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_geotiff.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_geotiff.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_map.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_map.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_image.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_image.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_jointcontrol.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_jointcontrol.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_joystick.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_joystick.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_preset.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_preset.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_robotwidget.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_robotwidget.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_simple.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_simple.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/qrc_resources.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/cse-slam/crossbot_ui/qrc_resources.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/moc_crosbotgui.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/moc_crosbotgui.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/moc_joystick.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/moc_joystick.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/moc_opengl.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/moc_opengl.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/nodes/moc_gui.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/nodes/moc_gui.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_map.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_map.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panel.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panel.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panelfactory.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panelfactory.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_pointcloud.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_pointcloud.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_robot.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_robot.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_simple.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_simple.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap2.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap2.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_wasdmouse.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_wasdmouse.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_fastslam.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_fastslam.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_geotiff.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_geotiff.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_map.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_map.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_image.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_image.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_jointcontrol.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_jointcontrol.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_joystick.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_joystick.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_preset.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_preset.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_robotwidget.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_robotwidget.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_simple.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_simple.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/qrc_resources.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/cse-slam/crossbot_ui/qrc_resources.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/moc_crosbotgui.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/moc_crosbotgui.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/moc_joystick.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/moc_joystick.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/moc_opengl.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/moc_opengl.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/nodes/moc_gui.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/nodes/moc_gui.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_map.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_map.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panel.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panel.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panelfactory.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panelfactory.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_pointcloud.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_pointcloud.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_robot.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_robot.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_simple.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_simple.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap2.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap2.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_wasdmouse.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_wasdmouse.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_fastslam.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_fastslam.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_geotiff.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_geotiff.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_map.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_map.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_image.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_image.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_jointcontrol.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_jointcontrol.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_joystick.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_joystick.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_preset.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_preset.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_robotwidget.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_robotwidget.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_simple.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_simple.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/qrc_resources.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/cse-slam/crossbot_ui/qrc_resources.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/moc_crosbotgui.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/moc_crosbotgui.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/moc_joystick.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/moc_joystick.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/moc_opengl.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/moc_opengl.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/nodes/moc_gui.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/nodes/moc_gui.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_map.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_map.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panel.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panel.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panelfactory.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_panelfactory.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_pointcloud.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_pointcloud.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_robot.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_robot.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_simple.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_simple.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap2.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_snap2.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_wasdmouse.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/panels/moc_wasdmouse.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_fastslam.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_fastslam.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_geotiff.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_geotiff.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_map.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/map/moc_map.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_image.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_image.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_jointcontrol.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_jointcontrol.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_joystick.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_joystick.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_preset.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_preset.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_robotwidget.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_robotwidget.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_simple.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/include/crosbot_ui/renders/robot/moc_simple.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/qrc_resources.cxx">
+      <sourceFolder url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/cse-slam/crossbot_ui/qrc_resources.cxx" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/owr_bluetounge2_tf/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_bluetounge2_tf/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/xsens_mti_ros_node/src/xsens_driver/src/imu_conversion.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/xsens_mti_ros_node/src/xsens_driver/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/xsens_mti_ros_node/src/xsens_driver/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/xsens_mti_ros_node/src/custom_msgs/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/xsens_mti_ros_node/src/custom_msgs/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_voltmeter_monitor/src/VoltmeterMonitor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_voltmeter_monitor/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_voltmeter_monitor/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_joystick_filter/src/JoystickFilter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_joystick_filter/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_joystick_filter/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_fastslam/src/serialization.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_fastslam/src/heightmap.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_fastslam/src/nodes/fastslam.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_fastslam/src/particle.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_fastslam/src/fastslam.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_fastslam/src/module.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_fastslam/src/probtable.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_fastslam/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_fastslam/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ogmbicp/src/OgmbicpCPU.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ogmbicp/src/PointMap3D.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ogmbicp/src/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ogmbicp/src/Ogmbicp.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ogmbicp/src/OgmbicpNode.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ogmbicp/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ogmbicp/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ogmbicp/cmake/FindNewmat.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ogmbicp/cmake/LibFindMacros.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/src/thread.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/src/serialization.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/src/image.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/src/jpeg.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/src/image.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/src/jpeg.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/src/data.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/src/config.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot/cmake/crosbot-extras.cmake.in" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_map/src/map.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_map/src/tag.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_map/src/nodes/localmap.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_map/src/voronoi.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_map/src/localmap.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_map/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_map/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_graphslam/src/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_graphslam/src/graphSlamNode.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_graphslam/src/graphSlam.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_graphslam/src/graphSlamCPU.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_graphslam/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_graphslam/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_graphslam/cmake/LibFindMacros.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_graphslam/cmake/FindSuiteSparse.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/nodes/geo_logger.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/nodes/gui.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/nodes/gui_node.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/renders/map/fastslam.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/renders/map/map.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/renders/map/geotiff.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/renders/robot/jointcontrol.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/renders/robot/robotwidget.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/renders/robot/image.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/renders/robot/joystick.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/renders/robot/preset.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/renders/robot/simple.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/joystick.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/opengl.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/crosbotgui.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/panels/wasdmouse.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/panels/map.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/panels/panelfactory.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/panels/pointcloud.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/panels/robot.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/panels/simple.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/panels/snap.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/src/panels/snap2.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/resources/resources.qrc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cse-slam/crossbot_ui/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/GearPositionTracker.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/Bluetongue.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/JointMonitor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/JointController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/JointSpeedBasedPositionController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/cmdVelToJoints.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/PositionTracker.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/JointVelocityController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/BoardControl.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/JointArmVelocityController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/swerveDrive.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/LIDARTiltJointController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/src/PotPositionTracker.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/test/testJointVelocityController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/test/testLIDAR.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/test/testJointSpeedBasedPositionController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_drive_controls/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_bluetounge_tf/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_bluetounge_tf/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_mapping/src/PoseInfoContainer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_mapping/src/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_mapping/src/HectorDebugInfoProvider.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_mapping/src/HectorDrawings.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_mapping/src/HectorMappingRos.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_mapping/src/HectorMappingRos.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_mapping/src/PoseInfoContainer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_mapping/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_mapping/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_trajectory_server/src/hector_trajectory_server.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_trajectory_server/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_trajectory_server/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_geotiff/src/geotiff_saver.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_geotiff/src/geotiff_writer/geotiff_writer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_geotiff/src/geotiff_node.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_geotiff/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_geotiff/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_imu_attitude_to_tf/src/imu_attitude_to_tf_node.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_imu_attitude_to_tf/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_imu_attitude_to_tf/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_slam/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_slam/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_map_tools/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_map_tools/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_imu_tools/src/pose_and_orientation_to_imu_node.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_imu_tools/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_imu_tools/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_geotiff_plugins/src/trajectory_geotiff_plugin.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_geotiff_plugins/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_geotiff_plugins/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_map_server/src/hector_map_server.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_map_server/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_map_server/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_marker_drawing/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_marker_drawing/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_slam_launch/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_slam_launch/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_compressed_map_transport/src/map_to_image_node.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_compressed_map_transport/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_compressed_map_transport/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_nav_msgs/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hector_slam/hector_nav_msgs/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_webuibridge/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_webuibridge/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_clinometer_vision/src/ClinometerNode.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_clinometer_vision/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_clinometer_vision/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_auton_pathing/src/LocalPlanner.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_auton_pathing/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_auton_pathing/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_messages/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_messages/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/agvc_utils/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/agvc_utils/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_positioning/src/UTMTransform.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_positioning/src/ExtractOrientation.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_positioning/src/GPSTransform.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_positioning/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_positioning/package.xml" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_camera_control/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/owr_camera_control/package.xml" isTestSource="false" />
+    </content>
+    <content url="file:///usr/src/gtest">
+      <sourceFolder url="file:///usr/src/gtest/src/gtest_main.cc" isTestSource="false" />
+      <sourceFolder url="file:///usr/src/gtest/src/gtest-all.cc" isTestSource="false" />
+      <sourceFolder url="file:///usr/src/gtest/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file:///usr/src/gtest/cmake/internal_utils.cmake" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="Python 2.7.11+ virtualenv at ~/ros2" jdkType="Python SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="Header Search Paths">
+        <CLASSES>
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/include" />
+          <root url="file:///usr/local/include" />
+          <root url="file:///opt/ros/kinetic/include" />
+          <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/devel/include" />
+          <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/devel/include" />
+          <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/devel/include" />
+          <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/devel/include" />
+          <root url="file://$MODULE_DIR$/../../../ros_deps/src/gps_umd/gps_common/include" />
+          <root url="file://$MODULE_DIR$/../../../ros_deps/devel/include" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/include" />
+          <root url="file:///usr/local/include" />
+          <root url="file:///opt/ros/kinetic/include" />
+          <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/devel/include" />
+          <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/devel/include" />
+          <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/devel/include" />
+          <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/MinSizeRel0/devel/include" />
+          <root url="file://$MODULE_DIR$/../../../ros_deps/src/gps_umd/gps_common/include" />
+          <root url="file://$MODULE_DIR$/../../../ros_deps/devel/include" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>

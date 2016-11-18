@@ -6,6 +6,7 @@ project(owr_voltmeter_monitor)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
+  rospy
   roscpp
   std_msgs
 )
@@ -101,9 +102,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES owr_voltmeter_monitor
-#  CATKIN_DEPENDS owr_messages roscpp std_msgs
-#  DEPENDS system_lib
+  LIBRARIES owr_voltmeter_monitor
+  CATKIN_DEPENDS rospy owr_messages roscpp std_msgs std_msgs gscam
+  DEPENDS system_lib
 )
 
 ###########
