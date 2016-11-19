@@ -14,6 +14,8 @@ def callback(data):
         if not 'kinetic' in rospy.get_param("/rosdistro"):
             os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! video/x-raw-rgb,framerate=30/1,width=640,height=480 ! ffmpegcolorspace"
             rospy.logerr("not kinetic")
+        elif data.stream == 7:
+            os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/clinocam0 ! videoscale ! video/x-raw,width=960,height=720 ! videoconvert"
         else:
             os.environ["GSCAM_CONFIG"] = "v4l2src device=/dev/video"+str(data.stream)+" ! videoscale ! video/x-raw,width=320,height=240 ! videoconvert"
         

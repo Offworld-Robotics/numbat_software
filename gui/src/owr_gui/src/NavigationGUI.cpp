@@ -672,7 +672,7 @@ void NavigationGUI::drawVolts() {
 
 	glTranslated(currWinW/2.0-30,-50, 0);
 	glColor4f(1, 0, 0, ALPHA);
-	sprintf(text, "%.2fV", voltage);
+	snprintf(text,30, "%.2fV", voltage);
 	drawText(text, GLUT_BITMAP_TIMES_ROMAN_24, 0, 0);
 
 	glPopMatrix();
