@@ -6,16 +6,17 @@ project(owr_positioning)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
-    roscpp
+  roscpp
   rospy
   sensor_msgs
   std_msgs
   geometry_msgs
-   message_filters
-    laser_geometry
-    tf2
-    tf2_geometry_msgs
-    tf2_ros
+  message_filters
+  laser_geometry
+  tf2
+  tf2_geometry_msgs
+  tf2_ros
+  cv_bridge
 )
 
 ## System dependencies are found with CMake's conventions
@@ -90,7 +91,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES owr_positioning
-  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry rospy tf2 tf2_geometry_msgs tf2_ros
+  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry rospy tf2 tf2_geometry_msgs tf2_ros cv_bridge
   DEPENDS system_lib
 )
 
@@ -113,6 +114,8 @@ add_executable(orientation src/ExtractOrientation.cpp)
 add_executable(utm_tf src/UTMTransform.cpp)
 add_executable(gps_tf src/GPSTransform.cpp)
 add_executable(mag src/MagnetConverter.cpp)
+add_executable(optical_localization src/optical_localization.cpp)
+target_link_libraries(optical_localization ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
