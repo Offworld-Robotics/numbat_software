@@ -3,8 +3,9 @@
 
 #include <ros/ros.h>
 #include <opencv2/imgproc.hpp>
+#include <geometry_msgs/TwistWithCovarianceStamped.h>
 
-class OpticalLocalization {
+class optical_localization {
 	private:
 		ros::Subscriber sub;
 		ros::Publisher pub;
@@ -21,13 +22,12 @@ class OpticalLocalization {
 		const double linear_velocity_scale;
 		const double rotation_velocity_scale;
 		
-		unsigned int seq;
+		geometry_msgs::TwistWithCovarianceStamped my_twist;
 		
-		double angle_between(cv::Mat& a, cv::Mat& b);
 		void image_callback(const sensor_msgs::Image::ConstPtr& image);
 		
 	public:
-		OpticalLocalization(int argc, char *argv[]);
+		optical_localization(int argc, char *argv[]);
 		void run();
 	
 };
