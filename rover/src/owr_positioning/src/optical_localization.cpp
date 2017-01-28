@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
@@ -17,7 +18,7 @@ void optical_localization::image_callback(const sensor_msgs::Image::ConstPtr& im
 			cv::Mat translation_delta = affineTransform.col(2);
 			double scale_x_delta = norm(affineTransform.col(0));
 			double scale_y_delta = norm(affineTransform.col(1));
-			double rotation_delta = atan2(affineTransform.at<double>(1,1), affineTransform.at<double>(0,1)) - atan2(1, 0);
+			double rotation_delta = atan2(affineTransform.at<double>(1,1), affineTransform.at<double>(0,1)) - M_PI/2.0;
 			
 			translation_current += translation_delta;
 			scale_x *= scale_x_delta;
