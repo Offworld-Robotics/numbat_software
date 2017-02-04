@@ -18,7 +18,7 @@ class optical_localization {
 		
 		ros::Time prev_time;
 		
-		const unsigned int pixels_per_metre_traversed;
+		const double pixels_per_metre_traversed;
 		const double linear_velocity_scale;
 		const double rotation_velocity_scale;
 		

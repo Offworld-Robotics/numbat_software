@@ -47,7 +47,7 @@ void optical_localization::image_callback(const sensor_msgs::Image::ConstPtr& im
 }
 
 optical_localization::optical_localization(int argc, char *argv[]) :
-	pixels_per_metre_traversed(2310),
+	pixels_per_metre_traversed(1503.1124320333),
 	linear_velocity_scale(1.0/pixels_per_metre_traversed),
 	rotation_velocity_scale(1.0)
 	{
