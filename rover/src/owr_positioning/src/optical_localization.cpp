@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <algorithm>
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <geometry_msgs/TwistWithCovarianceStamped.h>
@@ -32,8 +33,8 @@ void optical_localization::image_callback(const sensor_msgs::Image::ConstPtr& im
             }
             prev_time = current_time;
             
-            my_twist.twist.twist.linear.x = translation_delta.at<double>(0) * linear_velocity_scale * time_scale;
-            my_twist.twist.twist.linear.y = translation_delta.at<double>(1) * linear_velocity_scale * time_scale;
+            my_twist.twist.twist.linear.x = translation_delta.at<double>(0) * time_scale / pixels_per_metre_traversed;
+            my_twist.twist.twist.linear.y = translation_delta.at<double>(1) * time_scale / pixels_per_metre_traversed;
             my_twist.twist.twist.angular.z = rotation_delta * rotation_velocity_scale * time_scale;
             my_twist.header.stamp = current_time;
             
@@ -46,16 +47,16 @@ void optical_localization::image_callback(const sensor_msgs::Image::ConstPtr& im
     prev_gray = frame_gray;
 }
 
-optical_localization::optical_localization(int argc, char *argv[]) :
-    pixels_per_metre_traversed(-1503.1124320333),
-    linear_velocity_scale(1.0/pixels_per_metre_traversed),
-    rotation_velocity_scale(1.0)
-    {
+optical_localization::optical_localization(int argc, char *argv[]) {
+    std::fill(pixels_per_metre_traversed, pixels_per_metre_traversed + NUM_CAMS, -1503.1124320333);
+    std::fill(rotation_velocity_scale, rotation_velocity_scale + NUM_CAMS, 1.0);
     
-    translation_current = (cv::Mat_<double>(2,1) << 0, 0);
-    scale_x = 1.0;
-    scale_y = 1.0;
-    rotation = 0.0;
+    for(unsigned int i = 0;i < NUM_CAMS;++i) {
+        translation_current = (cv::Mat_<double>(2,1) << 0, 0);
+    }
+    std::fill(scale_x, scale_x + NUM_CAMS, 1.0);
+    std::fill(scale_y, scale_y + NUM_CAMS, 1.0);
+    std::fill(rotation, rotation + NUM_CAMS, 1.0);
     
     my_twist.twist.twist.linear.z = 0;
     my_twist.twist.twist.angular.x = 0;
@@ -69,7 +70,7 @@ optical_localization::optical_localization(int argc, char *argv[]) :
     
     ros::init(argc, argv, "optical_localization");
     ros::NodeHandle n("~");
-    sub = n.subscribe("/optical_localization_cam/image_raw", 1, &optical_localization::image_callback, this);
+    sub = n.subscribe("/optical_localization_cam0/image_raw", 1, &optical_localization::image_callback, this);
     pub = n.advertise<geometry_msgs::TwistWithCovarianceStamped>("/owr/optical_localization_twist", 10, true);
 }
 
