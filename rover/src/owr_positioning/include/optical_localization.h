@@ -25,9 +25,10 @@ class optical_localization {
         
         geometry_msgs::TwistWithCovarianceStamped my_twist[NUM_CAMS];
         
-        void image_callback(const sensor_msgs::Image::ConstPtr& image);
+        void image_callback0(const sensor_msgs::Image::ConstPtr& image);
+        void image_callback1(const sensor_msgs::Image::ConstPtr& image);
         
-        void process_image(unsigned int cam_index);
+        void process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int idx);
         
     public:
         optical_localization(int argc, char *argv[]);
