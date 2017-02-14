@@ -15,7 +15,7 @@
 JointsMonitor::JointsMonitor(ros::NodeHandle nodeHandle) {
     nh = nodeHandle;
     statesPub =  nh.advertise<sensor_msgs::JointState>("joint_states", 10);
-    debugPub = nh.advertise<owr_messages::board>("/owr/jointsDebug", 1); //TODO: create a message type for this
+    debugPub = nh.advertise<owr_messages::board>("/owr/jointsDebug", 1);
     //start the message sequence at zero
     currentStateMessage.header.seq = 0;
 }
@@ -45,7 +45,6 @@ void JointsMonitor::endCycle(ros::Time endTime) {
             jointInfo info = (*it)->extrapolateStatus(cycleStart, estimateTime);
             publish_joint(info.jointName, info.position, info.velocity, info.effort, j);
 
-            //TODO: add to debug message
         }
         statesPub.publish(currentStateMessage);
     }
@@ -59,7 +58,6 @@ void JointsMonitor::endCycle(ros::Time endTime) {
             pwmMsg.targetPos = info.targetPos;
             statusMsg.joints.push_back(pwmMsg);
 
-            //TODO: add to debug message
     }
     debugPub.publish(statusMsg);  
     

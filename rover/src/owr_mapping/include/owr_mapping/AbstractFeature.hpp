@@ -6,3 +6,9 @@
  * ROS Package: owr_package_name
  * Purpose: Represents an map feature 
  */
+#include <geometry_msgs/PoseStamped.h>
+
+class AbstractFeature {
+    public:
+        virtual geometry_msgs::PoseStamped get_position() = 0;
+};

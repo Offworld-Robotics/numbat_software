@@ -8,11 +8,12 @@
  */
 #include <vector>
 #include "owr_mapping/AbstractFeature.hpp"
+#include "owr_mapping/ScaledOccupancyGrid.hpp"
 
 class AbstractMap {
     
     public:
-        virtual ScalledOccupancyGrid get_grid = 0;
+        virtual ScaledOccupancyGrid get_grid() = 0;
         virtual std::vector<AbstractFeature> get_features();
         
   

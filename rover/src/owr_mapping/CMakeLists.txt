@@ -118,29 +118,30 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  include
 )
 
 ## Declare a C++ library
-# add_library(owr_mapping
-#   src/${PROJECT_NAME}/owr_mapping.cpp
-# )
+add_library(owr_mapping_lib
+   src/AbstractMap.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(owr_mapping ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(owr_mapping_lib ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(owr_mapping_node src/owr_mapping_node.cpp)
+# add_executable(owr_mapping_lib_node src/owr_mapping_lib_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(owr_mapping_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(owr_mapping_lib_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(owr_mapping_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(owr_mapping_lib
+   ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

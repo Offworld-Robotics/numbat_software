@@ -9,4 +9,4 @@
  
  class MapGraph : public AbstractLocalMap {
     
- }
+ };
