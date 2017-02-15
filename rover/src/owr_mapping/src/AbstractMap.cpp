@@ -7,3 +7,4 @@
  * Purpose: this represents an abstract map class. It is mainly used to access Scalled Occupany Grid
  */
 #include "owr_mapping/AbstractMap.hpp"
+
