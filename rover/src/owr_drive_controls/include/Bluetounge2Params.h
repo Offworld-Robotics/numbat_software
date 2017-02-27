@@ -68,5 +68,7 @@ const double ARM_BASE_ROTATE_GEARS[] = {1.0/455.0, 1}; //TODO: put not stupid va
 #define UPPER_MIN_ADC 610
 #define UPPER_MAX_ADC 2804
 
+#define CLAW_ROT_MAX 1510
+#define CLAW_ROT_MIN 1490
 
 #endif //BLUETOUNGE_2_PARAMS_H

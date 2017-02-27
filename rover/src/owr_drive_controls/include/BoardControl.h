@@ -23,7 +23,8 @@
 #include "LIDARTiltJointController.hpp"
 #include "PotPositionTracker.hpp"
 #include "JointArmVelocityController.hpp"
-
+#include "Claw_Rotate_Controller.hpp"
+#include "Claw_Grip_Controller.hpp"
 
 using namespace std; 
 
@@ -107,8 +108,9 @@ class BoardControl {
         PotPositionTracker frontLeftSwervePotMonitor, frontRightSwervePotMonitor, backLeftSwervePotMonitor, backRightSwervePotMonitor;
         PotPositionTracker armRotationBasePotMonitor;
         JointArmVelocityController armUpperAct, armLowerAct;
-        //TODO: add lidar, actuators here.
-        
+        Claw_Rotate_Controller claw_rot_control;
+        Claw_Grip_Controller claw_grip_control;
+
 };
 
 #endif

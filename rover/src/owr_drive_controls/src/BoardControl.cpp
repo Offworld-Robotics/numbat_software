@@ -2,6 +2,7 @@
  * Converts joystick comands to velocity, etc
  * Author: Harry J.E Day for BlueSat OWR
  * Start: 7/02/15
+ * Copyright BLUEsat UNSW, 2015, 2016, 2017. Released under the MIT License
  */
  
 #include "BoardControl.h"
@@ -188,13 +189,28 @@ BoardControl::BoardControl() :
         nh,
         "laser_tilt_joint"
     ),
+    clawRotateTrim(0),
+    claw_rot_control(
+        CLAW_ROT_MAX,
+        CLAW_ROT_MIN,
+        &clawRotateTrim,
+        "/claw_rotate_controller/command",
+        nh,
+        "claw_rotate_controller"
+    ),
+    claw_grip_control(
+            CLAW_ROT_MAX,
+            CLAW_ROT_MIN,
+            "/claw_grip_controller/command",
+            nh,
+            "claw_grip_controller"
+    ),
     frontLeftSwervePotMonitor(SWERVE_POT_L_LIMIT_N_DEG, SWERVE_POT_L_LIMIT_P_DEG, SWERVE_POT_L_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
     frontRightSwervePotMonitor(SWERVE_POT_R_LIMIT_N_DEG, SWERVE_POT_R_LIMIT_P_DEG, SWERVE_POT_R_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
     backLeftSwervePotMonitor(SWERVE_POT_L_LIMIT_N_DEG, SWERVE_POT_L_LIMIT_P_DEG, SWERVE_POT_L_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_L_CENTER),
     backRightSwervePotMonitor(SWERVE_POT_R_LIMIT_N_DEG, SWERVE_POT_R_LIMIT_P_DEG, SWERVE_POT_R_REVOLUTION, SWERVE_POT_TURNS, SWERVE_POT_R_CENTER),
     armRotationBasePotMonitor(ARM_POT_LIMIT_N_DEG, ARM_POT_LIMIT_P_DEG, ARM_POT_REVOLUTION, ARM_POT_TURNS, ARM_POT_CENTER),
-    asyncSpinner(SPINNER_THREADS),
-    clawRotateTrim(0)
+    asyncSpinner(SPINNER_THREADS)
     {
 
     //init button sates
@@ -373,8 +389,6 @@ void BoardControl::run() {
             lastUpdate = ros::Time::now();
             publishADC(s); 
             jMonitor.beginCycle(lastUpdate, updateRateNSec, ESTIMATE_INTERVAL_NS, N_UPDATES);
-            /*armRotationBasePotMonitor.updatePos(s.enc0, lastUpdate);*/
-            //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
             frontLeftSwervePotMonitor.updatePos(s.swerveLeft, lastUpdate);
             frontRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
             armRotationBasePotMonitor.updatePos(s.pot0, lastUpdate);
@@ -396,31 +410,30 @@ void BoardControl::run() {
             pwmLIDAR = lidar.velToPWM(updateRateHZ);
             
             //adjust the arm position
-            armRotateAngle += armRotateRate;
-            armRotateAngle = fmax(armRotationBasePotMonitor.getMinAngle(),fmin(armRotationBasePotMonitor.getMaxAngle(), armRotateAngle));
+            //armRotateAngle += armRotateRate;
+            //armRotateAngle = fmax(armRotationBasePotMonitor.getMinAngle(),fmin(armRotationBasePotMonitor.getMaxAngle(), armRotateAngle));
             //pwmArmRot = (armRotateRate * 500) + 1500;
-            pwmArmRot = armBaseRotate.posToPWM(armRotateAngle,armRotationBasePotMonitor.getPosition(), updateRateHZ); 
+            pwmArmRot = armBaseRotate.posToPWM(armRotationBasePotMonitor.getPosition(), updateRateHZ);
             ROS_INFO("Arm Rotate %d", pwmArmRot);
             
-            //for now do this for actuators
-            //pwmArmTop = armTop;
-            pwmArmTop = armUpperAct.velToPWM(armTop);
+            //for now do this for actuators (use pwm)
+            pwmArmTop = armUpperAct.velToPWM();
             armUpperAct.updatePos(s.armUpper);
             
-            //pwmArmBottom = armBottom;
-            pwmArmBottom = armLowerAct.velToPWM(armBottom);
+            pwmArmBottom = armLowerAct.velToPWM();
             armLowerAct.updatePos(s.armLower);
             
             //and keep everything else the same
             //pwmClawRotate = clawRotScale(clawRotate);
-            if (rotState == ANTICLOCKWISE) {
+            /*if (rotState == ANTICLOCKWISE) {
                 pwmClawRotate = 1510;
             } else if (rotState == CLOCKWISE) {
                 pwmClawRotate = 1490;
             } else { //STOP
             	pwmClawRotate = 1500;
-            }
-            pwmClawGrip   = clawRotScale(clawGrip);
+            }*/
+            pwmClawRotate = claw_rot_control.velToPWM();
+            pwmClawGrip   = claw_grip_control.velToPWM();
             pwmCamBRot    = cameraRotScale(cameraBottomRotate);
             pwmCamBTilt   = cameraRotScale(cameraBottomTilt);
             pwmCamTRot    = cameraRotScale(cameraTopRotate);
@@ -551,8 +564,8 @@ void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
     armRotateRate = (joy->axes[ARM_ROTATE]*ARM_ROTATE_RATE);
     //armIncRate = top * 5;
-    armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
-    armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
+    //armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
+    //armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
     
     if(joy->buttons[FL_SWERVE_RESET]) {
         frontLeftSwervePotMonitor.resetPos();

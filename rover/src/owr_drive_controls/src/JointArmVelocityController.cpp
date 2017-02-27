@@ -3,7 +3,8 @@
  * Editors:
  * Date Started: 23/07/2016
  * Purpose: Represents an interface for controlling an actuator. It takes in a target PWM outputs a pwm rate.
- * Will be expanded to be a position based controller.
+ * Will be expanded to be a position based controller. Currently uses pwm
+ * Copyright BLUEsat UNSW 2016, 2017. Released under the MIT License.
  */
 
 #include "JointArmVelocityController.hpp"
@@ -24,6 +25,11 @@ JointArmVelocityController :: JointArmVelocityController(double minADCIn, double
 int JointArmVelocityController :: velToPWM(int futureVel){
     lastPWM = futureVel;
     return futureVel;
+}
+
+int JointArmVelocityController::velToPWM() {
+    lastPWM = requestedValue;
+    return requestedValue;
 }
 
 // Y = (X-A)/(B-A) * (D-C) + C
