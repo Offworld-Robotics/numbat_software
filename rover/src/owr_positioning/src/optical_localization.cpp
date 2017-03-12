@@ -27,15 +27,36 @@ geometry_msgs::Twist optical_localization::getVectorSum() {
     result.angular.z = 0;
     
     for(unsigned int i = 0;i < NUM_CAMS;++i) {
-        result.linear.x += most_recent_averages[i].linear.x;
-        result.linear.y += most_recent_averages[i].linear.y;
-        result.angular.z += most_recent_averages[i].angular.z;
+        result.linear.x += most_recent_average[i].linear.x;
+        result.linear.y += most_recent_average[i].linear.y;
+        result.angular.z += most_recent_average[i].angular.z;
     }
     result.linear.x /= NUM_CAMS;
     result.linear.y /= NUM_CAMS;
     result.angular.z /= NUM_CAMS;
     
     return result;
+}
+
+void optical_localization::publishTwist() {
+    mutex.lock();
+    for(unsigned int i = 0;i < NUM_CAMS;++i) {
+        if(is_first[i]) {
+            mutex.unlock();
+            return;
+        }
+    }
+    my_twist.twist.twist = getVectorSum();
+    my_twist.header.stamp = ros::Time::now();
+    
+    pub.publish(my_twist);
+    ++my_twist.header.seq;
+    
+    ROS_INFO_STREAM("lin x: " << my_twist.twist.twist.linear.x);
+    ROS_INFO_STREAM("lin y: " << my_twist.twist.twist.linear.y);
+    ROS_INFO_STREAM("ang z: " << my_twist.twist.twist.angular.z);
+    
+    mutex.unlock();
 }
 
 void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int idx) {
@@ -65,26 +86,14 @@ void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& ima
             
             if(is_first[idx]) {
                 is_first[idx] = false;
-                most_recent_averages[idx] = this_twist;
+                most_recent_average[idx] = this_twist;
             } else {
-                most_recent_averages[idx] = average(most_recent[idx], this_twist);
+                most_recent_average[idx] = average(most_recent[idx], this_twist);
             }
             most_recent[idx] = this_twist;
             
             // TODO enable multithreading
-            mutex.lock();
-            my_twist.twist.twist = getVectorSum();
-            my_twist.header.stamp = ros::Time::now();
-            
-            pub.publish(my_twist);
-            ++my_twist.header.seq;
-            
-            ROS_INFO_STREAM("CAM " << idx);
-            ROS_INFO_STREAM("lin x: " << my_twist.twist.twist.linear.x);
-            ROS_INFO_STREAM("lin y: " << my_twist.twist.twist.linear.y);
-            ROS_INFO_STREAM("ang z: " << my_twist.twist.twist.angular.z);
-            
-            mutex.unlock();
+            publishTwist();
         }
     }
     prev_gray[idx] = frame_gray;

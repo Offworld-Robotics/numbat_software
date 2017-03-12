@@ -28,7 +28,7 @@ class optical_localization {
         geometry_msgs::Twist most_recent[NUM_CAMS];
         
         // most recent averaged twist for each camera
-        geometry_msgs::Twist most_recent_averages[NUM_CAMS];
+        geometry_msgs::Twist most_recent_average[NUM_CAMS];
         
         // the final twist to be published
         geometry_msgs::TwistWithCovarianceStamped my_twist;
@@ -45,6 +45,8 @@ class optical_localization {
         geometry_msgs::Twist average(const geometry_msgs::Twist &first, const geometry_msgs::Twist &second);
         
         geometry_msgs::Twist getVectorSum();
+        
+        void publishTwist();
         
     public:
         optical_localization(int argc, char *argv[]);
