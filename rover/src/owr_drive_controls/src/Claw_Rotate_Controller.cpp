@@ -1,5 +1,6 @@
 /*
  * Orignal Author: Harry J.E Day
+ * Editors: Elliott Smith
  * Date Started: 27/02/17
  * Purpose: Used to drive the claw. This is very hacky, dosen't really do what it says
  * Copyright BLUEsat UNSW 2017. Released under the MIT License.

@@ -1,6 +1,6 @@
 /*
  * Orignal Author: Simon Ireland
- * Editors:
+ * Editors: Elliott Smith
  * Date Started: 23/07/2016
  * Purpose: Represents an interface for controlling an actuator. It takes in a target PWM outputs a pwm rate.
  * Will be expanded to be a position based controller. Currently uses pwm

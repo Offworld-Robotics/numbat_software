@@ -1,6 +1,6 @@
 /*
  * Orignal Author: Harry J.E Day
- * Editors:
+ * Editors: Elliott Smith
  * Date Started: 16/02/2016
  * Purpose: Represents an interface for controlling a motor. 
  */

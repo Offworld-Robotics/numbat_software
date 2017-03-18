@@ -1,6 +1,7 @@
 /*
  * Converts joystick comands to velocity, etc
- * Author: Harry J.E Day for BlueSat OWR
+ * Original Author: Harry J.E Day for BlueSat OWR
+ * Editors: Elliott Smith
  * Start: 7/02/15
  * Copyright BLUEsat UNSW, 2015, 2016, 2017. Released under the MIT License
  */

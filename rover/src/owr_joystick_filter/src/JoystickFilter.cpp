@@ -1,7 +1,7 @@
 /*
  * Filters the Joysticks
  * Original Author: Sam S
- * Editors: Harry J.E Day, Sean Thompson
+ * Editors: Harry J.E Day, Sean Thompson, Elliott Smith
  * ROS_NODE:owr_joystick_filter
  * ros package: 
  */
