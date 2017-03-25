@@ -8,19 +8,31 @@
 #include <ecl/threads.hpp>
 
 #define NUM_CAMS 4U
+#define FRONT_CAM 0U
+#define BACK_CAM 1U
+#define LEFT_CAM 2U
+#define RIGHT_CAM 3U
+
+#define PIXELS_PER_METRE_FRONT -1503.1124320333
+#define PIXELS_PER_METRE_BACK -1503.1124320333
+#define PIXELS_PER_METRE_LEFT -1503.1124320333
+#define PIXELS_PER_METRE_RIGHT -1503.1124320333
 
 class optical_localization {
     private:
         ros::Publisher pub;
-        
         ros::Subscriber sub[NUM_CAMS];
         
         cv::Mat prev_gray[NUM_CAMS];
         
         ros::Time prev_time[NUM_CAMS];
         
-        double pixels_per_metre_traversed[NUM_CAMS];
-        double rotation_velocity_scale[NUM_CAMS];
+        // image displacement scale for each camera
+        double pixels_per_metre[NUM_CAMS];
+        
+        // axes mappings for each camera
+        bool swap_axes[NUM_CAMS];
+        double axis_transforms[NUM_CAMS][2];
         
         bool is_first[NUM_CAMS];
         
@@ -35,12 +47,12 @@ class optical_localization {
         
         ecl::Mutex mutex;
         
-        void image_callback0(const sensor_msgs::Image::ConstPtr& image);
-        void image_callback1(const sensor_msgs::Image::ConstPtr& image);
-        void image_callback2(const sensor_msgs::Image::ConstPtr& image);
-        void image_callback3(const sensor_msgs::Image::ConstPtr& image);
+        void image_callback_front(const sensor_msgs::Image::ConstPtr& image);
+        void image_callback_back(const sensor_msgs::Image::ConstPtr& image);
+        void image_callback_left(const sensor_msgs::Image::ConstPtr& image);
+        void image_callback_right(const sensor_msgs::Image::ConstPtr& image);
         
-        void process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int idx);
+        void process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int cam);
         
         geometry_msgs::Twist average(const geometry_msgs::Twist &first, const geometry_msgs::Twist &second);
         
@@ -48,10 +60,14 @@ class optical_localization {
         
         void publishTwist();
         
+        void assign_pixels_per_metre();
+        void assign_axis_transforms();
+        
+        void assign_sub_pub();
+        
     public:
         optical_localization(int argc, char *argv[]);
         void run();
-    
 };
 
 #endif // OPTICAL_LOCALIZATION_H

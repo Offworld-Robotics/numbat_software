@@ -1,6 +1,8 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <cstdio>
 #include <algorithm>
+#include <utility>
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <geometry_msgs/Twist.h>
@@ -9,6 +11,51 @@
 #include <opencv2/video/tracking.hpp>
 #include <ecl/threads.hpp>
 #include "optical_localization.h"
+
+void optical_localization::assign_pixels_per_metre() {
+    // TODO change values according to cam
+    pixels_per_metre[FRONT_CAM] = -1503.1124320333;
+    pixels_per_metre[BACK_CAM] = -1503.1124320333;
+    pixels_per_metre[LEFT_CAM] = -1503.1124320333;
+    pixels_per_metre[RIGHT_CAM] = -1503.1124320333;
+}
+
+void optical_localization::assign_axis_transforms() {
+    swap_axes[FRONT_CAM] = false;
+    axis_transforms[FRONT_CAM][0] = 1;
+    axis_transforms[FRONT_CAM][1] = 1;
+    
+    swap_axes[BACK_CAM] = false;
+    axis_transforms[BACK_CAM][0] = -1;
+    axis_transforms[BACK_CAM][1] = -1;
+    
+    swap_axes[LEFT_CAM] = true;
+    axis_transforms[LEFT_CAM][0] = -1;
+    axis_transforms[LEFT_CAM][1] = 1;
+    
+    swap_axes[RIGHT_CAM] = true;
+    axis_transforms[RIGHT_CAM][0] = 1;
+    axis_transforms[RIGHT_CAM][1] = -1;
+}
+
+void optical_localization::assign_sub_pub() {
+    ros::NodeHandle n("~");
+    char topic[50];
+    
+    sprintf(topic, "/optical_localization_cam%d/image_raw", FRONT_CAM);
+    sub[FRONT_CAM] = n.subscribe(topic, 1, &optical_localization::image_callback_front, this);
+    
+    sprintf(topic, "/optical_localization_cam%d/image_raw", BACK_CAM);
+    sub[BACK_CAM] = n.subscribe(topic, 1, &optical_localization::image_callback_back, this);
+    
+    sprintf(topic, "/optical_localization_cam%d/image_raw", LEFT_CAM);
+    sub[LEFT_CAM] = n.subscribe(topic, 1, &optical_localization::image_callback_left, this);
+    
+    sprintf(topic, "/optical_localization_cam%d/image_raw", RIGHT_CAM);
+    sub[RIGHT_CAM] = n.subscribe(topic, 1, &optical_localization::image_callback_right, this);
+    
+    pub = n.advertise<geometry_msgs::TwistWithCovarianceStamped>("/owr/optical_localization_twist", 10, true);
+}
 
 geometry_msgs::Twist optical_localization::average(const geometry_msgs::Twist &first, const geometry_msgs::Twist &second) {
     geometry_msgs::Twist result;
@@ -59,13 +106,13 @@ void optical_localization::publishTwist() {
     mutex.unlock();
 }
 
-void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int idx) {
+void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int cam) {
     cv::Mat frame = cv_bridge::toCvCopy(image)->image;
     cv::Mat frame_gray;
     cv::cvtColor(frame, frame_gray, cv::COLOR_BGR2GRAY);
     
-    if(!prev_gray[idx].empty()) {
-        cv::Mat affineTransform = estimateRigidTransform(prev_gray[idx], frame_gray, false);
+    if(!prev_gray[cam].empty()) {
+        cv::Mat affineTransform = estimateRigidTransform(prev_gray[cam], frame_gray, false);
         if(!affineTransform.empty()) {
             cv::Mat translation_delta = affineTransform.col(2);
             double scale_x_delta = norm(affineTransform.col(0));
@@ -74,70 +121,69 @@ void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& ima
             
             double time_scale = 0;
             ros::Time current_time = ros::Time::now();
-            if(!prev_time[idx].isZero()) {
-                time_scale = (1.0 / ((current_time - prev_time[idx]).nsec / 1e9));
+            if(!prev_time[cam].isZero()) {
+                time_scale = (1.0 / ((current_time - prev_time[cam]).nsec / 1e9));
             }
-            prev_time[idx] = current_time;
+            prev_time[cam] = current_time;
             
             geometry_msgs::Twist this_twist;
-            this_twist.linear.x = translation_delta.at<double>(0) * time_scale / pixels_per_metre_traversed[idx];
-            this_twist.linear.y = translation_delta.at<double>(1) * time_scale / pixels_per_metre_traversed[idx];
-            this_twist.angular.z = rotation_delta * rotation_velocity_scale[idx] * time_scale;
+            this_twist.linear.x = translation_delta.at<double>(0) * time_scale / pixels_per_metre[cam];
+            this_twist.linear.y = translation_delta.at<double>(1) * time_scale / pixels_per_metre[cam];
+            this_twist.angular.z = rotation_delta * time_scale;
             
-            if(is_first[idx]) {
-                is_first[idx] = false;
-                most_recent_average[idx] = this_twist;
-            } else {
-                most_recent_average[idx] = average(most_recent[idx], this_twist);
+            // align axes to rover
+            if(swap_axes[cam]) {
+                std::swap(this_twist.linear.x, this_twist.linear.y);
             }
-            most_recent[idx] = this_twist;
+            this_twist.linear.x *= axis_transforms[cam][0];
+            this_twist.linear.y *= axis_transforms[cam][1];
+            
+            if(is_first[cam]) {
+                is_first[cam] = false;
+                most_recent_average[cam] = this_twist;
+            } else {
+                most_recent_average[cam] = average(most_recent[cam], this_twist);
+            }
+            most_recent[cam] = this_twist;
             
             // TODO enable multithreading
             publishTwist();
         }
     }
-    prev_gray[idx] = frame_gray;
+    prev_gray[cam] = frame_gray;
 }
 
-void optical_localization::image_callback0(const sensor_msgs::Image::ConstPtr& image) {
-    process_image(image, 0);
+void optical_localization::image_callback_front(const sensor_msgs::Image::ConstPtr& image) {
+    process_image(image, FRONT_CAM);
 }
 
-void optical_localization::image_callback1(const sensor_msgs::Image::ConstPtr& image) {
-    process_image(image, 1);
+void optical_localization::image_callback_back(const sensor_msgs::Image::ConstPtr& image) {
+    process_image(image, BACK_CAM);
 }
 
-void optical_localization::image_callback2(const sensor_msgs::Image::ConstPtr& image) {
-    process_image(image, 2);
+void optical_localization::image_callback_left(const sensor_msgs::Image::ConstPtr& image) {
+    process_image(image, LEFT_CAM);
 }
 
-void optical_localization::image_callback3(const sensor_msgs::Image::ConstPtr& image) {
-    process_image(image, 3);
+void optical_localization::image_callback_right(const sensor_msgs::Image::ConstPtr& image) {
+    process_image(image, RIGHT_CAM);
 }
 
 optical_localization::optical_localization(int argc, char *argv[]) {
     // TODO pixels_per_metre_traversed is different for each cam
     // TODO camera axes tranforms
-    std::fill(pixels_per_metre_traversed, pixels_per_metre_traversed + NUM_CAMS, -1503.1124320333);
-    std::fill(rotation_velocity_scale, rotation_velocity_scale + NUM_CAMS, 1.0);
-    std::fill(is_first, is_first + NUM_CAMS, true);
-
-    ros::init(argc, argv, "optical_localization");
-    ros::NodeHandle n("~");
+    assign_pixels_per_metre();
+    assign_axis_transforms();
     
+    std::fill(is_first, is_first + NUM_CAMS, true);
+    
+    std::fill(my_twist.twist.covariance.begin(), my_twist.twist.covariance.end(), 0.0);
     my_twist.header.seq = 0;
     my_twist.header.frame_id = "base_link";
+
+    ros::init(argc, argv, "optical_localization");
     
-    for(unsigned int i = 0;i < NUM_CAMS;++i) {
-        my_twist.twist.covariance[i] = 0;
-    }
-    
-    sub[0] = n.subscribe("/optical_localization_cam0/image_raw", 1, &optical_localization::image_callback0, this);
-    sub[1] = n.subscribe("/optical_localization_cam1/image_raw", 1, &optical_localization::image_callback1, this);
-    sub[2] = n.subscribe("/optical_localization_cam2/image_raw", 1, &optical_localization::image_callback2, this);
-    sub[3] = n.subscribe("/optical_localization_cam3/image_raw", 1, &optical_localization::image_callback3, this);
-    
-    pub = n.advertise<geometry_msgs::TwistWithCovarianceStamped>("/owr/optical_localization_twist", 10, true);
+    assign_sub_pub();
 }
 
 void optical_localization::run() {
