@@ -253,6 +253,7 @@ BoardControl::BoardControl() :
     currentVel.linear.z = 0;
     
     //swerve setup
+    //Joints monitor is a debugging framework for the joints
     jMonitor.addJoint(&frontLeftWheel);
     jMonitor.addJoint(&frontRightWheel);
     jMonitor.addJoint(&backLeftWheel);
@@ -306,6 +307,7 @@ void BoardControl::run() {
     bool firstRun = true;
     nh.param<std::string>("board_tty", board, TTY);
     ROS_INFO("connecting to board on %s", board.c_str());
+    // Steve is the variable name of the board
     Bluetongue* steve = new Bluetongue(board.c_str());
     struct status s;
     s.isConnected = true;
@@ -401,11 +403,13 @@ void BoardControl::run() {
             }
             //do joint calculations
             swerveMotorVels swerveState = doVelTranslation(&(currentVel));
+	    //Update the PWN values of the four wheels (the direction and speed of spin of the wheels)
             pwmFLW = frontLeftWheel.velToPWM(swerveState.frontLeftMotorV);
             pwmFRW = frontRightWheel.velToPWM(swerveState.frontRightMotorV);
             pwmBLW = backLeftWheel.velToPWM(swerveState.backLeftMotorV);
             pwmBRW = backRightWheel.velToPWM(swerveState.backRightMotorV);
             //TODO: this should actually be the angle from the encoders
+	    //Controls the steering of the front wheels
             pwmFRS = frontRightSwerve.posToPWM(frontRightSwervePotMonitor.getPosition(), updateRateHZ);
             pwmFLS =  frontLeftSwerve.posToPWM(-frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
             pwmLIDAR = lidar.velToPWM(updateRateHZ);
@@ -419,9 +423,11 @@ void BoardControl::run() {
             
             //for now do this for actuators (use pwm)
             pwmArmTop = armUpperAct.velToPWM();
+	    //WHY IS IT NECESSARY TO DO THIS?
             armUpperAct.updatePos(s.armUpper);
             
             pwmArmBottom = armLowerAct.velToPWM();
+	    //WHY IS IT NECESSARY TO DO THIS?
             armLowerAct.updatePos(s.armLower);
             
             //and keep everything else the same
@@ -529,7 +535,7 @@ void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
     } 
 }
 
-
+//IS THIS CALLBACK ACTUALLY SERVING ANY PURPOSE ATM?
 void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
     #define MID_IN 0
