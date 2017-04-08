@@ -46,6 +46,7 @@ class optical_localization {
         geometry_msgs::TwistWithCovarianceStamped my_twist;
         
         ecl::Mutex mutex;
+        ros::AsyncSpinner asyncSpinner;
         
         void image_callback_front(const sensor_msgs::Image::ConstPtr& image);
         void image_callback_back(const sensor_msgs::Image::ConstPtr& image);
@@ -66,7 +67,7 @@ class optical_localization {
         void assign_sub_pub();
         
     public:
-        optical_localization(int argc, char *argv[]);
+        optical_localization();
         void run();
 };
 

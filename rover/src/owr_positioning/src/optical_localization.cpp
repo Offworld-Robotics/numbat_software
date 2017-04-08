@@ -21,6 +21,9 @@ void optical_localization::assign_pixels_per_metre() {
 }
 
 void optical_localization::assign_axis_transforms() {
+    // TODO make sure this is right
+    
+    // swap axes values if applicable, then multiply each axis by transform
     swap_axes[FRONT_CAM] = false;
     axis_transforms[FRONT_CAM][0] = 1;
     axis_transforms[FRONT_CAM][1] = 1;
@@ -107,6 +110,7 @@ void optical_localization::publishTwist() {
 }
 
 void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int cam) {
+    ROS_INFO_STREAM("Callback for " << cam);
     cv::Mat frame = cv_bridge::toCvCopy(image)->image;
     cv::Mat frame_gray;
     cv::cvtColor(frame, frame_gray, cv::COLOR_BGR2GRAY);
@@ -146,7 +150,6 @@ void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& ima
             }
             most_recent[cam] = this_twist;
             
-            // TODO enable multithreading
             publishTwist();
         }
     }
@@ -169,7 +172,7 @@ void optical_localization::image_callback_right(const sensor_msgs::Image::ConstP
     process_image(image, RIGHT_CAM);
 }
 
-optical_localization::optical_localization(int argc, char *argv[]) {
+optical_localization::optical_localization(): asyncSpinner(0) {
     // TODO pixels_per_metre_traversed is different for each cam
     // TODO camera axes tranforms
     assign_pixels_per_metre();
@@ -180,20 +183,18 @@ optical_localization::optical_localization(int argc, char *argv[]) {
     std::fill(my_twist.twist.covariance.begin(), my_twist.twist.covariance.end(), 0.0);
     my_twist.header.seq = 0;
     my_twist.header.frame_id = "base_link";
-
-    ros::init(argc, argv, "optical_localization");
     
     assign_sub_pub();
 }
 
 void optical_localization::run() {
-    while(ros::ok()) {
-        ros::spin();
-    }
+    asyncSpinner.start();
+    ros::waitForShutdown();
 }
 
 int main(int argc, char *argv[]) {
-    optical_localization ol(argc, argv);
+    ros::init(argc, argv, "optical_localization");
+    optical_localization ol;
     ol.run();
     return 0;
 }
