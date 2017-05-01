@@ -27,7 +27,7 @@ class JoystickFilter {
     protected:
         
         void sendMsg();
-        ros::Publisher  publisher;   
+        ros::Publisher  publisher;   //nothing should go through this 
         ros::Subscriber gpsSubscriber;  
         ros::Subscriber headingSubscriber;  
 
@@ -39,9 +39,19 @@ class JoystickFilter {
         
         //ros::Subscriber sub;
         ros::NodeHandle node;         // ros::NodeHandle nh;
-        ros::Publisher  velPublisher;
+        ros::Publisher  velPublisher; // for the wheels
+        
+        // Publishers for the Arm
+        ros::Publisher armUpperActPub;
+	ros::Publisher armLowerActPub;
+	ros::Publisher armBaseRotatePub;
+	ros::Publisher clawRotateRub;
+	ros::Publisher clawGripPub;
+        
         ros::Publisher lidarModePublisher;
         ros::Publisher lidarPosPublisher;
+	
+	
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
         

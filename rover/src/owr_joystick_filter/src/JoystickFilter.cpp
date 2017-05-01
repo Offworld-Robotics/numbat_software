@@ -69,8 +69,16 @@ JoystickFilter::JoystickFilter(const std::string topic) :
 
 
     //publisher =  node.advertise<owr_messages::position>(topic,10,true);
-    publisher = node.advertise<sensor_msgs::Joy>(topic,2,true);
+    publisher = node.advertise<sensor_msgs::Joy>(topic,2,true); //nothing should go through this
+    
     velPublisher = node.advertise<geometry_msgs::Twist>("/cmd_vel",1,false);
+    
+    armUpperActPub = node.adverise<std_msgs::Float64>("/upper_arm_act_controller/command",2,false); // TODO: WHAT SHOULD THE REMAINING PARAMETERS AFTER THE TOPIC BE?
+    armLowerActPub = node.advertise<std_msgs::Float64>("/lower_arm_act_controller/command",2,false);
+    armBaseRotatePub = node.advertise<std_msgs::Float64>("/arm_base_rotate_controller/command",2,false);
+    clawRotateRub = node.advertise<std_msgs::Float64>("/claw_rotate_controller/command",2,false);
+    clawGripPub = node.advertise<std_msgs::Float64>("/claw_grip_controller/command",2,false);
+    
     lidarModePublisher = node.advertise<std_msgs::Int16>("/owr/lidar_gimble_mode", 1, true);
     lidarPosPublisher = node.advertise<std_msgs::Float64>("/laser_tilt_joint_controller/command",1,true);
     
@@ -264,6 +272,14 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         msgsOut.axes[CLAW_ROTATE] = STOP;
     }
 
+    armUpperActPub.publish(//SOMETHING);
+    armLowerActPub.publish(//SOMETHING);
+    armBaseRotatePub.publish(//SOMETHING);
+    clawRotateRub.publish(//SOMETHING);
+    clawGripPub.publish(//SOMETHING); 
+    
+    
+
     // //Handle arm rotation
     // if(joy->buttons[DPAD_LEFT]) {
     //     msgsOut.axes[ARM_ROTATE] = ANTICLOCKWISE;
@@ -275,7 +291,7 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     // ROS_INFO("HERE: %d", ARM_ROTATE);
     // ROS_INFO("AND HERE: %f", msgsOut.axes[ARM_ROTATE]);
 
-    publisher.publish(msgsOut);
+    //publisher.publish(msgsOut);
 }
 
 
