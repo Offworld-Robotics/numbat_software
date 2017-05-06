@@ -250,48 +250,55 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
     // Handle arm movement
-    msgsOut.axes[ARM_STICK_TOP] = joy->axes[STICK_R_UD];
-    msgsOut.axes[ARM_STICK_BOTTOM] = (joy->axes[STICK_L_UD]) ;//* 0.2;
-    msgsOut.axes[ARM_ROTATE] = joy->axes[STICK_CH_LR];
+    float armActTop = joy->axes[STICK_R_UD];
+    float armActBottom = (joy->axes[STICK_L_UD]) ;//* 0.2;
+    float armRotate = joy->axes[STICK_CH_LR];
     
+    
+    float clawState = STOP; //default is stop
     // Handle claw opening and closing
     if(joy->buttons[BUTTON_LB]) {
-        msgsOut.axes[CLAW_STATE] = CLOSE;
+        clawState = CLOSE;
     } else if (joy->buttons[BUTTON_RB]) {
-        msgsOut.axes[CLAW_STATE] = OPEN;
-    } else {
-        msgsOut.axes[CLAW_STATE] = STOP;
-    }
+        clawState = OPEN;
+    } 
 
+    float clawRotate = STOP; // default is stop
     //Handle claw rotation
     if(joy->buttons[BUTTON_A]){
-        msgsOut.axes[CLAW_ROTATE] = ANTICLOCKWISE;
+        clawRotate = ANTICLOCKWISE;
     } else if(joy->buttons[BUTTON_B]){
-        msgsOut.axes[CLAW_ROTATE] = CLOCKWISE;
-    } else {
-        msgsOut.axes[CLAW_ROTATE] = STOP;
-    }
-
-    armUpperActPub.publish(//SOMETHING);
-    armLowerActPub.publish(//SOMETHING);
-    armBaseRotatePub.publish(//SOMETHING);
-    clawRotateRub.publish(//SOMETHING);
-    clawGripPub.publish(//SOMETHING); 
+        clawRotate = CLOCKWISE;
+    } 
+    
+    float armRotate = STOP;
+    //Handle arm rotation
+    if(joy->buttons[DPAD_LEFT]) {
+        armRotate = ANTICLOCKWISE;
+    } else if (joy->buttons[DPAD_RIGHT]) {
+        armRotate = CLOCKWISE;
+    } 
     
     
 
-    // //Handle arm rotation
-    // if(joy->buttons[DPAD_LEFT]) {
-    //     msgsOut.axes[ARM_ROTATE] = ANTICLOCKWISE;
-    // } else if (joy->buttons[DPAD_RIGHT]) {
-    //     msgsOut.axes[ARM_ROTATE] = CLOCKWISE;
-    // } else {
-    //     msgsOut.axes[ARM_ROTATE] = STOP;
-    // }
-    // ROS_INFO("HERE: %d", ARM_ROTATE);
-    // ROS_INFO("AND HERE: %f", msgsOut.axes[ARM_ROTATE]);
-
-    //publisher.publish(msgsOut);
+    //Handle arm rotation
+    //armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
+    //armRotateRate = (joy->axes[ARM_ROTATE]*ARM_ROTATE_RATE); // ARM_ROTATE_RATE IS UNDEFINED, RAW VALUES USED FOR NOW
+    //armIncRate = top * 5;
+    
+    
+    // is this the conversion to PWM?
+    armBottom = (armActbottom / MAX_IN) * 500 + MOTOR_MID  ;
+    armTop = (armActTop / MAX_IN) * 500 + MOTOR_MID  ;
+    
+    // publish to arm topics
+    armUpperActPub.publish(armTop);
+    armLowerActPub.publish(armBottom);
+    armBaseRotatePub.publish(armRotate);
+    clawRotateRub.publish(clawRotate);
+    clawGripPub.publish(clawState); 
+    
+    
 }
 
 
