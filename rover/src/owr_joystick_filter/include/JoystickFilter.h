@@ -20,7 +20,7 @@
 #include <std_msgs/Float64.h>
 
 class JoystickFilter {
-    // Here is a comment
+    
     public:
         JoystickFilter(const std::string topic);
         void spin();
@@ -57,8 +57,6 @@ class JoystickFilter {
         
         double gimbalRate;
 
-        sensor_msgs::Joy msgsOut;
-        
         std::string topic;
 
         

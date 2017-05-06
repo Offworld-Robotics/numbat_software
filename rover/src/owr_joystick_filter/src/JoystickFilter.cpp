@@ -73,7 +73,7 @@ JoystickFilter::JoystickFilter(const std::string topic) :
     
     velPublisher = node.advertise<geometry_msgs::Twist>("/cmd_vel",1,false);
     
-    armUpperActPub = node.adverise<std_msgs::Float64>("/upper_arm_act_controller/command",2,false); // TODO: WHAT SHOULD THE REMAINING PARAMETERS AFTER THE TOPIC BE?
+    armUpperActPub = node.advertise<std_msgs::Float64>("/upper_arm_act_controller/command",2,false); // TODO: WHAT SHOULD THE REMAINING PARAMETERS AFTER THE TOPIC BE?
     armLowerActPub = node.advertise<std_msgs::Float64>("/lower_arm_act_controller/command",2,false);
     armBaseRotatePub = node.advertise<std_msgs::Float64>("/arm_base_rotate_controller/command",2,false);
     clawRotateRub = node.advertise<std_msgs::Float64>("/claw_rotate_controller/command",2,false);
@@ -252,7 +252,6 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     // Handle arm movement
     float armActTop = joy->axes[STICK_R_UD];
     float armActBottom = (joy->axes[STICK_L_UD]) ;//* 0.2;
-    float armRotate = joy->axes[STICK_CH_LR];
     
     
     float clawState = STOP; //default is stop
@@ -288,8 +287,8 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     
     // is this the conversion to PWM?
-    armBottom = (armActbottom / MAX_IN) * 500 + MOTOR_MID  ;
-    armTop = (armActTop / MAX_IN) * 500 + MOTOR_MID  ;
+    float armBottom = (armActBottom / MAX_IN) * 500 + MOTOR_MID  ;
+    float armTop = (armActTop / MAX_IN) * 500 + MOTOR_MID  ;
     
     // publish to arm topics
     armUpperActPub.publish(armTop);

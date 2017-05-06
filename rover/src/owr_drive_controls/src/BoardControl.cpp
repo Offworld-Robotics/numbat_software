@@ -220,7 +220,7 @@ BoardControl::BoardControl() :
     cam2Button = 0;
     cam3Button = 0;
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-    joySubscriber = nh.subscribe<sensor_msgs::Joy>("/owr/joysticks",2, &BoardControl::controllerCallback, this, transportHints);
+    //joySubscriber = nh.subscribe<sensor_msgs::Joy>("/owr/joysticks",2, &BoardControl::controllerCallback, this, transportHints); removed the callback
     rotateTrimSub = nh.subscribe<std_msgs::Int32>("/owr/claw_rotate_trim",1, &BoardControl::trimCallback, this, transportHints);
     gpsPublisher = nh.advertise<sensor_msgs::NavSatFix>("/gps/fix",  10);
     battVoltPublisher = nh.advertise<std_msgs::Float64>("battery_voltage", 10);
@@ -535,54 +535,7 @@ void BoardControl::switchFeed(int * storedState, int joyState, int feedNum) {
     } 
 }
 
-//IS THIS CALLBACK ACTUALLY SERVING ANY PURPOSE ATM?
-void BoardControl::controllerCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
-    #define MID_IN 0
-    #define DIFF 0.25
-    
-    float top = joy->axes[ARM_STICK_TOP] ;//* 0.2;
-    float bottom = joy->axes[ARM_STICK_BOTTOM];//* 0.2;
-//     cameraBottomRotateIncRate = 0;
-//     cameraBottomTiltIncRate = 0;
-//     cameraTopRotateIncRate = 0;
-//     cameraTopTiltIncRate = 0;
-
-
-
-	// Set sensitivity between 0 and 1:
-    //  * 0 makes it output = input, 
-    //  * 1 makes output = input ^3
-
-    cameraBottomRotateIncRate = joy->axes[CAMERA_BOTTOM_ROTATE];
-    cameraBottomTiltIncRate = joy->axes[CAMERA_BOTTOM_TILT];
-
-    cameraTopRotateIncRate = joy->axes[CAMERA_TOP_ROTATE];
-    cameraTopTiltIncRate = joy->axes[CAMERA_TOP_TILT];
-
-    leftDrive = -joy->axes[LEFT_WHEELS];
-    rightDrive = joy->axes[RIGHT_WHEELS];
-    
-    // Handle claw
-    clawState = joy->axes[CLAW_STATE];
-    rotState = joy->axes[CLAW_ROTATE];
-
-    //Handle arm rotation
-    //armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
-    armRotateRate = (joy->axes[ARM_ROTATE]*ARM_ROTATE_RATE);
-    //armIncRate = top * 5;
-    //armBottom = (bottom / MAX_IN) * 500 + MOTOR_MID  ;
-    //armTop = (top / MAX_IN) * 500 + MOTOR_MID  ;
-    
-    if(joy->buttons[FL_SWERVE_RESET]) {
-        frontLeftSwervePotMonitor.resetPos();
-        ROS_INFO("Reset Front left Swerve");
-    }
-    if (joy->buttons[FR_SWERVE_RESET]) {
-        frontRightSwervePotMonitor.resetPos();
-        ROS_INFO("Reset Front right Swerve");
-    }
-}
 
 
 void BoardControl::velCallback(const nav_msgs::Odometry::ConstPtr& vel) {
