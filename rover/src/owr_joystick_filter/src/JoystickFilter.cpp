@@ -82,12 +82,7 @@ JoystickFilter::JoystickFilter(const std::string topic) :
     lidarModePublisher = node.advertise<std_msgs::Int16>("/owr/lidar_gimble_mode", 1, true);
     lidarPosPublisher = node.advertise<std_msgs::Float64>("/laser_tilt_joint_controller/command",1,true);
     
-    //msgsOut.axes = std::vector<float>(20);
-    msgsOut.axes.resize(20);
-    msgsOut.buttons.resize(2);
-    for(int i = 0; i < msgsOut.buttons.size(); i++) {
-        msgsOut.buttons[i] = 0;
-    }
+
     joySubscriber = node.subscribe<sensor_msgs::Joy>("joy",2, &JoystickFilter::joyCallback, this);
     armSubscriber = node.subscribe<sensor_msgs::Joy>("arm_joy", 2, &JoystickFilter::armCallback, this);
 
@@ -171,76 +166,49 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
      *      Active by default
      *      
      */
-    gimbalRate = 0.0;
-    //IMPORTANT: this will do nothing if the lidar is not is position mode
-    gimbalRate = joy->axes[STICK_CH_UD];
-    if (joy->buttons[BUTTON_A]) {
+     // New Steering Scheme Implementation
+     // left stick is forwards backwards (only the vertical axis is used)
+     // right stick is steering angle (only the horizontal axis is used)
         
-        // Thumb sticks control camera rotation while A Button is held
-
-        msgsOut.axes[CAMERA_BOTTOM_ROTATE] = joy->axes[STICK_L_LR];
-        msgsOut.axes[CAMERA_BOTTOM_TILT] = joy->axes[STICK_L_UD];
-
-        // cameraBottomRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
-        // cameraBottomTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-    } else if (joy->buttons[BUTTON_B]) {
-        // Thumb sticks control top camera rotation while B Button is held
-
-        msgsOut.axes[CAMERA_TOP_ROTATE] = joy->axes[STICK_L_LR];
-        msgsOut.axes[CAMERA_TOP_TILT] = joy->axes[STICK_L_UD];
-
-        // cameraTopRotateIncRate = joy->axes[STICK_L_LR] * CAMERA_SCALE;
-        // cameraTopTiltIncRate = joy->axes[STICK_L_UD] * CAMERA_SCALE;
-    } else {
-        // New Steering Scheme Implementation
-        // left stick is forwards backwards (only the vertical axis is used)
-        // right stick is steering angle (only the horizontal axis is used)
+     // Note coordinate system of cmdVel.linear message used to communicat with the board
+     // x = forward-backwards  forwards positive
+     // y = port-starboard 
         
-        // Note coordinate system of cmdVel.linear message used to communicat with the board
-        // x = forward-backwards  forwards positive
-        // y = port-starboard 
-        
-        // Note Eigen::Vector2d storing axes values as (x,y) 
-        //  therefore index 0 == x, index 1 == y
-        // set cmdVel.linear.y  = x-axis of R stick rescaled input
-        // get the sign (positive or negative of the axis)
-        double signYAxis = (rescaledRStick(0) > 0.0) ? 1.0: -1.0;
-        //  Magnitude of driveVector is set by rescaledLStick(1);
-        Eigen::Vector2d driveVector(0.0, rescaledLStick(1));
-        //  map direction vector argument ie angle to 
-        //  apply squared scaling of the stick input then reset the sign to give
-        //      lower sensitivity for small steering angles
-        driveVector = Eigen::Rotation2D<double>(M_PI/2 * pow(rescaledRStick(0), 2)*signYAxis) * driveVector;
+     // Note Eigen::Vector2d storing axes values as (x,y) 
+     //  therefore index 0 == x, index 1 == y
+     // set cmdVel.linear.y  = x-axis of R stick rescaled input
+     // get the sign (positive or negative of the axis)
+     double signYAxis = (rescaledRStick(0) > 0.0) ? 1.0: -1.0;
+     //  Magnitude of driveVector is set by rescaledLStick(1);
+     Eigen::Vector2d driveVector(0.0, rescaledLStick(1));
+     //  map direction vector argument ie angle to 
+     //  apply squared scaling of the stick input then reset the sign to give
+     //      lower sensitivity for small steering angles
+     driveVector = Eigen::Rotation2D<double>(M_PI/2 * pow(rescaledRStick(0), 2)*signYAxis) * driveVector;
 
-        ROS_INFO("\eRstick(0):%f Rstick(1):%f", rescaledRStick(0),rescaledRStick(1));
-        ROS_INFO("\eLstick(0):%f Lstick(1):%f", rescaledLStick(0),rescaledLStick(1));
-        ROS_INFO("\nrotated driveVector (0):%f (1):%f", driveVector(0),driveVector(1));
-        cmdVel.linear.x = driveVector(1);
-        cmdVel.linear.y = driveVector(0);
-        ROS_INFO("\nNEW Sticks cmdVel.linear Y:%f X:%f", cmdVel.linear.y, cmdVel.linear.x);
+     ROS_INFO("\eRstick(0):%f Rstick(1):%f", rescaledRStick(0),rescaledRStick(1));
+     ROS_INFO("\eLstick(0):%f Lstick(1):%f", rescaledLStick(0),rescaledLStick(1));
+     ROS_INFO("\nrotated driveVector (0):%f (1):%f", driveVector(0),driveVector(1));
+     cmdVel.linear.x = driveVector(1);
+     cmdVel.linear.y = driveVector(0);
+     ROS_INFO("\nNEW Sticks cmdVel.linear Y:%f X:%f", cmdVel.linear.y, cmdVel.linear.x);
 
 
-        /*
-        //OLD IMPLEMENTATION, MAGNITUDE STICK & DIRECTION STICK BOTH LINEAR WITH NO DEADZONE 
-        //left stick controls magnitude
-        //right stick directly chooses direction vector
-        //  direction in 2d & magnitude by stick deflection
-        //joystick values are between 1 and -1
-        double magnitude = joy->axes[SPEED_STICK] * SPEED_CAP;
-        // Add Cubic scaling of direction stick input
-        //  this will reduce sensitivity a lot for small deflections,
-        //      and smoothly increase in sensitivity for larger deflections.
-        cmdVel.linear.x = pow(joy->axes[DIRECTION_STICK_X],3) * magnitude;
-        cmdVel.linear.y = pow(joy->axes[DIRECTION_STICK_Y],3) * magnitude * -1;
-        //ROS_INFO("OLD STICKS  cmdVel.linear X:%f Y:%f \n", cmdVel.linear.x, cmdVel.linear.y);
-        */
-    }
-    msgsOut.buttons[FL_SWERVE_RESET] = joy->buttons[BUTTON_STICK_L];
-    msgsOut.buttons[FR_SWERVE_RESET] = joy->buttons[BUTTON_STICK_R];
-    msgsOut.axes[LEFT_WHEELS] = leftWheelSpeed;
-    msgsOut.axes[RIGHT_WHEELS] = rightWheelSpeed;
-    
-    publisher.publish(msgsOut);
+     /*
+     //OLD IMPLEMENTATION, MAGNITUDE STICK & DIRECTION STICK BOTH LINEAR WITH NO DEADZONE 
+     //left stick controls magnitude
+     //right stick directly chooses direction vector
+     //  direction in 2d & magnitude by stick deflection
+     //joystick values are between 1 and -1
+     double magnitude = joy->axes[SPEED_STICK] * SPEED_CAP;
+     // Add Cubic scaling of direction stick input
+     //  this will reduce sensitivity a lot for small deflections,
+     //      and smoothly increase in sensitivity for larger deflections.
+     cmdVel.linear.x = pow(joy->axes[DIRECTION_STICK_X],3) * magnitude;
+     cmdVel.linear.y = pow(joy->axes[DIRECTION_STICK_Y],3) * magnitude * -1;
+     //ROS_INFO("OLD STICKS  cmdVel.linear X:%f Y:%f \n", cmdVel.linear.x, cmdVel.linear.y);
+     */
+
     velPublisher.publish(cmdVel);
 }
 
@@ -290,12 +258,30 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     float armBottom = (armActBottom / MAX_IN) * 500 + MOTOR_MID  ;
     float armTop = (armActTop / MAX_IN) * 500 + MOTOR_MID  ;
     
-    // publish to arm topics
-    armUpperActPub.publish(armTop);
-    armLowerActPub.publish(armBottom);
-    armBaseRotatePub.publish(armRotate);
-    clawRotateRub.publish(clawRotate);
-    clawGripPub.publish(clawState); 
+    // create the messages and set the data field
+      
+    std_msgs::Float64 armUpperActMessage;
+    armUpperActMessage.data = armTop;
+    
+    std_msgs::Float64 armLowerActMessage;
+    armLowerActMessage.data = armBottom;
+    
+    std_msgs::Float64 armRotateMessage;
+    armRotateMessage.data = armRotate;
+    
+    std_msgs::Float64 clawRotateMessage;
+    clawRotateMessage.data = clawRotate;
+    
+    std_msgs::Float64 clawGripMessage;
+    clawGripMessage.data = clawState;
+  
+    
+    // publish messages to arm topics
+    armUpperActPub.publish(armUpperActMessage);
+    armLowerActPub.publish(armLowerActMessage);
+    armBaseRotatePub.publish(armRotateMessage);
+    clawRotateRub.publish(clawRotateMessage);
+    clawGripPub.publish(clawGripMessage); 
     
     
 }
