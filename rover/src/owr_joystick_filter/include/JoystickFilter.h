@@ -89,6 +89,10 @@ class JoystickFilter {
         double deadZoneCorrectedMagR;
         double deadzoneRescaledRStickMag;
         Eigen::Vector2d rescaledRStick;
+	
+	
+	// claw grip state
+	int clawState;
 };
 
 #endif //JOYSTICK_FILTER_H

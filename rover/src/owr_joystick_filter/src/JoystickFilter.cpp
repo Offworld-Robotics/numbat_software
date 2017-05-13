@@ -47,6 +47,8 @@
 
 // Claw constants
 #define CLAW_ROTATION_MAX 90
+#define CLAW_ROTATION_MID 45
+
 
 #define CLAW_STOP_PWN 1500
 #define CLAW_CLOCKWISE_PWM 1490
@@ -230,9 +232,13 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     float armActTop = joy->axes[STICK_R_UD];
     float armActBottom = (joy->axes[STICK_L_UD]) ;//* 0.2;
     
+    // Convert to PWM
+    float armBottom = (armActBottom / MAX_IN) * 500 + MOTOR_MID  ;
+    float armTop = (armActTop / MAX_IN) * 500 + MOTOR_MID  ;
     
-    float clawState = STOP; //default is stop
-    // Handle claw opening and closing
+    
+    clawState = STOP; //default is stop
+    // Handle claw opening and closing by writing state to class variable clawState
     if(joy->buttons[BUTTON_LB]) {
         clawState = CLOSE;
     } else if (joy->buttons[BUTTON_RB]) {
@@ -263,11 +269,7 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
     //armRotateRate = (joy->axes[ARM_ROTATE]*ARM_ROTATE_RATE); // ARM_ROTATE_RATE IS UNDEFINED, RAW VALUES USED FOR NOW
     //armIncRate = top * 5;
-    
-    
-    // is this the conversion to PWM?
-    float armBottom = (armActBottom / MAX_IN) * 500 + MOTOR_MID  ;
-    float armTop = (armActTop / MAX_IN) * 500 + MOTOR_MID  ;
+   
     
     // create the messages and set the data field
       
@@ -282,18 +284,15 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     std_msgs::Float64 clawRotateMessage;
     clawRotateMessage.data = clawRotatePWM;
-    
-    std_msgs::Float64 clawGripMessage;
-    clawGripMessage.data = clawState;
   
     
     // publish messages to arm topics
     armUpperActPub.publish(armUpperActMessage);
     armLowerActPub.publish(armLowerActMessage);
     armBaseRotatePub.publish(armRotateMessage);
-    clawRotateRub.publish(clawRotateMessage);
-    clawGripPub.publish(clawGripMessage); 
+    clawRotateRub.publish(clawRotateMessage);    
     
+    // Claw grip publishing done in spin() function [LOOP]
     
 }
 
@@ -301,11 +300,23 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 //main loop
 void JoystickFilter::spin() {
     ros::Rate r(20);
+    clawGrip = CLAW_ROTATION_MID;
     while(ros::ok()) {
         
         lidarPos.data += gimbalRate * LIDAR_MULTIPLIER;
         lidarPosPublisher.publish<std_msgs::Float64>(lidarPos);
-        
+	if (clawState == OPEN) {
+	  clawGrip += 1;
+	else if (clawState == CLOSE) {
+	  clawGrip -= 1;
+	}
+	
+	float clawGripPWM = (clawGrip/(float)CLAW_ROTATION_MAX)*1000.0 + 1000;  
+        std_msgs::Float64 clawGripMessage;
+	clawGripMessage.data = clawGripPWM;
+	
+	clawGripPub.publish(clawGripMessage);
+	
         r.sleep();
         ros::spinOnce();
     }
