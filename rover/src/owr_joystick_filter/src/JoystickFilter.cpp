@@ -11,6 +11,7 @@
 #include "ButtonDefs.h"
 #include "RoverDefs.h"
 #include "JoystickFilter.h" 
+#include "Bluetounge2Params.h"
 
 #include <iostream>
 #include <list>
@@ -43,6 +44,14 @@
 #define LIDAR_STATIONARY 2
 #define LIDAR_POSITION 3
 #define LIDAR_MULTIPLIER 0.01
+
+// Claw constants
+#define CLAW_ROTATION_MAX 90
+
+#define CLAW_STOP_PWN 1500
+#define CLAW_CLOCKWISE_PWM 1490
+#define CLAW_ANTICLOCKWISE_PWM 1510
+
  
 int main(int argc, char ** argv) {
     
@@ -230,13 +239,15 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         clawState = OPEN;
     } 
 
-    float clawRotate = STOP; // default is stop
+    float clawRotatePWM = CLAW_STOP_PWN; // default is stop
     //Handle claw rotation
     if(joy->buttons[BUTTON_A]){
-        clawRotate = ANTICLOCKWISE;
+        clawRotatePWM = CLAW_ANTICLOCKWISE_PWM;
     } else if(joy->buttons[BUTTON_B]){
-        clawRotate = CLOCKWISE;
+        clawRotatePWM = CLAW_CLOCKWISE_PWM;
     } 
+    
+    
     
     float armRotate = STOP;
     //Handle arm rotation
@@ -246,7 +257,7 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         armRotate = CLOCKWISE;
     } 
     
-    
+    float armRotatePWM = armRotate*ARM_ROTATE_RATE;
 
     //Handle arm rotation
     //armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
@@ -267,10 +278,10 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armLowerActMessage.data = armBottom;
     
     std_msgs::Float64 armRotateMessage;
-    armRotateMessage.data = armRotate;
+    armRotateMessage.data = armRotatePWM;
     
     std_msgs::Float64 clawRotateMessage;
-    clawRotateMessage.data = clawRotate;
+    clawRotateMessage.data = clawRotatePWM;
     
     std_msgs::Float64 clawGripMessage;
     clawGripMessage.data = clawState;
