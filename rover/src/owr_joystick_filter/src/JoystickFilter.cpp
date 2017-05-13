@@ -11,7 +11,7 @@
 #include "ButtonDefs.h"
 #include "RoverDefs.h"
 #include "JoystickFilter.h" 
-#include "Bluetounge2Params.h"
+//#include "Bluetounge2Params.h" TODO: Fix this later
 
 #include <iostream>
 #include <list>
@@ -53,6 +53,9 @@
 #define CLAW_STOP_PWN 1500
 #define CLAW_CLOCKWISE_PWM 1490
 #define CLAW_ANTICLOCKWISE_PWM 1510
+
+// Arm constants
+#define ARM_ROTATE_RATE 0.01
 
  
 int main(int argc, char ** argv) {
@@ -300,14 +303,14 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 //main loop
 void JoystickFilter::spin() {
     ros::Rate r(20);
-    clawGrip = CLAW_ROTATION_MID;
+    float clawGrip = CLAW_ROTATION_MID;
     while(ros::ok()) {
         
         lidarPos.data += gimbalRate * LIDAR_MULTIPLIER;
         lidarPosPublisher.publish<std_msgs::Float64>(lidarPos);
 	if (clawState == OPEN) {
 	  clawGrip += 1;
-	else if (clawState == CLOSE) {
+	} else if (clawState == CLOSE) {
 	  clawGrip -= 1;
 	}
 	
