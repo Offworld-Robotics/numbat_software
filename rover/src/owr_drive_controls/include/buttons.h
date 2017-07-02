@@ -19,10 +19,14 @@
 #define STICK_R_UD     4
 #define STICK_RT       5
 
-#define DPAD_LEFT	   6 // These aren't mapped yet it used to be 2 array indexes (L&R - U&D)
-#define DPAD_RIGHT     7
-#define DPAD_UP 	   8
-#define DPAD_DOWN      9
+// Need to test if these indices are correct
+#define DPAD_LR 6
+#define DPAD_UD 7
+
+//#define DPAD_LEFT	   6 // These aren't mapped yet it used to be 2 array indexes (L&R - U&D)
+//#define DPAD_RIGHT     7
+//#define DPAD_UP 	   8
+//#define DPAD_DOWN      9
 
 
 //and then the layout

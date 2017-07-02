@@ -247,7 +247,8 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     } else if (joy->buttons[BUTTON_RB]) {
         clawState = OPEN;
     } 
-
+    
+    // This also isn't working WHY?
     float clawRotatePWM = CLAW_STOP_PWN; // default is stop
     //Handle claw rotation
     if(joy->buttons[BUTTON_A]){
@@ -257,21 +258,18 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     } 
     
     
-    
+    // The DPAD needs to be treated as a joystick value between -1 and 1
+    // HOW do i read this value ??
     float armRotate = STOP;
     //Handle arm rotation
-    if(joy->buttons[DPAD_LEFT]) {
+    if(joy->axes[DPAD_LR]<0) {
         armRotate = ANTICLOCKWISE;
-    } else if (joy->buttons[DPAD_RIGHT]) {
+    } else if (joy->buttons[DPAD_LR]>0) {
         armRotate = CLOCKWISE;
     } 
     
     float armRotatePWM = armRotate*ARM_ROTATE_RATE;
 
-    //Handle arm rotation
-    //armRotateRate = joy->axes[ARM_ROTATE] * ARM_INCE_RATE_MULTIPLIER;
-    //armRotateRate = (joy->axes[ARM_ROTATE]*ARM_ROTATE_RATE); // ARM_ROTATE_RATE IS UNDEFINED, RAW VALUES USED FOR NOW
-    //armIncRate = top * 5;
    
     
     // create the messages and set the data field

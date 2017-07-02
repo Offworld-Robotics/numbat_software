@@ -31,11 +31,16 @@
 #define STICK_CH_UD	   7
 
 //DPAD left and right buttons are used for arm rotation
-#define DPAD_LEFT	   6 // These aren't mapped yet it used to be 2 array indexes (L&R - U&D)
-#define DPAD_RIGHT     7
+//However these are stored as a joystick in joy->axes 
+#define DPAD_LR 6
+#define DPAD_UD 7
 
-#define DPAD_UP 	   8
-#define DPAD_DOWN      9
+
+//#define DPAD_LEFT	   6 // These aren't mapped yet it used to be 2 array indexes (L&R - U&D)
+//#define DPAD_RIGHT     7
+
+//#define DPAD_UP 	   8
+//#define DPAD_DOWN      9
 
 
 //and then the layout
