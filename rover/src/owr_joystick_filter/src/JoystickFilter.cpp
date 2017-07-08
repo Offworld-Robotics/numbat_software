@@ -48,11 +48,8 @@
 // Claw constants
 #define CLAW_ROTATION_MAX 90
 #define CLAW_ROTATION_MID 45
+#define CLAW_ROTATE_RATE 0.1 //fraction of a second for one half turn
 
-
-#define CLAW_STOP_PWN 1500
-#define CLAW_CLOCKWISE_PWM 1490
-#define CLAW_ANTICLOCKWISE_PWM 1510
 
 // Arm constants
 #define ARM_ROTATE_RATE 0.01
@@ -245,15 +242,15 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         clawState = OPEN;
     } 
     
-    // This is publishing the values but nothing happens
-    float clawRotatePWM = CLAW_STOP_PWN; // default is stop
+    // This is an angular velocity that will be converted to a PWM value later
+    float clawRotateAngularVel = STOP; // default is stop
     //Handle claw rotation
     if(joy->buttons[BUTTON_A]){
 	ROS_INFO("Spinning claw anticlockwise");
-	clawRotatePWM = CLAW_ANTICLOCKWISE_PWM;
+	clawRotateAngularVel = M_PI*CLAW_ROTATE_RATE;
     } else if(joy->buttons[BUTTON_B]){
 	ROS_INFO("Spinning claw clockwise");
-	clawRotatePWM = CLAW_CLOCKWISE_PWM;
+	clawRotateAngularVel = -1*M_PI*CLAW_ROTATE_RATE;
     } 
     
     
@@ -286,7 +283,7 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armRotateMessage.data = armRotatePWM;
     
     std_msgs::Float64 clawRotateMessage;
-    clawRotateMessage.data = clawRotatePWM;
+    clawRotateMessage.data = clawRotateAngularVel;
   
     
     // publish messages to arm topics
