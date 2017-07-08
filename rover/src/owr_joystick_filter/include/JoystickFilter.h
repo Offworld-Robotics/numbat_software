@@ -44,7 +44,7 @@ class JoystickFilter {
         ros::Publisher armUpperActPub;
 	ros::Publisher armLowerActPub;
 	ros::Publisher armBaseRotatePub;
-	ros::Publisher clawRotateRub;
+	ros::Publisher clawRotatePub;
 	ros::Publisher clawGripPub;
         
         ros::Publisher lidarModePublisher;
