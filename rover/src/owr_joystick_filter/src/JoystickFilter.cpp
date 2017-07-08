@@ -90,7 +90,7 @@ JoystickFilter::JoystickFilter(const std::string topic) :
     armUpperActPub = node.advertise<std_msgs::Float64>("/upper_arm_act_controller/command",2,false); // TODO: WHAT SHOULD THE REMAINING PARAMETERS AFTER THE TOPIC BE?
     armLowerActPub = node.advertise<std_msgs::Float64>("/lower_arm_act_controller/command",2,false);
     armBaseRotatePub = node.advertise<std_msgs::Float64>("/arm_base_rotate_controller/command",2,false);
-    clawRotateRub = node.advertise<std_msgs::Float64>("/claw_rotate_controller/command",2,false);
+    clawRotatePub = node.advertise<std_msgs::Float64>("/claw_rotate_controller/command",2,false);
     clawGripPub = node.advertise<std_msgs::Float64>("/claw_grip_controller/command",2,false);
     
     lidarModePublisher = node.advertise<std_msgs::Int16>("/owr/lidar_gimble_mode", 1, true);
@@ -291,7 +291,7 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     armUpperActPub.publish(armUpperActMessage);
     armLowerActPub.publish(armLowerActMessage);
     armBaseRotatePub.publish(armRotateMessage);
-    clawRotateRub.publish(clawRotateMessage);    
+    clawRotatePub.publish(clawRotateMessage);    
     
     // Claw grip publishing done in spin() function [LOOP]
     
