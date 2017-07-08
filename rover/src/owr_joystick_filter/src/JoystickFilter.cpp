@@ -261,8 +261,10 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     //Handle arm rotation
     if(joy->axes[DPAD_LR]<0) {
         armRotate = ANTICLOCKWISE;
+	ROS_INFO("SPINNING ARM ANTICLOCKWISE");
     } else if (joy->buttons[DPAD_LR]>0) {
         armRotate = CLOCKWISE;
+	ROS_INFO("SPINNING ARM CLOCKWISE");
     } 
     
     float armRotatePWM = armRotate*ARM_ROTATE_RATE;
