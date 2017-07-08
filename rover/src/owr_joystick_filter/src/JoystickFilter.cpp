@@ -81,9 +81,6 @@ JoystickFilter::JoystickFilter(const std::string topic) :
     
     lidarModeMsg.data = LIDAR_CONTINUOS;
 
-
-    //publisher =  node.advertise<owr_messages::position>(topic,10,true);
-    publisher = node.advertise<sensor_msgs::Joy>(topic,2,true); //nothing should go through this
     
     velPublisher = node.advertise<geometry_msgs::Twist>("/cmd_vel",1,false);
     
