@@ -245,26 +245,29 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         clawState = OPEN;
     } 
     
-    // THIS NEEDS TESTING AGAIN - don't know why it isn't working
+    // This is publishing the values but nothing happens
     float clawRotatePWM = CLAW_STOP_PWN; // default is stop
     //Handle claw rotation
     if(joy->buttons[BUTTON_A]){
-        clawRotatePWM = CLAW_ANTICLOCKWISE_PWM;
+	ROS_INFO("Spinning claw anticlockwise");
+	clawRotatePWM = CLAW_ANTICLOCKWISE_PWM;
     } else if(joy->buttons[BUTTON_B]){
-        clawRotatePWM = CLAW_CLOCKWISE_PWM;
+	ROS_INFO("Spinning claw clockwise");
+	clawRotatePWM = CLAW_CLOCKWISE_PWM;
     } 
     
     
     // The DPAD needs to be treated as a joystick value between -1 and 1
-    // THIS NEEDS TESTING
+    // Something seems to be being published when the right or down DPAD arrow is pressed
+    // This needs debugging
     float armRotate = STOP;
     //Handle arm rotation
     if(joy->axes[DPAD_LR]<0) {
         armRotate = ANTICLOCKWISE;
-	ROS_INFO("SPINNING ARM ANTICLOCKWISE");
+	ROS_INFO("Spinning arm anticlockwise");
     } else if (joy->buttons[DPAD_LR]>0) {
         armRotate = CLOCKWISE;
-	ROS_INFO("SPINNING ARM CLOCKWISE");
+	ROS_INFO("Spinning arm clockwise");
     } 
     
     float armRotatePWM = armRotate*ARM_ROTATE_RATE;
