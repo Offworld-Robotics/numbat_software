@@ -14,10 +14,10 @@
 
 void optical_localization::assign_pixels_per_metre() {
     // TODO change values according to cam
-    pixels_per_metre[FRONT_CAM] = -1503.1124320333;
-    pixels_per_metre[BACK_CAM] = -1503.1124320333;
-    pixels_per_metre[LEFT_CAM] = -1503.1124320333;
-    pixels_per_metre[RIGHT_CAM] = -1503.1124320333;
+    pixels_per_metre[FRONT_CAM] = PIXELS_PER_METRE_FRONT;
+    pixels_per_metre[BACK_CAM] = PIXELS_PER_METRE_BACK;
+    pixels_per_metre[LEFT_CAM] = PIXELS_PER_METRE_LEFT;
+    pixels_per_metre[RIGHT_CAM] = PIXELS_PER_METRE_RIGHT;
 }
 
 void optical_localization::assign_axis_transforms() {
