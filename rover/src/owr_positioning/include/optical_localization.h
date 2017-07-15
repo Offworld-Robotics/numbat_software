@@ -60,6 +60,7 @@ class optical_localization {
         geometry_msgs::Twist getVectorSum();
         
         void publishTwist();
+        void printTwist(const geometry_msgs::Twist &twist);
         
         void assign_pixels_per_metre();
         void assign_axis_transforms();

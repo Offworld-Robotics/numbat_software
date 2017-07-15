@@ -88,6 +88,12 @@ geometry_msgs::Twist optical_localization::getVectorSum() {
     return result;
 }
 
+void optical_localization::printTwist(const geometry_msgs::Twist &twist) {
+    ROS_INFO_STREAM("lin x: " << twist.linear.x);
+    ROS_INFO_STREAM("lin y: " << twist.linear.y);
+    ROS_INFO_STREAM("ang z: " << twist.angular.z);
+}
+
 void optical_localization::publishTwist() {
     mutex.lock();
     for(unsigned int i = 0;i < NUM_CAMS;++i) {
@@ -99,12 +105,11 @@ void optical_localization::publishTwist() {
     my_twist.twist.twist = getVectorSum();
     my_twist.header.stamp = ros::Time::now();
     
+    ROS_INFO_STREAM("Publishing:");
+    printTwist(my_twist.twist.twist);
+    
     pub.publish(my_twist);
     ++my_twist.header.seq;
-    
-    ROS_INFO_STREAM("lin x: " << my_twist.twist.twist.linear.x);
-    ROS_INFO_STREAM("lin y: " << my_twist.twist.twist.linear.y);
-    ROS_INFO_STREAM("ang z: " << my_twist.twist.twist.angular.z);
     
     mutex.unlock();
 }
@@ -148,6 +153,7 @@ void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& ima
             } else {
                 most_recent_average[cam] = average(most_recent[cam], this_twist);
             }
+            //printTwist(this_twist);
             most_recent[cam] = this_twist;
             
             publishTwist();
