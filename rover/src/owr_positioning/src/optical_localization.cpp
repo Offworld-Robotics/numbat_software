@@ -89,9 +89,7 @@ geometry_msgs::Twist optical_localization::getVectorSum() {
 }
 
 void optical_localization::printTwist(const geometry_msgs::Twist &twist) {
-    ROS_INFO_STREAM("lin x: " << twist.linear.x);
-    ROS_INFO_STREAM("lin y: " << twist.linear.y);
-    ROS_INFO_STREAM("ang z: " << twist.angular.z);
+    ROS_INFO("lin x: %f, lin y: %f, ang z: %f", twist.linear.x, twist.linear.y, twist.angular.z);
 }
 
 void optical_localization::publishTwist() {
@@ -105,7 +103,6 @@ void optical_localization::publishTwist() {
     my_twist.twist.twist = getVectorSum();
     my_twist.header.stamp = ros::Time::now();
     
-    ROS_INFO_STREAM("Publishing:");
     printTwist(my_twist.twist.twist);
     
     pub.publish(my_twist);
@@ -115,10 +112,9 @@ void optical_localization::publishTwist() {
 }
 
 void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int cam) {
-    ROS_INFO_STREAM("Callback for " << cam);
-    cv::Mat frame = cv_bridge::toCvCopy(image)->image;
+    ROS_INFO_STREAM("Callback for cam " << cam << " - " <<  cam_names[cam]);
     cv::Mat frame_gray;
-    cv::cvtColor(frame, frame_gray, cv::COLOR_BGR2GRAY);
+    cv::cvtColor(cv_bridge::toCvCopy(image)->image, frame_gray, cv::COLOR_BGR2GRAY);
     
     if(!prev_gray[cam].empty()) {
         cv::Mat affineTransform = estimateRigidTransform(prev_gray[cam], frame_gray, false);
@@ -191,6 +187,11 @@ optical_localization::optical_localization(): asyncSpinner(0) {
     my_twist.header.frame_id = "base_link";
     
     assign_sub_pub();
+    
+    cam_names[FRONT_CAM] = "front";
+    cam_names[BACK_CAM] = "back";
+    cam_names[LEFT_CAM] = "left";
+    cam_names[RIGHT_CAM] = "right";
 }
 
 void optical_localization::run() {

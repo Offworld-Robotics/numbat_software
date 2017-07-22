@@ -1,52 +1,56 @@
 #ifndef OPTICAL_LOCALIZATION_H
 #define OPTICAL_LOCALIZATION_H
 
+#include <string>
 #include <ros/ros.h>
 #include <opencv2/imgproc.hpp>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TwistWithCovarianceStamped.h>
 #include <ecl/threads.hpp>
 
+#define MAX_CAMS 4U
 #define NUM_CAMS 4U
 #define FRONT_CAM 0U
 #define BACK_CAM 1U
 #define LEFT_CAM 2U
 #define RIGHT_CAM 3U
 
-#define PIXELS_PER_METRE_FRONT -1503.1124320333
-#define PIXELS_PER_METRE_BACK -1503.1124320333
-#define PIXELS_PER_METRE_LEFT -1503.1124320333
-#define PIXELS_PER_METRE_RIGHT -1503.1124320333
+#define PIXELS_PER_METRE_FRONT 1503.1124320333
+#define PIXELS_PER_METRE_BACK 1503.1124320333
+#define PIXELS_PER_METRE_LEFT 1503.1124320333
+#define PIXELS_PER_METRE_RIGHT 1503.1124320333
 
 class optical_localization {
     private:
         ros::Publisher pub;
-        ros::Subscriber sub[NUM_CAMS];
+        ros::Subscriber sub[MAX_CAMS];
         
-        cv::Mat prev_gray[NUM_CAMS];
+        cv::Mat prev_gray[MAX_CAMS];
         
-        ros::Time prev_time[NUM_CAMS];
+        ros::Time prev_time[MAX_CAMS];
         
         // image displacement scale for each camera
-        double pixels_per_metre[NUM_CAMS];
+        double pixels_per_metre[MAX_CAMS];
         
         // axes mappings for each camera
-        bool swap_axes[NUM_CAMS];
-        double axis_transforms[NUM_CAMS][2];
+        bool swap_axes[MAX_CAMS];
+        double axis_transforms[MAX_CAMS][2];
         
-        bool is_first[NUM_CAMS];
+        bool is_first[MAX_CAMS];
         
         // most recent calculated twist for each camera
-        geometry_msgs::Twist most_recent[NUM_CAMS];
+        geometry_msgs::Twist most_recent[MAX_CAMS];
         
         // most recent averaged twist for each camera
-        geometry_msgs::Twist most_recent_average[NUM_CAMS];
+        geometry_msgs::Twist most_recent_average[MAX_CAMS];
         
         // the final twist to be published
         geometry_msgs::TwistWithCovarianceStamped my_twist;
         
         ecl::Mutex mutex;
         ros::AsyncSpinner asyncSpinner;
+        
+        std::string cam_names[MAX_CAMS];
         
         void image_callback_front(const sensor_msgs::Image::ConstPtr& image);
         void image_callback_back(const sensor_msgs::Image::ConstPtr& image);
