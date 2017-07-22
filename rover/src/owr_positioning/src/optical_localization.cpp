@@ -120,8 +120,6 @@ void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& ima
         cv::Mat affineTransform = estimateRigidTransform(prev_gray[cam], frame_gray, false);
         if(!affineTransform.empty()) {
             cv::Mat translation_delta = affineTransform.col(2);
-            double scale_x_delta = norm(affineTransform.col(0));
-            double scale_y_delta = norm(affineTransform.col(1));
             double rotation_delta = atan2(affineTransform.at<double>(1,1), affineTransform.at<double>(0,1)) - M_PI/2.0;
             
             double time_scale = 0;
@@ -133,7 +131,7 @@ void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& ima
             
             geometry_msgs::Twist this_twist;
             this_twist.linear.x = translation_delta.at<double>(0) * time_scale / pixels_per_metre[cam];
-            this_twist.linear.y = translation_delta.at<double>(1) * time_scale / pixels_per_metre[cam];
+            this_twist.linear.y = -translation_delta.at<double>(1) * time_scale / pixels_per_metre[cam];
             this_twist.angular.z = rotation_delta * time_scale;
             
             // align axes to rover
