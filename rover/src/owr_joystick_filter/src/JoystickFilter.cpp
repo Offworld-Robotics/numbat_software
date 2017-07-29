@@ -256,19 +256,21 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     
     // The DPAD needs to be treated as a joystick value between -1 and 1
     // Something seems to be being published when the right or down DPAD arrow is pressed
-    // This needs debugging
+    // This STILL needs debugging
     float armRotate = STOP;
     //Handle arm rotation
     if(joy->axes[DPAD_LR]<0) {
-        armRotate = ANTICLOCKWISE;
+	armRotate = 1450;
+        //armRotate = ANTICLOCKWISE;
 	ROS_INFO("Spinning arm anticlockwise");
     } else if (joy->buttons[DPAD_LR]>0) {
-        armRotate = CLOCKWISE;
+	armRotate = 1550;
+        //armRotate = CLOCKWISE;
 	ROS_INFO("Spinning arm clockwise");
     } 
     
-    float armRotatePWM = armRotate*ARM_ROTATE_RATE;
-
+    //float armRotatePWM = armRotate*ARM_ROTATE_RATE;
+    float armRotatePWM = armRotate;
    
     
     // create the messages and set the data field
