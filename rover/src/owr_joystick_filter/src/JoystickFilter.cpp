@@ -259,8 +259,8 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     // This STILL needs debugging
     float armRotate = STOP;
     //Handle arm rotation
-    std::cout << "THe value of joy->axes[DPAD_LR] is" << joy->axes[DPAD_LR] << std::endl;
-    ROS_WARN("The value of joy->axes[DPAD_LR] is %f" , joy->axes[DPAD_LR]);
+    std::cout << "The value of joy->axes[DPAD_LR] is" << joy->axes[DPAD_LR] << std::endl;
+    ROS_ERROR("The value of joy->axes[DPAD_LR] is %f" , joy->axes[DPAD_LR]);
     if(joy->axes[DPAD_LR]<0) {
 	// this code is running when the RIGHT DPAD arrow is pressed
 	armRotate = 1450;
