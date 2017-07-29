@@ -259,7 +259,9 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     // This STILL needs debugging
     float armRotate = STOP;
     //Handle arm rotation
+    ROS_DEBUG("The value of joy->axes[DPAD_LR] is %f" , joy->axes[DPAD_LR]);
     if(joy->axes[DPAD_LR]<0) {
+	// this code is running when the RIGHT DPAD arrow is pressed
 	armRotate = 1450;
         //armRotate = ANTICLOCKWISE;
 	ROS_INFO("Spinning arm anticlockwise");
