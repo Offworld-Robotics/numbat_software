@@ -66,10 +66,17 @@ class optical_localization {
         void publishTwist();
         void printTwist(const geometry_msgs::Twist &twist);
         
+        // initialise pixels-to-metres scalar coefficients
         void assign_pixels_per_metre();
+        
+        // initialise pre-defined axis transformation factors
         void assign_axis_transforms();
         
+        // initialise subscribers and publishers
         void assign_sub_pub();
+        
+        // helper to transform twists into the rover's frame of reference
+        void align_axes(geometry_msgs::Twist &twist, const unsigned int cam);
         
     public:
         optical_localization();

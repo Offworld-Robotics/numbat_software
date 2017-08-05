@@ -21,24 +21,37 @@ void optical_localization::assign_pixels_per_metre() {
 }
 
 void optical_localization::assign_axis_transforms() {
-    // TODO make sure this is right
-    
     // swap axes values if applicable, then multiply each axis by transform
-    swap_axes[FRONT_CAM] = false;
+    swap_axes[FRONT_CAM] = true;
     axis_transforms[FRONT_CAM][0] = 1;
     axis_transforms[FRONT_CAM][1] = 1;
     
-    swap_axes[BACK_CAM] = false;
+    swap_axes[BACK_CAM] = true;
     axis_transforms[BACK_CAM][0] = -1;
     axis_transforms[BACK_CAM][1] = -1;
     
-    swap_axes[LEFT_CAM] = true;
-    axis_transforms[LEFT_CAM][0] = -1;
-    axis_transforms[LEFT_CAM][1] = 1;
+    swap_axes[LEFT_CAM] = false;
+    axis_transforms[LEFT_CAM][0] = 1;
+    axis_transforms[LEFT_CAM][1] = -1;
     
-    swap_axes[RIGHT_CAM] = true;
-    axis_transforms[RIGHT_CAM][0] = 1;
-    axis_transforms[RIGHT_CAM][1] = -1;
+    swap_axes[RIGHT_CAM] = false;
+    axis_transforms[RIGHT_CAM][0] = -1;
+    axis_transforms[RIGHT_CAM][1] = 1;
+}
+
+void optical_localization::align_axes(geometry_msgs::Twist &twist, const unsigned int cam) {
+    // camera's x-axis is reversed
+    twist.linear.x = -twist.linear.x;
+    
+    // align camera's axes to rover's
+    if(swap_axes[cam]) {
+        std::swap(twist.linear.x, twist.linear.y);
+    }
+    twist.linear.x *= axis_transforms[cam][0];
+    twist.linear.y *= axis_transforms[cam][1];
+    
+    // rover's angular-z direction is opposite of the camera's
+    twist.anular.z = -twist.anular.z;
 }
 
 void optical_localization::assign_sub_pub() {
@@ -131,15 +144,10 @@ void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& ima
             
             geometry_msgs::Twist this_twist;
             this_twist.linear.x = translation_delta.at<double>(0) * time_scale / pixels_per_metre[cam];
-            this_twist.linear.y = -translation_delta.at<double>(1) * time_scale / pixels_per_metre[cam];
+            this_twist.linear.y = translation_delta.at<double>(1) * time_scale / pixels_per_metre[cam];
             this_twist.angular.z = rotation_delta * time_scale;
             
-            // align axes to rover
-            if(swap_axes[cam]) {
-                std::swap(this_twist.linear.x, this_twist.linear.y);
-            }
-            this_twist.linear.x *= axis_transforms[cam][0];
-            this_twist.linear.y *= axis_transforms[cam][1];
+            align_axes(this_twist, cam);
             
             if(is_first[cam]) {
                 is_first[cam] = false;
