@@ -51,7 +51,7 @@ void optical_localization::align_axes(geometry_msgs::Twist &twist, const unsigne
     twist.linear.y *= axis_transforms[cam][1];
     
     // rover's angular-z direction is opposite of the camera's
-    twist.anular.z = -twist.anular.z;
+    twist.angular.z = -twist.angular.z;
 }
 
 void optical_localization::assign_sub_pub() {
