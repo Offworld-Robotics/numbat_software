@@ -21,7 +21,7 @@ void optical_localization::assign_pixels_per_metre() {
 }
 
 void optical_localization::assign_axis_transforms() {
-    // swap axes values if applicable, then multiply each axis by transform
+    // swap axes values if needed, then reverse axes direction if needed
     swap_axes[FRONT_CAM] = true;
     axis_transforms[FRONT_CAM][0] = 1;
     axis_transforms[FRONT_CAM][1] = 1;
@@ -31,27 +31,21 @@ void optical_localization::assign_axis_transforms() {
     axis_transforms[BACK_CAM][1] = -1;
     
     swap_axes[LEFT_CAM] = false;
-    axis_transforms[LEFT_CAM][0] = 1;
-    axis_transforms[LEFT_CAM][1] = -1;
+    axis_transforms[LEFT_CAM][0] = -1;
+    axis_transforms[LEFT_CAM][1] = 1;
     
     swap_axes[RIGHT_CAM] = false;
-    axis_transforms[RIGHT_CAM][0] = -1;
-    axis_transforms[RIGHT_CAM][1] = 1;
+    axis_transforms[RIGHT_CAM][0] = 1;
+    axis_transforms[RIGHT_CAM][1] = -1;
 }
 
 void optical_localization::align_axes(geometry_msgs::Twist &twist, const unsigned int cam) {
-    // camera's x-axis is reversed
-    twist.linear.x = -twist.linear.x;
-    
     // align camera's axes to rover's
     if(swap_axes[cam]) {
         std::swap(twist.linear.x, twist.linear.y);
     }
     twist.linear.x *= axis_transforms[cam][0];
     twist.linear.y *= axis_transforms[cam][1];
-    
-    // rover's angular-z direction is opposite of the camera's
-    twist.angular.z = -twist.angular.z;
 }
 
 void optical_localization::assign_sub_pub() {
