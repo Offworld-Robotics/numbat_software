@@ -1,19 +1,19 @@
 <launch>
-	<node pkg="gscam" type="gscam" name="optical_localization_cam0" output="screen">
-		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/video0 ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
-		<remap from="/camera/image_raw" to="/optical_localization_cam0/image_raw"/>
+	<node pkg="gscam" type="gscam" name="optical_localization_cam_front" output="screen">
+		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/opticalflow_cam_front ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
+		<remap from="/camera/image_raw" to="/optical_localization_cam_front/image_raw"/>
 	</node>
-	<node pkg="gscam" type="gscam" name="optical_localization_cam1" output="screen">
-		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/video1 ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
-		<remap from="/camera/image_raw" to="/optical_localization_cam1/image_raw"/>
+	<node pkg="gscam" type="gscam" name="optical_localization_cam_back" output="screen">
+		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/opticalflow_cam_back ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
+		<remap from="/camera/image_raw" to="/optical_localization_cam_back/image_raw"/>
 	</node>
-	<node pkg="gscam" type="gscam" name="optical_localization_cam2" output="screen">
-		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/video2 ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
-		<remap from="/camera/image_raw" to="/optical_localization_cam2/image_raw"/>
+	<node pkg="gscam" type="gscam" name="optical_localization_cam_left" output="screen">
+		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/opticalflow_cam_left ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
+		<remap from="/camera/image_raw" to="/optical_localization_cam_left/image_raw"/>
 	</node>
-	<node pkg="gscam" type="gscam" name="optical_localization_cam3" output="screen">
-		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/video3 ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
-		<remap from="/camera/image_raw" to="/optical_localization_cam3/image_raw"/>
+	<node pkg="gscam" type="gscam" name="optical_localization_cam_right" output="screen">
+		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/opticalflow_cam_right ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
+		<remap from="/camera/image_raw" to="/optical_localization_cam_right/image_raw"/>
 	</node>
     <node pkg="owr_positioning" type="optical_localization" name="optical_localization" output="screen"></node>
 </launch>

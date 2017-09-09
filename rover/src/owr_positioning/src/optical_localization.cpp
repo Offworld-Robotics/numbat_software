@@ -50,19 +50,14 @@ void optical_localization::align_axes(geometry_msgs::Twist &twist, const unsigne
 
 void optical_localization::assign_sub_pub() {
     ros::NodeHandle n("~");
-    char topic[50];
     
-    sprintf(topic, "/optical_localization_cam%d/image_raw", FRONT_CAM);
-    sub[FRONT_CAM] = n.subscribe(topic, 1, &optical_localization::image_callback_front, this);
+    sub[FRONT_CAM] = n.subscribe("/optical_localization_cam_front/image_raw", 1, &optical_localization::image_callback_front, this);
     
-    sprintf(topic, "/optical_localization_cam%d/image_raw", BACK_CAM);
-    sub[BACK_CAM] = n.subscribe(topic, 1, &optical_localization::image_callback_back, this);
+    sub[BACK_CAM] = n.subscribe("/optical_localization_cam_back/image_raw", 1, &optical_localization::image_callback_back, this);
     
-    sprintf(topic, "/optical_localization_cam%d/image_raw", LEFT_CAM);
-    sub[LEFT_CAM] = n.subscribe(topic, 1, &optical_localization::image_callback_left, this);
+    sub[LEFT_CAM] = n.subscribe("/optical_localization_cam_left/image_raw", 1, &optical_localization::image_callback_left, this);
     
-    sprintf(topic, "/optical_localization_cam%d/image_raw", RIGHT_CAM);
-    sub[RIGHT_CAM] = n.subscribe(topic, 1, &optical_localization::image_callback_right, this);
+    sub[RIGHT_CAM] = n.subscribe("/optical_localization_cam_right/image_raw", 1, &optical_localization::image_callback_right, this);
     
     pub = n.advertise<geometry_msgs::TwistWithCovarianceStamped>("/owr/optical_localization_twist", 10, true);
 }
@@ -186,12 +181,12 @@ optical_localization::optical_localization(): asyncSpinner(0) {
     my_twist.header.seq = 0;
     my_twist.header.frame_id = "base_link";
     
-    assign_sub_pub();
-    
     cam_names[FRONT_CAM] = "front";
     cam_names[BACK_CAM] = "back";
     cam_names[LEFT_CAM] = "left";
     cam_names[RIGHT_CAM] = "right";
+    
+    assign_sub_pub();
 }
 
 void optical_localization::run() {
