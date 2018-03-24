@@ -11,10 +11,13 @@
 #define SWERVE_DRIVE_H
 
 typedef struct _swerveMotorVels {
-    double frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV;
-    double frontLeftAng, frontRightAng;
-    
-    
+    double frontLeftMotorV,
+           frontRightMotorV,
+           backLeftMotorV,
+           backRightMotorV;
+
+    double frontLeftAng,
+           frontRightAng;
 } swerveMotorVels;
 
 swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg );
