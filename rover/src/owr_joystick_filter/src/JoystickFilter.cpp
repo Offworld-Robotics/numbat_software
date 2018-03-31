@@ -10,7 +10,7 @@
 // #include "bluesat_owr_protobuf/Message1Relay.h"
 #include "ButtonDefs.h"
 #include "RoverDefs.h"
-#include "JoystickFilter.h" 
+#include "JoystickFilter.h"
 
 #include <iostream>
 #include <list>
