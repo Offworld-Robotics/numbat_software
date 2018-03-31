@@ -7,7 +7,7 @@
 
 #include <geometry_msgs/Twist.h>
 
-#ifndef SWERVE_DRIVE_H
+#ifndef SRC_OWR_DRIVE_CONTROLS_INCLUDE_SWERVEDRIVE_HPP_
 #define SWERVE_DRIVE_H
 
 typedef struct _swerveMotorVels {
@@ -20,6 +20,7 @@ typedef struct _swerveMotorVels {
            frontRightAng;
 } swerveMotorVels;
 
-swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg );
+swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg);
+swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg);
 
-#endif //SWERVE_DRIVE_H
+#endif  // SRC_OWR_DRIVE_CONTROLS_INCLUDE_SWERVEDRIVE_HPP_
