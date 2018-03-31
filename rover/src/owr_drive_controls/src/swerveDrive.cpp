@@ -110,7 +110,7 @@ swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     // account for the special case where y=0
     } else if (fabs(velMsg->linear.y) >= VEL_ERROR) {
         const double turnAngle = atan2(velMsg->linear.y, velMsg->linear.x);
-        const double rotationRadius = HALF_ROVER_WIDTH_X/sin(turnAngle);
+        const double rotationRadius = HALF_ROVER_WIDTH_X / sin(turnAngle);
         geometry_msgs::Vector3 rotationCentre;
         rotationCentre.x = -HALF_ROVER_WIDTH_X;
         rotationCentre.y =
@@ -180,7 +180,3 @@ swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     }
     return output;
 }
-
-
-
-
