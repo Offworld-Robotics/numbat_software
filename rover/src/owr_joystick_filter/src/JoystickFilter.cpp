@@ -7,7 +7,7 @@
  */
      
 
-//#include "bluesat_owr_protobuf/Message1Relay.h"
+// #include "bluesat_owr_protobuf/Message1Relay.h"
 #include "ButtonDefs.h"
 #include "RoverDefs.h"
 #include "JoystickFilter.h" 
@@ -22,8 +22,8 @@
 #include <geometry_msgs/Twist.h>
 
 #define TOPIC "/owr/position"
-//minum number of lat/long inputs to calculate the heading
-#define MIN_H_CALC_BUFFER_SIZE 2 
+// minum number of lat/long inputs to calculate the heading
+#define MIN_H_CALC_BUFFER_SIZE 2
 #define JOYSTICK_TOPIC "/owr/joysticks"
 #define MID_IN 0
 #define DIFF 0.25
@@ -32,8 +32,8 @@
 #define MOTOR_MAX 1900.0
 #define MOTOR_MIN 1100.0
 #define ROTATION_MID 0.5
-#define SENSITIVITY 1 //CANNOT BE 0
-#define SPEED_CAP 0.83333 // 3 km/h in m/s
+#define SENSITIVITY 1  // CANNOT BE 0
+#define SPEED_CAP 0.83333  // 3 km/h in m/s
 
 // DEADZONES for thumbsticks, these will require tuning through testing
 #define DEADZONE_RADIAL_STICK_L 0.1
