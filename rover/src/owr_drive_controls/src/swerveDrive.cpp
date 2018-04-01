@@ -1,6 +1,6 @@
 /*
  * Orignal Author: Harry J.E Day
- * Editors:
+ * Editors: Sajid Ibne Anower
  * Date Started: 19/02/2016
  * Purpose: Represents an interface for translating a given velocity vector to wheel vectors
  */
@@ -72,6 +72,7 @@ swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
 
         // work out which side to favour
         if (0 <= turnAngle && turnAngle <= M_PI) {
+            /* Turn Right */
             output.frontLeftMotorV = closeFrontV;
             output.backLeftMotorV = closeBackV;
             output.frontRightMotorV = farFrontV;
@@ -80,6 +81,7 @@ swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
             output.frontRightAng = farFrontAng;
             ROS_INFO("right");
         } else {
+            /* Turn Left */
             output.frontRightMotorV = -closeFrontV;
             output.backRightMotorV = -closeBackV;
             output.frontLeftMotorV = -farFrontV;
@@ -101,13 +103,22 @@ swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
 
 swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     swerveMotorVels output;
+
+    /**
+     * Questions:
+     * What is fab and where is it defined? How does it work?
+     * What does the ``Twist`` class look like? As of now, I can see that it
+     *      at least has
+     *          linear {x, y, z}
+     * What does x, y, and z of Twist entail?
+     */
+
     // santity check, if the magnitude is close to zero stop
     if (fabs(sqrt(pow(velMsg->linear.x, 2) + pow(velMsg->linear.y, 2))) < VEL_ERROR) {
         output.frontLeftMotorV = output.backLeftMotorV = 0;
         output.frontRightMotorV = output.backRightMotorV = 0;
-
         output.frontRightAng = output.frontLeftAng = 0;
-    // account for the special case where y=0
+    // account for the special case where y = 0
     } else if (fabs(velMsg->linear.y) >= VEL_ERROR) {
         const double turnAngle = atan2(velMsg->linear.y, velMsg->linear.x);
         const double rotationRadius = HALF_ROVER_WIDTH_X / sin(turnAngle);
@@ -128,8 +139,7 @@ swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
         // NOTE: if necisary this could be optimised
         double closeBackR = fabs(rotationCentre.y - ROVER_CENTRE_2_WHEEL_Y);
         double farBackR = fabs(rotationCentre.y + ROVER_CENTRE_2_WHEEL_Y);
-        double closeFrontR =
-            sqrt(pow(closeBackR, 2) + pow(FRONT_W_2_BACK_W_X, 2));
+        double closeFrontR = sqrt(pow(closeBackR, 2) + pow(FRONT_W_2_BACK_W_X, 2));
         double farFrontR = sqrt(pow(farBackR, 2) + pow(FRONT_W_2_BACK_W_X, 2));
 
         // V = wr
