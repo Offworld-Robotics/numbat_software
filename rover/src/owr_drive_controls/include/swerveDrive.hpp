@@ -17,7 +17,9 @@ typedef struct _swerveMotorVels {
            backRightMotorV;
 
     double frontLeftAng,
-           frontRightAng;
+           frontRightAng,
+           backRightAng,
+           backLeftAng;
 } swerveMotorVels;
 
 swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg);
