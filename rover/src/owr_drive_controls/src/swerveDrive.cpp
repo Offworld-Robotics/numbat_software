@@ -16,6 +16,39 @@
 
 #define DEG90 M_PI_2
 
+#define RIGHT 1
+#define LEFT -RIGHT
+
+swerveMotorVels turn(swerveMotorVels,
+                     double,
+                     double,
+                     double,
+                     double,
+                     double,
+                     double,
+                     int dir);
+
+
+swerveMotorVels turn(swerveMotorVels vels,
+                     double closeFrontV,
+                     double farFrontV,
+                     double farBackV,
+                     double closeBackV,
+                     double closeFrontAng,
+                     double farFrontAng,
+                     int dir) {
+
+    swerveMotorVels output = vels;
+    output.frontLeftMotorV = closeFrontV * dir;
+    output.backLeftMotorV = closeBackV * dir;
+    output.frontRightMotorV = farFrontV * dir;
+    output.backRightMotorV = farBackV * dir;
+    output.frontLeftAng =  output.backLeftAng = (closeFrontAng * dir);
+    output.frontRightAng = output.backRightAng = (farFrontAng * dir);
+    return output;
+}
+
+
 swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
     swerveMotorVels output;
     // santity check, if the magnitude is close to zero stop
@@ -166,22 +199,16 @@ swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
         // work out which side to favour
         if (0 <= turnAngle && turnAngle <= M_PI) {
             /* Turn Right */
-            output.frontLeftMotorV = closeFrontV;
-            output.backLeftMotorV = closeBackV;
-            output.frontRightMotorV = farFrontV;
-            output.backRightMotorV = farBackV;
-            output.frontLeftAng =  output.backLeftAng = closeFrontAng;
-            output.frontRightAng = output.backRightAng = farFrontAng;
-            ROS_INFO("right");
+            output = turn(output,
+                          closeFrontV, farFrontV, farBackV, closeBackV,
+                          closeFrontAng, farFrontAng,
+                          RIGHT);
         } else {
             /* Turn Left */
-            output.frontRightMotorV = -closeFrontV;
-            output.backRightMotorV = -closeBackV;
-            output.frontLeftMotorV = -farFrontV;
-            output.backLeftMotorV = -farBackV;
-            output.frontLeftAng = output.backLeftAng = -farFrontAng;
-            output.frontRightAng = output.backRightAng = -closeFrontAng;
-            ROS_INFO("left");
+            output = turn(output,
+                          closeFrontV, farFrontV, farBackV, closeBackV,
+                          closeFrontAng, farFrontAng,
+                          LEFT);
         }
     } else {
         // y = 0
