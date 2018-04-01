@@ -165,20 +165,22 @@ swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
 
         // work out which side to favour
         if (0 <= turnAngle && turnAngle <= M_PI) {
+            /* Turn Right */
             output.frontLeftMotorV = closeFrontV;
             output.backLeftMotorV = closeBackV;
             output.frontRightMotorV = farFrontV;
             output.backRightMotorV = farBackV;
-            output.frontLeftAng = closeFrontAng;
-            output.frontRightAng = farFrontAng;
+            output.frontLeftAng =  output.backLeftAng = closeFrontAng;
+            output.frontRightAng = output.backRightAng = farFrontAng;
             ROS_INFO("right");
         } else {
+            /* Turn Left */
             output.frontRightMotorV = -closeFrontV;
             output.backRightMotorV = -closeBackV;
             output.frontLeftMotorV = -farFrontV;
             output.backLeftMotorV = -farBackV;
-            output.frontLeftAng = -farFrontAng;
-            output.frontRightAng = -closeFrontAng;
+            output.frontLeftAng = output.backLeftAng = -farFrontAng;
+            output.frontRightAng = output.backRightAng = -closeFrontAng;
             ROS_INFO("left");
         }
     } else {
