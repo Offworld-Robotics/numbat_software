@@ -31,8 +31,8 @@ int main(int argc, char ** argv) {
 }
 
 CmdVelToJoints::CmdVelToJoints() {
-     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-     cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToJoints::reciveVelMsg , this, transportHints);
+    ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+    cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToJoints::reciveVelMsg , this, transportHints);
      
     frontLeftDrive = nh.advertise<std_msgs::Float64>("/front_left_wheel_axel_controller/command",1,true);
     frontRightDrive = nh.advertise<std_msgs::Float64>("/front_right_wheel_axel_controller/command",1,true);
@@ -43,12 +43,14 @@ CmdVelToJoints::CmdVelToJoints() {
     backLeftSwerve = nh.advertise<std_msgs::Float64>("/back_left_swerve_controller/command",1,true);
     backRightSwerve = nh.advertise<std_msgs::Float64>("/back_right_swerve_controller/command",1,true);
     
-    frontLeftMotorV =0;
+    frontLeftMotorV = 0;
     frontRightMotorV = 0;
     backLeftMotorV = 0;
     backRightMotorV = 0;
     frontLeftAng = 0;
     frontRightAng = 0;
+    backLeftAng = 0;
+    backRightAng = 0;
 }
 
 void CmdVelToJoints::run() {
@@ -68,6 +70,10 @@ void CmdVelToJoints::run() {
         frontLeftSwerve.publish(msg);
         msg.data = frontLeftAng;
         frontRightSwerve.publish(msg);
+        msg.data = backLeftAng;
+        backLeftSwerve.publish(msg);
+        msg.data = backRightAng;
+        backRightSwerve.publish(msg);
         ros::spinOnce();
     }
 }
@@ -91,6 +97,9 @@ void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
     backRightMotorV = vels.backRightMotorV;
     frontLeftAng = vels.frontLeftAng;
     frontRightAng = vels.frontRightAng;
+    backLeftAng = vels.backLeftAng;
+    backRightAng = vels.backRightAng;
+
     ROS_INFO("target %f,%f,%f. fl %f, fr %f, bl %f, br %f, fls %f, frs %f", velMsg->linear.x, velMsg->linear.y, velMsg->linear.z, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng);
 }
 

@@ -116,6 +116,7 @@ swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
                           closeFrontV, farFrontV, farBackV, closeBackV,
                           closeFrontAng, farFrontAng,
                           LEFT);
+        }
     } else {
         // y = 0
         ROS_INFO("drive straight");
