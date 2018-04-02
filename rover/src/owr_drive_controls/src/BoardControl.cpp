@@ -379,6 +379,10 @@ void BoardControl::run() {
             //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
             frontLeftSwervePotMonitor.updatePos(s.swerveLeft, lastUpdate);
             frontRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
+            
+            // backLeftSwervePotMonitor.updatePos(s.swerveLeft, lastUpdate);
+            // backRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
+            
             armRotationBasePotMonitor.updatePos(s.pot0, lastUpdate);
             
             if(firstRun) {
@@ -388,8 +392,8 @@ void BoardControl::run() {
             }
             //do joint calculations
             // TODO Restore this before committing to master    
-            // swerveMotorVels swerveState = doVelTranslation(&(currentVel));
-            swerveMotorVels swerveState = doCrabTranslation(&(currentVel));
+            swerveMotorVels swerveState = doVelTranslation(&(currentVel));
+            // swerveMotorVels swerveState = doCrabTranslation(&(currentVel));
 
             pwmFLW = frontLeftWheel.velToPWM(swerveState.frontLeftMotorV);
             pwmFRW = frontRightWheel.velToPWM(swerveState.frontRightMotorV);
