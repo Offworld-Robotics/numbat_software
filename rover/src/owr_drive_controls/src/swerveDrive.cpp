@@ -123,6 +123,7 @@ swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
         output.frontLeftMotorV = output.backLeftMotorV = velMsg->linear.x;
         output.frontRightMotorV = output.backRightMotorV = velMsg->linear.x;
         output.frontRightAng = output.frontLeftAng = 0;
+        output.backRightAng = output.backLeftAng = 0;
     }
     return output;
 }
@@ -210,6 +211,8 @@ swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
         output.frontLeftMotorV = output.backLeftMotorV = velMsg->linear.x;
         output.frontRightMotorV = output.backRightMotorV = velMsg->linear.x;
         output.frontRightAng = output.frontLeftAng = 0;
+        output.backRightAng = output.backLeftAng = 0;
+        
     }
     return output;
 }
