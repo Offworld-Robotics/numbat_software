@@ -28,25 +28,7 @@ swerveMotorVels turn(swerveMotorVels,
                      double,
                      int dir);
 
-
-swerveMotorVels turn(swerveMotorVels vels,
-                     double closeFrontV,
-                     double farFrontV,
-                     double farBackV,
-                     double closeBackV,
-                     double closeFrontAng,
-                     double farFrontAng,
-                     int dir) {
-
-    swerveMotorVels output = vels;
-    output.frontLeftMotorV = closeFrontV * dir;
-    output.backLeftMotorV = closeBackV * dir;
-    output.frontRightMotorV = farFrontV * dir;
-    output.backRightMotorV = farBackV * dir;
-    output.frontLeftAng =  output.backLeftAng = (closeFrontAng * dir);
-    output.frontRightAng = output.backRightAng = (farFrontAng * dir);
-    return output;
-}
+int getDir(double);
 
 
 swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
@@ -55,7 +37,6 @@ swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
     if (fabs(sqrt(pow(velMsg->linear.x, 2) + pow(velMsg->linear.y, 2))) < VEL_ERROR) {
         output.frontLeftMotorV = output.backLeftMotorV = 0;
         output.frontRightMotorV = output.backRightMotorV = 0;
-
         output.frontRightAng = output.frontLeftAng = 0;
     // account for the special case where y=0
     } else if (fabs(velMsg->linear.y) >= VEL_ERROR) {
@@ -104,19 +85,18 @@ swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
         }
 
         // work out which side to favour
+        int dir;
         if (0 <= turnAngle && turnAngle <= M_PI) {
-            /* Turn Right */
-            output = turn(output,
-                          closeFrontV, farFrontV, farBackV, closeBackV,
-                          closeFrontAng, farFrontAng,
-                          RIGHT);
+            dir = RIGHT;
         } else {
-            /* Turn Left */
-            output = turn(output,
-                          closeFrontV, farFrontV, farBackV, closeBackV,
-                          closeFrontAng, farFrontAng,
-                          LEFT);
+            dir = LEFT;
         }
+        output.frontLeftMotorV = closeFrontV * dir;
+        output.backLeftMotorV = closeBackV * dir;
+        output.frontRightMotorV = farFrontV * dir;
+        output.backRightMotorV = farBackV * dir;
+        output.frontLeftAng = (closeFrontAng * dir);
+        output.frontRightAng = (farFrontAng * dir);
     } else {
         // y = 0
         ROS_INFO("drive straight");
