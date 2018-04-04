@@ -19,8 +19,7 @@
 #define RIGHT 1
 #define LEFT -RIGHT
 
-swerveMotorVels turn(swerveMotorVels,
-                     double,
+swerveMotorVels steerCrab(swerveMotorVels,
                      double,
                      double,
                      double,
@@ -108,6 +107,25 @@ swerveMotorVels doVelTranslation(const geometry_msgs::Twist * velMsg) {
     return output;
 }
 
+
+swerveMotorVels steerCrab(swerveMotorVels vels,
+                     double closeFrontV,
+                     double farFrontV,
+                     double farBackV,
+                     double closeBackV,
+                     double turnAngle,
+                     int dir) {
+
+    swerveMotorVels output = vels;
+    output.frontLeftMotorV = closeFrontV * dir;
+    output.backLeftMotorV = closeBackV * dir;
+    output.frontRightMotorV = farFrontV * dir;
+    output.backRightMotorV = farBackV * dir;
+    output.frontLeftAng =  output.backLeftAng = (turnAngle * dir);
+    output.frontRightAng = output.backRightAng = (turnAngle * dir);
+    return output;
+}
+
 /**
  * sqrt(x^2 + y^2)
  */
@@ -129,7 +147,13 @@ swerveMotorVels stop(swerveMotorVels vels) {
     return output;
 }
 
-
+int getDir(double turnAngle) {
+    if(0 <= turnAngle && turnAngle <= M_PI) {
+        return RIGHT;
+    } else {
+        return LEFT;
+    }
+}
 
 swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     swerveMotorVels output;
@@ -141,13 +165,13 @@ swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     // account for the special case where y = 0
     } else if (fabs(velMsg->linear.y) >= VEL_ERROR) {
         const double turnAngle = atan2(velMsg->linear.y, velMsg->linear.x);
-        ROS_INFO(
-            "turnAngle %lf, rotationRadius %lf, rotationCenter  %lf, %lf, %lf",
-            turnAngle, rotationRadius, rotationCentre.x, rotationCentre.y, rotationCentre.z);
+        ROS_INFO("turnAngle %lf", turnAngle);
 
         // Setting all 
-        double closeFrontV = farFrontV = velMagnitude;
-        double farBackV = closeBackV = velMagnitude;
+        double closeFrontV, farFrontV, farBackV, closeBackV;
+
+        closeFrontV = farFrontV = velMagnitude;
+        farBackV = closeBackV = velMagnitude;
 
         // if we are in reverse,
         // we just want to go round the same circle in the opposite direction
@@ -160,19 +184,10 @@ swerveMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
         }
 
         // work out which side to favour
-        if (0 <= turnAngle && turnAngle <= M_PI) {
-            /* Turn Right */
-            output = turn(output,
-                          closeFrontV, farFrontV, farBackV, closeBackV,
-                          closeFrontAng, farFrontAng,
-                          RIGHT);
-        } else {
-            /* Turn Left */
-            output = turn(output,
-                          closeFrontV, farFrontV, farBackV, closeBackV,
-                          closeFrontAng, farFrontAng,
-                          LEFT);
-        }
+        int dir = getDir(turnAngle);
+        output = steerCrab(output,
+                        closeFrontV, farFrontV, farBackV, closeBackV,
+                        turnAngle, dir);
     } else {
         // y = 0
         ROS_INFO("drive straight");
