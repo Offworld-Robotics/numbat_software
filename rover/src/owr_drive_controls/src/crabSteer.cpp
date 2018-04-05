@@ -1,8 +1,5 @@
 /*
- * Orignal Author: Harry J.E Day
- * Editors: Sajid Ibne Anower
- * Date Started: 19/02/2016
- * Purpose: Represents an interface for translating a given velocity vector to wheel vectors
+ * Implementation of crab steering logic
  */
 
 #include "crabSteer.hpp"

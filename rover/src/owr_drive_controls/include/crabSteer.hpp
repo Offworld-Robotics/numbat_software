@@ -1,8 +1,5 @@
 /*
- * Orignal Author: Harry J.E Day
- * Editors:
- * Date Started: 19/02/2016
- * Purpose: Represents an interface for translating a given velocity vector to wheel vectors
+ * Defines the data structure used to do crab steering
  */
 
 #include <geometry_msgs/Twist.h>
@@ -24,4 +21,4 @@ typedef struct crabMotorVels {
 
 crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg);
 
-#endif  // SRC_OWR_DRIVE_CONTROLS_INCLUDE_CRABSTEER_HPP_
+#endif  // SRC_OWR_DRIVE_CONTROLS_INCLUDE_CRABSTEER_HPP
