@@ -26,6 +26,17 @@ crabMotorVels steerCrab(crabMotorVels,
 
 int getDir(double);
 
+/**
+ * sqrt(x^2 + y^2)
+ */
+int getHypotenuse(int x, int y) {
+    return sqrt(pow(x, 2) + pow(y, 2));
+}
+
+
+int getVelMagnitude(const geometry_msgs::Twist * velMsg) {
+    return fabs(getHypotenuse(velMsg->linear.x, velMsg->linear.y));
+}
 
 crabMotorVels steerCrab(crabMotorVels vels,
                      double closeFrontV,
@@ -45,17 +56,6 @@ crabMotorVels steerCrab(crabMotorVels vels,
     return output;
 }
 
-/**
- * sqrt(x^2 + y^2)
- */
-int getHypotenuse(int x, int y) {
-    return sqrt(pow(x, 2) + pow(y, 2));
-}
-
-
-int getVelMagnitude(const geometry_msgs::Twist * velMsg) {
-    return fabs(getHypotenuse(velMsg->linear.x, velMsg->linear.y));
-}
 
 crabMotorVels stop(crabMotorVels vels) {
     crabMotorVels output = vels;
