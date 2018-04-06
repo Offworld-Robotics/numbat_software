@@ -37,6 +37,6 @@ class CmdVelToJoints {
         
         double frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV;
         double frontLeftAng, frontRightAng;
-        double backLeftAng, backRightAng;
-
+        
+    
 };
