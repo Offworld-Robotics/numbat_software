@@ -1,11 +1,11 @@
 /*
  * Converts CMD_VEL vectors into joint positions
  * For now it is only used for the simulator, but could become main algorithm for steering bluetounge 2.0
- * Original Author: Harry J.E Day
+ * Original Author: Sajid Ibne Anower
  * Editors:
- * Date Started: 8/02/2015
+ * Date Started: 6/04/2018
  * ros_package: owr_drive_controls
- * ros_node: cmd_vel_2_joints
+ * ros_node: crab_steer
  */
 
 /*Constants that are needed for this (eventually we should probably calculate these from transforms):
@@ -17,8 +17,8 @@
 */
 
 
-#include "swerveDrive.hpp"
-#include "cmdVelToJoints.hpp"
+#include "crabSteer.hpp"
+#include "fourWheelDrive.hpp"
 #include <math.h>
 
 #include <std_msgs/Float64.h>
@@ -26,13 +26,13 @@
 
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_cmd_vel_2_joints");
-    CmdVelToJoints CmdVelToJoints;
-    CmdVelToJoints.run();
+    FourWheelDrive fourWheelDrive;
+    fourWheelDrive.run();
 }
 
-CmdVelToJoints::CmdVelToJoints() {
+FourWheelDrive::FourWheelDrive() {
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-    cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToJoints::reciveVelMsg , this, transportHints);
+    cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &FourWheelDrive::reciveVelMsg , this, transportHints);
      
     frontLeftDrive = nh.advertise<std_msgs::Float64>("/front_left_wheel_axel_controller/command",1,true);
     frontRightDrive = nh.advertise<std_msgs::Float64>("/front_right_wheel_axel_controller/command",1,true);
@@ -53,7 +53,7 @@ CmdVelToJoints::CmdVelToJoints() {
     backRightAng = 0;
 }
 
-void CmdVelToJoints::run() {
+void FourWheelDrive::run() {
     while(ros::ok()) {
         
         std_msgs::Float64 msg;
@@ -89,8 +89,8 @@ void CmdVelToJoints::run() {
 
 //for a full explanation of this logic please see the scaned notes at
 //https://bluesat.atlassian.net/browse/OWRS-203
-void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
-    swerveMotorVels vels = doVelTranslation(velMsg.get());
+void FourWheelDrive::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
+    crabMotorVels vels = doCrabTranslation(velMsg.get());
     frontLeftMotorV = vels.frontLeftMotorV;
     frontRightMotorV = vels.frontRightMotorV;
     backLeftMotorV = vels.backLeftMotorV;
@@ -100,4 +100,3 @@ void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
 
     ROS_INFO("target %f,%f,%f. fl %f, fr %f, bl %f, br %f, fls %f, frs %f", velMsg->linear.x, velMsg->linear.y, velMsg->linear.z, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng);
 }
-
