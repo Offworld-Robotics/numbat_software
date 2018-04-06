@@ -5,24 +5,18 @@
 #include "crabSteer.hpp"
 #include <ros/ros.h>
 
-#define ROVER_CENTRE_2_WHEEL_Y 0.40023
-#define BACK_WHEEL_SPAN 0.80273
-#define HALF_ROVER_WIDTH_X .27130
-#define FRONT_W_2_BACK_W_X 0.54216
 #define VEL_ERROR 0.01
-
-#define DEG90 M_PI_2
 
 #define RIGHT 1
 #define LEFT -RIGHT
 
 crabMotorVels steerCrab(crabMotorVels,
-                     double,
-                     double,
-                     double,
-                     double,
-                     double,
-                     int dir);
+                    double,
+                    double,
+                    double,
+                    double,
+                    double,
+                    int dir);
 
 int getDir(double);
 
