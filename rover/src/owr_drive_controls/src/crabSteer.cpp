@@ -1,6 +1,10 @@
 /*
- * Implementation of crab steering logic
+ * Orignal Author: Sajid Ibne Anower
+ * Editors:
+ * Date Started: 3/04/2018
+ * Purpose: Implementation of crab steering logic
  */
+
 
 #include "crabSteer.hpp"
 #include <ros/ros.h>

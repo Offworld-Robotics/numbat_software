@@ -1,5 +1,8 @@
 /*
- * Defines the data structure used to do crab steering
+ * Orignal Author: Sajid Ibne Anower
+ * Editors:
+ * Date Started: 3/04/2018
+ * Purpose: Defines the data structure used to do crab steering
  */
 
 #include <geometry_msgs/Twist.h>
