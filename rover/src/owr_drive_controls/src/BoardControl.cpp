@@ -234,7 +234,7 @@ BoardControl::BoardControl() :
     currentVel.linear.x = 0;
     currentVel.linear.y = 0;
     currentVel.linear.z = 0;
-
+    
     //swerve setup
     jMonitor.addJoint(&frontLeftWheel);
     jMonitor.addJoint(&frontRightWheel);
@@ -242,8 +242,6 @@ BoardControl::BoardControl() :
     jMonitor.addJoint(&backRightWheel);
     jMonitor.addJoint(&frontLeftSwerve);
     jMonitor.addJoint(&frontRightSwerve);
-    jMonitor.addJoint(&backRightSwerve);
-    jMonitor.addJoint(&backLeftSwerve);
     jMonitor.addJoint(&lidar);
     jMonitor.addJoint(&armBaseRotate);
     jMonitor.addJoint(&armLowerAct);
@@ -379,10 +377,6 @@ void BoardControl::run() {
             //TODO: when using encoders s.enc0 was fliped, check this is not the case for pot
             frontLeftSwervePotMonitor.updatePos(s.swerveLeft, lastUpdate);
             frontRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
-            
-            // backLeftSwervePotMonitor.updatePos(s.swerveLeft, lastUpdate);
-            // backRightSwervePotMonitor.updatePos(s.swerveRight, lastUpdate);
-            
             armRotationBasePotMonitor.updatePos(s.pot0, lastUpdate);
             
             if(firstRun) {
@@ -391,10 +385,7 @@ void BoardControl::run() {
                 firstRun = false;
             }
             //do joint calculations
-            // TODO Restore this before committing to master    
             swerveMotorVels swerveState = doVelTranslation(&(currentVel));
-            // swerveMotorVels swerveState = doCrabTranslation(&(currentVel));
-
             pwmFLW = frontLeftWheel.velToPWM(swerveState.frontLeftMotorV);
             pwmFRW = frontRightWheel.velToPWM(swerveState.frontRightMotorV);
             pwmBLW = backLeftWheel.velToPWM(swerveState.backLeftMotorV);
@@ -402,9 +393,6 @@ void BoardControl::run() {
             //TODO: this should actually be the angle from the encoders
             pwmFRS = frontRightSwerve.posToPWM(frontRightSwervePotMonitor.getPosition(), updateRateHZ);
             pwmFLS =  frontLeftSwerve.posToPWM(-frontLeftSwervePotMonitor.getPosition(), updateRateHZ);
-            pwmBRS = backRightSwerve.posToPWM(backRightSwervePotMonitor.getPosition(), updateRateHZ);
-            pwmBLS =  backLeftSwerve.posToPWM(-backLeftSwervePotMonitor.getPosition(), updateRateHZ);
-
             pwmLIDAR = lidar.velToPWM(updateRateHZ);
             
             //adjust the arm position
