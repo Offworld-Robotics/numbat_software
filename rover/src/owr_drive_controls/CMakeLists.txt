@@ -116,7 +116,7 @@ add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/swerveDrive.cpp)
 add_dependencies(cmd_vel_2_joints owr_messages)
 target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 
-add_executable(crab_steer src/crabSteer.cpp)
+add_executable(crab_steer src/fourWheelDrive.cpp src/crabSteer.cpp)
 add_dependencies(crab_steer owr_messages)
 target_link_libraries(crab_steer ${catkin_LIBRARIES})
 
