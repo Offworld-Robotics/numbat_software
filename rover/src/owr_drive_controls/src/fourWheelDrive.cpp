@@ -25,7 +25,8 @@
 #include <geometry_msgs/Vector3.h>
 
 int main(int argc, char ** argv) {
-    ros::init(argc, argv, "owr_cmd_vel_2_joints");
+    ROS_INFO("Starting crab steer");
+    ros::init(argc, argv, "crab_steer");
     FourWheelDrive fourWheelDrive;
     fourWheelDrive.run();
 }
@@ -97,6 +98,9 @@ void FourWheelDrive::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
     backRightMotorV = vels.backRightMotorV;
     frontLeftAng = vels.frontLeftAng;
     frontRightAng = vels.frontRightAng;
+
+    backLeftAng = vels.backLeftAng;
+    backRightAng = vels.backRightAng;
 
     ROS_INFO("target %f,%f,%f. fl %f, fr %f, bl %f, br %f, fls %f, frs %f", velMsg->linear.x, velMsg->linear.y, velMsg->linear.z, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng);
 }
