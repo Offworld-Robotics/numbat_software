@@ -14,41 +14,33 @@
 #define RIGHT 1
 #define LEFT -RIGHT
 
-crabMotorVels steerCrab(crabMotorVels,
-                    double,
-                    double,
-                    double,
-                    double,
-                    double,
-                    int dir);
+crabMotorVels steerCrab(crabMotorVels, double, double, int dir);
 
 int getDir(double);
 
 /**
  * sqrt(x^2 + y^2)
  */
-int getHypotenuse(int x, int y) {
+double getHypotenuse(double x, double y) {
     return sqrt(pow(x, 2) + pow(y, 2));
 }
 
-
-int getVelMagnitude(const geometry_msgs::Twist * velMsg) {
-    return fabs(getHypotenuse(velMsg->linear.x, velMsg->linear.y));
+double getVelMagnitude(const geometry_msgs::Twist * velMsg) {
+    double hypo = getHypotenuse(velMsg->linear.x, velMsg->linear.y);
+    return fabs(hypo);
 }
 
 crabMotorVels steerCrab(crabMotorVels vels,
-                     double closeFrontV,
-                     double farFrontV,
-                     double farBackV,
-                     double closeBackV,
-                     double turnAngle,
-                     int dir) {
+                        double velMagnitude,
+                        double turnAngle,
+                        int dir) {
 
+    double velMagnitudeVector = velMagnitude * dir;
     crabMotorVels output = vels;
-    output.frontLeftMotorV = closeFrontV * dir;
-    output.backLeftMotorV = closeBackV * dir;
-    output.frontRightMotorV = farFrontV * dir;
-    output.backRightMotorV = farBackV * dir;
+    output.frontLeftMotorV = velMagnitudeVector;
+    output.backLeftMotorV = velMagnitudeVector;
+    output.frontRightMotorV = velMagnitudeVector;
+    output.backRightMotorV = velMagnitudeVector;
     output.frontLeftAng =  output.backLeftAng = (turnAngle * dir);
     output.frontRightAng = output.backRightAng = (turnAngle * dir);
     return output;
@@ -75,16 +67,15 @@ int getDir(double turnAngle) {
 crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     crabMotorVels output;
 
-    // santity check, if the magnitude is close to zero stop
-    int velMagnitude = getVelMagnitude(velMsg);
+    // If the magnitude is close to zero
+    double velMagnitude = getVelMagnitude(velMsg);
     if (velMagnitude < VEL_ERROR) {
         output = stop(output);
-    // account for the special case where y = 0
     } else if (fabs(velMsg->linear.y) >= VEL_ERROR) {
         const double turnAngle = atan2(velMsg->linear.y, velMsg->linear.x);
         ROS_INFO("turnAngle %lf", turnAngle);
 
-        // Setting all 
+        // Setting all equal to velMagnitude
         double closeFrontV, farFrontV, farBackV, closeBackV;
 
         closeFrontV = farFrontV = velMagnitude;
@@ -102,9 +93,7 @@ crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
 
         // work out which side to favour
         int dir = getDir(turnAngle);
-        output = steerCrab(output,
-                        closeFrontV, farFrontV, farBackV, closeBackV,
-                        turnAngle, dir);
+        output = steerCrab(output, velMagnitude, turnAngle, dir);
     } else {
         // y = 0
         ROS_INFO("drive straight");

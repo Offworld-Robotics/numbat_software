@@ -8,15 +8,6 @@
  * ros_node: crab_steer
  */
 
-/*Constants that are needed for this (eventually we should probably calculate these from transforms):
-
-    ROVER_CENTER_2_WHEEL_Y := 400.23mm == 0.40023 (distance from base_link_origin to back_right_wheel shaft)
-    BACK_WHEEL_SPAN :=802.73mm == 0.80273
-    HALF_ROVER_WIDTH_X := 271.30mm == .27130 (distance from base_link_origin to back_right_wheel shaft)
-    FRONT_W_2_BACK_W_X := 542.16mm == 0.54216
-*/
-
-
 #include "crabSteer.hpp"
 #include "fourWheelDrive.hpp"
 #include <math.h>
@@ -102,5 +93,7 @@ void FourWheelDrive::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
     backLeftAng = vels.backLeftAng;
     backRightAng = vels.backRightAng;
 
-    ROS_INFO("target %f,%f,%f. fl %f, fr %f, bl %f, br %f, fls %f, frs %f", velMsg->linear.x, velMsg->linear.y, velMsg->linear.z, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng);
+    ROS_INFO(
+        "target %f,%f fl %f, fr %f, bl %f, br %f, fls %f, frs %f bls %f brs %f",
+        velMsg->linear.x, velMsg->linear.y, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng, backLeftAng, backRightAng);
 }

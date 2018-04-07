@@ -11,7 +11,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 
-#define TOPIC "/crab_steer"
+#define TOPIC "/cmd_vel"
 
 class FourWheelDrive {
     
