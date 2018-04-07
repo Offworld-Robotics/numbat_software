@@ -375,14 +375,12 @@ void BoardControl::run() {
             //cameraBottomTilt = cbt;
             //cameraBottomRotate = cbr;
             jMonitor.endCycle(ros::Time::now());
-            s = steve->update(
-                pwmFLW, pwmFRW, pwmBLW, pwmBRW, pwmFLS, pwmFRS,
-                pwmArmTop, pwmArmBottom,pwmArmRot,
-                pwmClawRotate+clawRotateTrim, pwmClawGrip,
-                pwmCamBRot, pwmCamBTilt, pwmCamTRot, pwmCamTTilt,
-                pwmLIDAR
-            );
+
+            double driveData[8] = {pwmFLW, pwmFRW, pwmBLW, pwmFRW, pwmFLS, pwmFRS, 0, 0};
+            s = steve->update(driveData);
+
             if (!s.isConnected) break;
+
             double updateRateNSec = (ros::Time::now() - lastUpdate).toNSec();
             double updateRateHZ = 1.0/( updateRateNSec / SECONDS_2_NS);
             ROS_INFO("Update Rate NSec: %f, HZ: %f", updateRateNSec, updateRateHZ);

@@ -16,60 +16,7 @@
 
 using namespace std;
 
-#define MESSAGE_MAGIC 0x55AA
-#define DODGY_USB_CONNECTION 100
-// All types are multiples of 16 bits, due to how XC16 optimises for memory access
-// All structs are multiples of 32 bits, so this works on x86
-struct toControlMsg {
-    uint16_t magic;
-    int16_t frSpeed;
-    int16_t flSpeed;
-    int16_t brSpeed;
-    int16_t blSpeed;
-    int16_t flAng;
-    int16_t frAng;
-    int16_t armRotate;
-    int16_t armTop;
-    int16_t armBottom;
-    int16_t clawRotate;
-    int16_t clawGrip;
-    int16_t cameraBottomRotate;
-    int16_t cameraBottomTilt;
-    int16_t cameraTopRotate;
-    int16_t cameraTopTilt;
-    int16_t lidarTilt;
-    int16_t padding;
-} __attribute__((packed));
-
-//expect RPM is 6/m = 2.513274123rads/s
-//#define ENC_MULTIPLIER -0.5
-
-struct toNUCMsg {
-    uint16_t magic;
-    uint16_t vbat;
-    #ifdef VOLTMETER_ON
-        uint16_t voltmeter;
-    #else
-        uint16_t padding;
-    #endif
-    GPSData gpsData;
-    MagData magData;
-    IMUData imuData;
-    
-    uint16_t swerveLeft; // Swerve Positions from potentiometers
-    uint16_t swerveRight;
-    
-    uint16_t pot0; // TODO: implement and rename when being used.
-    uint16_t pot1;
-    uint16_t pot2;
-    uint16_t pot3;
-    
-    uint16_t armLower;
-    uint16_t armUpper;
-    
-    uint16_t clawEffort;
-    uint16_t clawActual;   
-} __attribute__((packed));
+#define DODY_CONNECTION 100
 
 bool Bluetongue::reconnect(void) {
     if (access(bluetongue_port.c_str(), W_OK | R_OK) != -2) {
@@ -106,8 +53,8 @@ bool Bluetongue::connect() {
     ROS_DEBUG("Setting up uart");
 
     // Set Baud Rate 
-    cfsetospeed(&tty, (speed_t)B19200);
-    cfsetispeed(&tty, (speed_t)B19200);
+    cfsetospeed(&tty, (speed_t)B115200);
+    cfsetispeed(&tty, (speed_t)B115200);
 
     // Setting other Port Stuff 
     tty.c_cflag &= ~PARENB; // Make 8n1
@@ -135,11 +82,6 @@ bool Bluetongue::connect() {
 }
 
 Bluetongue::Bluetongue(const char* port) {
-    //lidarTFPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", 10);
-    //timeSeq = 0;
-    
-    
-    
     // Open serial port
     bluetongue_port = port;
     isConnected = connect();	
@@ -150,112 +92,55 @@ Bluetongue::~Bluetongue(void) {
     close(Bluetongue::port_fd);
 }
 
-bool Bluetongue::comm(bool forBattery, void *message, int message_len, 
-    void *resp, int resp_len) {
-	ROS_DEBUG("Writing message: ");
-	for (int i = 0; i < message_len; i++) {
-		ROS_DEBUG("%d: %02x\n", i, *((char *) message + i));
-	}
+bool Bluetongue::comm(void *message, int message_len) {
+    ROS_DEBUG("Writing message: ");
+
+    for (int i = 0; i < message_len; i++) {
+            ROS_DEBUG("%d: %02x\n", i, *((char *) message + i));
+    }
+
     int written = 0;
     timeout.tv_sec = 0;
     timeout.tv_usec = 400000;
     int empty_writes = 0;
+
     do {
 	int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
         if (write_amount == -1) {
-            ROS_ERROR("USB write error");
+            ROS_ERROR("Write error...");
             return false;
         }
         written += write_amount;
         if (write_amount == 0) ++empty_writes;
-        if (empty_writes > DODGY_USB_CONNECTION) {
-            ROS_ERROR("Dodgy usb connection detected");
+        if (empty_writes > DODGY_CONNECTION) {
+            ROS_ERROR("Dody connection detected...");
             return false;
         }
     } while (written < message_len);
-    ROS_DEBUG("Written packet, expecting to read %d", resp_len);
+    ROS_DEBUG("Wrote packet.");
     tcflush(port_fd, TCIOFLUSH); 
-    int empty_reads = 0;
-    int readCount = 0;
-    do {
-        int rv = select(port_fd + 1, &uart_set, NULL, NULL, &timeout);
-        if(rv == -1) {
-            ROS_ERROR("select"); /* an error accured */
-            return false;
-        } else if(rv == 0) {
-            ROS_ERROR("timeout"); /* a timeout occured */
-            return false; // This might not require a full reset...
-        } else {
-            int read_amount = read(port_fd, (int8_t*)resp + readCount, resp_len - readCount);
-            readCount += read_amount;
-            if (read_amount == 0) ++empty_reads;
-            if (empty_reads > DODGY_USB_CONNECTION) {
-                ROS_ERROR("Dodgy usb connection detected");
-                return false;
-            }
-	}
-        ROS_DEBUG("reading... %d", readCount);
-    } while (readCount < resp_len);
-    ROS_DEBUG("Read packet");
+
     return true;
 }
 
-struct status Bluetongue::update(double leftFMotor, double rightFMotor, 
-                double leftBMotor, double rightBMotor, double leftFSwerve, double rightFSwerve,
-                int armTop, int armBottom, double armRotate, 
-                int clawRotate, int clawGrip, int cameraBottomRotate,
-                int cameraBottomTilt, int cameraTopRotate, 
-                int cameraTopTilt, int lidarTilt) {
+struct status Bluetongue::update(double driveData[NUM_MSG]) {
     struct status stat;
+    memset(&stat, 0, sizeof(struct status));
+
     if (!isConnected) {
         stat.isConnected = false;
         stat.roverOk = false;
         return stat;
     }
-    struct toControlMsg mesg;
-    struct toNUCMsg resp;
-    mesg.magic = MESSAGE_MAGIC;
-//     mesg.lSpeed = (leftMotor * 500) + 1500; // Scale to 16bit int
-//     mesg.rSpeed = (rightMotor * 500) + 1500;
-    mesg.frSpeed = rightFMotor;
-    mesg.flSpeed = leftFMotor;
-    mesg.blSpeed = leftBMotor;
-    mesg.brSpeed = rightBMotor;
-    mesg.flAng = leftFSwerve;
-    mesg.frAng = rightFSwerve;
-    mesg.armRotate = armRotate;
-    mesg.armTop = armTop;
-    mesg.armBottom = armBottom;
-    mesg.clawRotate = clawRotate;
-    mesg.clawGrip = clawGrip;
-    mesg.cameraBottomRotate = cameraBottomRotate;
-    mesg.cameraBottomTilt = cameraBottomTilt;
-    mesg.cameraTopRotate = cameraTopRotate;
-    mesg.cameraTopTilt = cameraTopTilt;
+
+    struct serial_msg::message mesg;
+    mesg.startMagic = serial_msg::startMagic;
+    mesg.endMagic = serial_msg::endMagic;
+
+    mesg.data = driveData;
     
-    //mesg.lidarTilt = (lidarTilt * 500) + 1500; // Use this line when reading lidar from a joystick
-    //mesg.lidarTilt = 1295;
-    
-    mesg.lidarTilt = lidarTilt; //Testing Lidar positioning.
-    
-    
-    
-    
-//     ROS_INFO("rotate %d grip %d", mesg.clawRotate, mesg.clawGrip);
-//     ROS_INFO("Speeds %d %d %d %d", mesg.flSpeed, mesg.frSpeed, mesg.blSpeed, mesg.brSpeed);
-//     ROS_INFO("Writing %d bytes.", (int) sizeof(struct toControlMsg));
-//     ROS_INFO("Claw grip %d rotate %d", mesg.clawGrip, 
-//             mesg.clawRotate);
-     ROS_INFO("Arm top %d bottom %d rotate %d", mesg.armTop, mesg.armBottom, mesg.armRotate);
-//     ROS_INFO("Camera br %d bt %d tr %d tt %d", cameraBottomRotate,
-//             cameraBottomTilt, cameraTopRotate, cameraTopTilt);
-    
-//     ROS_INFO("***** Lidar: %d ****", mesg.lidarTilt);
-//     ros::Time testTime = ros::Time::now();
-    isConnected = comm(false, &mesg, sizeof(struct toControlMsg), &resp, 
-            sizeof(struct toNUCMsg));
-//     ROS_INFO("Time diff %f", (ros::Time::now() - testTime).toSec());
-    
+    isConnected = comm(&mesg, sizeof(struct serial_msg::message));
+
     if (!isConnected) {
         stat.isConnected = false;
         stat.roverOk = false;
@@ -263,66 +148,6 @@ struct status Bluetongue::update(double leftFMotor, double rightFMotor,
     } else {
         stat.isConnected = true;
     }
-    
-    if (resp.magic != MESSAGE_MAGIC) {
-        ROS_INFO("Update Bluetongue had a error");
-        stat.roverOk = false;    
-        return stat;
-    } else {
-        stat.roverOk = true;
-    }
-    stat.batteryVoltage = ((resp.vbat / 4096.0) * 3.3) * 5.7;
-    #ifdef VOLTMETER_ON
-    stat.voltmeter = (((resp.voltmeter / 1024.0)*3.3) - 1.65) * (37.2 / 2.2);
-    #endif
-    stat.gpsData = resp.gpsData;
-    stat.magData = resp.magData;
-    stat.imuData = resp.imuData;
-    
-    // ADC data:
-    stat.swerveLeft = resp.swerveLeft;
-    stat.swerveRight = resp.swerveRight;
-    stat.pot0 = resp.pot0;
-    stat.pot1 = resp.pot1;
-    stat.pot2 = resp.pot2;
-    stat.pot3 = resp.pot3;
-    stat.clawActual = resp.clawActual;
-    stat.clawEffort = resp.clawEffort;
-    ROS_INFO("pot0 %f, pot1 %f, pot2 %f, pot3 %f", stat.pot0, stat.pot1, stat.pot2, stat.pot3);
-    ROS_INFO("ARM POT. left: %d ******* right %d *****", resp.swerveLeft, resp.swerveRight);  
-    ROS_INFO("Claw. efort: %d ******* actual %d ***** target %d", resp.clawEffort, resp.clawActual, mesg.clawGrip);  
-    ROS_INFO("BATTERY VOLTAGE %d -> %f #################", resp.vbat, stat.batteryVoltage);       
-//     jointMsg.header.stamp = ros::Time::now(); // timestamp for joint 
-//     jointMsg.header.stamp.sec += SECONDS_DELAY; // slight adjustment made for lidar's real-time position changing
-//     jointMsg.header.seq = timeSeq; // sequence ID
-//     timeSeq++; //Adjust seq-id
-// 
-//     //Resize the joint arrays to fit the number of joints being used
-//     jointMsg.velocity.resize(NUM_JOINTS);
-//     jointMsg.position.resize(NUM_JOINTS);
-//     jointMsg.effort.resize(NUM_JOINTS);
-//     jointMsg.name.resize(NUM_JOINTS);
-
-    //Publish all joints to rviz, currently a placeholder for joints
-//     publish_joint("a", 0, 0, 0, LEFT_MOT_JOINT);
-//     publish_joint("b", 0, 0, 0, RIGHT_MOT_JOINT);
-//     publish_joint("c", 0, 0, 0, ARM_TOP_JOINT);
-//     publish_joint("d", 0, 0, 0, ARM_BOT_JOINT);
-//     publish_joint("e", 0, 0, 0, ARM_ROT_JOINT);
-//     publish_joint("f", 0, 0, 0, CLAW_ROT_JOINT);
-//     publish_joint("g", 0, 0, 0, CLAW_GRIP_JOINT);
-//     publish_joint("h", 0, 0, 0, CAM_BOT_ROTATE_JOINT);
-//     publish_joint("i", 0, 0, 0, CAM_BOT_TILT_JOINT);
-//     publish_joint("j", 0, 0, 0, CAM_TOP_ROT_JOINT);
-//     publish_joint("k", 0, 0, 0, CAM_TOP_TILT_JOINT);
-//     publish_joint("l", 0, 0, 0, EXTRA_1);
-//     publish_joint("m", 0, 0, 0, EXTRA_2);
-//     publish_joint("n", 0, 0, 0, EXTRA_3);
-//     publish_joint("o", 0, 0, 0, EXTRA_4);
-    
-    //tf_lidar(mesg.lidarTilt); 
-    
-//     lidarTFPublisher.publish(jointMsg);
     
     return stat;
 }
