@@ -129,14 +129,14 @@ include_directories(
 # add_dependencies(owr_arduino_joystick ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(joystick_receiver_node src/joystick_receiver_node.cpp)
+add_executable(numbat_receiver_node src/joystick_receiver_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(joystick_receiver_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(numbat_receiver_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(joystick_receiver_node
+target_link_libraries(numbat_receiver_node
    ${catkin_LIBRARIES}
 )
 

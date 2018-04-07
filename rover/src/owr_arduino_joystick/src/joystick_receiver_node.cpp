@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #include "owr_arduino_joystick/joystick_receiver_node.hpp"
 #include "owr_arduino_joystick/communication_structs.hpp"
@@ -41,20 +42,27 @@ Joystick_Receiver_Node::Joystick_Receiver_Node(ros::NodeHandle nh) {
     back_left_swerve = nh.subscribe<std_msgs::Float64>("/back_left_swerve_controller/command",1, &Joystick_Receiver_Node::receive_swerve_back_left, this, transportHints);
     front_right_swerve = nh.subscribe<std_msgs::Float64>("/front_right_swerve_controller/command",1, &Joystick_Receiver_Node::receive_swerve_front_right, this, transportHints);
     back_right_swerve = nh.subscribe<std_msgs::Float64>("/back_right_swerve_controller/command", 1, &Joystick_Receiver_Node::receive_swerve_back_right, this, transportHints);
-
+    out_msg.startMagic = serial_msg::startMagic;
+    out_msg.endMagic = serial_msg::endMagic;
 }
 
 
 void Joystick_Receiver_Node::spin() {
     bool ok;
     serial_msg::in_msg from_board;
+    
     while(ros::ok()) {
         while(!open_arduino()) {}
         ROS_INFO("Open Succesfully");
         while(ros::ok()) {
+            from_board.startMagic = 0;
             ok = comm(&out_msg, sizeof(out_msg), &from_board, sizeof(serial_msg::in_msg));
             if(ok) {
                 ROS_INFO("Packet Received");
+                if(from_board.startMagic != serial_msg::startMagic) {
+                    ROS_INFO("invalid magic %x", from_board.startMagic );
+                    break;
+                }
             } else {
                 ROS_ERROR("Connection failed");
                 break;
@@ -67,7 +75,31 @@ void Joystick_Receiver_Node::spin() {
 
 bool Joystick_Receiver_Node::open_arduino() {
     // TODO: write something to find arduinos
-    port_fd = open("/dev/ttyUSB1", O_RDWR | O_NOCTTY | O_NONBLOCK);
+
+    std::vector<std::string> serial_devices;
+
+    DIR *dpdf;
+    struct dirent *epdf;
+    dpdf = opendir("/dev/");
+    if (dpdf != NULL){
+        while (epdf = readdir(dpdf)){
+            if(strstr(epdf->d_name,"ttyUSB") != NULL || strstr(epdf->d_name, "ttyACM")) {
+                serial_devices.push_back(epdf->d_name);
+                ROS_INFO("Found Serial %s",epdf->d_name);
+            }
+        }
+    }
+    if(serial_devices.size() == 0) {
+        ROS_ERROR("No Serial Devices Connected");
+        return false;
+    }
+
+    do {
+        std::string device = serial_devices.back();
+        serial_devices.pop_back();
+        ROS_INFO("Trying %s", device.c_str());
+        port_fd = open(("/dev/" + device).c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+    } while(port_fd == -1 && serial_devices.size() > 0);
 
     if(port_fd == -1) {
         ROS_ERROR("Error in open uart port");
@@ -94,8 +126,8 @@ bool Joystick_Receiver_Node::open_arduino() {
     ROS_DEBUG("Setting up uart");
 
     // Set Baud Rate
-    cfsetospeed(&tty, (speed_t)B19200);
-    cfsetispeed(&tty, (speed_t)B19200);
+    cfsetospeed(&tty, (speed_t)B115200);
+    cfsetispeed(&tty, (speed_t)B115200);
 
     // Setting other Port Stuff
     tty.c_cflag &= ~PARENB; // Make 8n1
@@ -130,7 +162,7 @@ bool Joystick_Receiver_Node::comm(void *message, int message_len, void *resp, in
     }
     int written = 0;
     timeout.tv_sec = 0;
-    timeout.tv_usec = 400000;
+    timeout.tv_usec = 800000;
     int empty_writes = 0;
     do {
         int write_amount = write(port_fd, (int8_t*)message + written, message_len - written);
@@ -164,7 +196,7 @@ bool Joystick_Receiver_Node::comm(void *message, int message_len, void *resp, in
             readCount += read_amount;
             if (read_amount == 0) ++empty_reads;
             if(!first_read) {
-                if (read_amount > 1 && *(uint16_t *) resp == 0xBEEF) {
+                if (read_amount > 3 && *(uint32_t *) resp == 0xFEEDBEEF) {
                     first_read = true;
                 } else {
                     readCount = 0;
