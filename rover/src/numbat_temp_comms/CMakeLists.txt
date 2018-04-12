@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(owr_arduino_joystick)
+project(numbat_temp_comms)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -101,7 +101,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES owr_arduino_joystick
+#  LIBRARIES numbat_temp_comms
 #  CATKIN_DEPENDS geometry_msgs roscpp std_msgs
 #  DEPENDS system_lib
 )
@@ -119,14 +119,14 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(owr_arduino_joystick
-#   src/${PROJECT_NAME}/owr_arduino_joystick.cpp
+# add_library(numbat_temp_comms
+#   src/${PROJECT_NAME}/numbat_temp_comms.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(owr_arduino_joystick ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(numbat_temp_comms ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 add_executable(numbat_receiver_node src/joystick_receiver_node.cpp)
@@ -155,7 +155,7 @@ target_link_libraries(numbat_receiver_node
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS owr_arduino_joystick owr_arduino_joystick_node
+# install(TARGETS numbat_temp_comms owr_arduino_joystick_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
