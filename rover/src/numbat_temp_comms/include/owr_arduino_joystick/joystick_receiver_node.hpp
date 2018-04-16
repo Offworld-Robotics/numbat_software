@@ -28,11 +28,11 @@ namespace serial_msg {
         uint32_t startMagic;
         double data[NUM_MSG];
         uint32_t endMagic;
-    } Serial_Msg;
+    } __attribute__((packed)) Serial_Msg;
     
     typedef struct in_msg {
         uint32_t startMagic;
-    } In_Msg;
+    } __attribute__((packed)) In_Msg;
  
     const uint32_t startMagic = 0xFEEDBEEF;
     const uint32_t endMagic = 0xDEADBEEF;
