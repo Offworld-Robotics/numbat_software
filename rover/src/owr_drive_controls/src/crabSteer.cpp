@@ -11,8 +11,8 @@
 
 #define VEL_ERROR 0.01
 
-#define RIGHT 1
-#define LEFT -RIGHT
+#define FRONT 1
+#define BACK -FRONT
 
 crabMotorVels steerCrab(crabMotorVels, double, double, int dir);
 
@@ -32,17 +32,16 @@ double getVelMagnitude(const geometry_msgs::Twist * velMsg) {
 
 crabMotorVels steerCrab(crabMotorVels vels,
                         double velMagnitude,
-                        double turnAngle,
-                        int dir) {
+                        double turnAngle) {
 
-    double velMagnitudeVector = velMagnitude * dir;
+    double velMagnitudeVector = velMagnitude;
     crabMotorVels output = vels;
     output.frontLeftMotorV = velMagnitudeVector;
     output.backLeftMotorV = velMagnitudeVector;
     output.frontRightMotorV = velMagnitudeVector;
     output.backRightMotorV = velMagnitudeVector;
-    output.frontLeftAng =  output.backLeftAng = (turnAngle * dir);
-    output.frontRightAng = output.backRightAng = (turnAngle * dir);
+    output.frontLeftAng =  output.backLeftAng = turnAngle;
+    output.frontRightAng = output.backRightAng = turnAngle;
     return output;
 }
 
@@ -56,12 +55,17 @@ crabMotorVels stop(crabMotorVels vels) {
     return output;
 }
 
-int getDir(double turnAngle) {
-    if(0 <= turnAngle && turnAngle <= M_PI) {
-        return RIGHT;
+/**
+ * @deprecated
+ */
+int getDir(double xVal) {
+    return 1; // TODO: take this out
+    ROS_INFO("x: %lf\n", xVal);
+    /*if(0 <= turnAngle && turnAngle <= M_PI) {
+        return FRONT;
     } else {
-        return LEFT;
-    }
+        return BACK;
+    }*/
 }
 
 crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
@@ -85,14 +89,15 @@ crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
         // we just want to go round the same circle in the opposite direction
         if (velMsg->linear.x < 0) {
             // flip all the motorVs
-            closeFrontV *=-1.0;
-            farFrontV *=-1.0;
-            farBackV *=-1.0;
-            closeBackV *=-1.0;
+            closeFrontV *= -1.0;
+            farFrontV *= -1.0;
+            farBackV *= -1.0;
+            closeBackV *= -1.0;
         }
 
         // work out which side to favour
-        int dir = getDir(turnAngle);
+        int dir = getDir(velMsg->linear.x);
+	ROS_INFO("Direction: %d\n", dir);
         output = steerCrab(output, velMagnitude, turnAngle, dir);
     } else {
         // y = 0
