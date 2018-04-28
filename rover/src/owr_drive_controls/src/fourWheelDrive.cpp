@@ -52,11 +52,11 @@ void FourWheelDrive::run() {
         //REDUNDANT COMMENT, here for reference - one side needs to be fliped so the joint velocity is relevant to the point velocity
         msg.data = frontLeftMotorV;
         frontLeftDrive.publish(msg);
-        msg.data =  frontRightMotorV;
+        msg.data = frontRightMotorV;
         frontRightDrive.publish(msg);
         msg.data = backLeftMotorV;
         backLeftDrive.publish(msg);
-        msg.data =  backRightMotorV;
+        msg.data = backRightMotorV;
         backRightDrive.publish(msg);
         msg.data = frontRightAng;
         frontLeftSwerve.publish(msg);
