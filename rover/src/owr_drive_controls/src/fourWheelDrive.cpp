@@ -49,16 +49,16 @@ void FourWheelDrive::run() {
     while(ros::ok()) {
         
         std_msgs::Float64 msg;
-        //one side needs to be fliped so the joint velocity is relevant to the point velocity
-        msg.data = -1.0* frontLeftMotorV;
+        //REDUNDANT COMMENT, here for reference - one side needs to be fliped so the joint velocity is relevant to the point velocity
+        msg.data = frontLeftMotorV;
         frontLeftDrive.publish(msg);
         msg.data =  frontRightMotorV;
         frontRightDrive.publish(msg);
-        msg.data = -1.0 * backLeftMotorV;
+        msg.data = backLeftMotorV;
         backLeftDrive.publish(msg);
         msg.data =  backRightMotorV;
         backRightDrive.publish(msg);
-        msg.data = frontRightAng*-1.0;
+        msg.data = frontRightAng;
         frontLeftSwerve.publish(msg);
         msg.data = frontLeftAng;
         frontRightSwerve.publish(msg);
