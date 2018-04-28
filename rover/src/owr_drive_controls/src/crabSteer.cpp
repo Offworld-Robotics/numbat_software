@@ -15,7 +15,6 @@
 #define BACK -FRONT
 
 crabMotorVels steerCrab(crabMotorVels, double, double, int dir);
-
 int getDir(double);
 
 /**
@@ -33,18 +32,15 @@ double getVelMagnitude(const geometry_msgs::Twist * velMsg) {
 crabMotorVels steerCrab(crabMotorVels vels,
                         double velMagnitude,
                         double turnAngle) {
-
-    double velMagnitudeVector = velMagnitude;
     crabMotorVels output = vels;
-    output.frontLeftMotorV = velMagnitudeVector;
-    output.backLeftMotorV = velMagnitudeVector;
-    output.frontRightMotorV = velMagnitudeVector;
-    output.backRightMotorV = velMagnitudeVector;
+    output.frontLeftMotorV = velMagnitude;
+    output.backLeftMotorV = velMagnitude;
+    output.frontRightMotorV = velMagnitude;
+    output.backRightMotorV = velMagnitude;
     output.frontLeftAng =  output.backLeftAng = turnAngle;
     output.frontRightAng = output.backRightAng = turnAngle;
     return output;
 }
-
 
 crabMotorVels stop(crabMotorVels vels) {
     crabMotorVels output = vels;
@@ -55,50 +51,28 @@ crabMotorVels stop(crabMotorVels vels) {
     return output;
 }
 
-/**
- * @deprecated
- */
-int getDir(double xVal) {
-    return 1; // TODO: take this out
-    ROS_INFO("x: %lf\n", xVal);
-    /*if(0 <= turnAngle && turnAngle <= M_PI) {
+int getDir(double xVal)
+    if(xVal >= 0) {
         return FRONT;
     } else {
         return BACK;
-    }*/
+    }
 }
 
 crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     crabMotorVels output;
 
-    // If the magnitude is close to zero
     double velMagnitude = getVelMagnitude(velMsg);
+    // If the magnitude is close to zero
     if (velMagnitude < VEL_ERROR) {
         output = stop(output);
     } else if (fabs(velMsg->linear.y) >= VEL_ERROR) {
         const double turnAngle = atan2(velMsg->linear.y, velMsg->linear.x);
-        ROS_INFO("turnAngle %lf", turnAngle);
-
-        // Setting all equal to velMagnitude
-        double closeFrontV, farFrontV, farBackV, closeBackV;
-
-        closeFrontV = farFrontV = velMagnitude;
-        farBackV = closeBackV = velMagnitude;
-
-        // if we are in reverse,
-        // we just want to go round the same circle in the opposite direction
-        if (velMsg->linear.x < 0) {
-            // flip all the motorVs
-            closeFrontV *= -1.0;
-            farFrontV *= -1.0;
-            farBackV *= -1.0;
-            closeBackV *= -1.0;
-        }
-
-        // work out which side to favour
         int dir = getDir(velMsg->linear.x);
-	ROS_INFO("Direction: %d\n", dir);
-        output = steerCrab(output, velMagnitude, turnAngle, dir);
+        // (turnAngle * dir) is the final normalised angle,
+        // required to make the driving similar to that of a car
+        double normalisedAngle = turnAngle * dir;
+        output = steerCrab(output, velMagnitude, normalisedAngle);
     } else {
         // y = 0
         ROS_INFO("drive straight");
