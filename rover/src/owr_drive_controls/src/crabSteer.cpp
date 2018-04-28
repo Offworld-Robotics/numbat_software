@@ -51,7 +51,7 @@ crabMotorVels stop(crabMotorVels vels) {
     return output;
 }
 
-int getDir(double xVal) { xVal >= 0 ? FRONT : BACK; }
+int getDir(double xVal) { return xVal >= 0 ? FRONT : BACK; }
 
 crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     crabMotorVels output;
