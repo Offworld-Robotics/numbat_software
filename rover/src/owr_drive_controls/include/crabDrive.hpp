@@ -13,10 +13,10 @@
 
 #define TOPIC "/cmd_vel"
 
-class FourWheelDrive {
+class crabDrive {
     
     public:
-        FourWheelDrive();
+        crabDrive();
         void run();
         
     protected:
