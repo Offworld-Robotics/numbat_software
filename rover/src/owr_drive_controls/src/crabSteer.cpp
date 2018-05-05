@@ -20,9 +20,7 @@ int getDir(double);
 /**
  * sqrt(x^2 + y^2)
  */
-double getHypotenuse(double x, double y) {
-    return sqrt(pow(x, 2) + pow(y, 2));
-}
+double getHypotenuse(double x, double y) { return sqrt(pow(x, 2) + pow(y, 2)); }
 
 double getVelMagnitude(const geometry_msgs::Twist * velMsg) {
     double hypo = getHypotenuse(velMsg->linear.x, velMsg->linear.y);
