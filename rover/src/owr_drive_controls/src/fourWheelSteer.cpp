@@ -14,7 +14,7 @@
 #define FRONT 1
 #define BACK -FRONT
 
-fourMotorVels fourWheelSteer(fourMotorVels, double, double, int dir);
+fourWheelMotorVels fourWheelSteer(fourWheelMotorVels, double, double, int dir);
 int getDir(double);
 
 /**
@@ -27,10 +27,10 @@ double getVelMagnitude(const geometry_msgs::Twist * velMsg) {
     return fabs(hypo);
 }
 
-fourMotorVels fourWheelSteer(fourMotorVels vels,
+fourWheelMotorVels fourWheelSteer(fourWheelMotorVels vels,
                         double velMagnitude,
                         double turnAngle) {
-    fourMotorVels output = vels;
+    fourWheelMotorVels output = vels;
     output.frontLeftMotorV = velMagnitude;
     output.backLeftMotorV = velMagnitude;
     output.frontRightMotorV = velMagnitude;
@@ -41,8 +41,8 @@ fourMotorVels fourWheelSteer(fourMotorVels vels,
     return output;
 }
 
-fourMotorVels stop(fourMotorVels vels) {
-    fourMotorVels output = vels;
+fourWheelMotorVels stop(fourWheelMotorVels vels) {
+    fourWheelMotorVels output = vels;
     output.frontLeftMotorV = output.backLeftMotorV = 0;
     output.frontRightMotorV = output.backRightMotorV = 0;
     output.frontRightAng = output.frontLeftAng = 0;
@@ -53,8 +53,8 @@ fourMotorVels stop(fourMotorVels vels) {
 
 int getDir(double xVal) { return xVal >= 0 ? FRONT : BACK; }
 
-fourMotorVels doFourWheelTranslation(const geometry_msgs::Twist * velMsg) {
-    fourMotorVels output;
+fourWheelMotorVels doFourWheelTranslation(const geometry_msgs::Twist * velMsg) {
+    fourWheelMotorVels output;
     double velMagnitude = getVelMagnitude(velMsg);
     // If the magnitude is close to zero
     if (velMagnitude < VEL_ERROR) {
@@ -65,7 +65,7 @@ fourMotorVels doFourWheelTranslation(const geometry_msgs::Twist * velMsg) {
         // (turnAngle * dir) is the final normalised angle,
         // required to make the driving similar to that of a car
         double normalisedAngle = turnAngle * dir;
-        output = steerCrab(output, velMagnitude, normalisedAngle);
+        output = fourWheelSteer(output, velMagnitude, normalisedAngle);
     } else {
         // y = 0
         ROS_INFO("drive straight");

@@ -82,7 +82,7 @@ void fourWheelDrive::run() {
 //for a full explanation of this logic please see the scaned notes at
 //https://bluesat.atlassian.net/browse/OWRS-203
 void fourWheelDrive::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
-    fourMotorVels vels = dofourWheelTranslation(velMsg.get());
+    fourWheelMotorVels vels = doFourWheelTranslation(velMsg.get());
     frontLeftMotorV = vels.frontLeftMotorV;
     frontRightMotorV = vels.frontRightMotorV;
     backLeftMotorV = vels.backLeftMotorV;

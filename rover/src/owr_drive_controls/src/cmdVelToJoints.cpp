@@ -17,8 +17,7 @@
 */
 
 
-//#include "swerveDrive.hpp"
-#include "fourWheelDrive.hpp"
+#include "swerveDrive.hpp"
 #include "cmdVelToJoints.hpp"
 #include <math.h>
 
@@ -87,7 +86,7 @@ void CmdVelToJoints::run() {
 //for a full explanation of this logic please see the scaned notes at
 //https://bluesat.atlassian.net/browse/OWRS-203
 void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
-    fourWheelMotorVels vels = doVelTranslationFour (velMsg.get());
+    swerveMotorVels vels = doVelTranslation (velMsg.get());
     frontLeftMotorV = vels.frontLeftMotorV;
     frontRightMotorV = vels.frontRightMotorV;
     backLeftMotorV = vels.backLeftMotorV;

@@ -7,10 +7,10 @@
 
 #include <geometry_msgs/Twist.h>
 
-#ifndef SRC_OWR_DRIVE_CONTROLS_INCLUDE_FOURWHEELSTEER_HPP
-#define FOUR_WHEEL_STEER_H
+#ifndef SRC_OWR_DRIVE_CONTROLS_INCLUDE_STEER_HPP
+#define STEER_H
 
-typedef struct fourWheelMotorVels {
+typedef struct MotorVels {
     double frontLeftMotorV,
            frontRightMotorV,
            backLeftMotorV,
@@ -20,8 +20,8 @@ typedef struct fourWheelMotorVels {
            frontRightAng,
            backRightAng,
            backLeftAng;
-} fourWheelMotorVels;
+} MotorVels;
 
-fourWheelMotorVels doFourWheelTranslation(const geometry_msgs::Twist * velMsg);
+MotorVels doTranslation(const geometry_msgs::Twist * velMsg);
 
-#endif  // SRC_OWR_DRIVE_CONTROLS_INCLUDE_FOURWHEELSTEER_HPP
+#endif  // SRC_OWR_DRIVE_CONTROLS_INCLUDE_STEER_HPP

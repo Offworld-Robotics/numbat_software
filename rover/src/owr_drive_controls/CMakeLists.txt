@@ -109,7 +109,7 @@ include_directories(
 ## Declare a cpp executable
 
 
-add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp src/JointMonitor.cpp src/JointVelocityController.cpp src/LIDARTiltJointController.cpp src/JointSpeedBasedPositionController.cpp src/JointController.cpp src/fourWheelDrive.cpp src/GearPositionTracker.cpp src/PotPositionTracker.cpp src/PositionTracker.cpp src/JointArmVelocityController.cpp)
+add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp src/JointMonitor.cpp src/JointVelocityController.cpp src/LIDARTiltJointController.cpp src/JointSpeedBasedPositionController.cpp src/JointController.cpp src/swerveDrive.cpp src/GearPositionTracker.cpp src/PotPositionTracker.cpp src/PositionTracker.cpp src/JointArmVelocityController.cpp)
 target_link_libraries(owr_drive_board ${catkin_LIBRARIES})
 
 add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/fourWheelDrive.cpp)
@@ -119,6 +119,10 @@ target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 add_executable(crab_steer src/crabDrive.cpp src/crabSteer.cpp)
 add_dependencies(crab_steer owr_messages)
 target_link_libraries(crab_steer ${catkin_LIBRARIES})
+
+add_executable(four_wheel_steer src/fourWheelDrive.cpp src/fourWheelSteer.cpp)
+add_dependencies(four_wheel_steer owr_messages)
+target_link_libraries(four_wheel_steer ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
