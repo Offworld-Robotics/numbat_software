@@ -64,7 +64,8 @@ crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
         // (turnAngle * dir) is the final normalised angle,
         // required to make the driving similar to that of a car
         double normalisedAngle = turnAngle * dir;
-        output = steerCrab(output, velMagnitude, normalisedAngle);
+        double normalisedVel = dir * velMagnitude;
+        output = steerCrab(output, normalisedVel, normalisedAngle);
     } else {
         // y = 0
         ROS_INFO("drive straight");
