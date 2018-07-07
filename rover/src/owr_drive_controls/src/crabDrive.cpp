@@ -58,9 +58,9 @@ void crabDrive::run() {
         backLeftDrive.publish(msg);
         msg.data = backRightMotorV;
         backRightDrive.publish(msg);
-        msg.data = frontRightAng;
-        frontLeftSwerve.publish(msg);
         msg.data = frontLeftAng;
+        frontLeftSwerve.publish(msg);
+        msg.data = frontRightAng;
         frontRightSwerve.publish(msg);
         msg.data = backLeftAng;
         backLeftSwerve.publish(msg);
