@@ -7,6 +7,7 @@
 
 
 #include "fourWheelSteer.hpp"
+#include <cmath>
 #include <ros/ros.h>
 
 #define VEL_ERROR 0.01
@@ -36,7 +37,11 @@ fourWheelMotorVels fourWheelSteer(fourWheelMotorVels vels,
     output.frontRightMotorV = velMagnitude;
     output.backRightMotorV = velMagnitude;
     output.frontLeftAng =  output.backLeftAng = turnAngle;
-    output.frontRightAng = output.backRightAng = -turnAngle;
+    if (turnAngle - M_PI < 2*M_PI) {
+	output.frontRightAng = output.backRightAng = turnAngle + M_PI;
+    } else {
+    	output.frontRightAng = output.backRightAng = turnAngle - M_PI;
+    }
 
     return output;
 }
