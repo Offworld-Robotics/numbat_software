@@ -3,9 +3,9 @@
  * Original Author: Sam S
  * Editors: Harry J.E Day, Sean Thompson
  * ROS_NODE:owr_joystick_filter
- * ros package: 
+ * ros package:
  */
-     
+
 
 // #include "bluesat_owr_protobuf/Message1Relay.h"
 #include "ButtonDefs.h"
@@ -43,17 +43,17 @@
 #define LIDAR_STATIONARY 2
 #define LIDAR_POSITION 3
 #define LIDAR_MULTIPLIER 0.01
- 
+
 int main(int argc, char ** argv) {
-    
-    
+
+
     //init ros
     ros::init(argc, argv, "owr_position_node");
-    
+
     JoystickFilter p(JOYSTICK_TOPIC);
     p.spin();
-    
-    return EXIT_SUCCESS;   
+
+    return EXIT_SUCCESS;
 }
 
 JoystickFilter::JoystickFilter(const std::string topic) :
@@ -64,16 +64,18 @@ JoystickFilter::JoystickFilter(const std::string topic) :
     pitch = 0;
     roll = 0;
     heading = 0;
-    
+
     lidarModeMsg.data = LIDAR_CONTINUOS;
 
 
     //publisher =  node.advertise<owr_messages::position>(topic,10,true);
     publisher = node.advertise<sensor_msgs::Joy>(topic,2,true);
     velPublisher = node.advertise<geometry_msgs::Twist>("/cmd_vel",1,false);
+    unfilteredVelPublisher = node.advertise<geometry_msgs::Twist>("/unscaled_vector",1,false);
+
     lidarModePublisher = node.advertise<std_msgs::Int16>("/owr/lidar_gimble_mode", 1, true);
     lidarPosPublisher = node.advertise<std_msgs::Float64>("/laser_tilt_joint_controller/command",1,true);
-    
+
     //msgsOut.axes = std::vector<float>(20);
     msgsOut.axes.resize(20);
     msgsOut.buttons.resize(2);
@@ -88,11 +90,11 @@ JoystickFilter::JoystickFilter(const std::string topic) :
 
 // Take Input from the GamePad ie Xbox Controller
 void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
-    
-    geometry_msgs::Twist cmdVel;
 
-    // Implement a Scaled Radial Deadzone as in 
-    // http://www.third-helix.com/2013/04/12/doing-thumbstick-dead-zones-right.html 
+    geometry_msgs::Twist cmdVel, unfiltVel;
+
+    // Implement a Scaled Radial Deadzone as in
+    // http://www.third-helix.com/2013/04/12/doing-thumbstick-dead-zones-right.html
 
     // Left Thumbstick
     double L_LR = joy->axes[STICK_L_LR];
@@ -118,7 +120,7 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         rescaledLStick = Eigen::Vector2d(0.0, 0.0);
     }
     //ROS_INFO("rescaledLStick 0:%f,1:%f", rescaledLStick(0), rescaledLStick(1));
-    
+
     // Right Thumbstick
     // Multiply y axis value of joystick by -1.0 to make posive up
     rawRStick = Eigen::Vector2d(joy->axes[STICK_R_LR], joy->axes[STICK_R_UD]);
@@ -134,11 +136,11 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         rescaledRStick = Eigen::Vector2d(0.0, 0.0);
     }
     //ROS_INFO("rescaledRStick 0:%f,1:%f", rescaledRStick(0), rescaledRStick(1));
-    
+
     float leftWheelSpeed = 0;
     float rightWheelSpeed = 0;
     //float leftRightMagnitude = std::abs(joy->axes[STICK_R_LR]/(SENSITIVITY));
-    
+
     /*
      * Toggle lidar mode
      */
@@ -161,13 +163,13 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
      *
      *  Normal Driving Mode
      *      Active by default
-     *      
+     *
      */
     gimbalRate = 0.0;
     //IMPORTANT: this will do nothing if the lidar is not is position mode
     gimbalRate = joy->axes[STICK_CH_UD];
     if (joy->buttons[BUTTON_A]) {
-        
+
         // Thumb sticks control camera rotation while A Button is held
 
         msgsOut.axes[CAMERA_BOTTOM_ROTATE] = joy->axes[STICK_L_LR];
@@ -187,19 +189,19 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         // New Steering Scheme Implementation
         // left stick is forwards backwards (only the vertical axis is used)
         // right stick is steering angle (only the horizontal axis is used)
-        
+
         // Note coordinate system of cmdVel.linear message used to communicat with the board
         // x = forward-backwards  forwards positive
-        // y = port-starboard 
-        
-        // Note Eigen::Vector2d storing axes values as (x,y) 
+        // y = port-starboard
+
+        // Note Eigen::Vector2d storing axes values as (x,y)
         //  therefore index 0 == x, index 1 == y
         // set cmdVel.linear.y  = x-axis of R stick rescaled input
         // get the sign (positive or negative of the axis)
         double signYAxis = (rescaledRStick(0) > 0.0) ? 1.0: -1.0;
         //  Magnitude of driveVector is set by rescaledLStick(1);
         Eigen::Vector2d driveVector(0.0, rescaledLStick(1));
-        //  map direction vector argument ie angle to 
+        //  map direction vector argument ie angle to
         //  apply squared scaling of the stick input then reset the sign to give
         //      lower sensitivity for small steering angles
         driveVector = Eigen::Rotation2D<double>(M_PI/2 * pow(rescaledRStick(0), 2)*signYAxis) * driveVector;
@@ -211,9 +213,18 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         cmdVel.linear.y = driveVector(0);
         ROS_INFO("\nNEW Sticks cmdVel.linear Y:%f X:%f", cmdVel.linear.y, cmdVel.linear.x);
 
+        double signXAxis = (rescaledLStick(0) > 0.0) ? 1.0: -1.0;
+        Rigen::Vector2d unfiltVector(0.0, 1 * signXAxis);
+        unfiltVector = Eigen::Rotation2D<double>(M_PI/2 * pow(rescaledRStick(0), 2)*signYAxis) * unfiltVector;
+
+
+        unfiltVel.linear.x = unfiltVector(1);
+        unfiltVel.linear.y = unfiltVector(0);
+        unfiltVel.linear.z = rescaledLStick(1);
+
 
         /*
-        //OLD IMPLEMENTATION, MAGNITUDE STICK & DIRECTION STICK BOTH LINEAR WITH NO DEADZONE 
+        //OLD IMPLEMENTATION, MAGNITUDE STICK & DIRECTION STICK BOTH LINEAR WITH NO DEADZONE
         //left stick controls magnitude
         //right stick directly chooses direction vector
         //  direction in 2d & magnitude by stick deflection
@@ -231,9 +242,10 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     msgsOut.buttons[FR_SWERVE_RESET] = joy->buttons[BUTTON_STICK_R];
     msgsOut.axes[LEFT_WHEELS] = leftWheelSpeed;
     msgsOut.axes[RIGHT_WHEELS] = rightWheelSpeed;
-    
+
     publisher.publish(msgsOut);
     velPublisher.publish(cmdVel);
+    unfilteredVelPublisher.publish(unfiltVel);
 }
 
 
@@ -245,7 +257,7 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     msgsOut.axes[ARM_STICK_TOP] = joy->axes[STICK_R_UD];
     msgsOut.axes[ARM_STICK_BOTTOM] = (joy->axes[STICK_L_UD]) ;//* 0.2;
     msgsOut.axes[ARM_ROTATE] = joy->axes[STICK_CH_LR];
-    
+
     // Handle claw opening and closing
     if(joy->buttons[BUTTON_LB]) {
         msgsOut.axes[CLAW_STATE] = CLOSE;
@@ -283,10 +295,10 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 void JoystickFilter::spin() {
     ros::Rate r(20);
     while(ros::ok()) {
-        
+
         lidarPos.data += gimbalRate * LIDAR_MULTIPLIER;
         lidarPosPublisher.publish<std_msgs::Float64>(lidarPos);
-        
+
         r.sleep();
         ros::spinOnce();
     }

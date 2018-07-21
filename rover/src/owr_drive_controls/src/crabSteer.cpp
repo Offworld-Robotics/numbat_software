@@ -54,7 +54,7 @@ int getDir(double xVal) { return xVal >= 0 ? FRONT : BACK; }
 crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     crabMotorVels output;
 
-    double velMagnitude = getVelMagnitude(velMsg);
+    double velMagnitude = velMsg->linear.z;
     int dir = getDir(velMsg->linear.x);
     const double turnAngle = atan2(velMsg->linear.y, velMsg->linear.x);
     double normalisedAngle = turnAngle * dir;
@@ -72,8 +72,8 @@ crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     } else {
         // y = 0
         ROS_INFO("drive straight");
-        output.frontLeftMotorV = output.backLeftMotorV = velMsg->linear.x;
-        output.frontRightMotorV = output.backRightMotorV = velMsg->linear.x;
+        output.frontLeftMotorV = output.backLeftMotorV = velMsg->linear.z;
+        output.frontRightMotorV = output.backRightMotorV = velMsg->linear.z;
         output.frontRightAng = output.frontLeftAng = 0;
         output.backRightAng = output.backLeftAng = 0;
     }

@@ -11,21 +11,21 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 
-#define TOPIC "/cmd_vel"
+#define TOPIC "/unscaled_vector"
 
 class crabDrive {
-    
+
     public:
         crabDrive();
         void run();
-        
+
     protected:
         void reciveVelMsg(const geometry_msgs::Twist::ConstPtr& velMsg);
 
     private:
         ros::NodeHandle nh;
         ros::Subscriber cmdVelSub;
-        
+
         ros::Publisher frontLeftDrive;
         ros::Publisher frontRightDrive;
         ros::Publisher backLeftDrive;
@@ -34,7 +34,7 @@ class crabDrive {
         ros::Publisher frontRightSwerve;
         ros::Publisher backLeftSwerve;
         ros::Publisher backRightSwerve;
-        
+
         double frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV;
         double frontLeftAng, frontRightAng;
         double backLeftAng, backRightAng;
