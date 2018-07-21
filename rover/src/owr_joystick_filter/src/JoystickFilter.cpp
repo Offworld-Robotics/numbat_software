@@ -214,7 +214,7 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
         ROS_INFO("\nNEW Sticks cmdVel.linear Y:%f X:%f", cmdVel.linear.y, cmdVel.linear.x);
 
         double signXAxis = (rescaledLStick(0) > 0.0) ? 1.0: -1.0;
-        Rigen::Vector2d unfiltVector(0.0, 1 * signXAxis);
+        Eigen::Vector2d unfiltVector(0.0, 1 * signXAxis);
         unfiltVector = Eigen::Rotation2D<double>(M_PI/2 * pow(rescaledRStick(0), 2)*signYAxis) * unfiltVector;
 
 
