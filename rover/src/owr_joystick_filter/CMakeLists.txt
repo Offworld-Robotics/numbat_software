@@ -6,13 +6,13 @@ project(owr_joystick_filter)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
-    roscpp
+  roscpp
   sensor_msgs
   std_msgs
   geometry_msgs
-   message_filters
-    laser_geometry
-    tf
+  message_filters
+  laser_geometry
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -85,10 +85,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES owr_joystick_filter
-  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry tf
-  DEPENDS system_lib
+#  INCLUDE_DIRS include
+#  LIBRARIES owr_joystick_filter
+#  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry tf
+#  DEPENDS system_lib
 )
 
 ###########
@@ -113,7 +113,7 @@ add_executable(owr_joystick_filter_node src/JoystickFilter.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(owr_joystick_filter_node owr_messages)
+add_dependencies(owr_joystick_filter_node ${catkin_EXPORTED_TARGETS})
 #add_dependencies(owr_joystick_filter_node owr_messages_gencpp)
 target_link_libraries(owr_joystick_filter_node ${catkin_LIBRARIES})
 

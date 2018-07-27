@@ -6,7 +6,7 @@ project(owr_auton_pathing)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
-    roscpp
+  roscpp
   sensor_msgs
   std_msgs
   tf
@@ -111,8 +111,7 @@ add_executable(owr_local_planner src/LocalPlanner.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(owr_local_planner owr_messages)
-add_dependencies(owr_local_planner owr_messages_gencpp)
+add_dependencies(owr_local_planner ${catkin_EXPORTED_TARGETS})
 target_link_libraries(owr_local_planner ${catkin_LIBRARIES})
 
 ## Specify libraries to link a library or executable target against
