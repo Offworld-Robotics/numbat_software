@@ -11,11 +11,13 @@
 #ifndef ARM_CONTROL_H
 #define ARM_CONTROL_H
 
+#define VEL_ERROR 0.01
+
 typedef struct _armJointVel {
-  double armUpperActuator, armLowerActuator
+  double armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist;
 } armJointVel;
 
-armJointVel convertTwistMessagesToJoints(const geometry_msgs::Twist * stick1, const geometry_msgs::Twist * stick2);
+armJointVel convertTwistMessagesToJoints(const geometry_msgs::Twist * stick);
 
 
 #endif

@@ -8,7 +8,7 @@
 
 
 
-#include "swerveDrive.hpp"
+#include "armControl.hpp"
 #include "cmdVelToArmJoints.hpp"
 #include <math.h>
 
@@ -21,12 +21,13 @@ int main(int argc, char ** argv) {
     CmdVelToArmJoints.run();
 }
 
-CmdVelToJoints::CmdVelToJoints() {
+CmdVelToArmJoints::CmdVelToArmJoints() {
      ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-     cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToJoints::reciveArmVelMsg , this, transportHints);
+     cmdArmVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToArmJoints::reciveArmVelMsg , this, transportHints);
      
     armUpper =  nh.advertise<std_msgs::Float64>("/arm_upper_actuator/command",1,true);
     armLower =  nh.advertise<std_msgs::Float64>("/arm_lower_actuator/command",1,true);
+    
     
     armUpperActuator = 0;
     armLowerActuator = 0;
@@ -42,14 +43,23 @@ void CmdVelToArmJoints::run() {
         armUpper.publish(msg);
         msg.data = armLowerActuator;
 	armLower.publish(msg);
+	msg.data = armBaseRotate;
+	armBaseRotatePub.publish(msg);
+	msg.data = clawGrip;
+	clawGripPub.publish(msg);
+	msg.data = clawTwist;
+	clawTwistPub.publish(msg);
         ros::spinOnce();
     }
 }
 
 void reciveArmVelMsg(const geometry_msgs::Twist::ConstPtr& stick) {
-  armJointVel = armVels = convertTwistMessagesToJoints(stick.get());
+  armVels = convertTwistMessagesToJoints(stick.get());
   armUpperActuator = armVels.armUpperActuator;
   armLowerActuator = armVels.armLowerActuator;
-  ROS_INFO("Target arm position %f %f %f %f, arm upper actuator = %f arm lower actuator = %f" % stick->linear.x, stick->linear.y, stick->angular.x, stick->angular.y, armUpperActuator, armLowerActuator);
+  armBaseRotate = armVels.armBaseRotate;
+  clawGrip = armVels.clawGrip;
+  clawTwist = armVels.clawTwist;
+  ROS_INFO("Target arm position %f %f %f %f, arm upper actuator = %f arm lower actuator = %f arm base rotate = %f claw grip = %f claw twist = %f" % stick->linear.x, stick->linear.y, stick->angular.x, stick->angular.y, armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist);
 }
 

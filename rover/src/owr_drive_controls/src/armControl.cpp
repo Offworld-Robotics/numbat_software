@@ -9,15 +9,18 @@
 #include "armControl.hpp"
 #include <ros/ros.h>
 
-armJointVel convertTwistMessagesToJoints(const geometry_msgs::Twist * stick1, const geometry_msgs::Twist * stick2) {
+armJointVel convertTwistMessagesToJoints(const geometry_msgs::Twist * stick) {
   armJointVel output;
-  if(fabs(sqrt(pow(stick1->linear.x, 2) + pow(stick1->linear.y, 2))) < VEL_ERROR) {
+  if(fabs(sqrt(pow(stick->linear.x, 2) + pow(stick->linear.y, 2))) < VEL_ERROR) {
         output.armUpperActuator = 0;
-  } else if (fabs(sqrt(pow(stick2->linear.x, 2) + pow(stick2->linear.y, 2))) < VEL_ERROR) {
 	output.armLowerActuator = 0;
-  } else {
-      // insert maths model of arm here
-  }
+  } 
+  // insert maths model of the arm here
+  output.armUpperActuator = 0;
+  output.armLowerActuator = 0;
+  output.armBaseRotate = 0;
+  output.clawGrip = 0;
+  output.clawTwist = 0;
   return output;
 
 }

@@ -116,6 +116,11 @@ add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/swerveDrive.cpp)
 add_dependencies(cmd_vel_2_joints owr_messages)
 target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 
+add_executable(cmd_vel_2_arm_joints src/cmdVelToArmJoints.cpp src/armControl.cpp)
+add_dependencies(cmd_vel_2_arm_joints owr_messages)
+target_link_libraries(cmd_vel_2_arm_joints ${catkin_LIBRARIES})
+
+
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(owr_drive_controls_node owr_drive_controls_generate_messages_cpp)

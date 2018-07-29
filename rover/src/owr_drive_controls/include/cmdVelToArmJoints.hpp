@@ -12,12 +12,11 @@
 #define TOPIC "/cmd_arm_vel"
 
 class CmdVelToArmJoints {
-  public:
+    public:
 	CmdVelToArmJoints();
 	void run();
-  
-  protected:
-        void reciveArmVelMsg(const geometry_msgs::Twist::ConstPtr& stick);
+    protected:
+        void receiveArmVelMsg(const geometry_msgs::Twist::ConstPtr& stick);
         
     private:
         ros::NodeHandle nh;
@@ -25,7 +24,11 @@ class CmdVelToArmJoints {
         
         ros::Publisher armUpper;
         ros::Publisher armLower;
+	ros::Publisher armBaseRotatePub;
+	ros::Publisher clawGripPub;
+	ros::Publisher clawTwistPub;
         
-        double armUpperActuator, armLowerActuator;
-}
+        double armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist;
+};
+
   
