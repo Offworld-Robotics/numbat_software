@@ -9,7 +9,7 @@
  */
 
 #include "crabSteer.hpp"
-#include "fourWheelDrive.hpp"
+#include "crabDrive.hpp"
 #include <math.h>
 
 #include <std_msgs/Float64.h>
@@ -18,13 +18,13 @@
 int main(int argc, char ** argv) {
     ROS_INFO("Starting crab steer");
     ros::init(argc, argv, "crab_steer");
-    FourWheelDrive fourWheelDrive;
-    fourWheelDrive.run();
+    crabDrive crabDrive;
+    crabDrive.run();
 }
 
-FourWheelDrive::FourWheelDrive() {
+crabDrive::crabDrive() {
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-    cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &FourWheelDrive::reciveVelMsg , this, transportHints);
+    cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &crabDrive::reciveVelMsg , this, transportHints);
      
     frontLeftDrive = nh.advertise<std_msgs::Float64>("/front_left_wheel_axel_controller/command",1,true);
     frontRightDrive = nh.advertise<std_msgs::Float64>("/front_right_wheel_axel_controller/command",1,true);
@@ -45,22 +45,22 @@ FourWheelDrive::FourWheelDrive() {
     backRightAng = 0;
 }
 
-void FourWheelDrive::run() {
+void crabDrive::run() {
     while(ros::ok()) {
-        
+
         std_msgs::Float64 msg;
-        //one side needs to be fliped so the joint velocity is relevant to the point velocity
-        msg.data = -1.0* frontLeftMotorV;
+        //REDUNDANT COMMENT, here for reference - one side needs to be fliped so the joint velocity is relevant to the point velocity
+        msg.data = frontLeftMotorV;
         frontLeftDrive.publish(msg);
-        msg.data =  frontRightMotorV;
+        msg.data = frontRightMotorV;
         frontRightDrive.publish(msg);
-        msg.data = -1.0 * backLeftMotorV;
+        msg.data = backLeftMotorV;
         backLeftDrive.publish(msg);
-        msg.data =  backRightMotorV;
+        msg.data = backRightMotorV;
         backRightDrive.publish(msg);
-        msg.data = frontRightAng*-1.0;
-        frontLeftSwerve.publish(msg);
         msg.data = frontLeftAng;
+        frontLeftSwerve.publish(msg);
+        msg.data = frontRightAng;
         frontRightSwerve.publish(msg);
         msg.data = backLeftAng;
         backLeftSwerve.publish(msg);
@@ -81,7 +81,7 @@ void FourWheelDrive::run() {
 
 //for a full explanation of this logic please see the scaned notes at
 //https://bluesat.atlassian.net/browse/OWRS-203
-void FourWheelDrive::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
+void crabDrive::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
     crabMotorVels vels = doCrabTranslation(velMsg.get());
     frontLeftMotorV = vels.frontLeftMotorV;
     frontRightMotorV = vels.frontRightMotorV;

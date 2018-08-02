@@ -55,7 +55,9 @@ void Joystick_Receiver_Node::spin() {
         while(!open_arduino()) {}
         ROS_INFO("Open Succesfully");
         while(ros::ok()) {
+            ros::spinOnce();
             from_board.startMagic = 0;
+            ROS_INFO("Writing %lf %lf %lf %lf\n", out_msg.data[0], out_msg.data[1], out_msg.data[2], out_msg.data[3]);
             ok = comm(&out_msg, sizeof(out_msg), &from_board, sizeof(serial_msg::in_msg));
             if(ok) {
                 ROS_INFO("Packet Received");
@@ -67,7 +69,6 @@ void Joystick_Receiver_Node::spin() {
                 ROS_ERROR("Connection failed");
                 break;
             }
-            ros::spinOnce();
         }
     }
 }
