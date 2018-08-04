@@ -84,7 +84,12 @@ bool Joystick_Receiver_Node::open_arduino() {
     dpdf = opendir("/dev/");
     if (dpdf != NULL){
         while (epdf = readdir(dpdf)){
-            if(strstr(epdf->d_name,"ttyUSB") != NULL || strstr(epdf->d_name, "ttyACM")) {
+            if(strstr(epdf->d_name, "retransmitter")) {
+		ROS_INFO("Found retransmitter using that instead");
+                serial_devices.clear();
+                serial_devices.push_back(epdf->d_name);
+		break;
+            } else if(strstr(epdf->d_name,"ttyUSB") != NULL || strstr(epdf->d_name, "ttyACM")) {
                 serial_devices.push_back(epdf->d_name);
                 ROS_INFO("Found Serial %s",epdf->d_name);
             }
