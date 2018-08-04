@@ -36,12 +36,14 @@ fourWheelMotorVels fourWheelSteer(fourWheelMotorVels vels,
     output.backLeftMotorV = velMagnitude;
     output.frontRightMotorV = velMagnitude;
     output.backRightMotorV = velMagnitude;
-    output.frontLeftAng =  output.backLeftAng = turnAngle;
-    if (turnAngle - M_PI < 2*M_PI) {
-	output.frontRightAng = output.backRightAng = turnAngle + M_PI;
-    } else {
-    	output.frontRightAng = output.backRightAng = turnAngle - M_PI;
-    }
+    output.frontLeftAng =  output.frontRightAng = turnAngle;
+    output.backRightAng = output.backLeftAng = -turnAngle;   
+
+ //if (turnAngle - M_PI < 2*M_PI) {
+//	output.frontRightAng = output.backLeftAng = turnAngle + M_PI;
+//    } else {
+//    	output.frontRightAng = output.backLeftAng = turnAngle - M_PI;
+//    }
 
     return output;
 }
@@ -65,12 +67,13 @@ fourWheelMotorVels doFourWheelTranslation(const geometry_msgs::Twist * velMsg) {
     if (velMagnitude < VEL_ERROR) {
         output = stop(output);
     } else if (fabs(velMsg->linear.y) >= VEL_ERROR) {
-        const double turnAngle = atan2(velMsg->linear.y, velMsg->linear.x);
+        const double turnAngle = atan2(velMsg->linear.y, fabs(velMsg->linear.x));
         int dir = getDir(velMsg->linear.x);
         // (turnAngle * dir) is the final normalised angle,
         // required to make the driving similar to that of a car
-        double normalisedAngle = turnAngle * dir;
-        output = fourWheelSteer(output, velMagnitude, normalisedAngle);
+        double normalisedAngle = turnAngle * dir;	
+
+        output = fourWheelSteer(output, dir * velMagnitude, normalisedAngle);
     } else {
         // y = 0
         ROS_INFO("drive straight");
