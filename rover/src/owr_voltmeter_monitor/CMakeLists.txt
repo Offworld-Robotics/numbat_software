@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   roscpp
   std_msgs
+  owr_messages
 )
 
 ## System dependencies are found with CMake's conventions
@@ -102,9 +103,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-  LIBRARIES owr_voltmeter_monitor
-  CATKIN_DEPENDS rospy owr_messages roscpp std_msgs std_msgs gscam
-  DEPENDS system_lib
+#  LIBRARIES owr_voltmeter_monitor
+#  CATKIN_DEPENDS rospy owr_messages roscpp std_msgs std_msgs gscam
+#  DEPENDS system_lib
 )
 
 ###########
@@ -134,7 +135,7 @@ add_executable(owr_voltmeter_monitor src/VoltmeterMonitor.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(owr_voltmeter_monitor ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(owr_voltmeter_monitor ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(owr_voltmeter_monitor

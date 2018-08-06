@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   image_transport
+  owr_messages
 )
 
 ## System dependencies are found with CMake's conventions
@@ -80,12 +81,11 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES owr_gui
-  CATKIN_DEPENDS  message_runtime roscpp std_msgs bluesat_owr_protobuf image_transport
-  DEPENDS system_lib
+#  INCLUDE_DIRS include
+#  LIBRARIES owr_gui
+#  CATKIN_DEPENDS  message_runtime roscpp std_msgs bluesat_owr_protobuf image_transport
+#  DEPENDS system_lib
 )
-#find_package(bluesat_owr_protobuf)
 ###########
 ## Build ##
 ###########
@@ -94,35 +94,23 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ../../devel/include
   include 
   ${catkin_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  ${CATKIN_PACKAGE_LIB_DESTINATION}
   /usr/include/gstreamer-0.10
-
 )
-#find_package(bluesat_owr_protobuf)
 
 
 add_executable(navigation src/NavigationGUI.cpp src/NavigationNode.cpp src/GLUTWindow.cpp src/Video_Feed_Frame.cpp)
 add_dependencies(navigation ${catkin_EXPORTED_TARGETS})
-add_dependencies(navigation bluesat_owr_protobuf_generate_messages_cpp)
-add_dependencies(navigation bluesat_owr_protobuf)
-add_dependencies(navigation owr_messages_gencpp)
 target_link_libraries(navigation ${catkin_LIBRARIES} GL GLU glut)
 
 add_executable(finecontrol src/FineControlGUI.cpp src/FineControlNode.cpp src/GLUTWindow.cpp src/Button.cpp src/Video_Feed_Frame.cpp) 
 add_dependencies(finecontrol ${catkin_EXPORTED_TARGETS})
-add_dependencies(finecontrol bluesat_owr_protobuf_generate_messages_cpp)
-add_dependencies(finecontrol bluesat_owr_protobuf)
+add_dependencies(finecontrol ${catkin_EXPORTED_TARGETS})
 target_link_libraries(finecontrol ${catkin_LIBRARIES} GL GLU glut)
 
 add_executable(auto src/AutoGUI.cpp src/AutoNode.cpp src/GLUTWindow.cpp src/GPSInputManager.cpp) 
 add_dependencies(auto ${catkin_EXPORTED_TARGETS})
-add_dependencies(auto bluesat_owr_protobuf_generate_messages_cpp)
-add_dependencies(auto bluesat_owr_protobuf)
 target_link_libraries(auto ${catkin_LIBRARIES} GL GLU glut)
 
 

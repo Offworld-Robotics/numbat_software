@@ -7,7 +7,6 @@ project(owr_drive_controls)
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
   roscpp
-  rospy
   std_msgs
   ecl_threads
 )
@@ -82,10 +81,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include 
-  LIBRARIES owr_drive_controls
-  CATKIN_DEPENDS owr_messages roscpp rospy std_msgs ecl_threads
-  DEPENDS system_lib
+#  INCLUDE_DIRS include 
+#  LIBRARIES owr_drive_controls
+#  CATKIN_DEPENDS owr_messages roscpp std_msgs ecl_threads
+#  DEPENDS system_lib
 )
 
 ###########
@@ -110,10 +109,11 @@ include_directories(
 
 
 add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp src/JointMonitor.cpp src/JointVelocityController.cpp src/LIDARTiltJointController.cpp src/JointSpeedBasedPositionController.cpp src/JointController.cpp src/swerveDrive.cpp src/GearPositionTracker.cpp src/PotPositionTracker.cpp src/PositionTracker.cpp src/JointArmVelocityController.cpp)
+add_dependencies(owr_drive_board ${catkin_EXPORTED_TARGETS})
 target_link_libraries(owr_drive_board ${catkin_LIBRARIES})
 
 add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/swerveDrive.cpp)
-add_dependencies(cmd_vel_2_joints owr_messages)
+add_dependencies(cmd_vel_2_joints ${catkin_EXPORTED_TARGETS})
 target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 
 add_executable(crab_steer src/crabDrive.cpp src/crabSteer.cpp)

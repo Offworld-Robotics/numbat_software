@@ -92,10 +92,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES owr_positioning
-  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry rospy tf2 tf2_geometry_msgs tf2_ros cv_bridge
-  DEPENDS system_lib
+#  INCLUDE_DIRS include
+#  LIBRARIES owr_positioning
+#  CATKIN_DEPENDS owr_messages sensor_msgs std_msgs geometry_msgs  message_filters laser_geometry rospy tf2 tf2_geometry_msgs tf2_ros cv_bridge
+#  DEPENDS system_lib
 )
 
 ###########
@@ -117,6 +117,8 @@ add_executable(orientation src/ExtractOrientation.cpp)
 add_executable(utm_tf src/UTMTransform.cpp)
 add_executable(gps_tf src/GPSTransform.cpp)
 add_executable(mag src/MagnetConverter.cpp)
+add_dependencies(mag ${catkin_EXPORTED_TARGETS})
+
 add_executable(optical_localization src/optical_localization.cpp)
 target_link_libraries(optical_localization ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 set_target_properties(optical_localization PROPERTIES COMPILE_FLAGS "-O3")
@@ -125,21 +127,10 @@ set_target_properties(optical_localization PROPERTIES COMPILE_FLAGS "-O3")
 ## as an example, message headers may need to be generated before nodes
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(orientation
-   ${catkin_LIBRARIES}
-)
-target_link_libraries(gps_tf
-   ${catkin_LIBRARIES}
-)
-target_link_libraries(utm_tf
-        ${catkin_LIBRARIES}
-        )
-
-target_link_libraries(mag
-        ${catkin_LIBRARIES}
-        )
-#   src/${PROJECT_NAME}/owr_positioning.cpp
-# )
+target_link_libraries(orientation ${catkin_LIBRARIES})
+target_link_libraries(gps_tf ${catkin_LIBRARIES})
+target_link_libraries(utm_tf ${catkin_LIBRARIES})
+target_link_libraries(mag ${catkin_LIBRARIES})
 
 
 ## Specify libraries to link a library or executable target against

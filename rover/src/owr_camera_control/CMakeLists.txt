@@ -5,7 +5,6 @@ project(owr_camera_control)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
   rospy
   std_msgs
   gscam
@@ -84,9 +83,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-  LIBRARIES owr_camera_control
-  CATKIN_DEPENDS roscpp rospy std_msgs gscam
-  DEPENDS system_lib
+#  LIBRARIES owr_camera_control
+#  CATKIN_DEPENDS rospy std_msgs gscam owr_messages
+#  DEPENDS system_lib
 )
 
 ###########
