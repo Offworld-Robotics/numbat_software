@@ -46,6 +46,8 @@ crabDrive::crabDrive() {
 }
 
 void crabDrive::run() {
+    ros::Rate r(1000);
+
     while(ros::ok()) {
 
         std_msgs::Float64 msg;
@@ -67,6 +69,7 @@ void crabDrive::run() {
         msg.data = backRightAng;
         backRightSwerve.publish(msg);
         ros::spinOnce();
+        r.sleep();
     }
 }
 
