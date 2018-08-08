@@ -1,0 +1,16 @@
+# The udev rules script for devices related to optical flow
+
+# Cameras (positions of these are from the rover's frame of reference)
+
+# front camera
+SUBSYSTEM=="video4linux", ATTR{name}=="C922 Pro Stream Webcam", ATTRS{serial}=="F034D2DF", SYMLINK+="opticalflow_cam_front"
+
+# back camera
+SUBSYSTEM=="video4linux", ATTR{name}=="C922 Pro Stream Webcam", ATTRS{serial}=="D2B3D2DF", SYMLINK+="opticalflow_cam_back"
+
+# left camera
+SUBSYSTEM=="video4linux", ATTR{name}=="C922 Pro Stream Webcam", ATTRS{serial}=="C993D2DF", SYMLINK+="opticalflow_cam_left"
+
+# right camera
+SUBSYSTEM=="video4linux", ATTR{name}=="C922 Pro Stream Webcam", ATTRS{serial}=="6BA4D2DF", SYMLINK+="opticalflow_cam_right"
+

@@ -40,3 +40,6 @@ hector_nav_msgs/src/hector_nav_msgs/
 # VSCode files
 .vscode/
 
+# IntelliJ folders
+.idea
+
