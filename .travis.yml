@@ -8,4 +8,4 @@ env:
 install:
   - git clone --depth 1 https://github.com/ros-industrial/industrial_ci.git .industrial_ci  
 script: 
-  - pwd && ls && .industrial_ci/ci.sh
+  - pwd && ls -al && .industrial_ci/ci.sh
