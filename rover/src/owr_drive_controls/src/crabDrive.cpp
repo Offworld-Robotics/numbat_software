@@ -28,7 +28,7 @@ motorVels CrabDrive::steer(motorVels vels, double velMagnitude, double turnAngle
 motorVels CrabDrive::doVelTranslation(const geometry_msgs::Twist * velMsg) {
     motorVels output;
     double velMagnitude = getVelMagnitude(velMsg);
-    const double turnAngle = atan2(velMsg->linear.y, velMsg->linear.x);
+    const double turnAngle = atan2(velMsg->linear.y, fabs(velMsg->linear.x));
     // If the magnitude is close to zero
     if (velMagnitude < VEL_ERROR) {
         output = stop(output);
