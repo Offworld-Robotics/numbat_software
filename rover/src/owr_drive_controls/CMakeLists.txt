@@ -120,6 +120,10 @@ add_executable(crab_steer src/crabDrive.cpp src/crabSteer.cpp)
 add_dependencies(crab_steer owr_messages)
 target_link_libraries(crab_steer ${catkin_LIBRARIES})
 
+add_executable(four_wheel_steer src/fourWheelDrive.cpp src/fourWheelSteer.cpp)
+add_dependencies(four_wheel_steer owr_messages)
+target_link_libraries(four_wheel_steer ${catkin_LIBRARIES})
+
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(owr_drive_controls_node owr_drive_controls_generate_messages_cpp)

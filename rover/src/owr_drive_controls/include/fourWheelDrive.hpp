@@ -1,7 +1,7 @@
 /*
  * Converts CMD_VEL vectors into joint positions
  * For now it is only used for the simulator, but could become main algorithm for steering bluetounge 2.0
- * Original Author: Harry J.E Day
+ * Original Author: Sajid Ibne Anower
  * Editors:
  * Date Started: 8/02/2015
  * ros_package: owr_drive_controls
@@ -13,15 +13,15 @@
 
 #define TOPIC "/cmd_vel"
 
-class CmdVelToJoints {
+class fourWheelDrive {
     
     public:
-        CmdVelToJoints();
+        fourWheelDrive();
         void run();
         
     protected:
         void reciveVelMsg(const geometry_msgs::Twist::ConstPtr& velMsg);
-        
+
     private:
         ros::NodeHandle nh;
         ros::Subscriber cmdVelSub;
@@ -36,7 +36,6 @@ class CmdVelToJoints {
         ros::Publisher backRightSwerve;
         
         double frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV;
-        double frontLeftAng, frontRightAng, backLeftAng, backRightAng;
-        
-    
+        double frontLeftAng, frontRightAng;
+        double backLeftAng, backRightAng;
 };

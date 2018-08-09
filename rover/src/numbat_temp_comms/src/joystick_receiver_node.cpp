@@ -21,7 +21,7 @@
 
 #define DODGY_USB_CONNECTION 100
 
- 
+
 int main(int argc, char ** argv) {
     //init ros
     ros::init(argc, argv, "owr_joysticks_arduino");
@@ -50,12 +50,12 @@ Joystick_Receiver_Node::Joystick_Receiver_Node(ros::NodeHandle nh) {
 void Joystick_Receiver_Node::spin() {
     bool ok;
     serial_msg::in_msg from_board;
-    
+
     while(ros::ok()) {
         while(!open_arduino()) {}
         ROS_INFO("Open Succesfully");
         while(ros::ok()) {
-            ros::spinOnce();
+	    ros::spinOnce();
             from_board.startMagic = 0;
             ROS_INFO("Writing %lf %lf %lf %lf\n", out_msg.data[0], out_msg.data[1], out_msg.data[2], out_msg.data[3]);
             ok = comm(&out_msg, sizeof(out_msg), &from_board, sizeof(serial_msg::in_msg));
@@ -222,25 +222,25 @@ bool Joystick_Receiver_Node::comm(void *message, int message_len, void *resp, in
 
 void Joystick_Receiver_Node::receive_drive_front_left(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[FRONT_LEFT_DRIVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_drive_front_right(const std_msgs::Float64::ConstPtr & msg) {
     out_msg.data[FRONT_RIGHT_DRIVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_drive_back_left(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[BACK_LEFT_DRIVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_drive_back_right(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[BACK_RIGHT_DRIVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_swerve_front_left(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[FRONT_LEFT_SWERVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_swerve_front_right(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[FRONT_RIGHT_SWERVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_swerve_back_left(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[BACK_LEFT_SWERVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_swerve_back_right(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[BACK_RIGHT_SWERVE] = msg->data;
-} 
+}

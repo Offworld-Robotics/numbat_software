@@ -1,38 +1,30 @@
 /*
  * Converts CMD_VEL vectors into joint positions
  * For now it is only used for the simulator, but could become main algorithm for steering bluetounge 2.0
- * Original Author: Harry J.E Day
- * Editors:
- * Date Started: 8/02/2015
+ * Original Author: Sajid Ibne Anower
+ * Editors: Anita Smirnov
+ * Date Started: 6/04/2018
  * ros_package: owr_drive_controls
- * ros_node: cmd_vel_2_joints
+ * ros_node: four_wheel_steer
  */
 
-/*Constants that are needed for this (eventually we should probably calculate these from transforms):
-
-    ROVER_CENTER_2_WHEEL_Y := 400.23mm == 0.40023 (distance from base_link_origin to back_right_wheel shaft)
-    BACK_WHEEL_SPAN :=802.73mm == 0.80273
-    HALF_ROVER_WIDTH_X := 271.30mm == .27130 (distance from base_link_origin to back_right_wheel shaft)
-    FRONT_W_2_BACK_W_X := 542.16mm == 0.54216
-*/
-
-
-#include "swerveDrive.hpp"
-#include "cmdVelToJoints.hpp"
+#include "fourWheelSteer.hpp"
+#include "fourWheelDrive.hpp"
 #include <math.h>
 
 #include <std_msgs/Float64.h>
 #include <geometry_msgs/Vector3.h>
 
 int main(int argc, char ** argv) {
-    ros::init(argc, argv, "owr_cmd_vel_2_joints");
-    CmdVelToJoints CmdVelToJoints;
-    CmdVelToJoints.run();
+    ROS_INFO("Starting four wheel steer");
+    ros::init(argc, argv, "four_wheel_steer");
+    fourWheelDrive fourWheelDrive;
+    fourWheelDrive.run();
 }
 
-CmdVelToJoints::CmdVelToJoints() {
-     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-     cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToJoints::reciveVelMsg , this, transportHints);
+fourWheelDrive::fourWheelDrive() {
+    ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+    cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &fourWheelDrive::reciveVelMsg , this, transportHints);
      
     frontLeftDrive = nh.advertise<std_msgs::Float64>("/front_left_wheel_axel_controller/command",1,true);
     frontRightDrive = nh.advertise<std_msgs::Float64>("/front_right_wheel_axel_controller/command",1,true);
@@ -43,7 +35,7 @@ CmdVelToJoints::CmdVelToJoints() {
     backLeftSwerve = nh.advertise<std_msgs::Float64>("/back_left_swerve_controller/command",1,true);
     backRightSwerve = nh.advertise<std_msgs::Float64>("/back_right_swerve_controller/command",1,true);
     
-    frontLeftMotorV =0;
+    frontLeftMotorV = 0;
     frontRightMotorV = 0;
     backLeftMotorV = 0;
     backRightMotorV = 0;
@@ -53,23 +45,27 @@ CmdVelToJoints::CmdVelToJoints() {
     backRightAng = 0;
 }
 
-void CmdVelToJoints::run() {
+void fourWheelDrive::run() {
     while(ros::ok()) {
-        
+
         std_msgs::Float64 msg;
-        //one side needs to be fliped so the joint velocity is relevant to the point velocity
-        msg.data = -1.0* frontLeftMotorV;
+        //REDUNDANT COMMENT, here for reference - one side needs to be fliped so the joint velocity is relevant to the point velocity
+        msg.data = frontLeftMotorV;
         frontLeftDrive.publish(msg);
-        msg.data =  frontRightMotorV;
+        msg.data = frontRightMotorV;
         frontRightDrive.publish(msg);
-        msg.data = -1.0 * backLeftMotorV;
+        msg.data = backLeftMotorV;
         backLeftDrive.publish(msg);
-        msg.data =  backRightMotorV;
+        msg.data = backRightMotorV;
         backRightDrive.publish(msg);
-        msg.data = frontRightAng*-1.0;
+        msg.data = frontRightAng;
         frontLeftSwerve.publish(msg);
         msg.data = frontLeftAng;
         frontRightSwerve.publish(msg);
+        msg.data = backLeftAng;
+        backLeftSwerve.publish(msg);
+        msg.data = backRightAng;
+        backRightSwerve.publish(msg);
         ros::spinOnce();
     }
 }
@@ -85,8 +81,8 @@ void CmdVelToJoints::run() {
 
 //for a full explanation of this logic please see the scaned notes at
 //https://bluesat.atlassian.net/browse/OWRS-203
-void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
-    swerveMotorVels vels = doVelTranslation (velMsg.get());
+void fourWheelDrive::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg ) {
+    fourWheelMotorVels vels = doFourWheelTranslation(velMsg.get());
     frontLeftMotorV = vels.frontLeftMotorV;
     frontRightMotorV = vels.frontRightMotorV;
     backLeftMotorV = vels.backLeftMotorV;
@@ -95,6 +91,9 @@ void CmdVelToJoints::reciveVelMsg ( const geometry_msgs::Twist::ConstPtr& velMsg
     frontRightAng = vels.frontRightAng;
     backLeftAng = vels.backLeftAng;
     backRightAng = vels.backRightAng;
-    ROS_INFO("target %f,%f,%f. fl %f, fr %f, bl %f, br %f, fls %f, frs %f, bls %f, brs %f", velMsg->linear.x, velMsg->linear.y, velMsg->linear.z, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng, backLeftAng, backRightAng);
+
+    ROS_INFO(
+        "target %f,%f fl %f, fr %f, bl %f, br %f, fls %f, frs %f bls %f brs %f",
+        velMsg->linear.x, velMsg->linear.y, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng, backLeftAng, backRightAng);
 }
 
