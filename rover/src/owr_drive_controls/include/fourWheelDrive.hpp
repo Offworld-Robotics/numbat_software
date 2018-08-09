@@ -5,23 +5,16 @@
  * Purpose: Defines the data structure used to do steering
  */
 
-#include <geometry_msgs/Twist.h>
+#ifndef FOUR_WHEEL_DRIVE_H
+#define FOUR_WHEEL_DRIVE_H
 
-#ifndef SRC_OWR_DRIVE_CONTROLS_INCLUDE_FOURWHEELSTEER_HPP
-#define FOUR_WHEEL_STEER_H
+#include "Drive.hpp"
 
-typedef struct fourWheelMotorVels {
-    double frontLeftMotorV,
-           frontRightMotorV,
-           backLeftMotorV,
-           backRightMotorV;
+class FourWheelDrive: public Drive {
+    public:
+        motorVels doVelTranslation(const geometry_msgs::Twist * velMsg);
+    private:    
+        motorVels steer(motorVels vels, double velMagnitude, double turnAngle);
+};
 
-    double frontLeftAng,
-           frontRightAng,
-           backRightAng,
-           backLeftAng;
-} fourWheelMotorVels;
-
-fourWheelMotorVels doFourWheelTranslation(const geometry_msgs::Twist * velMsg);
-
-#endif  // SRC_OWR_DRIVE_CONTROLS_INCLUDE_FOURWHEELSTEER_HPP
+#endif  // FOUR_WHEEL_DRIVE_H

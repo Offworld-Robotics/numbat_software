@@ -1,27 +1,20 @@
 /*
  * Orignal Author: Sajid Ibne Anower
- * Editors:
+ * Editors: Anita Smirnov
  * Date Started: 3/04/2018
- * Purpose: Defines the data structure used to do crab steering
+ * Purpose: Defines the data structure used to do steering
  */
 
-#include <geometry_msgs/Twist.h>
+#ifndef CRAB_DRIVE_H
+#define CRAB_DRIVE_H
 
-#ifndef SRC_OWR_DRIVE_CONTROLS_INCLUDE_CRABSTEER_HPP
-#define CRAB_STEER_H
+#include "Drive.hpp"
 
-typedef struct crabMotorVels {
-    double frontLeftMotorV,
-           frontRightMotorV,
-           backLeftMotorV,
-           backRightMotorV;
+class CrabDrive: public Drive {
+    public:
+        motorVels doVelTranslation(const geometry_msgs::Twist * velMsg);
+    private:    
+        motorVels steer(motorVels vels, double velMagnitude, double turnAngle);
+};
 
-    double frontLeftAng,
-           frontRightAng,
-           backRightAng,
-           backLeftAng;
-} crabMotorVels;
-
-crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg);
-
-#endif  // SRC_OWR_DRIVE_CONTROLS_INCLUDE_CRABSTEER_HPP
+#endif  // CRAB_DRIVE_H
