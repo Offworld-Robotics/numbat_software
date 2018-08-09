@@ -1,0 +1,13 @@
+/home/viki/git/owr_software/servo_control/install/.catkin
+/home/viki/git/owr_software/servo_control/install/_setup_util.py
+/home/viki/git/owr_software/servo_control/install/env.sh
+/home/viki/git/owr_software/servo_control/install/setup.bash
+/home/viki/git/owr_software/servo_control/install/setup.sh
+/home/viki/git/owr_software/servo_control/install/setup.zsh
+/home/viki/git/owr_software/servo_control/install/.rosinstall
+/home/viki/git/owr_software/servo_control/install/etc/catkin/profile.d/05.catkin_make.bash
+/home/viki/git/owr_software/servo_control/install/etc/catkin/profile.d/05.catkin_make_isolated.bash
+/home/viki/git/owr_software/servo_control/install/lib/pkgconfig/arm_control.pc
+/home/viki/git/owr_software/servo_control/install/share/arm_control/cmake/arm_controlConfig.cmake
+/home/viki/git/owr_software/servo_control/install/share/arm_control/cmake/arm_controlConfig-version.cmake
+/home/viki/git/owr_software/servo_control/install/share/arm_control/package.xml

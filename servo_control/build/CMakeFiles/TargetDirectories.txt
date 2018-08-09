@@ -1,0 +1,7 @@
+/home/viki/git/owr_software/servo_control/build/arm_control/CMakeFiles/_catkin_empty_exported_target.dir
+/home/viki/git/owr_software/servo_control/build/CMakeFiles/clean_test_results.dir
+/home/viki/git/owr_software/servo_control/build/CMakeFiles/doxygen.dir
+/home/viki/git/owr_software/servo_control/build/gtest/CMakeFiles/gtest.dir
+/home/viki/git/owr_software/servo_control/build/gtest/CMakeFiles/gtest_main.dir
+/home/viki/git/owr_software/servo_control/build/CMakeFiles/run_tests.dir
+/home/viki/git/owr_software/servo_control/build/CMakeFiles/tests.dir

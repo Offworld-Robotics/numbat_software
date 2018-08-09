@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+
+import rospy
+from sensor_msgs.msg import Joy
+import sys
+import getch 
+import time 
+from arbotix_python.arbotix import ArbotiX
+from arbotix_python.ax12 import *
+
+home = ["530","525","500","500"]
+rest = ["530","700","150","500"]
+
+class control_term(ArbotiX):
+	def __init__(self, port = "/dev/ttyUSB0", baud = 115200):
+		ArbotiX.__init__(self, port, baud)  
+		print "controls rolling"
+		while True:
+			input_char = getch.getch()
+	#		time.sleep(1)
+			try:
+				if input_char == "1":
+					self.inc_servo(1,10)
+				elif input_char == "q":
+					self.dec_servo(1,10)
+				elif input_char == "2":
+					self.inc_servo(2,40)
+				elif input_char == "w":
+					self.dec_servo(2,10)
+				elif input_char == "3":
+                                        self.dec_servo(3,20)
+                                elif input_char == "e":
+                                        self.inc_servo(3,10)
+				elif input_char == "4":
+                                        self.inc_servo(4,10)
+                                elif input_char == "r":
+                                        self.dec_servo(4,10)
+				elif input_char == "h":
+					self.rot_arm(home)
+				elif input_char == "g":
+					self.rot_arm(rest)
+				else :
+					print "not understood"
+			except Exception as e:
+                		print "error...", e
+
+	def rot_arm(self, pos=home):
+		self.setPosition(1,int(pos[0]))
+		time.sleep(1)	
+		self.setPosition(2,int(pos[1]))
+		time.sleep(1)	
+		self.setPosition(3,int(pos[2]))
+		time.sleep(1)	
+		self.setPosition(4,int(pos[3]))
+			
+	def dec_servo(self, ID=0,deg=10):
+		self.setPosition(ID,(self.getPosition(ID) - deg))
+	def inc_servo(self, ID=0,deg=10):
+		self.setPosition(ID,(self.getPosition(ID) + deg))
+
+if __name__ == "__main__":
+    try:
+        if len(sys.argv) > 2:
+            t = control_term(sys.argv[1], int(sys.argv[2]))
+        elif len(sys.argv) > 1:
+            t = control_term(sys.argv[1])
+        else:
+            t = control_term()
+    except KeyboardInterrupt:
+        print "\nExiting..."		

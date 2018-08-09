@@ -1,0 +1,8 @@
+prefix=/home/viki/git/owr_software/servo_control/install
+
+Name: arm_control
+Description: Description of arm_control
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/viki/git/owr_software/servo_control/install/lib 
+Requires: 
