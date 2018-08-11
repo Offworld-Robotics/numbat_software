@@ -23,7 +23,7 @@ int main(int argc, char ** argv) {
 
 CmdVelToArmJoints::CmdVelToArmJoints() {
      ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-     cmdArmVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToArmJoints::reciveArmVelMsg , this, transportHints);
+     cmdArmVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToArmJoints::receiveArmVelMsg , this, transportHints);
      
     armUpper =  nh.advertise<std_msgs::Float64>("/arm_upper_actuator/command",1,true);
     armLower =  nh.advertise<std_msgs::Float64>("/arm_lower_actuator/command",1,true);
@@ -53,13 +53,13 @@ void CmdVelToArmJoints::run() {
     }
 }
 
-void reciveArmVelMsg(const geometry_msgs::Twist::ConstPtr& stick) {
-  armVels = convertTwistMessagesToJoints(stick.get());
+void CmdVelToArmJoints::receiveArmVelMsg(const geometry_msgs::Twist::ConstPtr& stick) {
+  armJointVel armVels = convertTwistMessagesToJoints(stick.get());
   armUpperActuator = armVels.armUpperActuator;
   armLowerActuator = armVels.armLowerActuator;
   armBaseRotate = armVels.armBaseRotate;
   clawGrip = armVels.clawGrip;
   clawTwist = armVels.clawTwist;
-  ROS_INFO("Target arm position %f %f %f %f, arm upper actuator = %f arm lower actuator = %f arm base rotate = %f claw grip = %f claw twist = %f" % stick->linear.x, stick->linear.y, stick->angular.x, stick->angular.y, armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist);
+  ROS_INFO("Target arm position %f %f %f %f, arm upper actuator = %f arm lower actuator = %f arm base rotate = %f claw grip = %f claw twist = %f", stick->linear.x, stick->linear.y, stick->angular.x, stick->angular.y, armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist);
 }
 
