@@ -4,6 +4,3 @@
 [submodule "rover/src/xsens_mti_ros_node"]
 	path = rover/src/xsens_mti_ros_node
 	url = https://github.com/bluesat/mtig_driver_fork.git
-[submodule "rover/src/cse-slam"]
-	path = rover/src/cse-slam
-	url = https://hjed@bitbucket.org/bluesat/cse-slam.git
