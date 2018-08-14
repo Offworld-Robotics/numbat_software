@@ -55,17 +55,25 @@ crabMotorVels doCrabTranslation(const geometry_msgs::Twist * velMsg) {
     crabMotorVels output;
 
     double velMagnitude = getVelMagnitude(velMsg);
+    int dir = getDir(velMsg->linear.x);
+    const double turnAngle = atan2(velMsg->linear.y, fabs(velMsg->linear.x));
+   // double normalisedAngle = turnAngle * dir;
+
     // If the magnitude is close to zero
     if (velMagnitude < VEL_ERROR) {
         output = stop(output);
+        //output.frontRightAng = output.frontLeftAng = normalisedAngle;
+        //output.backRightAng = output.backLeftAng = normalisedAngle;
+        output.frontRightAng = output.frontLeftAng = turnAngle;
+        output.backRightAng = output.backLeftAng = turnAngle;
+
     } else if (fabs(velMsg->linear.y) >= VEL_ERROR) {
-        const double turnAngle = atan2(velMsg->linear.y, velMsg->linear.x);
-        int dir = getDir(velMsg->linear.x);
         // (turnAngle * dir) is the final normalised angle,
         // required to make the driving similar to that of a car
-        double normalisedAngle = turnAngle * dir;
         double normalisedVel = dir * velMagnitude;
-        output = steerCrab(output, normalisedVel, normalisedAngle);
+//        output = steerCrab(output, normalisedVel, normalisedAngle);
+        output = steerCrab(output, normalisedVel, turnAngle);
+
     } else {
         // y = 0
         ROS_INFO("drive straight");
