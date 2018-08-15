@@ -9,7 +9,7 @@ SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{serial}=="A50285B
 # TODO lidar
 
 SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{product}=="MTi-10 IMU", SYMLINK+="xsens0", GROUP="dialout", MODE="666"
-
+SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{serial}=="0E220F5A", SYMLINK+="retransmitter", GROUP="dialout", MODE="666"
 
 SUBSYSTEM=="video4linux", ATTRS{idVendor}=="045e", ACTION=="add", SYMLINK+="clinocam0", GROUP="video", MODE="666"
 SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{idProduct}=="2303", ATTRS{manufacturer}=="Prolific Technology Inc.", SYMLINK+="voltmeter",  GROUP="dialout", MODE="666"
