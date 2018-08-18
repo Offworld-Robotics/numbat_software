@@ -67,7 +67,7 @@ void CmdVelToJoints::run() {
         msg.data = frontRightMotorV;
         frontRightDrive.publish(msg);
         rate.sleep();
-	    msg.data = backRightMotorV;
+	msg.data = backRightMotorV;
         backRightDrive.publish(msg);
         rate.sleep();
         msg.data = frontLeftAng;
@@ -81,17 +81,17 @@ void CmdVelToJoints::run() {
             frontLeftDrive.publish(msg);
             rate.sleep();
 
-	        msg.data = -1.0 * backLeftMotorV;
+	    msg.data = -1.0 * backLeftMotorV;
             backLeftDrive.publish(msg);
             rate.sleep();
-	        msg.data = -1.0 * frontRightAng;
+	    msg.data = -1.0 * frontRightAng;
             frontLeftSwerve.publish(msg);
         } else { // otherwise publish as normal
             msg.data = frontLeftMotorV;
             frontLeftDrive.publish(msg);
             rate.sleep();
 
-	        msg.data = backLeftMotorV;
+	    msg.data = backLeftMotorV;
             backLeftDrive.publish(msg);
             rate.sleep();
 
