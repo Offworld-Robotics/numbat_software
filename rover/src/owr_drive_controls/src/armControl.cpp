@@ -9,15 +9,26 @@
 #include "armControl.hpp"
 #include <ros/ros.h>
 
-armJointVel convertTwistMessagesToJoints(const geometry_msgs::Twist * stick) {
+armJointVel convertJoystickMessageToJoints(const sensor_msgs::Joy::ConstPtr& joy) {
   armJointVel output;
-  if(fabs(sqrt(pow(stick->linear.x, 2) + pow(stick->linear.y, 2))) < VEL_ERROR) {
+  if(fabs(joy->axes[ARM_STICK_UPPER_UD])<DEADZONE) {
         output.armUpperActuator = 0;
-	output.armLowerActuator = 0;
-  } 
-  // insert maths model of the arm here
-  output.armUpperActuator = 0;
-  output.armLowerActuator = 0;
+  } else {
+    if (joy->axes[ARM_STICK_UPPER_UD] > 0) {
+      output.armUpperActuator = (joy->axes[ARM_STICK_UPPER_UD]-DEADZONE)/MAX_JOYSTICK_Y_AXIS;
+    } else {
+      output.armUpperActuator = (joy->axes[ARM_STICK_UPPER_UD]+DEADZONE)/MAX_JOYSTICK_Y_AXIS;
+    }
+  }
+  if (fabs(joy->axes[ARM_STICK_LOWER_UD])<DEADZONE) {
+      output.armLowerActuator = 0;
+  } else {
+    if (joy->axes[ARM_STICK_LOWER_UD] > 0) {
+	output.armLowerActuator = (joy->axes[ARM_STICK_LOWER_UD]-DEADZONE)/MAX_JOYSTICK_Y_AXIS;
+    } else {
+	output.armLowerActuator = (joy->axes[ARM_STICK_LOWER_UD]+DEADZONE)/MAX_JOYSTICK_Y_AXIS;
+    }
+  }
   output.armBaseRotate = 0;
   output.clawGrip = 0;
   output.clawTwist = 0;

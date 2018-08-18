@@ -22,11 +22,14 @@ int main(int argc, char ** argv) {
 }
 
 CmdVelToArmJoints::CmdVelToArmJoints() {
-     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
-     cmdArmVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC,1, &CmdVelToArmJoints::receiveArmVelMsg , this, transportHints);
+    ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
+    cmdArmJoySub = nh.subscribe<sensor_msgs::Joy>(TOPIC,1, &CmdVelToArmJoints::receiveArmVelMsg , this, transportHints);
      
     armUpper =  nh.advertise<std_msgs::Float64>("/arm_upper_actuator/command",1,true);
     armLower =  nh.advertise<std_msgs::Float64>("/arm_lower_actuator/command",1,true);
+    armBaseRotatePub = nh.advertise<std_msgs::Float64>("/arm_base_rotate_controller/command",1,true);
+    clawGripPub = nh.advertise<std_msgs::Float64>("/claw_grip_controller/command",1,true); // this topic needs to be checked
+    clawTwistPub = nh.advertise<std_msgs::Float64>("/claw_twist_controller/command",1,true); // this topic needs to be checked
     
     
     armUpperActuator = 0;
@@ -53,13 +56,13 @@ void CmdVelToArmJoints::run() {
     }
 }
 
-void CmdVelToArmJoints::receiveArmVelMsg(const geometry_msgs::Twist::ConstPtr& stick) {
-  armJointVel armVels = convertTwistMessagesToJoints(stick.get());
+void CmdVelToArmJoints::receiveArmVelMsg(const sensor_msgs::Joy::ConstPtr& joy) {
+  armJointVel armVels = convertJoystickMessageToJoints(joy);
   armUpperActuator = armVels.armUpperActuator;
   armLowerActuator = armVels.armLowerActuator;
   armBaseRotate = armVels.armBaseRotate;
   clawGrip = armVels.clawGrip;
   clawTwist = armVels.clawTwist;
-  ROS_INFO("Target arm position %f %f %f %f, arm upper actuator = %f arm lower actuator = %f arm base rotate = %f claw grip = %f claw twist = %f", stick->linear.x, stick->linear.y, stick->angular.x, stick->angular.y, armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist);
+  ROS_INFO("Joystick message left joystick y-axis = %f, right joystick y-axis = %f, dpad x-axis = %f, a button = %f, b button = %f, left shoulder = %f, right shoulder = %F, arm upper actuator = %f arm lower actuator = %f arm base rotate = %f claw grip = %f claw twist = %f", joy->axes[ARM_STICK_UPPER_UD], joy->axes[ARM_STICK_LOWER_UD], joy->axes[DPAD_LR], joy->buttons[A_BUTTON], joy->buttons[B_BUTTON], joy->buttons[LEFT_SHOULDER], joy->buttons[RIGHT_SHOULDER], armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist);
 }
 
