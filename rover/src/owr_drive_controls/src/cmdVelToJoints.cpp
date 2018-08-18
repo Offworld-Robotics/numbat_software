@@ -49,7 +49,7 @@ CmdVelToJoints::CmdVelToJoints() {
     backLeftSwerve = nh.advertise<std_msgs::Float64>("/back_left_swerve_controller/command",1,true);
     backRightSwerve = nh.advertise<std_msgs::Float64>("/back_right_swerve_controller/command",1,true);
     
-    mode = SWERVE; // default to swerve mode
+    mode = CRAB; // default to swerve mode
     frontLeftMotorV = 0;
     frontRightMotorV = 0;
     backLeftMotorV = 0;
@@ -61,33 +61,48 @@ CmdVelToJoints::CmdVelToJoints() {
 }
 
 void CmdVelToJoints::run() {
-    ros::Rate rate(100); // placeholder value
+    ros::Rate rate(500); // placeholder value
     while(ros::ok()) {
         std_msgs::Float64 msg;
         msg.data = frontRightMotorV;
         frontRightDrive.publish(msg);
-        msg.data = backRightMotorV;
+        rate.sleep();
+	    msg.data = backRightMotorV;
         backRightDrive.publish(msg);
+        rate.sleep();
         msg.data = frontLeftAng;
         frontRightSwerve.publish(msg);
-        // one side needs to be fliped so the joint velocity is relevant to the point velocity
+        rate.sleep();
+        
+	    // one side needs to be fliped so the joint velocity is relevant to the point velocity
         if (mode == SWERVE) { // need to flip for swerve mode?
             // don't publish back wheel angles for swerve mode
             msg.data = -1.0 * frontLeftMotorV;
             frontLeftDrive.publish(msg);
-            msg.data = -1.0 * backLeftMotorV;
+            rate.sleep();
+
+	        msg.data = -1.0 * backLeftMotorV;
             backLeftDrive.publish(msg);
-            msg.data = -1.0 * frontRightAng;
+            rate.sleep();
+	        msg.data = -1.0 * frontRightAng;
             frontLeftSwerve.publish(msg);
         } else { // otherwise publish as normal
             msg.data = frontLeftMotorV;
             frontLeftDrive.publish(msg);
-            msg.data = backLeftMotorV;
+            rate.sleep();
+
+	        msg.data = backLeftMotorV;
             backLeftDrive.publish(msg);
+            rate.sleep();
+
             msg.data = frontRightAng;
             frontLeftSwerve.publish(msg);
+            rate.sleep();
+
             msg.data = backLeftAng;
             backLeftSwerve.publish(msg);
+            rate.sleep();
+
             msg.data = backRightAng;
             backRightSwerve.publish(msg);
         }
