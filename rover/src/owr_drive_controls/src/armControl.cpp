@@ -11,27 +11,20 @@
 
 armJointVel convertJoystickMessageToJoints(const sensor_msgs::Joy::ConstPtr& joy) {
   armJointVel output;
-  if(fabs(joy->axes[ARM_STICK_UPPER_UD])<DEADZONE) {
-        output.armUpperActuator = 0;
-  } else {
-    if (joy->axes[ARM_STICK_UPPER_UD] > 0) {
-      output.armUpperActuator = (joy->axes[ARM_STICK_UPPER_UD]-DEADZONE)/MAX_JOYSTICK_Y_AXIS;
-    } else {
-      output.armUpperActuator = (joy->axes[ARM_STICK_UPPER_UD]+DEADZONE)/MAX_JOYSTICK_Y_AXIS;
-    }
+  output.armUpperActuator = joy->axes[ARM_STICK_UPPER_UD];
+  output.armLowerActuator = joy->axes[ARM_STICK_LOWER_UD];
+  output.armBaseRotate = joy->axes[DPAD_LR];
+  if (joy->buttons[A_BUTTON]) {
+      output.clawTwist = 1;
+  } else if (joy->buttons[B_BUTTON]) {
+      output.clawTwist = -1;
   }
-  if (fabs(joy->axes[ARM_STICK_LOWER_UD])<DEADZONE) {
-      output.armLowerActuator = 0;
-  } else {
-    if (joy->axes[ARM_STICK_LOWER_UD] > 0) {
-	output.armLowerActuator = (joy->axes[ARM_STICK_LOWER_UD]-DEADZONE)/MAX_JOYSTICK_Y_AXIS;
-    } else {
-	output.armLowerActuator = (joy->axes[ARM_STICK_LOWER_UD]+DEADZONE)/MAX_JOYSTICK_Y_AXIS;
-    }
+  if (joy->buttons[LEFT_SHOULDER]) {
+      clawGripAngle-=(180/PI);
+  } else if (joy->buttons[RIGHT_SHOULDER]) {
+      clawGripAngle+=(180/PI);
   }
-  output.armBaseRotate = 0;
-  output.clawGrip = 0;
-  output.clawTwist = 0;
+  output.clawGrip = clawGripAngle;
   return output;
 
 }

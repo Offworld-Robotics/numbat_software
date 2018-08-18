@@ -39,6 +39,7 @@ CmdVelToArmJoints::CmdVelToArmJoints() {
 }
 
 void CmdVelToArmJoints::run() {
+    ros::Rate r(100);
     while(ros::ok()) {
         
         std_msgs::Float64 msg;
@@ -52,6 +53,7 @@ void CmdVelToArmJoints::run() {
 	clawGripPub.publish(msg);
 	msg.data = clawTwist;
 	clawTwistPub.publish(msg);
+        r.sleep();
         ros::spinOnce();
     }
 }

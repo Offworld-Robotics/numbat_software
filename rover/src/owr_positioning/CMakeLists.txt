@@ -114,9 +114,9 @@ add_executable(orientation src/ExtractOrientation.cpp)
 add_executable(utm_tf src/UTMTransform.cpp)
 add_executable(gps_tf src/GPSTransform.cpp)
 add_executable(mag src/MagnetConverter.cpp)
-add_executable(optical_localization src/optical_localization.cpp)
-target_link_libraries(optical_localization ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
-set_target_properties(optical_localization PROPERTIES COMPILE_FLAGS "-O3")
+#add_executable(optical_localization src/optical_localization.cpp)
+#target_link_libraries(optical_localization ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
+#set_target_properties(optical_localization PROPERTIES COMPILE_FLAGS "-O3")
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
