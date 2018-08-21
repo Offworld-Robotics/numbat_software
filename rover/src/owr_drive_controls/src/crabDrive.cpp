@@ -46,8 +46,10 @@ crabDrive::crabDrive() {
 }
 
 void crabDrive::run() {
+    
+    ros::Rate r(500);
     while(ros::ok()) {
-
+        r.sleep();	
         std_msgs::Float64 msg;
         //REDUNDANT COMMENT, here for reference - one side needs to be fliped so the joint velocity is relevant to the point velocity
         msg.data = frontLeftMotorV;
