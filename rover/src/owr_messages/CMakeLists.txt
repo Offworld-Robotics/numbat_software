@@ -48,22 +48,23 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   activeCameras.msg
-   camera_angle.msg
-   motor.msg
-   status.msg
-   stream.msg
-   position.msg
-   voltage.msg
-   ultrasonic.msg
-   heading.msg
-   pwm.msg
-   board.msg
-   adc.msg
-   stop.msg
- )
+add_message_files(
+  FILES
+  activeCameras.msg
+  camera_angle.msg
+  motor.msg
+  status.msg
+  stream.msg
+  position.msg
+  voltage.msg
+  ultrasonic.msg
+  heading.msg
+  pwm.msg
+  board.msg
+  adc.msg
+  stop.msg
+  science.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -80,12 +81,12 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   sensor_msgs
-   std_msgs
-   geometry_msgs
- )
+generate_messages(
+  DEPENDENCIES
+  sensor_msgs
+  std_msgs
+  geometry_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -99,7 +100,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES owr_messages
-#  CATKIN_DEPENDS message_runtime roscpp rospy sensor_msgs std_msgs
+ CATKIN_DEPENDS message_runtime roscpp rospy sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 
