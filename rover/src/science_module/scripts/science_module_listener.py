@@ -4,7 +4,7 @@ import rospy
 from owr_messages.msg import science
 
 def callback(data):
-    rospy.loginfo(rospy.get_caller_id() + " I got this data %s", data.data)
+    rospy.loginfo(rospy.get_caller_id() + " I got this data %s", data)
 
 def listener():
     rospy.init_node('science_module_listener', anonymous=True)
