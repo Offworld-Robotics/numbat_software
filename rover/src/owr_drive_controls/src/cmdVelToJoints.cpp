@@ -61,7 +61,7 @@ CmdVelToJoints::CmdVelToJoints() {
 }
 
 void CmdVelToJoints::run() {
-    ros::Rate rate(500); // placeholder value
+    ros::Rate rate(60); // placeholder value
     while(ros::ok()) {
         std_msgs::Float64 msg;
         msg.data = frontRightMotorV;
