@@ -12,7 +12,7 @@ def talker():
         science_msg.temperature = 23
         science_msg.humidity = 56
         science_msg.mag_x = 12.67
-        science_msg.mag_y = 45,78
+        science_msg.mag_y = 45.78
         science_msg.mag_z = 133.89
         science_msg.colour_temperature = 12
         science_msg.illuminance = 89
