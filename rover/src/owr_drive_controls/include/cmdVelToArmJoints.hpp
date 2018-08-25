@@ -6,6 +6,10 @@
  * Date Started: 2/6/18
  */
 
+#ifndef CMD_VEL_ARM_H
+#define CMD_VEL_ARM_H
+
+
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include "armControl.hpp"
@@ -32,4 +36,4 @@ class CmdVelToArmJoints {
         double armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist;
 };
 
-  
+#endif //CMD_VEL_ARM_H

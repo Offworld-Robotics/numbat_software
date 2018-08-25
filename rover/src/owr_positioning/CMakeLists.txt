@@ -16,7 +16,10 @@ find_package(catkin REQUIRED COMPONENTS
   tf2
   tf2_geometry_msgs
   tf2_ros
+  OpenCV
   cv_bridge
+  OpenCV
+  ecl_threads
 )
 
 ## System dependencies are found with CMake's conventions

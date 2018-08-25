@@ -1,15 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(owr_drive_controls)
+project(numbat_temp_comms)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  owr_messages
+  geometry_msgs
   roscpp
-  rospy
   std_msgs
-  ecl_threads
 )
 
 ## System dependencies are found with CMake's conventions
@@ -30,16 +28,16 @@ find_package(catkin REQUIRED COMPONENTS
 ## * Let MSG_DEP_SET be the set of packages whose message types you use in
 ##   your messages/services/actions (e.g. std_msgs, actionlib_msgs, ...).
 ## * In the file package.xml:
+##   * add a build_depend tag for "message_generation"
 ##   * add a build_depend and a run_depend tag for each package in MSG_DEP_SET
-##   * If MSG_DEP_SET isn't empty the following dependencies might have been
-##     pulled in transitively but can be declared for certainty nonetheless:
-##     * add a build_depend tag for "message_generation"
+##   * If MSG_DEP_SET isn't empty the following dependency has been pulled in
+##     but can be declared for certainty nonetheless:
 ##     * add a run_depend tag for "message_runtime"
 ## * In this file (CMakeLists.txt):
 ##   * add "message_generation" and every package in MSG_DEP_SET to
 ##     find_package(catkin REQUIRED COMPONENTS ...)
 ##   * add "message_runtime" and every package in MSG_DEP_SET to
-##      catkin_package(...)
+##     catkin_package(CATKIN_DEPENDS ...)
 ##   * uncomment the add_*_files sections below as needed
 ##     and list every .msg/.srv/.action file to be processed
 ##   * uncomment the generate_messages entry below
@@ -69,7 +67,27 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs
+#   geometry_msgs#   std_msgs
+# )
+
+################################################
+## Declare ROS dynamic reconfigure parameters ##
+################################################
+
+## To declare and build dynamic reconfigure parameters within this
+## package, follow these steps:
+## * In the file package.xml:
+##   * add a build_depend and a run_depend tag for "dynamic_reconfigure"
+## * In this file (CMakeLists.txt):
+##   * add "dynamic_reconfigure" to
+##     find_package(catkin REQUIRED COMPONENTS ...)
+##   * uncomment the "generate_dynamic_reconfigure_options" section below
+##     and list every .cfg file to be processed
+
+## Generate dynamic reconfigure parameters in the 'cfg' folder
+# generate_dynamic_reconfigure_options(
+#   cfg/DynReconf1.cfg
+#   cfg/DynReconf2.cfg
 # )
 
 ###################################
@@ -82,10 +100,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include 
-  LIBRARIES owr_drive_controls
-  CATKIN_DEPENDS owr_messages roscpp rospy std_msgs ecl_threads
-  DEPENDS system_lib
+#  INCLUDE_DIRS include
+#  LIBRARIES numbat_temp_comms
+#  CATKIN_DEPENDS geometry_msgs roscpp std_msgs
+#  DEPENDS system_lib
 )
 
 ###########
@@ -96,40 +114,31 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  include
-  ../owr_joystick_filter/include/
   ${catkin_INCLUDE_DIRS}
+  include
 )
 
-## Declare a cpp library
-# add_library(owr_drive_controls
-#   src/${PROJECT_NAME}/owr_drive_controls.cpp
+## Declare a C++ library
+# add_library(numbat_temp_comms
+#   src/${PROJECT_NAME}/numbat_temp_comms.cpp
 # )
 
-## Declare a cpp executable
+## Add cmake target dependencies of the library
+## as an example, code may need to be generated before libraries
+## either from message generation or dynamic reconfigure
+# add_dependencies(numbat_temp_comms ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+## Declare a C++ executable
+add_executable(numbat_receiver_node src/joystick_receiver_node.cpp)
 
-add_executable(owr_drive_board src/BoardControl.cpp src/Bluetongue.cpp src/JointMonitor.cpp src/JointVelocityController.cpp src/LIDARTiltJointController.cpp src/JointSpeedBasedPositionController.cpp src/JointController.cpp src/Drive.cpp src/swerveDrive.cpp src/GearPositionTracker.cpp src/PotPositionTracker.cpp src/PositionTracker.cpp src/JointArmVelocityController.cpp)
-target_link_libraries(owr_drive_board ${catkin_LIBRARIES})
-
-add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/Drive.cpp src/crabDrive.cpp src/fourWheelDrive.cpp src/swerveDrive.cpp)
-#add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/swerveDrive.cpp)
-add_dependencies(cmd_vel_2_joints owr_messages)
-target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
-
-add_executable(cmd_vel_2_arm_joints src/cmdVelToArmJoints.cpp src/armControl.cpp)
-add_dependencies(cmd_vel_2_arm_joints owr_messages)
-target_link_libraries(cmd_vel_2_arm_joints ${catkin_LIBRARIES})
-
-
-## Add cmake target dependencies of the executable/library
-## as an example, message headers may need to be generated before nodes
-# add_dependencies(owr_drive_controls_node owr_drive_controls_generate_messages_cpp)
+## Add cmake target dependencies of the executable
+## same as for the library above
+add_dependencies(numbat_receiver_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(owr_drive_controls_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(numbat_receiver_node
+   ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
@@ -146,7 +155,7 @@ target_link_libraries(cmd_vel_2_arm_joints ${catkin_LIBRARIES})
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS owr_drive_controls owr_drive_controls_node
+# install(TARGETS numbat_temp_comms owr_arduino_joystick_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -171,15 +180,10 @@ target_link_libraries(cmd_vel_2_arm_joints ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_owr_drive_controls.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_owr_arduino_joystick.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
-catkin_add_gtest(testJointController test/testJointVelocityController.cpp src/JointController.cpp src/JointVelocityController.cpp)
-target_link_libraries(testJointController ${catkin_LIBRARIES})
-catkin_add_gtest(testJointPosController test/testJointSpeedBasedPositionController.cpp src/JointController.cpp src/JointSpeedBasedPositionController.cpp)
-target_link_libraries(testJointPosController ${catkin_LIBRARIES})
-catkin_add_gtest(testLIDARController test/testLIDAR.cpp src/JointController.cpp src/LIDARTiltJointController.cpp)
-target_link_libraries(testLIDARController ${catkin_LIBRARIES})
+
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)

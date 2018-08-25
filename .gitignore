@@ -36,3 +36,10 @@ hector_nav_msgs/src/hector_nav_msgs/
 
 #python scripts
 *.pyc
+
+# VSCode files
+.vscode/
+
+# IntelliJ folders
+.idea
+

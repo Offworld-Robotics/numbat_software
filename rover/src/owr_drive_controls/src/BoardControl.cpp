@@ -8,7 +8,6 @@
 #include "Bluetongue.h"
 #include "RoverDefs.h"
 #include "ButtonDefs.h"
-#include "swerveDrive.hpp"
 #include "Bluetounge2Params.h"
 
 #include <assert.h>
@@ -385,7 +384,7 @@ void BoardControl::run() {
                 firstRun = false;
             }
             //do joint calculations
-            swerveMotorVels swerveState = doVelTranslation(&(currentVel));
+            motorVels swerveState = swerveDrive.doVelTranslation(&(currentVel));
             pwmFLW = frontLeftWheel.velToPWM(swerveState.frontLeftMotorV);
             pwmFRW = frontRightWheel.velToPWM(swerveState.frontRightMotorV);
             pwmBLW = backLeftWheel.velToPWM(swerveState.backLeftMotorV);

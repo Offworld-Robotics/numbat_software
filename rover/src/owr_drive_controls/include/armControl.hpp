@@ -6,11 +6,12 @@
  *
  */
 
-#include <geometry_msgs/Twist.h>
-#include <sensor_msgs/Joy.h>
-
 #ifndef ARM_CONTROL_H
 #define ARM_CONTROL_H
+
+
+#include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Joy.h>
 
 #define MAX_JOYSTICK_Y_AXIS 36787.0
 #define DEADZONE 5000.0
@@ -29,6 +30,6 @@ typedef struct _armJointVel {
 } armJointVel;
 
 armJointVel convertJoystickMessageToJoints(const sensor_msgs::Joy::ConstPtr& joy);
-double clawGripAngle = PI/4.0;
+double clawGripAngle;// = PI/4.0;
 
-#endif
+#endif //ARM_CONTROL_H

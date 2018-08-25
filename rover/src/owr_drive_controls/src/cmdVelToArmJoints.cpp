@@ -17,6 +17,8 @@
 
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_cmd_vel_2_arm_joints");
+
+    clawGripAngle = PI/4.0;
     CmdVelToArmJoints CmdVelToArmJoints;
     CmdVelToArmJoints.run();
 }
