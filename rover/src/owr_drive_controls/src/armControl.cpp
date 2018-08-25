@@ -9,7 +9,7 @@
 #include "armControl.hpp"
 #include <ros/ros.h>
 
-armJointVel convertJoystickMessageToJoints(const sensor_msgs::Joy::ConstPtr& joy) {
+armJointVel ArmControl::convertJoystickMessageToJoints(const sensor_msgs::Joy::ConstPtr& joy) {
   armJointVel output;
   output.armUpperActuator = joy->axes[ARM_STICK_UPPER_UD];
   output.armLowerActuator = joy->axes[ARM_STICK_LOWER_UD];
