@@ -45,7 +45,7 @@ CmdVelToArmJoints::CmdVelToArmJoints() {
 void CmdVelToArmJoints::run() {
     ros::Rate r(100);
     while(ros::ok()) {
-
+	// Publish to all the publishers
         std_msgs::Float64 msg;
         msg.data = armUpperActuator;
         armUpper.publish(msg);
@@ -63,7 +63,9 @@ void CmdVelToArmJoints::run() {
 }
 
 void CmdVelToArmJoints::receiveArmVelMsg(const sensor_msgs::Joy::ConstPtr& joy) {
+  // Convert the joystick message into the messages for each of the arm publishers
   armJointVel armVels = armControl.convertJoystickMessageToJoints(joy);
+  // Write the ouput to the private member variables of this class
   armUpperActuator = armVels.armUpperActuator;
   armLowerActuator = armVels.armLowerActuator;
   armBaseRotate = armVels.armBaseRotate;
