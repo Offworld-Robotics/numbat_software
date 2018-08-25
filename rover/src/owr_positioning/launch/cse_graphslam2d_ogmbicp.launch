@@ -1,0 +1,19 @@
+<launch>
+    <node pkg="crosbot_ogmbicp" type="crosbot_ogmbicp" name="crosbot_ogmbicp" output="screen">
+        <param name="odom_frame" value="/odom" />
+        <param name="base_frame" value="/base_footprint" />
+        <param name="icp_frame" value="/icp" />
+        <param name="MapSize" value="50"/>
+        <param name="UseOdometry" value="false"/>
+    </node>
+
+
+    <!-- Manual:  http://robolab.cse.unsw.edu.au:4443/rescue/crosbot/wikis/package/crosbot_graphslam -->
+    <node pkg="crosbot_graphslam" type="crosbot_graphslam" name="crosbot_graphslam" output="screen">
+        <param name="base_frame" value="/base_footprint" />
+        <!-- use this instead if using ogmbicp -->
+        <param name="icp_frame" value="/icp" />
+        <param name="slam" value="/slam" />
+    </node>
+
+</launch>

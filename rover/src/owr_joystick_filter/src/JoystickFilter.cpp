@@ -293,7 +293,7 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
 //main loop
 void JoystickFilter::spin() {
-    ros::Rate r(20);
+    ros::Rate r(50);
     while(ros::ok()) {
         
         lidarPos.data += gimbalRate * LIDAR_MULTIPLIER;
