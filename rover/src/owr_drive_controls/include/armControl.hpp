@@ -29,7 +29,11 @@ typedef struct _armJointVel {
   double armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist;
 } armJointVel;
 
-armJointVel convertJoystickMessageToJoints(const sensor_msgs::Joy::ConstPtr& joy);
-double clawGripAngle;// = PI/4.0;
+class ArmControl {
+  public:
+    armJointVel convertJoystickMessageToJoints(const sensor_msgs::Joy::ConstPtr& joy);
 
+  private:
+    double clawGripAngle;// = PI/4.0;
+}
 #endif //ARM_CONTROL_H
