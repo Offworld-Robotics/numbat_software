@@ -1,0 +1,1 @@
+controller_joint_names: ['Front Left Steer', 'Front Left rotate', 'Back Left Steer', 'Back Left Rotate', 'Back Right Steer', 'Back RIght Rotate', 'Front Right Steer', 'Front Right Rotate', ]
