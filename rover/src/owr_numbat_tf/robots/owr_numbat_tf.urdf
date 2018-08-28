@@ -1,5 +1,7 @@
+<?xml version="1.0"?>
 <robot
-  name="owr_numbat_tf">
+        xmlns:xacro="http://www.ros.org/wiki/xacro"
+        name="owr_numbat_tf">
   <link
     name="base_link">
     <inertial>
@@ -40,6 +42,170 @@
       </geometry>
     </collision>
   </link>
+  <link
+          name="laser_tilt">
+    <inertial>
+      <origin
+              xyz="-0.0326669331300311 0.000449239090195036 0.0154731252391825"
+              rpy="0 0 0" />
+      <mass
+              value="0.0609125923338383" />
+      <inertia
+              ixx="2.00361198600938E-05"
+              ixy="-5.20398520467511E-07"
+              ixz="1.67772001955164E-06"
+              iyy="5.68087099458121E-05"
+              iyz="-4.03110668527991E-08"
+              izz="5.87542018274252E-05" />
+    </inertial>
+    <visual>
+      <origin
+              xyz="0 0 0"
+              rpy="0 0 0" />
+      <geometry>
+        <mesh
+                filename="package://owr_bluetounge2_tf/meshes/laser_tilt.STL" />
+      </geometry>
+      <material
+              name="">
+        <color
+                rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+              xyz="0 0 0"
+              rpy="0 0 0" />
+      <geometry>
+        <mesh
+                filename="package://owr_bluetounge2_tf/meshes/laser_tilt.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+          name="laser_tilt_base"
+          type="fixed">
+    <origin
+            xyz="0.26213671627839 0.165813347998531 0.116"
+            rpy="-4.0766001685455E-16 -2.71143453751384E-15 -7.14214183115679E-19" />
+    <parent
+            link="base_link" />
+    <child
+            link="laser_tilt" />
+    <axis
+            xyz="0 0 0" />
+  </joint>
+  <link
+          name="laser_tilt_tilt">
+    <inertial>
+      <origin
+              xyz="-0.0207354942246256 -0.0110062171521322 0.0363962516011186"
+              rpy="0 0 0" />
+      <mass
+              value="0.063245803268312" />
+      <inertia
+              ixx="3.67872840111064E-05"
+              ixy="2.45249846765993E-06"
+              ixz="1.33088294535402E-06"
+              iyy="4.06730444934804E-05"
+              iyz="6.96179679390717E-07"
+              izz="4.48239101958926E-05" />
+    </inertial>
+    <visual>
+      <origin
+              xyz="0 0 0"
+              rpy="0 0 0" />
+      <geometry>
+        <mesh
+                filename="package://owr_bluetounge2_tf/meshes/laser_tilt_tilt.STL" />
+      </geometry>
+      <material
+              name="">
+        <color
+                rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+              xyz="0 0 0"
+              rpy="0 0 0" />
+      <geometry>
+        <mesh
+                filename="package://owr_bluetounge2_tf/meshes/laser_tilt_tilt.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+          name="laser_tilt_joint"
+          type="revolute">
+    <origin
+            xyz="-0.00692854336717914 -0.01905 0.029"
+            rpy="-1.5707963267949 1.08521967863993 0" />
+    <parent
+            link="laser_tilt" />
+    <child
+            link="laser_tilt_tilt" />
+    <axis
+            xyz="0 0 1" />
+    <limit
+            lower="-0.785398"
+            upper="1.5708"
+            effort="0"
+            velocity="0" />
+  </joint>
+  <link
+          name="lidar_frame">
+    <inertial>
+      <origin
+              xyz="-0.000639925729432167 0.000662656077548368 -0.0176677612707939"
+              rpy="0 0 0" />
+      <mass
+              value="0.229160254803044" />
+      <inertia
+              ixx="0.000208997482925673"
+              ixy="4.81938834051271E-07"
+              ixz="1.1237905876103E-06"
+              iyy="0.000213298877696199"
+              iyz="1.24374624615713E-07"
+              izz="0.000112442329412222" />
+    </inertial>
+    <visual>
+      <origin
+              xyz="0 0 0"
+              rpy="0 0 0" />
+      <geometry>
+        <mesh
+                filename="package://owr_bluetounge2_tf/meshes/lidar_frame.STL" />
+      </geometry>
+      <material
+              name="">
+        <color
+                rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+              xyz="0 0 0"
+              rpy="0 0 0" />
+      <geometry>
+        <mesh
+                filename="package://owr_bluetounge2_tf/meshes/lidar_frame.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+          name="lidar_frame_base"
+          type="fixed">
+    <origin
+            xyz="-0.0922144508966998 -0.0394134633802184 0.0346559749585283"
+            rpy="1.5707963267949 0.110221873047514 -1.08521967863993" />
+    <parent
+            link="laser_tilt_tilt" />
+    <child
+            link="lidar_frame" />
+    <axis
+            xyz="0 0 0" />
+  </joint>
   <link
     name="Front Left Axle">
     <inertial>
@@ -464,4 +630,49 @@
     <axis
       xyz="0 0 1" />
   </joint>
+  <transmission name="laser_tilt_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="laser_tilt_joint">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="laser_tilt_motor">
+      <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+  <gazebo reference="laser_frame">
+    <sensor type="gpu_ray" name="laser_frame">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>40</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-2.35619</min_angle>
+            <max_angle>2.35619</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>-->
+          <!-- Noise parameters based on published spec for Hokuyo laser
+              achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+              stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+              reading. -->
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so">
+        <topicName>/laser/scan</topicName>
+        <frameName>laser_frame</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
 </robot>
