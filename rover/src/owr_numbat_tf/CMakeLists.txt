@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-project(Assembly.SLDASM)
+project(owr_numbat_tf)
 
 find_package(catkin REQUIRED)
 
