@@ -1,7 +1,7 @@
 <launch>
     <param
     name="robot_description"
-    command="$(find xacro)/xacro '$(find owr_numbat_tf)/robots/owr_numbat_tf.URDF'" />
+    command="$(find xacro)/xacro '$(find owr_numbat_tf)/robots/owr_numbat_tf.urdf'" />
     
   <node
     name="robot_state_publisher"
