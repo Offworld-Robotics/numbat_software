@@ -86,7 +86,7 @@
           name="laser_tilt_base"
           type="fixed">
     <origin
-            xyz="0.26213671627839 0.165813347998531 0.116"
+            xyz="0.5 -0.75 0.47"
             rpy="-4.0766001685455E-16 -2.71143453751384E-15 -7.14214183115679E-19" />
     <parent
             link="base_link" />
@@ -630,6 +630,12 @@
     <axis
       xyz="0 0 1" />
   </joint>
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+    <xacro:property name="gearbox_mechReduction" value="10" />
   <transmission name="laser_tilt_joint">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="laser_tilt_joint">
