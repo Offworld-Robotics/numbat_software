@@ -6,7 +6,7 @@
     default="False" />
   <param
     name="robot_description"
-    textfile="$(find Assembly.SLDASM)/robots/Assembly.SLDASM.urdf" />
+    textfile="$(find owr_numbat_tf)/robots/owr_numbat_tf.urdf" />
   <param
     name="use_gui"
     value="$(arg gui)" />
@@ -22,5 +22,5 @@
     name="rviz"
     pkg="rviz"
     type="rviz"
-    args="-d $(find Assembly.SLDASM)/urdf.rviz" />
+    args="-d $(find owr_numbat_tf)/urdf.rviz" />
 </launch>
