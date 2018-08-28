@@ -86,8 +86,8 @@
           name="laser_tilt_base"
           type="fixed">
     <origin
-            xyz="0.5 -0.75 0.47"
-            rpy="-4.0766001685455E-16 -2.71143453751384E-15 -7.14214183115679E-19" />
+            xyz="-0.1 -0.75 0.47"
+            rpy="-4.0766001685455E-16 2.71143453751384E-15 -3.14214183115679" />
     <parent
             link="base_link" />
     <child
@@ -207,7 +207,7 @@
             xyz="0 0 0" />
   </joint>
   <link
-    name="Front Left Axle">
+    name="back_right Axle">
     <inertial>
       <origin
         xyz="-0.0517688079644882 0.0887190484893181 2.22044604925031E-16"
@@ -247,7 +247,7 @@
     </collision>
   </link>
   <joint
-    name="Front Left Steer"
+    name="back_right Steer"
     type="continuous">
     <origin
       xyz="0.62684 -0.40335 0.13495"
@@ -255,12 +255,12 @@
     <parent
       link="base_link" />
     <child
-      link="Front Left Axle" />
+      link="back_right Axle" />
     <axis
       xyz="0 1 0" />
   </joint>
   <link
-    name="Front Left wheel">
+    name="back_right wheel">
     <inertial>
       <origin
         xyz="6.06240746492404E-09 -2.77011136112781E-07 -0.00589838982095087"
@@ -300,20 +300,20 @@
     </collision>
   </link>
   <joint
-    name="Front Left rotate"
+    name="back_right rotate"
     type="continuous">
     <origin
       xyz="0 0.03 0"
       rpy="-1.5708 -0.91526 1.5708" />
     <parent
-      link="Front Left Axle" />
+      link="back_right Axle" />
     <child
-      link="Front Left wheel" />
+      link="back_right wheel" />
     <axis
       xyz="0 0 1" />
   </joint>
   <link
-    name="Back Left Axle">
+    name="front_right Axle">
     <inertial>
       <origin
         xyz="-0.0517688079644883 0.0887190484893179 -4.16333634234434E-17"
@@ -353,7 +353,7 @@
     </collision>
   </link>
   <joint
-    name="Back Left Steer"
+    name="front_right Steer"
     type="continuous">
     <origin
       xyz="-0.13031 -0.40335 0.13495"
@@ -361,12 +361,12 @@
     <parent
       link="base_link" />
     <child
-      link="Back Left Axle" />
+      link="front_right Axle" />
     <axis
       xyz="0 1 0" />
   </joint>
   <link
-    name="Back Left Wheel">
+    name="front_right Wheel">
     <inertial>
       <origin
         xyz="6.06240754819076E-09 -2.77011136001759E-07 -0.00589838982095175"
@@ -406,20 +406,20 @@
     </collision>
   </link>
   <joint
-    name="Back Left Rotate"
+    name="front_right Rotate"
     type="continuous">
     <origin
       xyz="0 0.0300000000000001 0"
       rpy="1.57079632679489 0.214040970418392 -1.5707963267949" />
     <parent
-      link="Back Left Axle" />
+      link="front_right Axle" />
     <child
-      link="Back Left Wheel" />
+      link="front_right Wheel" />
     <axis
       xyz="0 0 1" />
   </joint>
   <link
-    name="Back Right Axle">
+    name="front_left Axle">
     <inertial>
       <origin
         xyz="-0.0517688079644882 0.088719048489318 -5.55111512312578E-17"
@@ -459,7 +459,7 @@
     </collision>
   </link>
   <joint
-    name="Back Right Steer"
+    name="front_left Steer"
     type="continuous">
     <origin
       xyz="-0.13031 -0.88449 0.13495"
@@ -467,12 +467,12 @@
     <parent
       link="base_link" />
     <child
-      link="Back Right Axle" />
+      link="front_left Axle" />
     <axis
       xyz="0 1 0" />
   </joint>
   <link
-    name="Back Right Wheel">
+    name="front_left Wheel">
     <inertial>
       <origin
         xyz="6.06240740941288E-09 -2.77011135974004E-07 -0.00589838982095114"
@@ -518,14 +518,14 @@
       xyz="0 0.0299999999999999 0"
       rpy="-1.57079632679491 -1.13219561486008 1.57079632679491" />
     <parent
-      link="Back Right Axle" />
+      link="front_left Axle" />
     <child
-      link="Back Right Wheel" />
+      link="front_left Wheel" />
     <axis
       xyz="0 0 1" />
   </joint>
   <link
-    name="Front Right Axle">
+    name="back_left Axle">
     <inertial>
       <origin
         xyz="-0.0517688079644884 0.088719048489318 -2.22044604925031E-16"
@@ -565,7 +565,7 @@
     </collision>
   </link>
   <joint
-    name="Front Right Steer"
+    name="back_left Steer"
     type="continuous">
     <origin
       xyz="0.626839262679528 -0.884494656994069 0.13494946923044"
@@ -573,7 +573,7 @@
     <parent
       link="base_link" />
     <child
-      link="Front Right Axle" />
+      link="back_left Axle" />
     <axis
       xyz="0 1 0" />
   </joint>
@@ -618,13 +618,13 @@
     </collision>
   </link>
   <joint
-    name="Front Right Rotate"
+    name="back_left Rotate"
     type="continuous">
     <origin
       xyz="0 0.0299999999999999 0"
       rpy="-1.5707963267949 -0.00858284690216311 1.57079632679489" />
     <parent
-      link="Front Right Axle" />
+      link="back_left Axle" />
     <child
       link="Front RIght Wheel" />
     <axis
