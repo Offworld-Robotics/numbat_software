@@ -20,18 +20,29 @@ def joint_callback(msg):
     @param msg: the message
     """
     out = JointState()
-    out.header.time = rospy.get_rostime()
+    curr_time = rospy.get_rostime()
+    out.header.stamp = curr_time + joint_delay
+    out.name = [joint_name]
+    out.position = [msg.data]
+    pub.publish(out)
 
-    pass
+def listener():
+    rospy.init_node('joint_guesser')
+
+    global sub
+    sub  = rospy.Subscriber(
+        '/input/command',
+        Float64,
+        joint_callback,
+        queue_size=1
+    )
+    global pub
+    pub = rospy.Publisher("/joint_states", JointState, queue_size=0)
+
+    rospy.spin()
 
 if __name__ == '__main__':
-    rospy.init_node('joint_guesser')
-    sub  = rospy.Subscriber('/input/command', Float64, joint_callback, queue_size=1)
-    pub = rospy.Publisher("/joint_states", JointState)
-
     joint_name = rospy.get_param("/joint_guesser/joint_name", None)
     joint_delay_ns = rospy.get_param("/joint_guesser/joint_delay_ns", 0.0)
-    joint_delay = rospy.Duration.from_nsec(joint_delay_ns)
-
-
-    rospy.spin();
+    joint_delay = rospy.Duration.from_sec(joint_delay_ns)
+    listener()
