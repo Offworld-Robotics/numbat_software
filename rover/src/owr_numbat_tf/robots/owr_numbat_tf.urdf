@@ -2,8 +2,11 @@
 <robot
         xmlns:xacro="http://www.ros.org/wiki/xacro"
         name="owr_numbat_tf">
+  <link name="base_link">
+
+  </link>
   <link
-    name="base_link">
+    name="rover_model">
     <inertial>
       <origin
         xyz="0.199001521355698 0.401976534326884 0.644578776800536"
@@ -24,7 +27,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/base_link.STL" />
+          filename="package://owr_numbat_tf/meshes/rover_model.STL" />
       </geometry>
       <material
         name="">
@@ -38,10 +41,23 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/base_link.STL" />
+          filename="package://owr_numbat_tf/meshes/rover_model.STL" />
       </geometry>
     </collision>
   </link>
+  <joint
+          name="base_link_rover"
+          type="fixed">
+    <origin
+            xyz="-0.1 -0.6 0"
+            rpy="0 0 0" />
+    <parent
+            link="base_link" />
+    <child
+            link="rover_model" />
+    <axis
+            xyz="0 0 0" />
+  </joint>
   <link
           name="laser_tilt">
     <inertial>
@@ -89,7 +105,7 @@
             xyz="-0.1 -0.75 0.47"
             rpy="-4.0766001685455E-16 2.71143453751384E-15 -3.14214183115679" />
     <parent
-            link="base_link" />
+            link="rover_model" />
     <child
             link="laser_tilt" />
     <axis
@@ -253,7 +269,7 @@
       xyz="0.62684 -0.40335 0.13495"
       rpy="1.5708 6.088E-17 1.6778" />
     <parent
-      link="base_link" />
+      link="rover_model" />
     <child
       link="back_right Axle" />
     <axis
@@ -359,7 +375,7 @@
       xyz="-0.13031 -0.40335 0.13495"
       rpy="1.5708 6.0901E-17 1.4671" />
     <parent
-      link="base_link" />
+      link="rover_model" />
     <child
       link="front_right Axle" />
     <axis
@@ -465,7 +481,7 @@
       xyz="-0.13031 -0.88449 0.13495"
       rpy="1.5708 5.9043E-17 1.3027" />
     <parent
-      link="base_link" />
+      link="rover_model" />
     <child
       link="front_left Axle" />
     <axis
@@ -571,7 +587,7 @@
       xyz="0.626839262679528 -0.884494656994069 0.13494946923044"
       rpy="1.5707963267949 6.12114355045412E-17 1.54596104769157" />
     <parent
-      link="base_link" />
+      link="rover_model" />
     <child
       link="back_left Axle" />
     <axis
