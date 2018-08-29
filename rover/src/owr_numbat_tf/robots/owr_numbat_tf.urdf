@@ -27,7 +27,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/rover_model.STL" />
+          filename="package://owr_numbat_tf/meshes/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -41,7 +41,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/rover_model.STL" />
+          filename="package://owr_numbat_tf/meshes/base_link.STL" />
       </geometry>
     </collision>
   </link>
