@@ -1,0 +1,55 @@
+<launch>
+    <node pkg="owr_numbat_tf" type="publish_joint_guess.py" name="laser_tilt" output="screen">
+        <param name="/joint_guesser/joint_name" value="laser_tilt_joint"/>
+        <param name="/joint_guesser/joint_delay_ns" value="0.0"/>
+        <remap from="/laser_tilt_joint_controller/command" to="/input/command"/>
+    </node>
+
+    <node pkg="owr_numbat_tf" type="publish_joint_guess.py" name="front_left_wheel_axel" output="screen">
+        <param name="/joint_guesser/joint_name" value="front_left_wheel_axel"/>
+        <param name="/joint_guesser/joint_delay_ns" value="0.0"/>
+        <remap from="/front_left_wheel_axel_controller/command" to="/input/command"/>
+    </node>
+
+    <node pkg="owr_numbat_tf" type="publish_joint_guess.py" name="front_right_wheel_axel" output="screen">
+        <param name="/joint_guesser/joint_name" value="front_right_wheel_axel"/>
+        <param name="/joint_guesser/joint_delay_ns" value="0.0"/>
+        <remap from="/front_right_wheel_axel_controller/command" to="/input/command"/>
+    </node>
+
+    <node pkg="owr_numbat_tf" type="publish_joint_guess.py" name="back_left_wheel_axel" output="screen">
+        <param name="/joint_guesser/joint_name" value="back_left_wheel_axel"/>
+        <param name="/joint_guesser/joint_delay_ns" value="0.0"/>
+        <remap from="/back_left_wheel_axel_controller/command" to="/input/command"/>
+    </node>
+
+    <node pkg="owr_numbat_tf" type="publish_joint_guess.py" name="back_right_wheel_axel" output="screen">
+        <param name="/joint_guesser/joint_name" value="back_right_wheel_axel"/>
+        <param name="/joint_guesser/joint_delay_ns" value="0.0"/>
+        <remap from="/back_right_wheel_axel_controller/command" to="/input/command"/>
+    </node>
+
+    <node pkg="owr_numbat_tf" type="publish_joint_guess.py" name="front_left_swerve" output="screen">
+        <param name="/joint_guesser/joint_name" value="front_left_swerve"/>
+        <param name="/joint_guesser/joint_delay_ns" value="0.0"/>
+        <remap from="/front_left_swerve_controller/command" to="/input/command"/>
+    </node>
+
+    <node pkg="owr_numbat_tf" type="publish_joint_guess.py" name="front_right_swerve" output="screen">
+        <param name="/joint_guesser/joint_name" value="front_right_swerve"/>
+        <param name="/joint_guesser/joint_delay_ns" value="0.0"/>
+        <remap from="/front_right_swerve_controller/command" to="/input/command"/>
+    </node>
+
+    <node pkg="owr_numbat_tf" type="publish_joint_guess.py" name="back_left_swerve" output="screen">
+        <param name="/joint_guesser/joint_name" value="back_left_swerve"/>
+        <param name="/joint_guesser/joint_delay_ns" value="0.0"/>
+        <remap from="/back_left_swerve_controller/command" to="/input/command"/>
+    </node>
+
+    <node pkg="owr_numbat_tf" type="publish_joint_guess.py" name="back_right_swerve" output="screen">
+        <param name="/joint_guesser/joint_name" value="back_right_swerve"/>
+        <param name="/joint_guesser/joint_delay_ns" value="0.0"/>
+        <remap from="/back_right_swerve_controller/command" to="/input/command"/>
+    </node>
+</launch>
