@@ -49,8 +49,8 @@
           name="base_link_rover"
           type="fixed">
     <origin
-            xyz="-0.1 -0.6 0"
-            rpy="0 0 0" />
+            xyz="0.2 -0.65 0"
+            rpy="0 0 3.14159265359" />
     <parent
             link="base_link" />
     <child
@@ -263,7 +263,7 @@
     </collision>
   </link>
   <joint
-    name="back_right Steer"
+    name="back_right_swerve"
     type="continuous">
     <origin
       xyz="0.62684 -0.40335 0.13495"
@@ -369,7 +369,7 @@
     </collision>
   </link>
   <joint
-    name="front_right Steer"
+    name="front_right_swerve"
     type="continuous">
     <origin
       xyz="-0.13031 -0.40335 0.13495"
@@ -475,7 +475,7 @@
     </collision>
   </link>
   <joint
-    name="front_left Steer"
+    name="front_left_swerve"
     type="continuous">
     <origin
       xyz="-0.13031 -0.88449 0.13495"
@@ -581,7 +581,7 @@
     </collision>
   </link>
   <joint
-    name="back_left Steer"
+    name="back_left_swerve"
     type="continuous">
     <origin
       xyz="0.626839262679528 -0.884494656994069 0.13494946923044"
