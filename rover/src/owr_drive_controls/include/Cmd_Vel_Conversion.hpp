@@ -13,7 +13,7 @@
 #define PROJECT_CMD_VEL_CONVERSION_HPP
 
 #include <ros/ros.h>
-#include <geomerty_msgs/Twist.h>
+#include <geometry_msgs/Twist.h>
 
 #define OUT_TOPIC "/cmd_vel"
 #define IN_TOPIC "/cmd_vel/twist"
