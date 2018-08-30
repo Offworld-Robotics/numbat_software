@@ -1,10 +1,12 @@
 <launch>
     <param
-    name="robot_description"
-    command="$(find xacro)/xacro '$(find owr_numbat_tf)/robots/owr_numbat_tf.urdf'" />
-    
-  <node
-    name="robot_state_publisher"
-    pkg="robot_state_publisher"
-    type="state_publisher" />
+            name="robot_description"
+            command="$(find xacro)/xacro '$(find owr_numbat_tf)/robots/owr_numbat_tf.urdf'"/>
+
+    <node
+            name="robot_state_publisher"
+            pkg="robot_state_publisher"
+            type="state_publisher"/>
+    <include file="$(find owr_numbat_tf)/launch/joint_guess.launch" />
+
 </launch>
