@@ -23,13 +23,16 @@ armJointVel ArmControl::convertJoystickMessageToJoints(const sensor_msgs::Joy::C
   // Pressing the B button causes the claw to rotate (clockwise/counterclockwise)
   } else if (joy->buttons[B_BUTTON]) {
       output.clawTwist = -1;
+  } else {
+      output.clawTwist = 0;
   }
+
   // Pressing the left button causes the claw grip to open
   if (joy->buttons[LEFT_SHOULDER]) {
-      clawGripAngle-=(180/PI);
+      clawGripAngle-=(PI/180.0);
   // Pressing the right button causes the claw grip to close
   } else if (joy->buttons[RIGHT_SHOULDER]) {
-      clawGripAngle+=(180/PI);
+      clawGripAngle+=(PI/180.0);
   }
   output.clawGrip = clawGripAngle;
   return output;
