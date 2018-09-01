@@ -29,11 +29,11 @@ CmdVelToArmJoints::CmdVelToArmJoints() {
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
     cmdArmJoySub = nh.subscribe<sensor_msgs::Joy>(TOPIC,1, &CmdVelToArmJoints::receiveArmVelMsg , this, transportHints);
 
-    armUpper =  nh.advertise<std_msgs::Float64>("/arm_upper_actuator/command",1,true);
-    armLower =  nh.advertise<std_msgs::Float64>("/arm_lower_actuator/command",1,true);
+    armUpper =  nh.advertise<std_msgs::Float64>("/arm_top_controller/command",1,true);
+    armLower =  nh.advertise<std_msgs::Float64>("/arm_bottom_controller/command",1,true);
     armBaseRotatePub = nh.advertise<std_msgs::Float64>("/arm_base_rotate_controller/command",1,true);
     clawGripPub = nh.advertise<std_msgs::Float64>("/claw_grip_controller/command",1,true); // this topic needs to be checked
-    clawTwistPub = nh.advertise<std_msgs::Float64>("/claw_twist_controller/command",1,true); // this topic needs to be checked
+    clawTwistPub = nh.advertise<std_msgs::Float64>("/claw_rotate_controller/command",1,true); // this topic needs to be checked
 
 
     armUpperActuator = 0;
