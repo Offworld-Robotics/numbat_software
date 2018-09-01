@@ -44,7 +44,9 @@ class JoystickFilter {
         ros::Publisher lidarPosPublisher;
         ros::Subscriber joySubscriber;
         ros::Subscriber armSubscriber;
-        
+
+        ros::Publisher steerModePub;       
+ 
         double gimbalRate;
 
         sensor_msgs::Joy msgsOut;
