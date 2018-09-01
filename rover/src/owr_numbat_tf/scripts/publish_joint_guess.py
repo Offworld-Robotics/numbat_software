@@ -25,8 +25,6 @@ def joint_callback(msg):
     out = JointState()
     curr_time = rospy.get_rostime()
     out.header.stamp = curr_time + joint_delay
-    print joint_name
-    print msg.data
     out.name = [joint_name]
     out.position = [msg.data]
     pub.publish(out)
