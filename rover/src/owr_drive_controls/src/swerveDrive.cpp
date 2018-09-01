@@ -24,8 +24,6 @@ motorVels SwerveDrive::steer(motorVels vels, double velMagnitude, double turnAng
     rotationCentre.x = -HALF_ROVER_WIDTH_X;
     rotationCentre.y = sqrt(pow(rotationRadius,2)-pow(HALF_ROVER_WIDTH_X,2));
     //magnitude velocity over rotation radius
-    //const double angularVelocity = (velMsg->linear.y / cos(turnAngle)) / rotationRadius;
-    //const double angularVelocity = fabs(sqrt(pow(velMsg->linear.x, 2) + pow(velMsg->linear.y, 2))) / rotationRadius;
     const double angularVelocity = velMagnitude / rotationRadius;
     ROS_INFO("turnAngle %lf, rotationRadius %lf, rotationCenter  %lf, %lf, %lf",turnAngle, rotationRadius, rotationCentre.x, rotationCentre.y, rotationCentre.z);
     //calculate the radiuses of each wheel about the rotation center
@@ -90,7 +88,6 @@ motorVels SwerveDrive::doVelTranslation(const geometry_msgs::Twist * velMsg) {
         direction = getDir(velMsg->linear.x);
         output = steer(output, velMagnitude, turnAngle);
     } else {
-        //y = 0
         ROS_INFO("drive straight");
         output.frontLeftMotorV = output.backLeftMotorV = output.frontRightMotorV = output.backRightMotorV = velMsg->linear.x;
         output.frontRightAng = output.frontLeftAng = 0;

@@ -1,3 +1,10 @@
+/**
+ * Date Started: 9/8/18
+ * @author: Alan Nguyen
+ * @authors: (Editors) [Editor 1], [Editor 2]
+ * @description: Base class for common drive system code
+ * @copyright: This code is released under the MIT License. Copyright BLUEsat UNSW, 2018
+ */
 #include "Drive.hpp"
 
 #define FRONT 1

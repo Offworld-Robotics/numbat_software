@@ -1,10 +1,11 @@
-/*
+/**
  * Converts CMD_VEL vectors into joint positions
  * For now it is only used for the simulator, but could become main algorithm for steering bluetounge 2.0
- * Original Author: Sajid Ibne Anower
- * Editors:
+ * @author: (Original Author) Sajid Ibne Anower
+ * @authors: (Editors)
  * Date Started: 3/04/2018
  * Purpose: Implementation of crab steering logic
+ * @copyright: This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2017 
  */
 
 
