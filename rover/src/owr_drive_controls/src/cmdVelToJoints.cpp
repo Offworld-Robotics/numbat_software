@@ -39,6 +39,8 @@ CmdVelToJoints::CmdVelToJoints() {
     ros::TransportHints transportHints = ros::TransportHints().tcpNoDelay();
     cmdDriveModeSub = nh.subscribe<std_msgs::Int16>(TOPIC_MODE, 1, &CmdVelToJoints::receiveDriveModeMsg, this, transportHints);
     cmdVelSub = nh.subscribe<geometry_msgs::Twist>(TOPIC_VEL, 1, &CmdVelToJoints::receiveVelMsg, this, transportHints);
+
+    modePub = nh.advertise<std_msgs::Int16>(TOPIC_MODE_PUB, 1, true);
      
     frontLeftDrive = nh.advertise<std_msgs::Float64>("/front_left_wheel_axel_controller/command",1,true);
     frontRightDrive = nh.advertise<std_msgs::Float64>("/front_right_wheel_axel_controller/command",1,true);
@@ -58,6 +60,10 @@ CmdVelToJoints::CmdVelToJoints() {
     frontRightAng = 0;
     backLeftAng = 0;
     backRightAng = 0;
+
+    std_msgs::Int16 modeMsg;
+    modeMsg.data = CRAB;
+    modePub.publish(modeMsg);
 }
 
 void CmdVelToJoints::run() {
@@ -117,6 +123,9 @@ driveMode CmdVelToJoints::getDriveMode() {
 
 void CmdVelToJoints::receiveDriveModeMsg(const std_msgs::Int16::ConstPtr& driveModeMsg) {
     mode = (driveMode) driveModeMsg->data;
+    std_msgs::Int16 outMsg;
+    outMsg.data = mode;
+    modePub.publish(outMsg);
     ROS_INFO("Drive mode = %d", (int) mode);
 }
 
