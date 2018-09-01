@@ -34,6 +34,6 @@ class ArmControl {
     armJointVel convertJoystickMessageToJoints(const sensor_msgs::Joy::ConstPtr& joy);
 
   private:
-    double clawGripAngle = PI/4.0;
+    double clawGripAngle = 1500;
 };
 #endif //ARM_CONTROL_H
