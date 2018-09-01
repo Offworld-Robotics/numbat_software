@@ -43,18 +43,22 @@ CmdVelToArmJoints::CmdVelToArmJoints() {
 }
 
 void CmdVelToArmJoints::run() {
-    ros::Rate r(100);
+    ros::Rate r(50);
     while(ros::ok()) {
 	// Publish to all the publishers
         std_msgs::Float64 msg;
         msg.data = armUpperActuator;
         armUpper.publish(msg);
+        r.sleep();
         msg.data = armLowerActuator;
       	armLower.publish(msg);
+        r.sleep();
       	msg.data = armBaseRotate;
       	armBaseRotatePub.publish(msg);
+        r.sleep();
       	msg.data = clawGrip;
       	clawGripPub.publish(msg);
+        r.sleep();
       	msg.data = clawTwist;
       	clawTwistPub.publish(msg);
         r.sleep();
