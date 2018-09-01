@@ -67,31 +67,31 @@ void CmdVelToJoints::run() {
         msg.data = frontRightMotorV;
         frontRightDrive.publish(msg);
         rate.sleep();
-	msg.data = backRightMotorV;
+        msg.data = backRightMotorV;
         backRightDrive.publish(msg);
         rate.sleep();
         msg.data = frontLeftAng;
         frontRightSwerve.publish(msg);
         rate.sleep();
         
-	    // one side needs to be fliped so the joint velocity is relevant to the point velocity
+        // one side needs to be fliped so the joint velocity is relevant to the point velocity
         if (mode == SWERVE) { // need to flip for swerve mode?
             // don't publish back wheel angles for swerve mode
             msg.data = -1.0 * frontLeftMotorV;
             frontLeftDrive.publish(msg);
             rate.sleep();
 
-	    msg.data = -1.0 * backLeftMotorV;
+            msg.data = -1.0 * backLeftMotorV;
             backLeftDrive.publish(msg);
             rate.sleep();
-	    msg.data = -1.0 * frontRightAng;
+            msg.data = -1.0 * frontRightAng;
             frontLeftSwerve.publish(msg);
         } else { // otherwise publish as normal
             msg.data = frontLeftMotorV;
             frontLeftDrive.publish(msg);
             rate.sleep();
 
-	    msg.data = backLeftMotorV;
+            msg.data = backLeftMotorV;
             backLeftDrive.publish(msg);
             rate.sleep();
 
@@ -156,5 +156,6 @@ void CmdVelToJoints::receiveVelMsg(const geometry_msgs::Twist::ConstPtr& velMsg)
     backRightAng = vels.backRightAng;
     ROS_INFO(
         "target %f,%f fl %f, fr %f, bl %f, br %f, fls %f, frs %f bls %f brs %f",
-        velMsg->linear.x, velMsg->linear.y, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng, backLeftAng, backRightAng);
+        velMsg->linear.x, velMsg->linear.y, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng, backLeftAng, backRightAng
+    );
 }

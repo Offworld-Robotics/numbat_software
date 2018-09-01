@@ -1,11 +1,12 @@
 /*
  * Converts CMD_VEL vectors into joint positions
  * For now it is only used for the simulator, but could become main algorithm for steering bluetounge 2.0
- * Original Author: Sajid Ibne Anower
- * Editors:
+ * Original Author: Harry J.E Day
+ * Editors: Sajid Ibne Anower
  * Date Started: 8/02/2015
  * ros_package: owr_drive_controls
  * ros_node: cmd_vel_2_joints
+ * This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2015
  */
 
 #ifndef CMD_VEL_TO_JOINTS_H
