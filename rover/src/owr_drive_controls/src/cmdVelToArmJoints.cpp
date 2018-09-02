@@ -43,7 +43,7 @@ CmdVelToArmJoints::CmdVelToArmJoints() {
 }
 
 void CmdVelToArmJoints::run() {
-    ros::Rate r(50);
+    ros::Rate r(25);
     while(ros::ok()) {
 	// Publish to all the publishers
         std_msgs::Float64 msg;
