@@ -23,6 +23,8 @@ motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turn
     output.backLeftMotorV = velMagnitude;
     output.frontRightMotorV = velMagnitude;
     output.backRightMotorV = velMagnitude;
+    // Scaling down the turnangle in fourwheel drive
+    turnAngle *= 0.75;
     output.frontLeftAng = output.frontRightAng = turnAngle;
     output.backLeftAng = output.backRightAng = -turnAngle;
     return output;
