@@ -16,7 +16,7 @@
 #define FRONT 1
 #define BACK -FRONT
 
-#define FWDRIVE_LIMIT 0.75*M_PI/2
+#define FWDRIVE_LIMIT 0.45*M_PI/2
 
 motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turnAngle) {
     motorVels output = vels;
