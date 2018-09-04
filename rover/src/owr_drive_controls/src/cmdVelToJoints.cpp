@@ -164,7 +164,9 @@ void CmdVelToJoints::receiveVelMsg(const geometry_msgs::Twist::ConstPtr& velMsg)
     backLeftAng = vels.backLeftAng;
     backRightAng = vels.backRightAng;
     ROS_INFO(
-        "target %f,%f fl %f, fr %f, bl %f, br %f, fls %f, frs %f bls %f brs %f",
-        velMsg->linear.x, velMsg->linear.y, frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV, frontLeftAng, frontRightAng, backLeftAng, backRightAng
+        "target x: %f | y: %f | fl %f | fr %f | bl %f | br %f | fls %f | frs %f | bls %f | brs %f",
+        velMsg->linear.x, velMsg->linear.y, frontLeftMotorV,
+        frontRightMotorV, backLeftMotorV, backRightMotorV,
+        frontLeftAng, frontRightAng, backLeftAng, backRightAng
     );
 }

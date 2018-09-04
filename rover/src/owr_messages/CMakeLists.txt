@@ -48,22 +48,22 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   activeCameras.msg
-   camera_angle.msg
-   motor.msg
-   status.msg
-   stream.msg
-   position.msg
-   voltage.msg
-   ultrasonic.msg
-   heading.msg
-   pwm.msg
-   board.msg
-   adc.msg
-   stop.msg
- )
+add_message_files(
+  FILES
+  activeCameras.msg
+  camera_angle.msg
+  motor.msg
+  status.msg
+  stream.msg
+  position.msg
+  voltage.msg
+  ultrasonic.msg
+  heading.msg
+  pwm.msg
+  board.msg
+  adc.msg
+  stop.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(

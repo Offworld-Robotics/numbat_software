@@ -16,6 +16,7 @@
 #define FRONT 1
 #define BACK -FRONT
 
+#define FWDRIVE_LIMIT 0.45*M_PI/2
 
 motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turnAngle) {
     motorVels output = vels;
@@ -23,6 +24,14 @@ motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turn
     output.backLeftMotorV = velMagnitude;
     output.frontRightMotorV = velMagnitude;
     output.backRightMotorV = velMagnitude;
+
+    // Capping the turnangle to 45% of M_PI/2
+    if(turnAngle >= FWDRIVE_LIMIT) {
+        turnAngle = FWDRIVE_LIMIT;
+    } else if(turnAngle <= -FWDRIVE_LIMIT) {
+        turnAngle = -FWDRIVE_LIMIT;
+    }
+
     output.frontLeftAng = output.frontRightAng = turnAngle;
     output.backLeftAng = output.backRightAng = -turnAngle;
     return output;
