@@ -1,8 +1,9 @@
 /*
- * Orignal Author: Sajid Ibne Anower
- * Editors: Anita Smirnov
+ * @author: (Orignal Author) Sajid Ibne Anower
+ * @authors: ( Editors) Anita Smirnov
  * Date Started: 3/04/2018
  * Purpose: Implementation of four wheel steering logic
+ * @copyright: This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2017
  */
 
 
@@ -24,12 +25,6 @@ motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turn
     output.backRightMotorV = velMagnitude;
     output.frontLeftAng = output.frontRightAng = turnAngle;
     output.backLeftAng = output.backRightAng = -turnAngle;
-    /*
-    if (turnAngle - M_PI < 2*M_PI) {
-        output.frontRightAng = output.backLeftAng = turnAngle + M_PI;
-    } else {
-      	output.frontRightAng = output.backLeftAng = turnAngle - M_PI;
-    } */
     return output;
 }
 
@@ -48,7 +43,6 @@ motorVels FourWheelDrive::doVelTranslation(const geometry_msgs::Twist * velMsg) 
         double normalisedAngle = turnAngle * dir;
         output = steer(output, dir * velMagnitude, normalisedAngle);
     } else {
-        // y = 0
         ROS_INFO("drive straight");
         output.frontLeftMotorV = output.backLeftMotorV = velMsg->linear.x;
         output.frontRightMotorV = output.backRightMotorV = velMsg->linear.x;

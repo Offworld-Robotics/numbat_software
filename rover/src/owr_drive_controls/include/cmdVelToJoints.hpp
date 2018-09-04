@@ -1,11 +1,12 @@
 /*
  * Converts CMD_VEL vectors into joint positions
  * For now it is only used for the simulator, but could become main algorithm for steering bluetounge 2.0
- * Original Author: Sajid Ibne Anower
- * Editors:
+ * Original Author: Harry J.E Day
+ * Editors: Sajid Ibne Anower
  * Date Started: 8/02/2015
  * ros_package: owr_drive_controls
  * ros_node: cmd_vel_2_joints
+ * This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2015
  */
 
 #ifndef CMD_VEL_TO_JOINTS_H
@@ -18,6 +19,11 @@
 
 
 #define TOPIC_VEL "/cmd_vel"
+
+// topic we send our current mode on
+#define TOPIC_MODE_PUB "/cmd_vel/mode"
+
+// topic we reciecve mode changes on
 #define TOPIC_MODE "/cmd_mode"
 
 enum driveMode {
@@ -40,6 +46,8 @@ class CmdVelToJoints {
         ros::NodeHandle nh;
         ros::Subscriber cmdDriveModeSub;
         ros::Subscriber cmdVelSub;
+
+        ros::Publisher modePub;
         
         ros::Publisher frontLeftDrive;
         ros::Publisher frontRightDrive;

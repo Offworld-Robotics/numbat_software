@@ -1,19 +1,51 @@
 <launch>
 	<node pkg="gscam" type="gscam" name="optical_localization_cam_front" output="screen">
 		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/opticalflow_cam_front ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
-		<remap from="/camera/image_raw" to="/optical_localization_cam_front/image_raw"/>
+		<remap from="/camera/image_raw" to="/camera_front/image_raw"/>
 	</node>
 	<node pkg="gscam" type="gscam" name="optical_localization_cam_back" output="screen">
 		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/opticalflow_cam_back ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
-		<remap from="/camera/image_raw" to="/optical_localization_cam_back/image_raw"/>
+		<remap from="/camera/image_raw" to="/camera_back/image_raw"/>
 	</node>
 	<node pkg="gscam" type="gscam" name="optical_localization_cam_left" output="screen">
 		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/opticalflow_cam_left ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
-		<remap from="/camera/image_raw" to="/optical_localization_cam_left/image_raw"/>
+		<remap from="/camera/image_raw" to="/camera_left/image_raw"/>
 	</node>
 	<node pkg="gscam" type="gscam" name="optical_localization_cam_right" output="screen">
 		<env name="GSCAM_CONFIG" value="v4l2src device=/dev/opticalflow_cam_right ! video/x-raw,framerate=60/1,width=1280,height=720 ! videoconvert" />
-		<remap from="/camera/image_raw" to="/optical_localization_cam_right/image_raw"/>
+		<remap from="/camera/image_raw" to="/camera_right/image_raw"/>
 	</node>
+    <node pkg="owr_positioning" type="image_cropping" name="image_cropping_cam_front" output="screen">
+        <param name="x" value="700"/>
+        <param name="y" value="700"/>
+        <param name="crop_width" value="400"/>
+        <param name="crop_height" value="400"/>
+        <remap from="/camera/image_raw" to="/camera_front/image_raw"/>
+        <remap from="/camera/image_cropped" to="/optical_localization_cam_front/image_raw"/>
+    </node>
+    <node pkg="owr_positioning" type="image_cropping" name="image_cropping_cam_back" output="screen">
+        <param name="x" value="30"/>
+        <param name="y" value="0"/>
+        <param name="crop_width" value="200"/>
+        <param name="crop_height" value="200"/>
+        <remap from="/camera/image_raw" to="/camera_back/image_raw"/>
+        <remap from="/camera/image_cropped" to="/optical_localization_cam_back/image_raw"/>
+    </node>
+    <node pkg="owr_positioning" type="image_cropping" name="image_cropping_cam_left" output="screen">
+        <param name="x" value="200"/>
+        <param name="y" value="300"/>
+        <param name="crop_width" value="400"/>
+        <param name="crop_height" value="400"/>
+        <remap from="/camera/image_raw" to="/camera_left/image_raw"/>
+        <remap from="/camera/image_cropped" to="/optical_localization_cam_left/image_raw"/>
+    </node>
+    <node pkg="owr_positioning" type="image_cropping" name="image_cropping_cam_right" output="screen">
+        <param name="x" value="50"/>
+        <param name="y" value="500"/>
+        <param name="crop_width" value="20"/>
+        <param name="crop_height" value="20"/>
+        <remap from="/camera/image_raw" to="/camera_right/image_raw"/>
+        <remap from="/camera/image_cropped" to="/optical_localization_cam_right/image_raw"/>
+    </node>
     <node pkg="owr_positioning" type="optical_localization" name="optical_localization" output="screen"></node>
 </launch>
