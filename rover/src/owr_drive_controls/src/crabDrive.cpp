@@ -1,11 +1,10 @@
 /**
  * Converts CMD_VEL vectors into joint positions
- * For now it is only used for the simulator, but could become main algorithm for steering bluetounge 2.0
  * @author: (Original Author) Sajid Ibne Anower
  * @authors: (Editors)
  * Date Started: 3/04/2018
  * Purpose: Implementation of crab steering logic
- * @copyright: This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2017 
+ * @copyright: This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2017, 2018
  */
 
 
@@ -43,13 +42,10 @@ motorVels CrabDrive::doVelTranslation(const geometry_msgs::Twist * velMsg) {
         int dir = getDir(velMsg->linear.x);
         // (turnAngle * dir) is the final normalised angle,
         // required to make the driving similar to that of a car
-        // double normalisedAngle = turnAngle * dir;
         double normalisedVel = dir * velMagnitude;
-        // output = steer(output, normalisedVel, normalisedAngle);
         output = steer(output, normalisedVel, turnAngle);
     } else {
         // y = 0
-        ROS_INFO("drive straight");
         output.frontLeftMotorV = output.backLeftMotorV = velMsg->linear.x;
         output.frontRightMotorV = output.backRightMotorV = velMsg->linear.x;
         output.frontRightAng = output.frontLeftAng = 0;
