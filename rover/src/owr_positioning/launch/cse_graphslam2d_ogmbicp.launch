@@ -10,10 +10,42 @@
 
     <!-- Manual:  http://robolab.cse.unsw.edu.au:4443/rescue/crosbot/wikis/package/crosbot_graphslam -->
     <node pkg="crosbot_graphslam" type="crosbot_graphslam" name="crosbot_graphslam" output="screen">
+        <remap from="slamHistory" to="/slam_history" />
+        <remap from="slamGrid" to="/localmap" />
         <param name="base_frame" value="/base_footprint" />
         <!-- use this instead if using ogmbicp -->
         <param name="icp_frame" value="/icp" />
         <param name="slam" value="/slam" />
+    </node>
+
+    <node pkg="crosbot_explore" type="astar_explorer" name="crosbot_explore" output="screen" >
+        <param name="history_sub" value="/slam_history" />
+        <param name="map_sub" value="/localmap" />
+        <param name="vel_pub" value="/cmd_vel/twist" />
+        <param name="base_frame" value="/base_footprint" />
+        <param name="map_sub" value ="/localmap" />
+        <rosparam>
+            maxVel: 0.25
+            maxTurn: 0.05
+            voronoi:
+                <!-- region around wall rover can't enter -->
+                restrict: 1.0
+                <!-- region around wall rover can't enter if cell partially restricted -->
+                partial: 1.1
+                <!-- region around wall rover can enter but should try to avoid -->
+                expand: 1.4
+                <!-- distance between disconnected walls are joined into a single wall -->
+                orphan: 10
+            search:
+                distance: 0.40
+                proximity_distance: 0.2
+        </rosparam>
+    </node>
+
+
+    <node pkg="owr_positioning" type="crosbot_navigation" name="crosbot_navigation" output="screen" >
+        <!-- this maybe should be "slam_frame" -->
+        <param name="world_frame" value="/icp" />
     </node>
 
 </launch>
