@@ -32,8 +32,12 @@ class CmdVelToArmJoints {
         ros::Publisher armLower;
         ros::Publisher armBaseRotatePub;
         ros::Publisher clawGripPub;
-        ros::Publisher clawTwistPub;           
-        double armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist;
+        ros::Publisher clawTwistPub;
+        double armUpperActuator
+        double armLowerActuator;
+        double armBaseRotate;
+        double clawGrip;
+        double clawTwist;
 };
 
-#endif //CMD_VEL_ARM_H
+#endif // CMD_VEL_ARM_H
