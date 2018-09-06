@@ -11,11 +11,6 @@
 
 #include "Cmd_Vel_Conversion.hpp"
 
-/**
- * Rover's turn radius in meters.
- * TODO: test this
- */
-static const double TURN_RADIUS = 1.0;
 
 int main(int argc, char ** argv) {
     ros::init(argc, argv, "owr_cmd_vel_conversion");
@@ -39,9 +34,9 @@ void Cmd_Vel_Conversion::receive_vel_msg(const geometry_msgs::Twist::ConstPtr & 
     }
 
     geometry_msgs::Twist out_msg;
-    // I think that we want the "tangential velocity" for our y
-    // Vt(y) = gama*radius
-    out_msg.linear.y = vel_msg->angular.z * TURN_RADIUS;
+
+    // y = tan(theta)/x
+    out_msg.linear.y = tan(vel_msg->angular.z)/vel_msg->linear.x;
     out_msg.linear.x = vel_msg->linear.x;
     cmd_vel_pub.publish(out_msg);
 
