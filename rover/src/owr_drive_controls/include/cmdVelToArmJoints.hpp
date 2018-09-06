@@ -18,21 +18,20 @@
 
 class CmdVelToArmJoints {
     public:
-	CmdVelToArmJoints();
-	void run();
+        CmdVelToArmJoints();
+        void run();
     protected:
         void receiveArmVelMsg(const sensor_msgs::Joy::ConstPtr& joy);
-        
+
     private:
         ros::NodeHandle nh;
         ros::Subscriber cmdArmJoySub;
-        
+
         ros::Publisher armUpper;
         ros::Publisher armLower;
-	ros::Publisher armBaseRotatePub;
-	ros::Publisher clawGripPub;
-	ros::Publisher clawTwistPub;
-        
+        ros::Publisher armBaseRotatePub;
+        ros::Publisher clawGripPub;
+        ros::Publisher clawTwistPub;           
         double armUpperActuator, armLowerActuator, armBaseRotate, clawGrip, clawTwist;
 };
 
