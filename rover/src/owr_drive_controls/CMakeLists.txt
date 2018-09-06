@@ -117,10 +117,9 @@ add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/Drive.cpp src/crabDri
 add_dependencies(cmd_vel_2_joints owr_messages)
 target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 
-add_executable(cmd_vel_2_arm_joints src/cmdVelToArmJoints.cpp src/armControl.cpp)
-add_dependencies(cmd_vel_2_arm_joints owr_messages)
-target_link_libraries(cmd_vel_2_arm_joints ${catkin_LIBRARIES})
-
+add_executable(arm_joints src/cmdVelToArmJoints.cpp src/armControl.cpp)
+add_dependencies(arm_joints owr_messages)
+target_link_libraries(arm_joints ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
