@@ -73,6 +73,8 @@ JoystickFilter::JoystickFilter(const std::string topic) :
     velPublisher = node.advertise<geometry_msgs::Twist>("/cmd_vel",1,false);
     lidarModePublisher = node.advertise<std_msgs::Int16>("/owr/lidar_gimble_mode", 1, true);
     lidarPosPublisher = node.advertise<std_msgs::Float64>("/laser_tilt_joint_controller/command",1,true);
+
+    steerModePub = node.advertise<std_msgs::Int16>("/cmd_mode",1,false);
     
     //msgsOut.axes = std::vector<float>(20);
     msgsOut.axes.resize(20);
@@ -232,6 +234,16 @@ void JoystickFilter::joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
     msgsOut.axes[LEFT_WHEELS] = leftWheelSpeed;
     msgsOut.axes[RIGHT_WHEELS] = rightWheelSpeed;
     
+    std_msgs::Int16 mode;
+
+    if(joy->buttons[BUTTON_X] && cmdVel.linear.x == 0 && cmdVel.linear.y == 0){
+        mode.data =  0;
+        steerModePub.publish(mode);
+    } else if (joy->buttons[BUTTON_Y] && cmdVel.linear.x == 0 && cmdVel.linear.y == 0){
+        mode.data = 1;
+        steerModePub.publish(mode);
+    }
+
     publisher.publish(msgsOut);
     velPublisher.publish(cmdVel);
 }
@@ -281,7 +293,7 @@ void JoystickFilter::armCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 
 //main loop
 void JoystickFilter::spin() {
-    ros::Rate r(20);
+    ros::Rate r(50);
     while(ros::ok()) {
         
         lidarPos.data += gimbalRate * LIDAR_MULTIPLIER;

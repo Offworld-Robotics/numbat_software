@@ -21,7 +21,7 @@
 
 #define DODGY_USB_CONNECTION 100
 
- 
+
 int main(int argc, char ** argv) {
     //init ros
     ros::init(argc, argv, "owr_joysticks_arduino");
@@ -50,7 +50,7 @@ Joystick_Receiver_Node::Joystick_Receiver_Node(ros::NodeHandle nh) {
 void Joystick_Receiver_Node::spin() {
     bool ok;
     serial_msg::in_msg from_board;
-    
+
     while(ros::ok()) {
         while(!open_arduino()) {}
         ROS_INFO("Open Succesfully");
@@ -85,10 +85,10 @@ bool Joystick_Receiver_Node::open_arduino() {
     if (dpdf != NULL){
         while (epdf = readdir(dpdf)){
             if(strstr(epdf->d_name, "retransmitter")) {
-		ROS_INFO("Found retransmitter using that instead");
+                ROS_INFO("Found retransmitter using that instead");
                 serial_devices.clear();
                 serial_devices.push_back(epdf->d_name);
-		break;
+                break;
             } else if(strstr(epdf->d_name,"ttyUSB") != NULL || strstr(epdf->d_name, "ttyACM")) {
                 serial_devices.push_back(epdf->d_name);
                 ROS_INFO("Found Serial %s",epdf->d_name);
@@ -222,25 +222,25 @@ bool Joystick_Receiver_Node::comm(void *message, int message_len, void *resp, in
 
 void Joystick_Receiver_Node::receive_drive_front_left(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[FRONT_LEFT_DRIVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_drive_front_right(const std_msgs::Float64::ConstPtr & msg) {
     out_msg.data[FRONT_RIGHT_DRIVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_drive_back_left(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[BACK_LEFT_DRIVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_drive_back_right(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[BACK_RIGHT_DRIVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_swerve_front_left(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[FRONT_LEFT_SWERVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_swerve_front_right(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[FRONT_RIGHT_SWERVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_swerve_back_left(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[BACK_LEFT_SWERVE] = msg->data;
-} 
+}
 void Joystick_Receiver_Node::receive_swerve_back_right(const std_msgs::Float64::ConstPtr & msg){
     out_msg.data[BACK_RIGHT_SWERVE] = msg->data;
-} 
+}

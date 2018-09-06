@@ -24,6 +24,7 @@
 #include "PotPositionTracker.hpp"
 #include "JointArmVelocityController.hpp"
 
+#include "swerveDrive.hpp"
 
 using namespace std; 
 
@@ -108,6 +109,8 @@ class BoardControl {
         PotPositionTracker armRotationBasePotMonitor;
         JointArmVelocityController armUpperAct, armLowerAct;
         //TODO: add lidar, actuators here.
+        
+        SwerveDrive swerveDrive;
         
 };
 
