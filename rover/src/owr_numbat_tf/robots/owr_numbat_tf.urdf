@@ -244,7 +244,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Front Left Axel.STL" />
+          filename="package://owr_numbat_tf/meshes/Front Left Axle.STL" />
       </geometry>
       <material
         name="">
@@ -258,7 +258,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Front Left Axel.STL" />
+          filename="package://owr_numbat_tf/meshes/Front Left Axle.STL" />
       </geometry>
     </collision>
   </link>
@@ -350,7 +350,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Back Left Axel.STL" />
+          filename="package://owr_numbat_tf/meshes/Back Left Axle.STL" />
       </geometry>
       <material
         name="">
@@ -364,7 +364,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Back Left Axel.STL" />
+          filename="package://owr_numbat_tf/meshes/Back Left Axle.STL" />
       </geometry>
     </collision>
   </link>
@@ -456,7 +456,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Back Right Axel.STL" />
+          filename="package://owr_numbat_tf/meshes/Back Right Axle.STL" />
       </geometry>
       <material
         name="">
@@ -470,7 +470,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Back Right Axel.STL" />
+          filename="package://owr_numbat_tf/meshes/Back Right Axle.STL" />
       </geometry>
     </collision>
   </link>
@@ -528,7 +528,7 @@
     </collision>
   </link>
   <joint
-    name="Back RIght_wheel_axel"
+    name="back_right_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.0299999999999999 0"
@@ -562,7 +562,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Front Right Axel.STL" />
+          filename="package://owr_numbat_tf/meshes/Front Right Axle.STL" />
       </geometry>
       <material
         name="">
@@ -576,7 +576,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Front Right Axel.STL" />
+          filename="package://owr_numbat_tf/meshes/Front Right Axle.STL" />
       </geometry>
     </collision>
   </link>
