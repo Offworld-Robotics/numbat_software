@@ -3,7 +3,7 @@
  * Editors:
  * Date Started: 2/6/18
  * Purpose: Convert arm joystick message into arm joint control
- *
+ * @copyright: This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2017, 2018
  */
 
 #ifndef ARM_CONTROL_H

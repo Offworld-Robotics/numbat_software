@@ -3,6 +3,7 @@
  * Original Author: Elliott Smith
  * Editors:
  * Date Started: 2/6/18
+ * @copyright: This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2017, 2018
  */
 
 

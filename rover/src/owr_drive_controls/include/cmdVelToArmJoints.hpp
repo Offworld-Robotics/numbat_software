@@ -1,9 +1,10 @@
 /*
- * Converts CMD_VEL vectors into arm joint positions
+ * Converts joystick vectors into arm joint positions
  * 
  * Original Author: Elliott Smiht
  * Editors:
  * Date Started: 2/6/18
+ * @copyright: This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2017, 2018
  */
 
 #ifndef CMD_VEL_ARM_H
