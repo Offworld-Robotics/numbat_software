@@ -80,7 +80,7 @@
               rpy="0 0 0" />
       <geometry>
         <mesh
-                filename="package://owr_bluetounge2_tf/meshes/laser_tilt.STL" />
+                filename="package://owr_numbat_tf/meshes/laser_tilt.STL" />
       </geometry>
       <material
               name="">
@@ -94,7 +94,7 @@
               rpy="0 0 0" />
       <geometry>
         <mesh
-                filename="package://owr_bluetounge2_tf/meshes/laser_tilt.STL" />
+                filename="package://owr_numbat_tf/meshes/laser_tilt.STL" />
       </geometry>
     </collision>
   </link>
@@ -133,7 +133,7 @@
               rpy="0 0 0" />
       <geometry>
         <mesh
-                filename="package://owr_bluetounge2_tf/meshes/laser_tilt_tilt.STL" />
+                filename="package://owr_numbat_tf/meshes/laser_tilt_tilt.STL" />
       </geometry>
       <material
               name="">
@@ -147,7 +147,7 @@
               rpy="0 0 0" />
       <geometry>
         <mesh
-                filename="package://owr_bluetounge2_tf/meshes/laser_tilt_tilt.STL" />
+                filename="package://owr_numbat_tf/meshes/laser_tilt_tilt.STL" />
       </geometry>
     </collision>
   </link>
@@ -191,7 +191,7 @@
               rpy="0 0 0" />
       <geometry>
         <mesh
-                filename="package://owr_bluetounge2_tf/meshes/lidar_frame.STL" />
+                filename="package://owr_numbat_tf/meshes/lidar_frame.STL" />
       </geometry>
       <material
               name="">
@@ -205,7 +205,7 @@
               rpy="0 0 0" />
       <geometry>
         <mesh
-                filename="package://owr_bluetounge2_tf/meshes/lidar_frame.STL" />
+                filename="package://owr_numbat_tf/meshes/lidar_frame.STL" />
       </geometry>
     </collision>
   </link>
@@ -223,7 +223,7 @@
             xyz="0 0 0" />
   </joint>
   <link
-    name="back_right Axle">
+    name="back_right_wheel_axel">
     <inertial>
       <origin
         xyz="-0.0517688079644882 0.0887190484893181 2.22044604925031E-16"
@@ -244,7 +244,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Front Left Axle.STL" />
+          filename="package://owr_numbat_tf/meshes/Front Left_wheel_axel.STL" />
       </geometry>
       <material
         name="">
@@ -258,7 +258,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Front Left Axle.STL" />
+          filename="package://owr_numbat_tf/meshes/Front Left_wheel_axel.STL" />
       </geometry>
     </collision>
   </link>
@@ -271,7 +271,7 @@
     <parent
       link="rover_model" />
     <child
-      link="back_right Axle" />
+      link="back_right_wheel_axel" />
     <axis
       xyz="0 1 0" />
   </joint>
@@ -322,14 +322,14 @@
       xyz="0 0.03 0"
       rpy="-1.5708 -0.91526 1.5708" />
     <parent
-      link="back_right Axle" />
+      link="back_right_wheel_axel" />
     <child
       link="back_right wheel" />
     <axis
       xyz="0 0 1" />
   </joint>
   <link
-    name="front_right Axle">
+    name="front_right_wheel_axel">
     <inertial>
       <origin
         xyz="-0.0517688079644883 0.0887190484893179 -4.16333634234434E-17"
@@ -350,7 +350,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Back Left Axle.STL" />
+          filename="package://owr_numbat_tf/meshes/Back Left_wheel_axel.STL" />
       </geometry>
       <material
         name="">
@@ -364,7 +364,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Back Left Axle.STL" />
+          filename="package://owr_numbat_tf/meshes/Back Left_wheel_axel.STL" />
       </geometry>
     </collision>
   </link>
@@ -377,7 +377,7 @@
     <parent
       link="rover_model" />
     <child
-      link="front_right Axle" />
+      link="front_right_wheel_axel" />
     <axis
       xyz="0 1 0" />
   </joint>
@@ -422,20 +422,20 @@
     </collision>
   </link>
   <joint
-    name="front_right Rotate"
+    name="front_right_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.0300000000000001 0"
       rpy="1.57079632679489 0.214040970418392 -1.5707963267949" />
     <parent
-      link="front_right Axle" />
+      link="front_right_wheel_axel" />
     <child
       link="front_right Wheel" />
     <axis
       xyz="0 0 1" />
   </joint>
   <link
-    name="front_left Axle">
+    name="front_left_wheel_axel">
     <inertial>
       <origin
         xyz="-0.0517688079644882 0.088719048489318 -5.55111512312578E-17"
@@ -456,7 +456,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Back Right Axle.STL" />
+          filename="package://owr_numbat_tf/meshes/Back Right_wheel_axel.STL" />
       </geometry>
       <material
         name="">
@@ -470,7 +470,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Back Right Axle.STL" />
+          filename="package://owr_numbat_tf/meshes/Back Right_wheel_axel.STL" />
       </geometry>
     </collision>
   </link>
@@ -483,7 +483,7 @@
     <parent
       link="rover_model" />
     <child
-      link="front_left Axle" />
+      link="front_left_wheel_axel" />
     <axis
       xyz="0 1 0" />
   </joint>
@@ -528,20 +528,20 @@
     </collision>
   </link>
   <joint
-    name="Back RIght Rotate"
+    name="Back RIght_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.0299999999999999 0"
       rpy="-1.57079632679491 -1.13219561486008 1.57079632679491" />
     <parent
-      link="front_left Axle" />
+      link="front_left_wheel_axel" />
     <child
       link="front_left Wheel" />
     <axis
       xyz="0 0 1" />
   </joint>
   <link
-    name="back_left Axle">
+    name="back_left_wheel_axel">
     <inertial>
       <origin
         xyz="-0.0517688079644884 0.088719048489318 -2.22044604925031E-16"
@@ -562,7 +562,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Front Right Axle.STL" />
+          filename="package://owr_numbat_tf/meshes/Front Right_wheel_axel.STL" />
       </geometry>
       <material
         name="">
@@ -576,7 +576,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://owr_numbat_tf/meshes/Front Right Axle.STL" />
+          filename="package://owr_numbat_tf/meshes/Front Right_wheel_axel.STL" />
       </geometry>
     </collision>
   </link>
@@ -589,7 +589,7 @@
     <parent
       link="rover_model" />
     <child
-      link="back_left Axle" />
+      link="back_left_wheel_axel" />
     <axis
       xyz="0 1 0" />
   </joint>
@@ -634,13 +634,13 @@
     </collision>
   </link>
   <joint
-    name="back_left Rotate"
+    name="back_left_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.0299999999999999 0"
       rpy="-1.5707963267949 -0.00858284690216311 1.57079632679489" />
     <parent
-      link="back_left Axle" />
+      link="back_left_wheel_axel" />
     <child
       link="Front RIght Wheel" />
     <axis
