@@ -19,6 +19,11 @@
 
 
 #define TOPIC_VEL "/cmd_vel"
+
+// topic we send our current mode on
+#define TOPIC_MODE_PUB "/cmd_vel/mode"
+
+// topic we reciecve mode changes on
 #define TOPIC_MODE "/cmd_mode"
 
 enum driveMode {
@@ -41,6 +46,8 @@ class CmdVelToJoints {
         ros::NodeHandle nh;
         ros::Subscriber cmdDriveModeSub;
         ros::Subscriber cmdVelSub;
+
+        ros::Publisher modePub;
         
         ros::Publisher frontLeftDrive;
         ros::Publisher frontRightDrive;
