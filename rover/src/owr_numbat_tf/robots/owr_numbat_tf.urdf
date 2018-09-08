@@ -316,7 +316,7 @@
     </collision>
   </link>
   <joint
-    name="back_left_wheel_axel"
+    name="back_right_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.03 0"
@@ -528,7 +528,7 @@
     </collision>
   </link>
   <joint
-    name="back_right_wheel_axel"
+    name="front_left_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.0299999999999999 0"
@@ -594,7 +594,7 @@
       xyz="0 1 0" />
   </joint>
   <link
-    name="front_right_Wheel" >
+    name="Front RIght Wheel">
     <inertial>
       <origin
         xyz="6.10794798072689E-09 -2.76999337467387E-07 -0.00589838982429747"
@@ -634,7 +634,7 @@
     </collision>
   </link>
   <joint
-    name="front_left_wheel_axel"
+    name="back_left_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.0299999999999999 0"
@@ -642,24 +642,107 @@
     <parent
       link="back_left_wheel_axel" />
     <child
-      link="front_right_Wheel" />
+      link="Front RIght Wheel" />
     <axis
       xyz="0 0 1" />
   </joint>
+  <!-- Gazebo stuff beyond this point -->
+    <xacro:property name="PI" value="3.14159265359" />
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
         <robotNamespace>/</robotNamespace>
         </plugin>
     </gazebo>
     <xacro:property name="gearbox_mechReduction" value="10" />
+    <transmission name="front_left_wheel_axel">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="front_left_wheel_axel">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="front_left_wheel_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="back_left_wheel_axel">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="back_left_wheel_axel">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="back_left_wheel_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="front_right_wheel_axel">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="front_right_wheel_axel">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="front_right_wheel_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="back_right_wheel_axel">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="back_right_wheel_axel">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="back_right_wheel_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="back_right_swerve">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="back_right_swerve">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="back_right_swerve_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="front_right_swerve">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="front_right_swerve">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="front_right_swerve_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="back_left_swerve">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="back_left_swerve">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="back_left_swerve_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <transmission name="front_left_swerve">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="front_left_swerve">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="front_left_swerve_motor">
+        <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    <xacro:property name="gearbox_mechReduction" value="10" />
   <transmission name="laser_tilt_joint">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="laser_tilt_joint">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="laser_tilt_motor">
       <mechanicalReduction>${gearbox_mechReduction}</mechanicalReduction>
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </actuator>
   </transmission>
   <gazebo reference="laser_frame">
