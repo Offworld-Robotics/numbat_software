@@ -316,7 +316,7 @@
     </collision>
   </link>
   <joint
-    name="back_right rotate"
+    name="back_right_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.03 0"
@@ -528,7 +528,7 @@
     </collision>
   </link>
   <joint
-    name="back_right_wheel_axel"
+    name="front_left_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.0299999999999999 0"
