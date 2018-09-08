@@ -1,4 +1,5 @@
 <launch>
+  <rosparam file="$(find owr_bluetounge2_tf)/config/bluetounge_control.yaml" command="load"/>
   <include
     file="$(find gazebo_ros)/launch/empty_world.launch" />
   <node
@@ -17,4 +18,12 @@
     pkg="rostopic"
     type="rostopic"
     args="pub /calibrated std_msgs/Bool true" />
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/" 
+    args="joint_state_controller laser_tilt_joint_controller front_left_wheel_axel_controller back_left_wheel_axel_controller front_right_wheel_axel_controller  back_right_wheel_axel_controller front_left_swerve_controller back_left_swerve_controller front_right_swerve_controller  back_right_swerve_controller "/>
+  
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen"/>
 </launch>
