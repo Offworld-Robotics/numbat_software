@@ -2,6 +2,9 @@
 """
 Python subscriber to guess the position of joints based on their mode
 
+Original Authors: Sajid, Harry
+Editors:
+This code is released under the MIT License. Copyright BLUEsat UNSW, 2018
 """
 import rospy
 
@@ -31,14 +34,6 @@ def joint_callback(msg):
 
 def listener():
     rospy.init_node('joint_guesser')
-
-    global sub
-    sub = rospy.Subscriber(
-        '/input/command',
-        Float64,
-        joint_callback,
-        queue_size=1
-    )
     global pub
     pub = rospy.Publisher("/joint_states", JointState, queue_size=0)
 
@@ -49,6 +44,15 @@ def listener():
     joint_delay_ns = rospy.get_param("~/joint_guesser/joint_delay_ns", 0.0)
     global joint_delay
     joint_delay = rospy.Duration.from_sec(joint_delay_ns)
+
+    # this needs to be last so we don't get callbacks before everything else is initialised
+    global sub
+    sub = rospy.Subscriber(
+        '/input/command',
+        Float64,
+        joint_callback,
+        queue_size=1
+    )
 
     rospy.spin()
 

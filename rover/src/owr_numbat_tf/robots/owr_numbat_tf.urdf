@@ -316,7 +316,7 @@
     </collision>
   </link>
   <joint
-    name="back_right rotate"
+    name="back_left_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.03 0"
@@ -594,7 +594,7 @@
       xyz="0 1 0" />
   </joint>
   <link
-    name="Front RIght Wheel">
+    name="front_right_Wheel" >
     <inertial>
       <origin
         xyz="6.10794798072689E-09 -2.76999337467387E-07 -0.00589838982429747"
@@ -634,7 +634,7 @@
     </collision>
   </link>
   <joint
-    name="back_left_wheel_axel"
+    name="front_left_wheel_axel"
     type="continuous">
     <origin
       xyz="0 0.0299999999999999 0"
@@ -642,7 +642,7 @@
     <parent
       link="back_left_wheel_axel" />
     <child
-      link="Front RIght Wheel" />
+      link="front_right_Wheel" />
     <axis
       xyz="0 0 1" />
   </joint>
