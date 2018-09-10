@@ -13,3 +13,17 @@ SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{serial}=="0E220F5
 
 SUBSYSTEM=="video4linux", ATTRS{idVendor}=="045e", ACTION=="add", SYMLINK+="clinocam0", GROUP="video", MODE="666"
 SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{idProduct}=="2303", ATTRS{manufacturer}=="Prolific Technology Inc.", SYMLINK+="voltmeter",  GROUP="dialout", MODE="666"
+
+#SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{serial}=="85531303631351E0A162", SYMLINK+="board0", GROUP="dialout", MODE="666"
+# cameras
+SUBSYSTEM=="video4linux", ATTRS{idVendor}=="05a3", ATTRS{idProduct}=="9310", SYMLINK+="bluecam0" , GROUP="video", MODE="666"
+SUBSYSTEM=="video4linux", ATTRS{idVendor}=="05a3", ATTRS{idProduct}=="9310", SYMLINK+="top_camera" , GROUP="video", MODE="666"
+
+SUBSYSTEM=="video4linux", ATTRS{name}=="HD Pro Webcam C920", ATTRS{serial}=="4186916F", SYMLINK+="bluecam1", GROUP="video", MODE="666"
+SUBSYSTEM=="video4linux", ATTRS{name}=="HD Pro Webcam C920", ATTRS{serial}=="4186916F", SYMLINK+="front_camera", GROUP="video", MODE="666"
+
+SUBSYSTEM=="video4linux", ATTRS{name}=="HD Pro Webcam C920", ATTRS{serial}=="03B9A16F", SYMLINK+="bluecam2", GROUP="video", MODE="666"
+SUBSYSTEM=="video4linux", ATTRS{name}=="HD Pro Webcam C920", ATTRS{serial}=="03B9A16F", SYMLINK+="back_camera", GROUP="video", MODE="666"
+
+SUBSYSTEM=="video4linux", ATTRS{idVendor}=="045e", ACTION=="add", SYMLINK+="clinocam0", GROUP="video", MODE="666"
+SUBSYSTEM=="tty", KERNEL=="ttyUSB[0-9]*", ACTION=="add", ATTRS{idProduct}=="2303", ATTRS{manufacturer}=="Prolific Technology Inc.", SYMLINK+="voltmeter",  GROUP="dialout", MODE="666"

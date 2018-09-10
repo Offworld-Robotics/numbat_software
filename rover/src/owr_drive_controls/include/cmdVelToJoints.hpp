@@ -2,29 +2,52 @@
  * Converts CMD_VEL vectors into joint positions
  * For now it is only used for the simulator, but could become main algorithm for steering bluetounge 2.0
  * Original Author: Harry J.E Day
- * Editors:
+ * Editors: Sajid Ibne Anower
  * Date Started: 8/02/2015
  * ros_package: owr_drive_controls
  * ros_node: cmd_vel_2_joints
+ * This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2015
  */
 
-#include <ros/ros.h>
-#include <geometry_msgs/Twist.h>
+#ifndef CMD_VEL_TO_JOINTS_H
+#define CMD_VEL_TO_JOINTS_H
 
-#define TOPIC "/cmd_vel"
+#include <ros/ros.h>
+#include <std_msgs/Int16.h>
+#include <geometry_msgs/Twist.h>
+#include "Drive.hpp"
+
+
+#define TOPIC_VEL "/cmd_vel"
+
+// topic we send our current mode on
+#define TOPIC_MODE_PUB "/cmd_vel/mode"
+
+// topic we reciecve mode changes on
+#define TOPIC_MODE "/cmd_mode"
+
+enum driveMode {
+    CRAB   = 0,
+    FOUR   = 1,
+    SWERVE = 2
+};
 
 class CmdVelToJoints {
-    
     public:
         CmdVelToJoints();
         void run();
+        driveMode getDriveMode();
         
     protected:
-        void reciveVelMsg(const geometry_msgs::Twist::ConstPtr& velMsg);
-        
+        void receiveDriveModeMsg(const std_msgs::Int16::ConstPtr& driveModeMsg);
+        void receiveVelMsg(const geometry_msgs::Twist::ConstPtr& velMsg);
+
     private:
         ros::NodeHandle nh;
+        ros::Subscriber cmdDriveModeSub;
         ros::Subscriber cmdVelSub;
+
+        ros::Publisher modePub;
         
         ros::Publisher frontLeftDrive;
         ros::Publisher frontRightDrive;
@@ -35,8 +58,9 @@ class CmdVelToJoints {
         ros::Publisher backLeftSwerve;
         ros::Publisher backRightSwerve;
         
+        driveMode mode;
         double frontLeftMotorV, frontRightMotorV, backLeftMotorV, backRightMotorV;
-        double frontLeftAng, frontRightAng;
-        
-    
+        double frontLeftAng, frontRightAng, backLeftAng, backRightAng;
 };
+
+#endif // CMD_VEL_TO_JOINTS_H
