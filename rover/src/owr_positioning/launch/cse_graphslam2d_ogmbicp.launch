@@ -37,15 +37,14 @@
                 <!-- distance between disconnected walls are joined into a single wall -->
                 orphan: 10
             search:
-                distance: 0.40
                 proximity_distance: 0.2
         </rosparam>
     </node>
 
 
     <node pkg="owr_positioning" type="crosbot_navigation" name="crosbot_navigation" output="screen" >
-        <!-- this maybe should be "slam_frame" -->
-        <param name="world_frame" value="/icp" />
+        <!-- this maybe should be "/icp" -->
+        <param name="world_frame" value="/slam" />
     </node>
 
 </launch>
