@@ -13,4 +13,4 @@ try:
         fcntl.ioctl(f, USBDEVFS_RESET, 0)
         print("Successfully reset usb")
 except Exception as msg:
-    print("Failed to reset device: ", msg)
+    print("Failed to reset device: " + msg)
