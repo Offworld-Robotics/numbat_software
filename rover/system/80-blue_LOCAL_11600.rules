@@ -1,7 +1,0 @@
-SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{product}=="Bluetongue Control Board", SYMLINK+="board0",  GROUP="dialout", MODE="666"
-
-SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{manufacturer}=="Steph McArthur", SYMLINK+="board0",  GROUP="dialout", MODE="666"
-
-SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{product}=="URG-Series USB Driver", SYMLINK+="hokuyo", GROUP="dialout", MODE="666"
-
-SUBSYSTEM=="usb", ATTRS{idVendor}=="045e", ACTION=="add", SYMLINK+="clinocam0", GROUP="video", MODE="666"
