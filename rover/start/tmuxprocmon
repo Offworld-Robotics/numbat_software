@@ -9,6 +9,7 @@
 
 source $HOME/.bashrc
 source $HOME/owr_software/rover/devel/setup.bash
+source $HOME/ros_can_nodes/devel/setup.bash
 export TMUXPROCMON=1
 cd "$(dirname "$0")"
 
