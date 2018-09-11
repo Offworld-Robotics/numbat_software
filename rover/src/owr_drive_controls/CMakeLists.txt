@@ -120,6 +120,8 @@ target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 add_executable(arm_joints src/cmdVelToArmJoints.cpp src/armControl.cpp)
 add_dependencies(arm_joints owr_messages)
 target_link_libraries(arm_joints ${catkin_LIBRARIES})
+add_executable(cmd_vel_conversion src/Cmd_Vel_Conversion.cpp)
+target_link_libraries(cmd_vel_conversion ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
