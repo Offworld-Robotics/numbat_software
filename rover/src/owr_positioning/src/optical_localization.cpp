@@ -9,6 +9,7 @@
 #include <geometry_msgs/TwistWithCovarianceStamped.h>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <ecl/threads.hpp>
 #include "optical_localization.h"
 
@@ -51,13 +52,10 @@ void optical_localization::align_axes(geometry_msgs::Twist &twist, const unsigne
 void optical_localization::assign_sub_pub() {
     ros::NodeHandle n("~");
     
-    sub[FRONT_CAM] = n.subscribe("/optical_localization_cam_front/image_raw", 1, &optical_localization::image_callback_front, this);
-    
-    sub[BACK_CAM] = n.subscribe("/optical_localization_cam_back/image_raw", 1, &optical_localization::image_callback_back, this);
-    
-    sub[LEFT_CAM] = n.subscribe("/optical_localization_cam_left/image_raw", 1, &optical_localization::image_callback_left, this);
-    
-    sub[RIGHT_CAM] = n.subscribe("/optical_localization_cam_right/image_raw", 1, &optical_localization::image_callback_right, this);
+    sub[FRONT_CAM] = n.subscribe("/optical_localization_cam_front/image_raw/compressed", 1, &optical_localization::image_callback_front, this);
+    sub[BACK_CAM] = n.subscribe("/optical_localization_cam_back/image_raw/compressed", 1, &optical_localization::image_callback_back, this);
+    sub[LEFT_CAM] = n.subscribe("/optical_localization_cam_left/image_raw/compressed", 1, &optical_localization::image_callback_left, this);
+    sub[RIGHT_CAM] = n.subscribe("/optical_localization_cam_right/image_raw/compressed", 1, &optical_localization::image_callback_right, this);
     
     pub = n.advertise<geometry_msgs::TwistWithCovarianceStamped>("/owr/optical_localization_twist", 10, true);
 }
@@ -113,10 +111,11 @@ void optical_localization::publishTwist() {
     mutex.unlock();
 }
 
-void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int cam) {
+void optical_localization::process_image(const sensor_msgs::CompressedImage::ConstPtr& image, const unsigned int cam) {
     ROS_INFO_STREAM("Callback for cam " << cam << " - " <<  cam_names[cam]);
+    cv::Mat decompressed = cv::imdecode(cv::Mat(image->data), 1);
     cv::Mat frame_gray;
-    cv::cvtColor(cv_bridge::toCvCopy(image)->image, frame_gray, cv::COLOR_BGR2GRAY);
+    cv::cvtColor(decompressed, frame_gray, cv::COLOR_BGR2GRAY);
     
     if(!prev_gray[cam].empty()) {
         cv::Mat affineTransform = estimateRigidTransform(prev_gray[cam], frame_gray, false);
@@ -153,19 +152,19 @@ void optical_localization::process_image(const sensor_msgs::Image::ConstPtr& ima
     prev_gray[cam] = frame_gray;
 }
 
-void optical_localization::image_callback_front(const sensor_msgs::Image::ConstPtr& image) {
+void optical_localization::image_callback_front(const sensor_msgs::CompressedImage::ConstPtr& image) {
     process_image(image, FRONT_CAM);
 }
 
-void optical_localization::image_callback_back(const sensor_msgs::Image::ConstPtr& image) {
+void optical_localization::image_callback_back(const sensor_msgs::CompressedImage::ConstPtr& image) {
     process_image(image, BACK_CAM);
 }
 
-void optical_localization::image_callback_left(const sensor_msgs::Image::ConstPtr& image) {
+void optical_localization::image_callback_left(const sensor_msgs::CompressedImage::ConstPtr& image) {
     process_image(image, LEFT_CAM);
 }
 
-void optical_localization::image_callback_right(const sensor_msgs::Image::ConstPtr& image) {
+void optical_localization::image_callback_right(const sensor_msgs::CompressedImage::ConstPtr& image) {
     process_image(image, RIGHT_CAM);
 }
 
