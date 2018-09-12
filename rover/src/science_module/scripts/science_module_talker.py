@@ -13,7 +13,7 @@ import rospy
 from owr_messages.msg import science
 
 def talker():
-    pub = rospy.Publisher('science/request', science, queue_size=10)
+    pub = rospy.Publisher('science/request', int, queue_size=10)
     rospy.init_node('science_module_publisher', anonymous=True)
     rate = rospy.Rate(10) # Hz
     while not rospy.is_shutdown():
