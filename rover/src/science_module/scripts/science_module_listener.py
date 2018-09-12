@@ -5,7 +5,7 @@ Processes data from science module topics
 @author: (Original Author) Sajid Ibne Anower
 @authors: (Editors)
 Purpose: Subscriber for science module
-@copyright: This code is released under the MIT [GPL for embeded] License.
+@copyright: This code is released under the MIT License.
 Copyright BLUEsat UNSW, 2018
 """
 
