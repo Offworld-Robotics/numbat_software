@@ -1,6 +1,3 @@
-uint32 seq
-time stamp
-string frame_id
 uint32 temperature
 uint32 humidity
 float32 mag_x
