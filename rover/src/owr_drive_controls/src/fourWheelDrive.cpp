@@ -1,8 +1,9 @@
 /*
- * Orignal Author: Sajid Ibne Anower
- * Editors: Anita Smirnov
+ * @author: (Orignal Author) Sajid Ibne Anower
+ * @authors: ( Editors) Anita Smirnov
  * Date Started: 3/04/2018
  * Purpose: Implementation of four wheel steering logic
+ * @copyright: This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2017
  */
 
 
@@ -15,6 +16,7 @@
 #define FRONT 1
 #define BACK -FRONT
 
+#define FWDRIVE_LIMIT 0.45*M_PI/2
 
 motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turnAngle) {
     motorVels output = vels;
@@ -22,14 +24,16 @@ motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turn
     output.backLeftMotorV = velMagnitude;
     output.frontRightMotorV = velMagnitude;
     output.backRightMotorV = velMagnitude;
+
+    // Capping the turnangle to 45% of M_PI/2
+    if(turnAngle >= FWDRIVE_LIMIT) {
+        turnAngle = FWDRIVE_LIMIT;
+    } else if(turnAngle <= -FWDRIVE_LIMIT) {
+        turnAngle = -FWDRIVE_LIMIT;
+    }
+
     output.frontLeftAng = output.frontRightAng = turnAngle;
     output.backLeftAng = output.backRightAng = -turnAngle;
-    /*
-    if (turnAngle - M_PI < 2*M_PI) {
-        output.frontRightAng = output.backLeftAng = turnAngle + M_PI;
-    } else {
-      	output.frontRightAng = output.backLeftAng = turnAngle - M_PI;
-    } */
     return output;
 }
 
@@ -48,7 +52,6 @@ motorVels FourWheelDrive::doVelTranslation(const geometry_msgs::Twist * velMsg) 
         double normalisedAngle = turnAngle * dir;
         output = steer(output, dir * velMagnitude, normalisedAngle);
     } else {
-        // y = 0
         ROS_INFO("drive straight");
         output.frontLeftMotorV = output.backLeftMotorV = velMsg->linear.x;
         output.frontRightMotorV = output.backRightMotorV = velMsg->linear.x;

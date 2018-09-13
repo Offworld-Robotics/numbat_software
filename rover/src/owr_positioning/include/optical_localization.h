@@ -3,6 +3,7 @@
 
 #include <string>
 #include <ros/ros.h>
+#include <sensor_msgs/CompressedImage.h>
 #include <opencv2/imgproc.hpp>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TwistWithCovarianceStamped.h>
@@ -15,10 +16,10 @@
 #define LEFT_CAM 2U
 #define RIGHT_CAM 3U
 
-#define PIXELS_PER_METRE_FRONT 2630.00
-#define PIXELS_PER_METRE_BACK 2630.00
-#define PIXELS_PER_METRE_LEFT 2630.00
-#define PIXELS_PER_METRE_RIGHT 2630.00
+#define PIXELS_PER_METRE_FRONT 2568.5 //1138.825332768
+#define PIXELS_PER_METRE_BACK 2568.5 //1138.825332768
+#define PIXELS_PER_METRE_LEFT 2568.5 //1138.825332768
+#define PIXELS_PER_METRE_RIGHT 2568.5 //1138.825332768
 
 class optical_localization {
     private:
@@ -52,12 +53,12 @@ class optical_localization {
         
         std::string cam_names[MAX_CAMS];
         
-        void image_callback_front(const sensor_msgs::Image::ConstPtr& image);
-        void image_callback_back(const sensor_msgs::Image::ConstPtr& image);
-        void image_callback_left(const sensor_msgs::Image::ConstPtr& image);
-        void image_callback_right(const sensor_msgs::Image::ConstPtr& image);
+        void image_callback_front(const sensor_msgs::CompressedImage::ConstPtr& image);
+        void image_callback_back(const sensor_msgs::CompressedImage::ConstPtr& image);
+        void image_callback_left(const sensor_msgs::CompressedImage::ConstPtr& image);
+        void image_callback_right(const sensor_msgs::CompressedImage::ConstPtr& image);
         
-        void process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int cam);
+        void process_image(const sensor_msgs::CompressedImage::ConstPtr& image, const unsigned int cam);
         
         geometry_msgs::Twist average(const geometry_msgs::Twist &first, const geometry_msgs::Twist &second);
         

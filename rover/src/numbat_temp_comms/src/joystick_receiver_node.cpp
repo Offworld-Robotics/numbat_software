@@ -55,7 +55,7 @@ void Joystick_Receiver_Node::spin() {
         while(!open_arduino()) {}
         ROS_INFO("Open Succesfully");
         while(ros::ok()) {
-	    ros::spinOnce();
+            ros::spinOnce();
             from_board.startMagic = 0;
             ROS_INFO("Writing %lf %lf %lf %lf\n", out_msg.data[0], out_msg.data[1], out_msg.data[2], out_msg.data[3]);
             ok = comm(&out_msg, sizeof(out_msg), &from_board, sizeof(serial_msg::in_msg));
@@ -85,10 +85,10 @@ bool Joystick_Receiver_Node::open_arduino() {
     if (dpdf != NULL){
         while (epdf = readdir(dpdf)){
             if(strstr(epdf->d_name, "retransmitter")) {
-		ROS_INFO("Found retransmitter using that instead");
+                ROS_INFO("Found retransmitter using that instead");
                 serial_devices.clear();
                 serial_devices.push_back(epdf->d_name);
-		break;
+                break;
             } else if(strstr(epdf->d_name,"ttyUSB") != NULL || strstr(epdf->d_name, "ttyACM")) {
                 serial_devices.push_back(epdf->d_name);
                 ROS_INFO("Found Serial %s",epdf->d_name);

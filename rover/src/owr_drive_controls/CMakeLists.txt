@@ -117,6 +117,11 @@ add_executable(cmd_vel_2_joints src/cmdVelToJoints.cpp src/Drive.cpp src/crabDri
 add_dependencies(cmd_vel_2_joints owr_messages)
 target_link_libraries(cmd_vel_2_joints ${catkin_LIBRARIES})
 
+add_executable(arm_joints src/cmdVelToArmJoints.cpp src/armControl.cpp)
+add_dependencies(arm_joints owr_messages)
+target_link_libraries(arm_joints ${catkin_LIBRARIES})
+add_executable(cmd_vel_conversion src/Cmd_Vel_Conversion.cpp)
+target_link_libraries(cmd_vel_conversion ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -177,7 +182,5 @@ catkin_add_gtest(testJointPosController test/testJointSpeedBasedPositionControll
 target_link_libraries(testJointPosController ${catkin_LIBRARIES})
 catkin_add_gtest(testLIDARController test/testLIDAR.cpp src/JointController.cpp src/LIDARTiltJointController.cpp)
 target_link_libraries(testLIDARController ${catkin_LIBRARIES})
-#catkin_add_gtest(testCmdVelToJoints test/testCmdVelToJoints.cpp src/cmdVelToJoints.cpp src/Drive.cpp src/crabDrive.cpp src/fourWheelDrive.cpp src/swerveDrive.cpp)
-#target_link_libraries(testCmdVelToJoints ${catkin_LIBRARIES})
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)

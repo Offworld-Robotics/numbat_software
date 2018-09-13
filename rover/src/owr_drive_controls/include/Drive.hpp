@@ -1,8 +1,14 @@
 /*
  * Orignal Author: Harry J.E Day
  * Editors:
- * Date Started: 19/02/2016
  * Purpose: Represents an interface for translating a given velocity vector to wheel vectors
+ */
+/*
+ * Date Started: 19/02/2016
+ * Orignal Author: Harry J.E Day
+ * Editors: Alan Nyguen
+ * Purpose: Represents an interface for translating a given velocity vector to wheel vectors
+ * This code is released under the MIT License. Copyright BLUEsat UNSW, 2018
  */
 
 #ifndef DRIVE_H
