@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   image_transport
 )
+find_package(OpenCV REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -100,6 +101,7 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   ${CATKIN_PACKAGE_LIB_DESTINATION}
+  ${OpenCV_INCLUDE_DIRS}
   /usr/include/gstreamer-0.10
 
 )
@@ -111,7 +113,7 @@ add_dependencies(navigation ${catkin_EXPORTED_TARGETS})
 add_dependencies(navigation bluesat_owr_protobuf_generate_messages_cpp)
 add_dependencies(navigation bluesat_owr_protobuf)
 add_dependencies(navigation owr_messages_gencpp)
-target_link_libraries(navigation ${catkin_LIBRARIES} GL GLU glut)
+target_link_libraries(navigation ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} GL GLU glut)
 
 add_executable(finecontrol src/FineControlGUI.cpp src/FineControlNode.cpp src/GLUTWindow.cpp src/Button.cpp src/Video_Feed_Frame.cpp) 
 add_dependencies(finecontrol ${catkin_EXPORTED_TARGETS})

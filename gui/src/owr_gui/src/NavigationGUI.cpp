@@ -18,6 +18,8 @@
 #include "NavigationGUI.h"
 #include "NavigationNode.h"
 #include "Video_Feed_Frame.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <cstdio>
 
 //#define DEBUG 1
 
@@ -119,7 +121,9 @@ void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 			}
 		}*/
 
-		int i = 0;
+		cv::Mat im(width, height, CV_8UC3, frame);
+
+		/*int i = 0;
 		while (i < ((width*height - 1)*3)/2) {
 			int temp;
 			temp = frame[i];
@@ -136,7 +140,12 @@ void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 		}
 		std::ostringstream out;  
                 out << "snapimage" << ++shotNum << ".bmp";
-		saveBMPFile(out.str(), frame, width, height);
+		saveBMPFile(out.str(), frame, width, height);*/
+
+		ros::Time t = ros::Time::now();
+		char namebuf[50] = {0};
+		sprintf(namebuf, "snapshot-%d-%d.png", t.sec, t.nsec);
+		cv::imwrite(namebuf, im);
 		snapShot = false;
 	}
 
