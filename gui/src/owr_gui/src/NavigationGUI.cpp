@@ -20,6 +20,8 @@
 #include "Video_Feed_Frame.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <cstdio>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/Image.h>
 
 //#define DEBUG 1
 
@@ -109,43 +111,21 @@ void NavigationGUI::updateVideo(unsigned char *frame, int width, int height) {
 	videoScreen->setNewStreamFrame(frame, width, height);
 	
 	if (snapShot) {
-		/*if (sizeof(frame) > 0) {
-			unsigned char* top = &frame[0];
-			unsigned char* bottom = &frame[sizeof(frame) - 1];
-			while (top < bottom) {
-				unsigned char temp = *top;
-				*top = *bottom;
-				*bottom = temp;
-				top++;
-				bottom--;
-			}
-		}*/
+		sensor_msgs::Image im;
+		im.data.insert(im.data.end(), frame, frame + width*height*3);
+		im.width = width;
+		im.height = height;
+		im.encoding = "rgb8";
+		im.is_bigendian = 0;
+		im.step = width*3;
 
-		cv::Mat im(width, height, CV_8UC3, frame);
-
-		/*int i = 0;
-		while (i < ((width*height - 1)*3)/2) {
-			int temp;
-			temp = frame[i];
-			frame[i] = frame[(width*height - 1)*3 - i];
-			frame[(width*height - 1)*3 - i] = temp;
-			i++;
-		}
-		
-		for (int i = 0; i < (width*height - 1)*3; i+=3) {
-			int temp;
-			temp = frame[i];
-			frame[i] = frame[i+2];
-			frame[i+2] = temp;		
-		}
-		std::ostringstream out;  
-                out << "snapimage" << ++shotNum << ".bmp";
-		saveBMPFile(out.str(), frame, width, height);*/
+		cv::Mat mat;
+		cv::cvtColor(cv_bridge::toCvCopy(im)->image, mat, CV_RGB2BGR);
 
 		ros::Time t = ros::Time::now();
 		char namebuf[50] = {0};
 		sprintf(namebuf, "snapshot-%d-%d.png", t.sec, t.nsec);
-		cv::imwrite(namebuf, im);
+		cv::imwrite(namebuf, mat);
 		snapShot = false;
 	}
 
