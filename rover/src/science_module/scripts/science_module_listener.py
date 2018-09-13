@@ -19,7 +19,8 @@ def callback(data):
 
 def listener():
     rospy.init_node('science_module_listener', anonymous=True)
-    rospy.Subscriber('science/data', science, callback=callback)
+    rospy.Subscriber('/science/data', science, callback=callback)
+    rospy.loginfo("Initialised, starting science module listener")
     rospy.spin()
 
 if __name__ == '__main__':
