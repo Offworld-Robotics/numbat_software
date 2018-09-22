@@ -7,8 +7,8 @@ env:
   - ROS_DISTRO="kinetic"
 install:
   - git clone --depth 1 https://github.com/ros-industrial/industrial_ci.git .industrial_ci
-  - rosdep update
   - sudo apt update
   - bash scripts/get_ros_deps.sh
+  - rosdep update
 script: 
   - bash scripts/travis_script.sh
