@@ -6,9 +6,8 @@ language: generic
 env:
   - ROS_DISTRO="kinetic"
 install:
-  # - rosdep update
   - git clone --depth 1 https://github.com/ros-industrial/industrial_ci.git .industrial_ci
-  - sudo apt-get update && sudo apt-get install catkin
   - bash scripts/get_ros_deps.sh
+  - rosdep update
 script: 
   - bash scripts/travis_script.sh
