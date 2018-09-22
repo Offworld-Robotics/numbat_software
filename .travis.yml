@@ -11,4 +11,4 @@ install:
   - bash scripts/get_ros_deps.sh
   - rosdep update
 script: 
-  - bash scripts/travis_script.sh
+  - lsb_release -a; bash scripts/travis_script.sh
