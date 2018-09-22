@@ -2,7 +2,7 @@
 
 # Script from:
 # https://bluesat.atlassian.net/wiki/spaces/OWRT/pages/3211577/Getting+Started+with+Software
-
+lsb_release -a
 mkdir -p ~/ros_deps
 cd ~/ros_deps
 git clone https://github.com/bluesat/16_04_ros_deps.git src
