@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="owr_drive_controls" type="arm_joints" name="arm_joints" output="screen">
+	</node>
+</launch>

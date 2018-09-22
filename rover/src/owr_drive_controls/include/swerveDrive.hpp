@@ -5,21 +5,17 @@
  * Purpose: Represents an interface for translating a given velocity vector to wheel vectors
  */
 
-#include <geometry_msgs/Twist.h>
-
 #ifndef SWERVE_DRIVE_H
 #define SWERVE_DRIVE_H
 
-typedef struct _swerveMotorVels {
-    double frontLeftMotorV,
-           frontRightMotorV,
-           backLeftMotorV,
-           backRightMotorV;
+#include "Drive.hpp"
 
-    double frontLeftAng,
-           frontRightAng;
-} swerveMotorVels;
+class SwerveDrive: public Drive {
+    public:
+        motorVels doVelTranslation(const geometry_msgs::Twist * velMsg);
+    private:    
+        motorVels steer(motorVels vels, double velMagnitude, double turnAngle);
+        int direction;
+};
 
-swerveMotorVels doVelTranslation ( const geometry_msgs::Twist * velMsg );
-
-#endif //SWERVE_DRIVE_H
+#endif  // SWERVE_DRIVE_H
