@@ -14,4 +14,4 @@ catkin_make -DGSTREAMER_VERSION_1_x=1
 # echo "source ~/ros_deps/devel/setup.bash" >> ~/.bashrc
 source ~/ros_deps/devel/setup.bash
 
-sudo apt install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-ros-control
+# sudo apt install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-ros-control
