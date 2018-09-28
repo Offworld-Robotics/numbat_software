@@ -17,10 +17,11 @@ nohup*
 #########################
 */build
 */devel
+devel/*
 
 # gscam #
 #########
-rover/src/gscam
+src/gscam
 bin/
 build/
 lib/
