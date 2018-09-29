@@ -8,6 +8,7 @@
 # which he developed.
 
 source $HOME/.bashrc
+
 export TMUXPROCMON=1
 cd "$(dirname "$0")"
 
