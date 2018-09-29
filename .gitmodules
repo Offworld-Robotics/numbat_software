@@ -1,6 +1,3 @@
 [submodule "rover/src/mtig_driver"]
 	path = rover/src/mtig_driver
 	url = https://github.com/lukscasanova/mtig_driver.git
-[submodule "rover/src/xsens_mti_ros_node"]
-	path = rover/src/xsens_mti_ros_node
-	url = https://github.com/bluesat/mtig_driver_fork.git

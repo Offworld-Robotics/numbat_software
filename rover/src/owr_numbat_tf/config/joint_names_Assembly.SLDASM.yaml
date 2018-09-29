@@ -1,0 +1,1 @@
+controller_joint_names: ['front_left_swerve', 'front_left_rotate', 'back_left_swerve', 'back_left_Rotate', 'back_right_swerve', 'back_RIght_wheel_axel', 'front_right_swerve', 'front_right_Rotate', ]
