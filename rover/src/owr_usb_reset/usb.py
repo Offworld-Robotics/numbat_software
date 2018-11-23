@@ -17,16 +17,16 @@ def idmap(device):
 		return device[0:32]
 
 def callback(data):
-	print(devices[data.data])
-	filepath = "/dev/bus/usb" + devices[data.data][0:32]
+	print(data.data)
+	"""filepath = "/dev/bus/usb" + devices[data.data][0:32]
 	rospy.info("Usb reset")
 	command = "sudo ./usb_reset " + filepath
 	subprocess.call(command,shell=True)
-	rospy.loginfo("%s reset", data.data)
+	rospy.loginfo("%s reset", data.data) """
 
 def listener():
 	rospy.init_node('usb_reset', anonymous=True)
-	rospy.Subscriber("rover/usb/reset", Int16, callback)
+	rospy.Subscriber("rover/usb/reset", String, callback)
 
 def talker():
 	pub = rospy.Publisher('/rover/usb', String, queue_size=1)
