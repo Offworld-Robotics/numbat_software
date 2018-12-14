@@ -123,6 +123,10 @@ target_link_libraries(optical_localization ${OpenCV_LIBRARIES} ${catkin_LIBRARIE
 set_target_properties(optical_localization PROPERTIES COMPILE_FLAGS "-O3")
 target_link_libraries(image_cropping ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 set_target_properties(image_cropping PROPERTIES COMPILE_FLAGS "-O3")
+
+add_executable(optical_test src/optical_test.cpp)
+target_link_libraries(optical_test ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
+set_target_properties(optical_test PROPERTIES COMPILE_FLAGS "-O3")
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 
