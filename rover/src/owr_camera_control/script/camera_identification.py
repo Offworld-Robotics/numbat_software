@@ -1,84 +1,60 @@
 #!/usr/bin/env python
-# Software License Agreement (BSD License)
-#
-# Copyright (c) 2008, Willow Garage, Inc.
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-#  * Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-#  * Redistributions in binary form must reproduce the above
-#    copyright notice, this list of conditions and the following
-#    disclaimer in the documentation and/or other materials provided
-#    with the distribution.
-#  * Neither the name of Willow Garage, Inc. nor the names of its
-#    contributors may be used to endorse or promote products derived
-#    from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
-#
-# Revision $Id$
 
+## Uniquely Identifies the camera devices
+## If there are issues regarding accessing the full serial number for the cameras, these links may help:
+## http://web.archive.org/web/20120629230817/http://ruggedcircuits.com/html/linux.html
+## https://askubuntu.com/questions/112568/how-do-i-allow-a-non-default-user-to-use-serial-device-ttyusb0/112572#112572
 import usb
 import rospy
+import hashlib
 import os
 import string
 from std_msgs.msg import String
 
-def is_camera(dev, intf):
+
+#checks if the device has the capacity to be a camera
+#for the cameras used on the rover, the first if statement should be sufficient
+def isCamera(dev, intf):
         if (dev.bDeviceClass == 14 or intf.bInterfaceClass == 14): return True
-        if (dev.bDeviceClass == 16 or intf.bInterfaceClass == 16): return True
-        if (dev.bDeviceClass == 6 or intf.bInterfaceClass == 6): return True
+        #if (dev.bDeviceClass == 16 or intf.bInterfaceClass == 16): return True
+        #if (dev.bDeviceClass == 6 or intf.bInterfaceClass == 6): return True
         return False
 
-def camera_identifier():
+def getUniqueIdentifier(dev):
+    if (len(dev.langids) != 0):
+        serial_number = usb.util.get_string(dev, dev.iSerialNumber)
+    else:
+        serial_number = 0
+
+def cameraIdentifier():
     pub = rospy.Publisher('camera_identication', String, queue_size=10)
     rospy.init_node('camera_identifer', anonymous=True)
     rate = rospy.Rate(1) # 10hz
     while not rospy.is_shutdown():
-        str = "\n"
-        busses = usb.busses()
-        deviceAdded = False
-        allDevicesAdded = []
-        for bus in busses:
-            devices = bus.devices
-            devs = usb.core.find(find_all=True)
-            for dev in devs:
-                deviceAdded = False
-            	for cfg in dev:
-                    for intf in cfg:
-                        for x in allDevicesAdded:
-                            uniqueIdentifier = '%s%s' % (dev.idVendor, dev.idProduct)
-                            if (x == uniqueIdentifier):
-                                deviceAdded = True
-                        if (deviceAdded):
-                            break
-                        if (is_camera(dev, intf)):
-                            str += 'Bus %03x, Device %03x, Product: %s| SerialID: %s, Vendor ID: %s, Product ID: %s, Unique Identifier: %d%d \n' % (dev.bus, dev.address,  dev.iProduct, dev.iSerialNumber, dev.idVendor, dev.idProduct, dev.idVendor, dev.idProduct)
-                            uniqueIdentifier ='%s%s' % (dev.idVendor, dev.idProduct)
-                            allDevicesAdded.append(uniqueIdentifier)
-                            break
-        rospy.loginfo(str)
-        pub.publish(str)
+        info = "\n"
+        device_added = False
+        all_devices_added = []
+        serial_numbers = []
+        devices = usb.core.find(find_all=True) #finds all devices connected to the system
+        for dev in devices:
+            device_added = False
+            for cfg in dev:
+                for intf in cfg:
+                    if (isCamera(dev, intf)):
+                        serial_number = getUniqueIdentifier(dev)
+                        info += 'Bus %03x, Device %03x, Product: %s| Vendor ID: %s, Product ID: %s, Unqiue Identifer(SN): %s)\n' % (dev.bus, dev.address,  dev.iProduct, dev.idVendor, dev.idProduct, serial_number)
+                        allDevicesAdded.append(serial_number)
+                        device_added = True
+                        break
+                if (device_added == True):
+                    break
+        rospy.loginfo(info)
+        pub.publish(info)
         rate.sleep()
 
 
 if __name__ == '__main__':
     try:
-        camera_identifier()
+        cameraIdentifier()
     except rospy.ROSInterruptException:
         pass
