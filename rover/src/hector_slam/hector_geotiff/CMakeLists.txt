@@ -1,5 +1,13 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.1.0)
 project(hector_geotiff)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Core)
+find_package(Qt5 COMPONENTS Gui)
+get_target_property(QtCore_location Qt5::Core LOCATION)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -9,14 +17,9 @@ find_package(catkin REQUIRED COMPONENTS cmake_modules hector_map_tools hector_na
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
-find_package(Qt4 4.6 COMPONENTS QtCore QtGui REQUIRED)
-
 find_package(Eigen REQUIRED)
 include_directories(${Eigen_INCLUDE_DIRS})
 add_definitions(${Eigen_DEFINITIONS})
-
-include(${QT_USE_FILE})
-
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -75,7 +78,7 @@ include_directories(
 )
 
 add_library(geotiff_writer src/geotiff_writer/geotiff_writer.cpp)
-target_link_libraries(geotiff_writer ${catkin_LIBRARIES} ${QT_LIBRARIES})
+target_link_libraries(geotiff_writer ${catkin_LIBRARIES} ${QT_LIBRARIES} Qt5::Widgets)
 add_dependencies(geotiff_writer ${catkin_EXPORTED_TARGETS})
 
 add_executable(geotiff_saver src/geotiff_saver.cpp)

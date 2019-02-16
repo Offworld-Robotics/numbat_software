@@ -31,7 +31,7 @@
 
 #include <QtGui/QPainter>
 #include <QtGui/QImageWriter>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtCore/QFile>
 //#include <QtCore/QDateTime>
 #include <QtCore/QTime>

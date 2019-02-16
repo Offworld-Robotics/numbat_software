@@ -34,7 +34,7 @@
 
 #include <Eigen/Geometry>
 
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 #include <hector_map_tools/HectorMapTools.h>
 
