@@ -79,7 +79,7 @@ JointSpeedBasedPositionController::JointSpeedBasedPositionController(double radi
 int JointSpeedBasedPositionController::posToPWM(double futurePos, double currentPos, double updateFrequency) {
     
     //check for infinity - we should stop
-    if(std::isinf<double>(currentPos)) {
+    if(std::isinf(currentPos)) {
         ROS_ERROR("Current Position is infinity!");
         return deltaPWM/2 + minPWM;
     }

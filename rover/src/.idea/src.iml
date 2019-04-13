@@ -459,7 +459,7 @@
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
-          <root url="file:///opt/ros/kinetic/include" />
+          <root url="file:///opt/ros/melodic/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/devel/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/devel/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/devel/include" />
@@ -472,7 +472,7 @@
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
-          <root url="file:///opt/ros/kinetic/include" />
+          <root url="file:///opt/ros/melodic/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Debug0/devel/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/Release0/devel/include" />
           <root url="file://$USER_HOME$/.CLion2016.2/system/cmake/generated/src-bcfbf7f8/bcfbf7f8/RelWithDebInfo0/devel/include" />
