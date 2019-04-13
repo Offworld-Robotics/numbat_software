@@ -21,7 +21,7 @@ def callback(data):
 	subprocess.call("cd /dev/bus/usb",shell=True)
 	devs = subprocess.check_output(["lsusb"])
 	devs = devs.split("\n")
-	if(data.data < len(devices) - 1): 
+	if(data.data < len(devs) - 1): 
 		devs[data.data].replace(' ', '')
 		print(devs[data.data])
 		filepath = "/dev/bus/usb/" + devs[data.data][4:7]
