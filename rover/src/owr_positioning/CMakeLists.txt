@@ -4,6 +4,8 @@ project(owr_positioning)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+find_package( OpenCV REQUIRED )
+
 find_package(catkin REQUIRED COMPONENTS
   owr_messages
   roscpp
@@ -16,7 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
   tf2
   tf2_geometry_msgs
   tf2_ros
-  OpenCV
   cv_bridge
   ecl_threads
   image_transport
@@ -105,8 +106,10 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
+
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
    include
 )
 
@@ -131,21 +134,27 @@ set_target_properties(image_cropping PROPERTIES COMPILE_FLAGS "-O3")
 #target_link_libraries(artags
 #  ${catkin_LIBRARIES}
 #)
+
 target_link_libraries(artags
    ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
 )
 target_link_libraries(orientation
    ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
 )
 target_link_libraries(gps_tf
    ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
 )
 target_link_libraries(utm_tf
         ${catkin_LIBRARIES}
+	${OpenCV_LIBRARIES}
         )
 
 target_link_libraries(mag
         ${catkin_LIBRARIES}
+	${OpenCV_LIBRARIES}
         )
 #   src/${PROJECT_NAME}/owr_positioning.cpp
 # )
