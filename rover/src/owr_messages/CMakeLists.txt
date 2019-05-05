@@ -64,6 +64,7 @@ add_message_files(
   adc.msg
   stop.msg
   science.msg
+  tester.msg
 )
 
 ## Generate services in the 'srv' folder
