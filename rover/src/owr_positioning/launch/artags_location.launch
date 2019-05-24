@@ -1,0 +1,8 @@
+<launch>
+    <node pkg="tf" type="static_transform_publisher" name="marker0" args="2.0 1.0 0.0 0 0 0 world /marker0 100">
+    </node>
+    <node pkg="tf" type="static_transform_publisher" name="marker1" args="2.0 1.0 0.0 0.5 0.7 0.9 world /marker1 100">
+    </node>
+    <node pkg="tf" type="static_transform_publisher" name="marker2" args="2.5 1.5 0.0 0 0 0 world /marker2 100">
+    </node>
+</launch>
