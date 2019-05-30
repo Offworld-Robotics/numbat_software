@@ -63,7 +63,7 @@
 
 
  <link
-          name="camera_frame">
+          name="camera_link">
     <inertial>
       <origin
               xyz="-0.000639925729432167 0.000662656077548368 -0.0176677612707939"
@@ -107,11 +107,11 @@
           type="fixed">
     <origin
             xyz="-0.19 -0.67 0.47"
-            rpy="-4.0766001685455E-16 2.71143453751384E-15 -3.14214183115679" />
+            rpy="-1.57079632679 0 1.57079632679" />
     <parent
             link="rover_model" />
     <child
-            link="camera_frame" />
+            link="camera_link" />
     <axis
             xyz="0 0 0" />
   </joint>
