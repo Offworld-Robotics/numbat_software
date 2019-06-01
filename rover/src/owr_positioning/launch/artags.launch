@@ -1,8 +1,5 @@
 <launch>
 
-  <!-- Create a static transform for each ar tag -->
-    <node pkg="tf" type="static_transform_publisher" name="marker0" args="2 1 0 0 0 0 world /marker0 100">
-    </node>
     <node pkg="tf" type="static_transform_publisher" name="base_point" args="0 0 0 0 0 0 world /base_point 100">
     </node>
   

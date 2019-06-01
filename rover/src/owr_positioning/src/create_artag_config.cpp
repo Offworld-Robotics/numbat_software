@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <ar_track_alvar_msgs/AlvarMarkers.h>
 using namespace std;
 
 int determine_artag(){
@@ -15,8 +17,14 @@ int determine_artag(){
 }
 
 int main() {
+   string dir_location = "/home/ros/owr_software/rover/src/owr_positioning/launch/";
+   string file_name = "artags_location.launch";
    ofstream launch_file;
-   launch_file.open("artags_location.launch");
+   launch_file.open((dir_location+file_name).c_str());
+   if(not launch_file){
+      cout << "Could not create " << dir_location << file_name <<"\n" ;
+      return 1;
+   }
    bool add_artag = true;
    char response;
    int id;
@@ -44,6 +52,7 @@ int main() {
       }
       launch_file << "</launch>\n";	
       launch_file.close(); 
+      cout << "Successfully created " << dir_location << file_name << "\n";
    }
    return 0;
 }
