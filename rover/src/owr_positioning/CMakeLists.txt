@@ -114,6 +114,7 @@ include_directories(
 ## Declare a cpp library
 # add_library(owr_positioning
 ## Declare a cpp executable
+add_executable(artags src/artags.cpp)
 add_executable(orientation src/ExtractOrientation.cpp)
 add_executable(utm_tf src/UTMTransform.cpp)
 add_executable(gps_tf src/GPSTransform.cpp)
@@ -128,6 +129,9 @@ set_target_properties(image_cropping PROPERTIES COMPILE_FLAGS "-O3")
 ## as an example, message headers may need to be generated before nodes
 
 ## Specify libraries to link a library or executable target against
+target_link_libraries(artags
+   ${catkin_LIBRARIES}
+)
 target_link_libraries(orientation
    ${catkin_LIBRARIES}
 )
