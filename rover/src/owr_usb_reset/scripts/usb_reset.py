@@ -9,7 +9,6 @@ from owr_messages.msg import devices
 after %sudo	ALL=(ALL:ALL) ALL. This allows the usb reset program to run without needing a password for 
 sudo. Eneter password manually while running causes a problem 
 """
-#global devs
 
 def idmap(device):
 	if (device[23:27] == "1d6b"):
@@ -29,7 +28,7 @@ def callback(data):
 		print(filepath)
 		command = "sudo ./usb_reset " + filepath
 		subprocess.call(command,shell=True)
-		rospy.loginfo("%s reset", data.data) 
+		rospy.loginfo("reset attempted") 
 	else:
 		print("Out of range")
 
@@ -46,10 +45,8 @@ def talker():
 		subprocess.call("cd /dev/bus/usb",shell=True)
 		devs = subprocess.check_output(["lsusb"])
 		devs = devs.split("\n")
-		#device_string = idmap(devices[0])
 		for i in range(0,len(devs)):
     			devs[i] = idmap(devs[i])
-		#rospy.loginfo(device_string)
 		pub.publish(devs)
 		rate.sleep()
 

@@ -63,6 +63,7 @@ find_package(catkin REQUIRED COMPONENTS
    board.msg
    adc.msg
    stop.msg
+   devices.msg
  )
 
 ## Generate services in the 'srv' folder
