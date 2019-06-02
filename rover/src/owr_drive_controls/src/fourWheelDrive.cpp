@@ -1,6 +1,6 @@
 /*
  * @author: (Orignal Author) Sajid Ibne Anower
- * @authors: ( Editors) Anita Smirnov
+ * @authors: (Editors) Anita Smirnov, Kevin Chan
  * Date Started: 3/04/2018
  * Purpose: Implementation of four wheel steering logic
  * @copyright: This code is released under the MIT [GPL for embeded] License. Copyright BLUEsat UNSW, 2017
@@ -18,6 +18,15 @@
 
 #define FWDRIVE_LIMIT 0.45*M_PI/2
 
+/*
+ * @arg1 vels: current motor info
+ * @arg2 velMag: 
+ * @arg3 turnAng
+ *
+ * @return output: vels translated
+ *
+ * Desciption: translate the current vels with the new turnAngle
+ */
 motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turnAngle) {
     motorVels output = vels;
     output.frontLeftMotorV = velMagnitude;
@@ -35,6 +44,29 @@ motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turn
     output.frontLeftAng = output.frontRightAng = turnAngle;
     output.backLeftAng = output.backRightAng = -turnAngle;
     return output;
+    
+	// work out the center of the circle and the radius of the circle
+			// Primary Circle
+				// radius: (cos(90 - turnAngle) * rover_height)/2
+				// Assume origin at the center of the rover
+				// center: at ((rover_height*tan(90-turnAngle))/2, 0)
+
+			// Secondary Circle
+				// using pythag
+				// radius^2 = (rover_width+center)^2 - (rover_height/2)^2
+				// center: same as primary
+
+			// Turn angles
+				// wheels on the primary circle
+					// front wheel: turnAngle
+					// back wheel: -turnAngle
+				// wheels on the secondary cicle
+					// tan(90 - fi) = (rover_width + center)/(rover_height/2)
+					// front wheel: fi
+				    // back wheel: -fi
+
+		// if it is a right turn, center offset is +ve
+		// if it is a left turn, center offset is -ve
 }
 
 
