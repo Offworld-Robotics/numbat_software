@@ -1,9 +1,10 @@
 <launch>
 
   <!-- Create a static transform for each ar tag -->
-    <node pkg="tf" type="static_transform_publisher" name="marker0" args="2 1 0 0 0 0 world /marker0 100">
+    <node pkg="tf" type="static_transform_publisher" name="marker2" args="2 1 0 0 0 0 camera_link /marker2 100">
     </node>
-    <node pkg="tf" type="static_transform_publisher" name="base_point" args="0 0 0 0 0 0 world /base_point 100">
+
+    <node pkg="tf" type="static_transform_publisher" name="base_link" args="0 0 0 0 0 0 odom /base_link 100">
     </node>
   
   <!-- Setup the video stream from the camera -->
@@ -70,7 +71,7 @@
       <remap from="camera_image"  to="$(arg cam_image_topic)" />
       <remap from="camera_info"   to="$(arg cam_info_topic)" />
   </node>
-  <!--
+
   <node pkg="owr_positioning" type="artags" name="artags" output="screen"/> 
-  -->   
+   
 </launch>
