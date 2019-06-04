@@ -16,7 +16,12 @@
 #define FRONT 1
 #define BACK -FRONT
 
+#define DEG180 M_PI
+#define DEG90 M_PI_2
+
 #define FWDRIVE_LIMIT 0.45*M_PI/2
+#define ROVER_HEIGHT // distance between front and back wheel on the same side
+#define ROVER_WIDTH // distance between two front wheels
 
 /*
  * @arg1 vels: current motor info
@@ -28,11 +33,11 @@
  * Desciption: translate the current vels with the new turnAngle
  */
 motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turnAngle) {
-    motorVels output = vels;
-    output.frontLeftMotorV = velMagnitude;
-    output.backLeftMotorV = velMagnitude;
-    output.frontRightMotorV = velMagnitude;
-    output.backRightMotorV = velMagnitude;
+    //motorVels output = vels;
+    //output.frontLeftMotorV = velMagnitude;
+    //output.backLeftMotorV = velMagnitude;
+    //output.frontRightMotorV = velMagnitude;
+    //output.backRightMotorV = velMagnitude;
 
     // Capping the turnangle to 45% of M_PI/2
     if(turnAngle >= FWDRIVE_LIMIT) {
@@ -41,32 +46,65 @@ motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turn
         turnAngle = -FWDRIVE_LIMIT;
     }
 
-    output.frontLeftAng = output.frontRightAng = turnAngle;
-    output.backLeftAng = output.backRightAng = -turnAngle;
+	// Primary Circle
+		// radius: (cos(90 - turnAngle) * ROVER_HEIGHT)/2
+		// Assume origin at the center of the rover
+		// center: at ((ROVER_HEIGHT*tan(90-turnAngle))/2, 0)
+
+	// Secondary Circle
+		// using pythag
+		// radius^2 = (ROVER_WIDTH+center)^2 + (ROVER_HEIGHT/2)^2
+		// center: same as primary
+
+	// Turn angles
+		// wheels on the primary circle
+			// front wheel: turnAngle
+			// back wheel: -turnAngle
+		// wheels on the secondary cicle
+			// tan(90 - fi) = (ROVER_WIDTH + center)/(ROVER_HEIGHT/2)
+			// front wheel: fi
+			// back wheel: -fi
+
+    motorVels output = vels; 
+    double center = (ROVER_HEIGHT*tan(90-turnAngle))/2;
+    double primaryRadius = (cos(DEG90 - turnAngle) * ROVER_HEIGHT)/2;
+    double angularVelocity = velMagnitude/primaryRadius;
+    double secondaryRadius = sqrt( pow(ROVER_WIDTH+center, 2) + pow(ROVER_HEIGHT/2, 2));
+    if(0 < turnAngle) {
+	    ROS_INFO("Right turn");
+	    // Turn Angles
+	    output.frontRightAng = turnAngle;
+	    output.backRightAng = -turnAngle;
+	    output.frontLeftAng = DEG90 - atan2(ROVER_WIDTH + center, ROVER_HEIGHT/2);
+	    output.backLeftAng = -output.frontLeftAng;
+
+	    // velocities:
+	    output.frontLeftMotorV = angularVelocity;
+	    output.backLeftMotorV = angularVelocity;
+
+	    angularVelocity = velMagnitude/secondaryRadius;
+	    output.frontRightMotorV = angularVelocity;
+	    output.backRightMotorV = angularVelocity;
+    } else if(turnAngle > M_PI) {
+	    ROS_INFO("Left turn");
+	    output.frontLeftAng = turnAngle;
+	    output.backLeftAng = -turnAngle;
+	    output.frontRightAng = DEG90 - atan2(ROVER_WIDTH + center, ROVER_HEIGHT/2);
+	    output.backRightAng = -output.frontRightAng;
+
+	    // velocities:
+	    output.frontRightMotorV = angularVelocity;
+	    output.backRightMotorV = angularVelocity;
+
+	    angularVelocity = velMagnitude/secondaryRadius;
+	    output.frontLeftMotorV = angularVelocity;
+	    output.backLeftMotorV = angularVelocity;
+    } else {
+	    // doVelTranslation takes care of straight pathing i think...
+	    ROS_INFO("turn angle unaccounted for");
+    }
+	
     return output;
-    
-	// work out the center of the circle and the radius of the circle
-			// Primary Circle
-				// radius: (cos(90 - turnAngle) * rover_height)/2
-				// Assume origin at the center of the rover
-				// center: at ((rover_height*tan(90-turnAngle))/2, 0)
-
-			// Secondary Circle
-				// using pythag
-				// radius^2 = (rover_width+center)^2 - (rover_height/2)^2
-				// center: same as primary
-
-			// Turn angles
-				// wheels on the primary circle
-					// front wheel: turnAngle
-					// back wheel: -turnAngle
-				// wheels on the secondary cicle
-					// tan(90 - fi) = (rover_width + center)/(rover_height/2)
-					// front wheel: fi
-				    // back wheel: -fi
-
-		// if it is a right turn, center offset is +ve
-		// if it is a left turn, center offset is -ve
 }
 
 
@@ -78,11 +116,9 @@ motorVels FourWheelDrive::doVelTranslation(const geometry_msgs::Twist * velMsg) 
         output = stop(output);
     } else if (fabs(velMsg->linear.y) >= VEL_ERROR) {
         const double turnAngle = atan2(velMsg->linear.y, fabs(velMsg->linear.x));
-        int dir = getDir(velMsg->linear.x);
-        // (turnAngle * dir) is the final normalised angle,
-        // required to make the driving similar to that of a car
-        double normalisedAngle = turnAngle * dir;
-        output = steer(output, dir * velMagnitude, normalisedAngle);
+        int direction = getDir(velMsg->linear.x); // 1 forwars -1 back
+		//TODO: handle direction
+        output = steer(output, direction * velMagnitude, turnAngle);
     } else {
         ROS_INFO("drive straight");
         output.frontLeftMotorV = output.backLeftMotorV = velMsg->linear.x;
