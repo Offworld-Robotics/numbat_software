@@ -33,6 +33,7 @@ hector_nav_msgs/src/hector_nav_msgs/
 ##########
 *.kdev44444444444444444444444444444444444444444444/.*
 .kdev*
+*.kdev*
 
 #python scripts
 *.pyc
@@ -43,3 +44,5 @@ hector_nav_msgs/src/hector_nav_msgs/
 # IntelliJ folders
 .idea
 
+*.kate-swp
+.swp.*
