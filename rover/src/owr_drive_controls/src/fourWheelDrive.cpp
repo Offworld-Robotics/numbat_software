@@ -20,8 +20,8 @@
 #define DEG90 M_PI_2
 
 #define FWDRIVE_LIMIT 0.45*M_PI/2
-#define ROVER_HEIGHT // distance between front and back wheel on the same side
-#define ROVER_WIDTH // distance between two front wheels
+#define ROVER_HEIGHT .47// distance between front and back wheel on the same side in m
+#define ROVER_WIDTH .76// distance between two front wheels in m
 
 /*
  * @arg1 vels: current motor info
