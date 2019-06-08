@@ -57,12 +57,12 @@ artag_localization::artag_localization() : tfBuffer(), tfListener(tfBuffer)  {
     //                    0  , 0  , 0  , 0  , var, 0
     //                    0  , 0  , 0  , 0  , 0  , var};
 
-    odomMsg.pose.covariance = {0.1, 0, 0, 0, 0, 0, 
-                        0, 0.1, 0, 0, 0, 0,
-                        0, 0, 99999, 0, 0, 0,
-                        0, 0, 0, 99999, 0, 0,
-                        0, 0, 0, 0, 99999, 0,
-                        0, 0, 0, 0, 0, 0.1};
+    odomMsg.pose.covariance = {50, 0, 0, 0, 0, 0, 
+                        0, 50, 0, 0, 0, 0,
+                        0, 0, 50, 0, 0, 0,
+                        0, 0, 0, 50, 0, 0,
+                        0, 0, 0, 0, 50, 0,
+                        0, 0, 0, 0, 0, 50};
     odomMsg.twist.covariance = {0.1, 0, 0, 0, 0, 0, 
                         0, 0.1, 0, 0, 0, 0,
                         0, 0, 0.1, 0, 0, 0,
@@ -137,7 +137,7 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
 	std::string worldMarkerFrame = "marker";
 	worldMarkerFrame += ss.str();
 	try {
-	    arTransform = tfBuffer.lookupTransform("camera_link", worldMarkerFrame, ros::Time(0));
+	    arTransform = tfBuffer.lookupTransform("odom", worldMarkerFrame, ros::Time(0));
         } catch (tf2::TransformException & ex) {
             ROS_WARN("%s", ex.what());
             ros::Duration(1.0).sleep();

@@ -1,12 +1,9 @@
 <launch>
 
   <!-- Create a static transform for each ar tag -->
-    <node pkg="tf" type="static_transform_publisher" name="marker2" args="2 1 0 0 0 0 camera_link /marker2 100">
+    <node pkg="tf" type="static_transform_publisher" name="marker2" args="2 1 0 0 0 0 odom /marker2 100">
     </node>
 
-    <node pkg="tf" type="static_transform_publisher" name="base_link" args="0 0 0 0 0 0 odom /base_link 100">
-    </node>
-  
   <!-- Setup the video stream from the camera -->
    <arg name="camera_name" default="camera" />
    <!-- video_stream_provider can be a number as a video device or a url of a video stream -->
