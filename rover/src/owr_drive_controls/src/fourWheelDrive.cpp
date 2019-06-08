@@ -33,12 +33,6 @@
  * Desciption: translate the current vels with the new turnAngle
  */
 motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turnAngle) {
-    //motorVels output = vels;
-    //output.frontLeftMotorV = velMagnitude;
-    //output.backLeftMotorV = velMagnitude;
-    //output.frontRightMotorV = velMagnitude;
-    //output.backRightMotorV = velMagnitude;
-
     // Capping the turnangle to 45% of M_PI/2
     if(turnAngle >= FWDRIVE_LIMIT) {
         turnAngle = FWDRIVE_LIMIT;
