@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   std_msgs
+  bluesat_owr_protobuf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -94,7 +95,6 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ../../devel/include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -105,9 +105,9 @@ include_directories(
 
 ## Declare a cpp executable
 # add_executable(testDataGenerator_node src/testDataGenerator_node.cpp)
-add_executable(dataGen src/dataGen.cpp) 
-target_link_libraries(dataGen ${catkin_LIBRARIES})
+add_executable(dataGen src/dataGen.cpp)
 add_dependencies(dataGen ${catkin_EXPORTED_TARGETS})
+target_link_libraries(dataGen ${catkin_LIBRARIES})
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(testDataGenerator_node testDataGenerator_generate_messages_cpp)

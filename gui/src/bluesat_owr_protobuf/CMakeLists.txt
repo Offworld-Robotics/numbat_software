@@ -5,7 +5,7 @@ project(bluesat_owr_protobuf)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS  roscpp rospy std_msgs message_generation)
+find_package(catkin REQUIRED COMPONENTS roscpp std_msgs message_generation)
 find_package(Protobuf REQUIRED)
 
 
@@ -46,22 +46,18 @@ find_package(Protobuf REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 #coverts files from .proto to message
-execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/message1.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/message1_ros.msg
-                 )
-execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/battery.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/battery_ros.msg
-                 )
-execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/signal.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/signal_ros.msg
-                 )
-execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/tilt.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/tilt_ros.msg
-                 )
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/message1.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/message1_ros.msg)
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/battery.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/battery_ros.msg)
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/signal.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/signal_ros.msg)
+execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_CURRENT_SOURCE_DIR}/src/tilt.proto ${CMAKE_CURRENT_SOURCE_DIR}/msg/tilt_ros.msg)
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   message1_ros.msg
-   battery_ros.msg
-   signal_ros.msg
-   tilt_ros.msg
- )
+add_message_files(
+  FILES
+  message1_ros.msg
+  battery_ros.msg
+  signal_ros.msg
+  tilt_ros.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -78,17 +74,15 @@ execute_process(COMMAND  ${CMAKE_CURRENT_SOURCE_DIR}/build/convert.pl  ${CMAKE_C
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   std_msgs
-     # Or other packages containing msgs
- )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include)
 include_directories(
-   include
+  include
   ${catkin_INCLUDE_DIRS}
   ${PROTOBUF_INCLUDE_DIRS}
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -104,9 +98,9 @@ include_directories(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES bluesat_owr_protobuf
-  CATKIN_DEPENDS roscpp message_runtime
-  DEPENDS system_lib convert
+# LIBRARIES bluesat_owr_protobuf
+  CATKIN_DEPENDS roscpp std_msgs message_runtime
+# DEPENDS system_lib convert
 )
 
 ###########
