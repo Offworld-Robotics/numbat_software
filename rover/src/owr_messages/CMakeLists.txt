@@ -5,10 +5,7 @@ project(owr_messages)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  message_runtime
   message_generation
-  roscpp
-  rospy
   sensor_msgs
   std_msgs
   geometry_msgs
@@ -82,12 +79,12 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   sensor_msgs
-   std_msgs
-   geometry_msgs
- )
+generate_messages(
+  DEPENDENCIES
+  sensor_msgs
+  std_msgs
+  geometry_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -101,7 +98,7 @@ add_message_files(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES owr_messages
- CATKIN_DEPENDS message_runtime roscpp rospy sensor_msgs std_msgs
+  CATKIN_DEPENDS message_runtime sensor_msgs std_msgs geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -112,9 +109,9 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+# include_directories(
+#   ${catkin_INCLUDE_DIRS}
+# )
 
 ## Declare a cpp library
 # add_library(owr_messages

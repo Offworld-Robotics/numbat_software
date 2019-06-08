@@ -107,8 +107,8 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
-   include
 )
 
 ## Declare a cpp library
@@ -120,6 +120,14 @@ add_executable(gps_tf src/GPSTransform.cpp)
 add_executable(mag src/MagnetConverter.cpp)
 add_executable(optical_localization src/optical_localization.cpp)
 add_executable(image_cropping src/ImageCropping.cpp)
+
+add_dependencies(orientation ${catkin_EXPORTED_TARGETS})
+add_dependencies(utm_tf ${catkin_EXPORTED_TARGETS})
+add_dependencies(gps_tf ${catkin_EXPORTED_TARGETS})
+add_dependencies(mag ${catkin_EXPORTED_TARGETS})
+add_dependencies(optical_localization ${catkin_EXPORTED_TARGETS})
+add_dependencies(image_cropping ${catkin_EXPORTED_TARGETS})
+
 target_link_libraries(optical_localization ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 set_target_properties(optical_localization PROPERTIES COMPILE_FLAGS "-O3")
 target_link_libraries(image_cropping ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
@@ -128,19 +136,10 @@ set_target_properties(image_cropping PROPERTIES COMPILE_FLAGS "-O3")
 ## as an example, message headers may need to be generated before nodes
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(orientation
-   ${catkin_LIBRARIES}
-)
-target_link_libraries(gps_tf
-   ${catkin_LIBRARIES}
-)
-target_link_libraries(utm_tf
-        ${catkin_LIBRARIES}
-        )
-
-target_link_libraries(mag
-        ${catkin_LIBRARIES}
-        )
+target_link_libraries(orientation ${catkin_LIBRARIES})
+target_link_libraries(gps_tf ${catkin_LIBRARIES})
+target_link_libraries(utm_tf ${catkin_LIBRARIES})
+target_link_libraries(mag ${catkin_LIBRARIES})
 #   src/${PROJECT_NAME}/owr_positioning.cpp
 # )
 
