@@ -157,6 +157,10 @@ target_link_libraries(mag
         ${catkin_LIBRARIES}
 	${OpenCV_LIBRARIES}
         )
+target_link_libraries(create_artag_config
+   ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
+)
 #   src/${PROJECT_NAME}/owr_positioning.cpp
 # )
 
