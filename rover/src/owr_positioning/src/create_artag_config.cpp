@@ -8,25 +8,24 @@
 #include <cstdlib>
 #include <fstream>
 
-//#define DIR_LOCATION = "/home/ros/owr_software/rover/src/owr_positioning/launch/";
-//#define FILE_NAME  = "artags_location.launch";
+#define DIR_LOCATION "/home/ros/owr_software/rover/src/owr_positioning/launch/"
+#define FILE_NAME "artags_location.launch"
 
-std::string dir_location = "/home/ros/owr_software/rover/src/owr_positioning/launch/";
-std::string file_name = "artags_location.launch";
 std::ofstream launch_file;
 bool add_artag = true; 
 
 int main(int argc, char ** argv) {
-//std::string dir_location = "/home/ros/owr_software/rover/src/owr_positioning/launch/";
-//std::string file_name = "artags_location.launch";
-
     ROS_INFO("Launch file creator started");
     ros::init(argc, argv, "arTag_localization"); 
+    
+    std::string file_path = "";
+    file_path += DIR_LOCATION;
+    file_path += FILE_NAME;
 
-    ::launch_file.open((::dir_location + ::file_name).c_str());
+    ::launch_file.open(file_path.c_str());
     if(not ::launch_file){
-       std::cout << "Could not create " << ::dir_location << ::file_name <<"\n" ;
-       return 1;
+       std::cout << "Could not create " << file_path <<"\n" ;
+       return EXIT_FAILURE;
     }
     else{
     	::launch_file << "<launch>\n";
@@ -36,9 +35,9 @@ int main(int argc, char ** argv) {
     if(::launch_file.is_open()){
     	::launch_file << "</launch>\n";
     	::launch_file.close(); 
-    	std::cout << "Successfully created " << ::dir_location << ::file_name << "\n";
+    	std::cout << "Successfully created " << file_path << "\n";
     }
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 void artag_localization::run() {
