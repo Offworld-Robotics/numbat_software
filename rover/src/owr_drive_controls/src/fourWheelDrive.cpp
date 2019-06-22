@@ -32,6 +32,7 @@
  *
  * Desciption: translate the current vels with the new turnAngle
  */
+
 motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turnAngle) {
     // Capping the turnangle to 45% of M_PI/2
     if(turnAngle >= FWDRIVE_LIMIT) {
@@ -60,44 +61,43 @@ motorVels FourWheelDrive::steer(motorVels vels, double velMagnitude, double turn
 			// back wheel: -fi
 
     motorVels output = vels; 
-    double center = (ROVER_HEIGHT*tan(90-turnAngle))/2;
-    double primaryRadius = (cos(DEG90 - turnAngle) * ROVER_HEIGHT)/2;
-    double angularVelocity = velMagnitude/primaryRadius;
+    double center = (ROVER_HEIGHT/2) * tan(90-turnAngle);
+    double primaryRadius = (ROVER_HEIGHT/2) / cos(DEG90 - turnAngle);
     double secondaryRadius = sqrt( pow(ROVER_WIDTH+center, 2) + pow(ROVER_HEIGHT/2, 2));
+
+    ROS_INFO("center of rotation at %lf", center);
+    ROS_INFO("primary radius: %lf",primaryRadius);
+    ROS_INFO("secondary radius %lf",secondaryRadius);
     if(0 < turnAngle) {
-	    ROS_INFO("Right turn");
+	    ROS_INFO("Right turn at %lf", turnAngle);
 	    // Turn Angles
 	    output.frontRightAng = turnAngle;
 	    output.backRightAng = -turnAngle;
+
 	    output.frontLeftAng = DEG90 - atan2(ROVER_WIDTH + center, ROVER_HEIGHT/2);
 	    output.backLeftAng = -output.frontLeftAng;
 
-	    // velocities:
-	    output.frontLeftMotorV = angularVelocity;
-	    output.backLeftMotorV = angularVelocity;
-
-	    angularVelocity = velMagnitude/secondaryRadius;
-	    output.frontRightMotorV = angularVelocity;
-	    output.backRightMotorV = angularVelocity;
     } else if(turnAngle > M_PI) {
-	    ROS_INFO("Left turn");
+	    ROS_INFO("Left turn at %lf", turnAngle);
 	    output.frontLeftAng = turnAngle;
 	    output.backLeftAng = -turnAngle;
+
 	    output.frontRightAng = DEG90 - atan2(ROVER_WIDTH + center, ROVER_HEIGHT/2);
 	    output.backRightAng = -output.frontRightAng;
 
-	    // velocities:
-	    output.frontRightMotorV = angularVelocity;
-	    output.backRightMotorV = angularVelocity;
-
-	    angularVelocity = velMagnitude/secondaryRadius;
-	    output.frontLeftMotorV = angularVelocity;
-	    output.backLeftMotorV = angularVelocity;
     } else {
-	    // doVelTranslation takes care of straight pathing i think...
+	    // doVelTranslation takes care of straight pathing 
 	    ROS_INFO("turn angle unaccounted for");
     }
-	
+
+    // velocities:
+    // V = wr
+    output.backLeftMotorV = velMagnitude;
+    output.frontLeftMotorV = velMagnitude;
+
+    output.frontRightMotorV = velMagnitude;
+    output.backRightMotorV = velMagnitude;
+
     return output;
 }
 
