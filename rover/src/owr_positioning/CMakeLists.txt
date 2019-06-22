@@ -123,6 +123,7 @@ add_executable(gps_tf src/GPSTransform.cpp)
 add_executable(mag src/MagnetConverter.cpp)
 add_executable(optical_localization src/optical_localization.cpp)
 add_executable(image_cropping src/ImageCropping.cpp)
+add_executable(create_artag_config src/create_artag_config.cpp)
 target_link_libraries(optical_localization ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 set_target_properties(optical_localization PROPERTIES COMPILE_FLAGS "-O3")
 target_link_libraries(image_cropping ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
@@ -156,6 +157,10 @@ target_link_libraries(mag
         ${catkin_LIBRARIES}
 	${OpenCV_LIBRARIES}
         )
+target_link_libraries(create_artag_config
+   ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
+)
 #   src/${PROJECT_NAME}/owr_positioning.cpp
 # )
 
