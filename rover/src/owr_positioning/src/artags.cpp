@@ -10,8 +10,6 @@
 
 /*
  * Things to do:
- * Transform camera axis to match the axis of the rover
- * Better method for configuration of ar tags
  * Combining information of multiple ar tags (ekf maybe?)
  */
 
@@ -31,6 +29,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+//constructor, this just initialises some of the values needeed
 artag_localization::artag_localization() : tfBuffer(), tfListener(tfBuffer)  {
 
     //subscribe to the topic that provides the pose of observed ar tags
@@ -46,17 +45,8 @@ artag_localization::artag_localization() : tfBuffer(), tfListener(tfBuffer)  {
     double var = 0.1; //change variance to set how reliable the measurement is
     double covar [36] = { }; //set all values to 0 initially
     //set diagonals to the variance value
-    for (int i = 0; i < 6; i++){
-        covar[6*i + i] = var;
-    }
-    //covariance matrix is                        
-    //                   {var, 0  , 0  , 0  , 0  , 0
-    //                    0  , var, 0  , 0  , 0  , 0
-    //                    0  , 0  , var, 0  , 0  , 0
-    //                    0  , 0  , 0  , var, 0  , 0
-    //                    0  , 0  , 0  , 0  , var, 0
-    //                    0  , 0  , 0  , 0  , 0  , var};
 
+    //create the covariance matrices, not the nicest way to do this but it works
     odomMsg.pose.covariance = {50, 0, 0, 0, 0, 0, 
                         0, 50, 0, 0, 0, 0,
                         0, 0, 50, 0, 0, 0,
@@ -70,22 +60,31 @@ artag_localization::artag_localization() : tfBuffer(), tfListener(tfBuffer)  {
                         0, 0, 0, 0, 0.1, 0,
                         0, 0, 0, 0, 0, 0.1};
 
+    //covariance matrix is                        
+    //                   {var, 0  , 0  , 0  , 0  , 0
+    //                    0  , var, 0  , 0  , 0  , 0
+    //                    0  , 0  , var, 0  , 0  , 0
+    //                    0  , 0  , 0  , var, 0  , 0
+    //                    0  , 0  , 0  , 0  , var, 0
+    //                    0  , 0  , 0  , 0  , 0  , var};
+
+    //setup the header parts of the messages used (this is used to define the reference frames)
     odomMsg.child_frame_id = "base_link";
     odomMsg.header.seq = 0;
     //setup the ar transform, this is the markers position in world frame
-    arTransform.header.frame_id = "camera";
+    arTransform.header.frame_id = "";
     arTransform.child_frame_id = "location";
     arTransform.header.seq = 0;
 
     //setup the world transform, this is the camera postion in the world frame
-    roverTransform.header.frame_id = "rover_model";
-    roverTransform.child_frame_id = "base_link";
-    roverTransform.header.seq = 0;
+    relativeTransform.header.frame_id = "rover_model";
+    relativeTransform.child_frame_id = "base_link";
+    relativeTransform.header.seq = 0;
 
     //setup the local transform, this is the camera postion relative to ar tag
-    localTransform.header.frame_id = "camera_link";
-    localTransform.child_frame_id = "ar_tag";
-    localTransform.header.seq = 0;
+    //localTransform.header.frame_id = "camera_link";
+    //localTransform.child_frame_id = "ar_tag";
+    //localTransform.header.seq = 0;
 }
 
 
@@ -110,10 +109,6 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
     odomMsg.header.stamp = ros::Time::now();
     odomMsg.header.frame_id = "odom";
     
-    //get pose and put into odomMsg
-
-    //work out what to put for covariance, use confidence?
-
     //get the name of the markers frame, this is ar_marker_(id) and save this as a string
     //to do this we use stringstream to convert the id to a string and attach it to the end
     //of the string "ar_marker_"
@@ -124,7 +119,7 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
 
 	//get the transform of the camera to the tag	
     try {
-	    localTransform = tfBuffer.lookupTransform(markerFrame, "camera_link", ros::Time(0));
+	    relativeTransform = tfBuffer.lookupTransform(markerFrame, "camera_link", ros::Time(0));
         } catch (tf2::TransformException & ex) {
             ROS_WARN("%s", ex.what());
             ros::Duration(1.0).sleep();
@@ -142,16 +137,17 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
             ROS_WARN("%s", ex.what());
             ros::Duration(1.0).sleep();
         }
+    
 
-    //convert to odom msg
-    odomMsg.pose.pose.position.x = arTransform.transform.translation.x - localTransform.transform.translation.x;
-    odomMsg.pose.pose.position.y = arTransform.transform.translation.y - localTransform.transform.translation.y;
-    odomMsg.pose.pose.position.z = arTransform.transform.translation.z - localTransform.transform.translation.z;
+    //convert to odom msg, subtract the relative measurement vector from the actual ar tag location
+    odomMsg.pose.pose.position.x = arTransform.transform.translation.x - relativeTransform.transform.translation.x;
+    odomMsg.pose.pose.position.y = arTransform.transform.translation.y - relativeTransform.transform.translation.y;
+    odomMsg.pose.pose.position.z = arTransform.transform.translation.z - relativeTransform.transform.translation.z;
 
 	tf2::Quaternion quat_ar;
 	tf2::Quaternion quat_local;
 	tf2::convert(arTransform.transform.rotation, quat_ar);
-	tf2::convert(localTransform.transform.rotation, quat_local);
+	tf2::convert(relativeTransform.transform.rotation, quat_local);
     //negate the w component so that when multiplying the 2nd quat is inversed
 	quat_local[3] = -quat_local[3]; 
     
@@ -161,11 +157,11 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
     //convert transform message from geomertry_msg to tf
     tf2::Transform tf;
     geometry_msgs::Transform geoTF;
-    tf2::Stamped<tf2::Transform> localtf;
-    tf2::fromMsg(localTransform, localtf);
+    tf2::Stamped<tf2::Transform> relativetf;
+    tf2::fromMsg(relativeTransform, relativetf);
     tf2::Stamped<tf2::Transform> artf;
     tf2::fromMsg(arTransform, artf);
-    tf = artf.inverseTimes(localtf);
+    tf = artf.inverseTimes(relativetf);
     geoTF = tf2::toMsg(tf);
     //arTransform = tf2::toMsg(localtf);
     arTransform.transform = geoTF;
@@ -206,6 +202,7 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
 	quat_world = quat_ar * quat_local;
 	tf2::convert(quat_world, arTransform.transform.rotation);
     */
+    /* creates a tf for the guess of the rover location probobly dont need this
     roverTransform.header.frame_id = "odom";
     roverTransform.child_frame_id = "base_link";
     ++roverTransform.header.seq;
@@ -219,6 +216,7 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
     roverTransform.transform.rotation.w = odomMsg.pose.pose.orientation.w;
     //publish camera transform in world frame
 	tfBroadcaster.sendTransform(roverTransform);
+	*/
     pub.publish(odomMsg);
     } else {
     //if no tags were found

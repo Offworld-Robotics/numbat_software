@@ -37,16 +37,16 @@ class artag_localization {
     nav_msgs::Odometry odomMsg;
 
     //transform messages
-    geometry_msgs::TransformStamped arTransform;    //tranform of ar tag in world frame
-    geometry_msgs::TransformStamped localTransform; //transform of camera relative to tags
-    geometry_msgs::TransformStamped roverTransform; //transform of camera in world frame
+    geometry_msgs::TransformStamped arTransform;    //tranform of ar tag in world frame (for the actual location of the tag)
+    geometry_msgs::TransformStamped relativeTransform; //tranform of ar tag relative to rover (for the location of the tag from what the rover sees)
+    //geometry_msgs::TransformStamped roverTransform; dont think i need this one anymore
 
-	//callback function
-	void callback(const ar_track_alvar_msgs::AlvarMarkers::ConstPtr& msg);
+    //callback function
+    void callback(const ar_track_alvar_msgs::AlvarMarkers::ConstPtr& msg);
 	
     public:
     //functions for initialising and running the node
-	artag_localization();
+    artag_localization();
     void run();
 };
 
