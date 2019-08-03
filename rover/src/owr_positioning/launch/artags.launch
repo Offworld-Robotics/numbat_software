@@ -9,7 +9,7 @@
    <!-- video_stream_provider can be a number as a video device or a url of a video stream -->
    <arg name="video_stream_provider" default="/dev/video0" />
    <!-- frames per second to query the camera for -->
-   <arg name="fps" default="1" />
+   <arg name="fps" default="60" />
    <!-- frame_id for the camera -->
    <arg name="frame_id" default="camera_link" />
    <!-- By default, calibrations are stored to file://${ROS_HOME}/camera_info/${NAME}.yaml
