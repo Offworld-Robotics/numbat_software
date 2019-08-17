@@ -46,7 +46,7 @@ artag_localization::artag_localization() : tfBuffer(), tfListener(tfBuffer)  {
     double covar [36] = { }; //set all values to 0 initially
     //set diagonals to the variance value
 
-    //create the covariance matrices, not the nicest way to do this but it works
+    //create the covariance matrices, not the nicest way to do this but it works i think
     odomMsg.pose.covariance = {50, 0, 0, 0, 0, 0, 
                         0, 50, 0, 0, 0, 0,
                         0, 0, 50, 0, 0, 0,
@@ -70,6 +70,7 @@ artag_localization::artag_localization() : tfBuffer(), tfListener(tfBuffer)  {
 
     //setup the header parts of the messages used (this is used to define the reference frames)
     odomMsg.child_frame_id = "base_link";
+    odomMsg.header.frame_id = "odom";
     odomMsg.header.seq = 0;
     //setup the ar transform, this is the markers position in world frame
     /*
@@ -107,9 +108,9 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
       int id = msg->markers[0].id;
 	  
       //get header of ar tag message to be header of odom message
-      ++odomMsg.header.seq;
-      odomMsg.header.stamp = ros::Time::now();
-      odomMsg.header.frame_id = "odom";
+      //++odomMsg.header.seq;
+      //odomMsg.header.stamp = ros::Time::now();
+      //odomMsg.header.frame_id = "odom";
       
       //if only 1 marker was found then use a probability appraoch
       if(size == 1){
@@ -160,6 +161,15 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
           geometry_msgs::Pose roverPose;          
           roverPose = getPosition(marker1x, marker1y, distance1, marker2x, marker2y, distance2, guessX, guessY);
 	      ROS_INFO("****************************************************");
+          
+          //setup nav msg to send to ekf
+          //put pose and covariance in msg
+          odomMsg.pose.pose = roverPose;
+            
+          //put time stamp and publish the odom msg
+          ++odomMsg.header.seq;
+          odomMsg.header.stamp = ros::Time::now();
+          pub.publish(odomMsg);
       }
     } else {
     //if no tags were found
