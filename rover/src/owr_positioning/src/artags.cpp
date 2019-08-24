@@ -70,6 +70,7 @@ artag_localization::artag_localization() : tfBuffer(), tfListener(tfBuffer)  {
 
     //setup the header parts of the messages used (this is used to define the reference frames)
     odomMsg.child_frame_id = "base_link";
+    odomMsg.header.frame_id = "odom";
     odomMsg.header.seq = 0;
     //setup the ar transform, this is the markers position in world frame
     /*
@@ -105,31 +106,33 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
       ROS_INFO("tag found!");
       //get the id of the first tag
       int id = msg->markers[0].id;
-	  
+	//get the time the ar tag message came
+	ros::Time arMsgTime =  msg->header.stamp;
+ 
       //get header of ar tag message to be header of odom message
-      ++odomMsg.header.seq;
-      odomMsg.header.stamp = ros::Time::now();
-      odomMsg.header.frame_id = "odom";
+      //++odomMsg.header.seq;
+      //odomMsg.header.stamp = ros::Time::now();
+      //odomMsg.header.frame_id = "odom";
       
       //if only 1 marker was found then use a probability appraoch
       if(size == 1){
 	  //get the trransform of the marker from the rover
-	  geometry_msgs::TransformStamped distanceTf = getMarkerDistance(id);
+	  geometry_msgs::TransformStamped distanceTf = getMarkerDistance(id, arMsgTime);
 	  
 	  //get the trasnform for the markers real location
-	  geometry_msgs::TransformStamped markerTf = getMarkerLocation(id);
+	  geometry_msgs::TransformStamped markerTf = getMarkerLocation(id, arMsgTime);
       }
       
       //if 2 tags are seen then calculate the position of the rover, only usse first 2 tags found
       if (size > 1){
 		  //find location of first tag
-		  geometry_msgs::TransformStamped markerTf1 = getMarkerLocation(id);
-		  geometry_msgs::TransformStamped distanceTf1 = getMarkerDistance(id);
+		  geometry_msgs::TransformStamped markerTf1 = getMarkerLocation(id, arMsgTime);
+		  geometry_msgs::TransformStamped distanceTf1 = getMarkerDistance(id, arMsgTime);
 		  
 		  //find location of second tag
 		  id = msg->markers[1].id;
-		  geometry_msgs::TransformStamped markerTf2 = getMarkerLocation(id);
-		  geometry_msgs::TransformStamped distanceTf2 = getMarkerDistance(id);
+		  geometry_msgs::TransformStamped markerTf2 = getMarkerLocation(id, arMsgTime);
+		  geometry_msgs::TransformStamped distanceTf2 = getMarkerDistance(id, arMsgTime);
           
           //get the position
           double marker1x = markerTf1.transform.translation.x;
@@ -139,27 +142,31 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
     
           //get the current guess of the rovers location
           geometry_msgs::TransformStamped roverTf;
-/*
-	        try {
-	            roverTf = tfBuffer.lookupTransform("odom", "base_link", ros::Time(0));
-                } catch (tf2::TransformException & ex) {
-                    ROS_WARN("%s", ex.what());
-                    ros::Duration(1.0).sleep();
-                }
 
-          double guessX = roverTf.transform.translation.x;
-          double guessY = roverTf.transform.translation.y;
-*/
+/*
           double guessX = 0;
           double guessY = 0;
           //get the distance of the tags from the rover
           double distance1 = sqrt(pow(distanceTf1.transform.translation.x, 2) + pow(distanceTf1.transform.translation.y, 2));
           double distance2 = sqrt(pow(distanceTf2.transform.translation.x, 2) + pow(distanceTf2.transform.translation.y, 2));
-          
+  */  
+	double relX1 = distanceTf1.transform.translation.x;
+ 	double relY1 = distanceTf1.transform.translation.y;
+ 	double relX2 = distanceTf2.transform.translation.x;
+ 	double relY2 = distanceTf2.transform.translation.y;      
           //calculate the postion of the rover
           geometry_msgs::Pose roverPose;          
-          roverPose = getPosition(marker1x, marker1y, distance1, marker2x, marker2y, distance2, guessX, guessY);
+          roverPose = getPosition(marker1x, marker1y, relX1, relY1,  marker2x, marker2y, relX2, relY2);
 	      ROS_INFO("****************************************************");
+	  
+	//setup nav msg to send to ekf
+	//put pose and covariance
+	odomMsg.pose.pose = roverPose;
+	
+	//put time stamp and publish msg
+	++odomMsg.header.seq;
+	odomMsg.header.stamp = ros::Time::now();
+	pub.publish(odomMsg);
       }
     } else {
     //if no tags were found
@@ -167,7 +174,7 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
     }   
 }
 
-geometry_msgs::TransformStamped artag_localization::getMarkerLocation(int id){
+geometry_msgs::TransformStamped artag_localization::getMarkerLocation(int id, ros::Time time){
     //get the name of the marker
     std::stringstream ss;
     ss << id;
@@ -179,7 +186,7 @@ geometry_msgs::TransformStamped artag_localization::getMarkerLocation(int id){
     
     //get the transform of the camera to the tag	
 	try {
-	    tf = tfBuffer.lookupTransform("odom", markerFrame, ros::Time(0));
+	    tf = tfBuffer.lookupTransform("odom", markerFrame, time);
         } catch (tf2::TransformException & ex) {
             ROS_WARN("%s", ex.what());
             ros::Duration(1.0).sleep();
@@ -188,7 +195,7 @@ geometry_msgs::TransformStamped artag_localization::getMarkerLocation(int id){
     return tf;
 }
 
-geometry_msgs::TransformStamped artag_localization::getMarkerDistance(int id){
+geometry_msgs::TransformStamped artag_localization::getMarkerDistance(int id, ros::Time time){
     //get the name of the marker
     std::stringstream ss;
     ss << id;
@@ -199,7 +206,7 @@ geometry_msgs::TransformStamped artag_localization::getMarkerDistance(int id){
     
     //get the transform of the camera to the tag	
     try {
-	tf = tfBuffer.lookupTransform(markerFrame, "camera_link", ros::Time(0));
+	tf = tfBuffer.lookupTransform(markerFrame, "base_link", time);
         } catch (tf2::TransformException & ex) {
             ROS_WARN("%s", ex.what());
             ros::Duration(1.0).sleep();
@@ -209,9 +216,13 @@ geometry_msgs::TransformStamped artag_localization::getMarkerDistance(int id){
 }
 
 
-geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double r1, double x2, double y2, double r2, double gx, double gy)
+geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double relX1, double relY1, double x2, double y2, double relX2, double relY2)
 {
     geometry_msgs::Pose pose;
+	//get the distance away from each marker
+	double r1 =  sqrt(pow(relX1, 2) + pow(relY1, 2));
+	double r2 =  sqrt(pow(relX2, 2) + pow(relY2, 2));
+
     // find the two probable points using a circle...
     // distance between centers...
     double d = sqrt(abs((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
@@ -226,7 +237,7 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
         //printf("Coincident!");
     }
 
-    double centerDist = (r1 * r1 - r2 * r2 + d * d) / (2 * d);
+    double centerDist = ((r1 * r1) - (r2 * r2) + (d * d)) / (2 * d);
     double height = sqrt(abs(r1 * r1 - centerDist * centerDist));
 
     // Evaluate center point
@@ -239,6 +250,23 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
     double py1 = cy - height * (x2 - x1) / d;
     double py2 = cy + height * (x2 - x1) / d;
 
+
+	//work out which guess is the correct point
+	//first check its correct in the X direction (check if both on left or right)
+	if(((x1 - px1) >= 0) == (relX1 >= 0)){
+		if(((y1 - py1) >= 0) == (relY1 >= 0)){
+			pose.position.x = px1;
+			pose.position.y = py1;
+		}
+	}
+	//check the other point
+	if(((x2 - px2) >= 0) == (relX2 >= 0)){
+		if(((y2 - py2) >= 0) == (relY2 >= 0)){
+			pose.position.x = px2;
+			pose.position.y = py2;
+		}
+	}
+/*
     // Find the point closest to the guess.
     double d1 = sqrt(abs(((px1 - gx) * (px1 - gx)) + ((py1 - gy) * (py1 - gy))));
     double d2 = sqrt(abs(((px2 - gx) * (px2 - gx)) + ((py2 - gy) * (py2 - gy))));
@@ -253,15 +281,16 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
         pose.position.x = px1;
         pose.position.y = py1;
     }
+*/
     //printf("%lf and 2: %lf\n", d1, d2);
     return pose;
 }
 /* random code i used before thats useless but im keeping in case i need it again
- *     /*
+ *     
     //get the transofrm of the camera relative to the rover
 	try {
 	    roverTransform = tfBuffer.lookupTransform("rover_model", "camera_frame", ros::Time(0));
-        } catch (tf2::TransformException & ex) {
+        } catch (tf2i::TransformException & ex) {
             ROS_WARN("%s", ex.what());
             ros::Duration(1.0).sleep();
         }

@@ -13,6 +13,7 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/Pose.h>
+#include <std_msgs/Time.h>
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
 #include <geometry_msgs/TransformStamped.h>
@@ -50,13 +51,11 @@ class artag_localization {
     void callback(const ar_track_alvar_msgs::AlvarMarkers::ConstPtr& msg);
     
     //functions to get transforms
-    geometry_msgs::TransformStamped getMarkerLocation(int id);
-    geometry_msgs::TransformStamped getMarkerDistance(int id);
+    geometry_msgs::TransformStamped getMarkerLocation(int id, ros::Time time);
+    geometry_msgs::TransformStamped getMarkerDistance(int id, ros::Time time);
 
     //function for calculating the location of the rover from 2 ar tags
     geometry_msgs::Pose getPosition(double x1, double y1, double r1, double x2, double y2, double r2, double gx, double gy);
-    
-    geometry_msgs::Pose locateRover();
     
     public:
     //functions for initialising and running the node

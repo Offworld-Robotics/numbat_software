@@ -77,7 +77,7 @@ geometry_msgs::Twist optical_localization::getVectorSum() {
     result.linear.x = 0;
     result.linear.y = 0;
     result.angular.z = 0;
-    
+  /*  
     for(unsigned int i = 0;i < NUM_CAMS;++i) {
         result.linear.x += most_recent_average[i].linear.x;
         result.linear.y += most_recent_average[i].linear.y;
@@ -86,7 +86,11 @@ geometry_msgs::Twist optical_localization::getVectorSum() {
     result.linear.x /= NUM_CAMS;
     result.linear.y /= NUM_CAMS;
     result.angular.z /= NUM_CAMS;
-    
+    */
+
+        result.linear.x += most_recent_average[0].linear.x;
+        result.linear.y += most_recent_average[0].linear.y;
+        result.angular.z += most_recent_average[0].angular.z;
     return result;
 }
 
@@ -95,13 +99,15 @@ void optical_localization::printTwist(const geometry_msgs::Twist &twist) {
 }
 
 void optical_localization::publishTwist() {
-    mutex.lock();
-    for(unsigned int i = 0;i < NUM_CAMS;++i) {
+   
+ mutex.lock();
+    for(unsigned int i = 0;i < 1;++i) {
         if(is_first[i]) {
             mutex.unlock();
             return;
         }
     }
+
     my_twist.twist.twist = getVectorSum();
     my_twist.header.stamp = ros::Time::now();
     
