@@ -46,7 +46,7 @@ artag_localization::artag_localization() : tfBuffer(), tfListener(tfBuffer)  {
     double covar [36] = { }; //set all values to 0 initially
     //set diagonals to the variance value
 
-    //create the covariance matrices, not the nicest way to do this but it works
+    //create the covariance matrices, not the nicest way to do this but it works i think
     odomMsg.pose.covariance = {50, 0, 0, 0, 0, 0, 
                         0, 50, 0, 0, 0, 0,
                         0, 0, 50, 0, 0, 0,
@@ -158,7 +158,6 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
           geometry_msgs::Pose roverPose;          
           roverPose = getPosition(marker1x, marker1y, relX1, relY1,  marker2x, marker2y, relX2, relY2);
 	      ROS_INFO("****************************************************");
-	  
 	//setup nav msg to send to ekf
 	//put pose and covariance
 	odomMsg.pose.pose = roverPose;
