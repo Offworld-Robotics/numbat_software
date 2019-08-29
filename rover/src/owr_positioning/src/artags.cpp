@@ -1,5 +1,5 @@
 /*
- * Date Started:
+* Date Started:
  * Original Author: Nikola Medimurac
  * Editors: 
  * ROS Node Name: arTag_localization
@@ -19,7 +19,9 @@
 #include <string>
 #include <cstdlib>
 #include <tf2/LinearMath/Quaternion.h>
-
+#include <math.h>
+#include <iostream>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 int main(int argc, char *argv[]) {
     ROS_INFO("main"); 
@@ -47,18 +49,18 @@ artag_localization::artag_localization() : tfBuffer(), tfListener(tfBuffer)  {
     //set diagonals to the variance value
 
     //create the covariance matrices, not the nicest way to do this but it works i think
-    odomMsg.pose.covariance = {50, 0, 0, 0, 0, 0, 
-                        0, 50, 0, 0, 0, 0,
-                        0, 0, 50, 0, 0, 0,
-                        0, 0, 0, 50, 0, 0,
-                        0, 0, 0, 0, 50, 0,
-                        0, 0, 0, 0, 0, 50};
-    odomMsg.twist.covariance = {0.1, 0, 0, 0, 0, 0, 
-                        0, 0.1, 0, 0, 0, 0,
-                        0, 0, 0.1, 0, 0, 0,
-                        0, 0, 0, 0.1, 0, 0,
-                        0, 0, 0, 0, 0.1, 0,
-                        0, 0, 0, 0, 0, 0.1};
+    odomMsg.pose.covariance = {10, 0, 0, 0, 0, 0, 
+                        0, 10, 0, 0, 0, 0,
+                        0, 0, 10, 0, 0, 0,
+                        0, 0, 0, 10, 0, 0,
+                        0, 0, 0, 0, 10, 0,
+                        0, 0, 0, 0, 0, 10};
+    odomMsg.twist.covariance = {0, 0, 0, 0, 0, 0, 
+                        0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0};
 
     //covariance matrix is                        
     //                   {var, 0  , 0  , 0  , 0  , 0
@@ -156,6 +158,7 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
  	double relY2 = distanceTf2.transform.translation.y;      
           //calculate the postion of the rover
           geometry_msgs::Pose roverPose;          
+	odomMsg.header.stamp = arMsgTime;
           roverPose = getPosition(marker1x, marker1y, relX1, relY1,  marker2x, marker2y, relX2, relY2);
 	      ROS_INFO("****************************************************");
 	//setup nav msg to send to ekf
@@ -163,9 +166,9 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
 	odomMsg.pose.pose = roverPose;
 	
 	//put time stamp and publish msg
-	++odomMsg.header.seq;
-	odomMsg.header.stamp = ros::Time::now();
-	pub.publish(odomMsg);
+//	++odomMsg.header.seq;
+//	odomMsg.header.stamp = ros::Time::now();
+//	pub.publish(odomMsg);
       }
     } else {
     //if no tags were found
@@ -214,17 +217,29 @@ geometry_msgs::TransformStamped artag_localization::getMarkerDistance(int id, ro
     return tf;
 }
 
+//if the calculated bearing falls out of -180 - 180 degree range fix it so it does
+double fixBearingRange(double bearing){
+	if (bearing > 180) {
+		bearing = 360 - bearing;
+	}
+	if (bearing < -180) {
+		bearing = 360 + bearing;
+	}
+	return bearing;
+}
 
 geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double relX1, double relY1, double x2, double y2, double relX2, double relY2)
 {
     geometry_msgs::Pose pose;
+	//std::cout << " x1 is: " << x1 << " y1 is: " << y1 << " relx1 is: " << relX1 << " relY1 is: " << relY1 << " x2 is: " << x2 << " y2 is: " << y2 << " relX1 is: " << relX1 << " relY2 is: " << relY2 << std::endl;
+	ROS_INFO("x1 is %lf, y1 is %lf, relX1 is %lf, relY1 is %lf, x2 is %lf, y2 is %lf, relX2 is %lf, relY2 is %lf", x1, y1, relX1, relY1, x2, y2, relX2, relY2);
 	//get the distance away from each marker
 	double r1 =  sqrt(pow(relX1, 2) + pow(relY1, 2));
 	double r2 =  sqrt(pow(relX2, 2) + pow(relY2, 2));
 
     // find the two probable points using a circle...
     // distance between centers...
-    double d = sqrt(abs((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
+    double d = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 
     // check if two points exist
     if (d > r1 + r2 || d < abs(r1 - r2)) {
@@ -237,7 +252,7 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
     }
 
     double centerDist = ((r1 * r1) - (r2 * r2) + (d * d)) / (2 * d);
-    double height = sqrt(abs(r1 * r1 - centerDist * centerDist));
+    double height = sqrt(fabs(r1 * r1 - centerDist * centerDist));
 
     // Evaluate center point
     double cx = x1 + centerDist * (x2 - x1) / d;
@@ -249,7 +264,7 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
     double py1 = cy - height * (x2 - x1) / d;
     double py2 = cy + height * (x2 - x1) / d;
 
-
+	ROS_INFO("cd is %lf, height is %lf", centerDist, height);
 	//work out which guess is the correct point
 	//first check its correct in the X direction (check if both on left or right)
 	if(((x1 - px1) >= 0) == (relX1 >= 0)){
@@ -265,25 +280,55 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
 			pose.position.y = py2;
 		}
 	}
-/*
-    // Find the point closest to the guess.
-    double d1 = sqrt(abs(((px1 - gx) * (px1 - gx)) + ((py1 - gy) * (py1 - gy))));
-    double d2 = sqrt(abs(((px2 - gx) * (px2 - gx)) + ((py2 - gy) * (py2 - gy))));
 
-    if (d1 > d2) {
-        //printf("(x, y) = (%lf, %lf)\n", px2, py2);
-        pose.position.x = px2;
-        pose.position.y = py2;
-    }
-    else {
-        //printf("(x, y) = (%lf, %lf)\n", px1, py1);
-        pose.position.x = px1;
-        pose.position.y = py1;
-    }
-*/
-    //printf("%lf and 2: %lf\n", d1, d2);
+	//if pose is = 0 then we couldnt determine which of the two positions we were at and so return before doing more stuff
+	if(pose.position.x == 0 && pose.position.y == 0) {
+		return pose;
+	}
+	
+	//determine our orientation now that we know our location
+	//find the angle the marker makes from the location of the rover we predicted
+	double PI = 3.14159;
+	double marker1Angle = atan2((y1 - pose.position.y), (x1 - pose.position.x)) * (180 / PI);
+	double marker2Angle = atan2((y2 - pose.position.y), (x2 - pose.position.x)) * (180 / PI);
+	//get the angle the rover see the tag is from itself
+	double marker1AngleSeen = atan2(relY1, relX1) * (180 / PI);
+	double marker2AngleSeen = atan2(relY2, relX2) * (180 / PI);
+	//taking the angle the rover is from the marker and subtraction by the angle we see gives the angle the rover is facing in the world frame
+	//take the average of the orientation we get from both markers
+	double bearing1 = marker1Angle - marker1AngleSeen;
+	//bearing1 = fixBearingRange(bearing1);
+	double bearing2 = marker2Angle - marker2AngleSeen;
+	//bearing2 = fixBearingRange(bearing2);
+	//if the calculated bearing differs alot between the two tags, then the ar tag size set is probobly wrong so adjust it
+	double bearingDifference = fabs(bearing1 -bearing2);
+	if (bearingDifference > 5){
+		double markerSize; 
+		nh.getParam("/ar_track_alvar/marker_size", markerSize);
+		if(bearingDifference > 10){
+		//markerSize -= 0.1;
+		} else {
+		//markerSize -= 0.1;
+		}
+		nh.setParam("/ar_track_alvar/marker_size", markerSize);
+		ROS_INFO("marker size is %lf", markerSize);
+	}
+	ROS_INFO("a1 is  %lf, as1 is %lf, a2 is %lf, as2 is %lf", marker1Angle, marker1AngleSeen, marker2Angle, marker2AngleSeen);
+	double roverBearing = (bearing1 + bearing2) / 2;
+	//set up quaternion and put the bearing in it for the pose message
+	tf2::Quaternion roverQuat_tf;
+	geometry_msgs::Quaternion roverQuat_msg;
+	roverQuat_tf.setRPY(0, 0, roverBearing);
+	tf2::convert(roverQuat_msg, roverQuat_tf);
+	pose.orientation = roverQuat_msg;
+	ROS_INFO("1 is  %lf, 2 is %lf, rover is %lf", bearing1, bearing2, roverBearing);
+	ROS_INFO("px is %lf, yx is %lf", pose.position.x, pose.position.y);
+	++odomMsg.header.seq;
+	odomMsg.header.stamp = ros::Time::now();
+	pub.publish(odomMsg);
     return pose;
 }
+
 /* random code i used before thats useless but im keeping in case i need it again
  *     
     //get the transofrm of the camera relative to the rover
