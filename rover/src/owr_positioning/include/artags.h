@@ -34,6 +34,9 @@ class artag_localization {
     ros::Subscriber sub;
 	ros::NodeHandle nh;
 
+	//create a varible to scale the observed vector to a tag to account for unknown size 
+	double scaling = 1;
+
 	//stuff to use transforms
     tf2_ros::TransformBroadcaster tfBroadcaster;
     tf2_ros::Buffer tfBuffer;

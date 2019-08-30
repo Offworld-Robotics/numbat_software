@@ -233,6 +233,13 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
     geometry_msgs::Pose pose;
 	//std::cout << " x1 is: " << x1 << " y1 is: " << y1 << " relx1 is: " << relX1 << " relY1 is: " << relY1 << " x2 is: " << x2 << " y2 is: " << y2 << " relX1 is: " << relX1 << " relY2 is: " << relY2 << std::endl;
 	ROS_INFO("x1 is %lf, y1 is %lf, relX1 is %lf, relY1 is %lf, x2 is %lf, y2 is %lf, relX2 is %lf, relY2 is %lf", x1, y1, relX1, relY1, x2, y2, relX2, relY2);
+
+	//apply the scaling factor to the observed distances
+	relX1 *= scaling;
+	relY1 *= scaling;
+	relX2 *= scaling;
+	relY2 *= scaling;
+
 	//get the distance away from each marker
 	double r1 =  sqrt(pow(relX1, 2) + pow(relY1, 2));
 	double r2 =  sqrt(pow(relX2, 2) + pow(relY2, 2));
@@ -297,21 +304,32 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
 	//taking the angle the rover is from the marker and subtraction by the angle we see gives the angle the rover is facing in the world frame
 	//take the average of the orientation we get from both markers
 	double bearing1 = marker1Angle - marker1AngleSeen;
-	//bearing1 = fixBearingRange(bearing1);
+	bearing1 = fixBearingRange(bearing1);
 	double bearing2 = marker2Angle - marker2AngleSeen;
-	//bearing2 = fixBearingRange(bearing2);
+	bearing2 = fixBearingRange(bearing2);
 	//if the calculated bearing differs alot between the two tags, then the ar tag size set is probobly wrong so adjust it
 	double bearingDifference = fabs(bearing1 -bearing2);
-	if (bearingDifference > 5){
+	if (1){
 		double markerSize; 
-		nh.getParam("/ar_track_alvar/marker_size", markerSize);
-		if(bearingDifference > 10){
-		//markerSize -= 0.1;
-		} else {
-		//markerSize -= 0.1;
+		//find the angle between the vectors joining the ar tags to the rover
+		//find this for both what it should be using the calculated position and what is observed and take the difference
+		double markerAngleDiff = fabs(marker1Angle -  marker2Angle);
+		if (markerAngleDiff > 180){
+			markerAngleDiff = 360 - markerAngleDiff;
 		}
-		nh.setParam("/ar_track_alvar/marker_size", markerSize);
-		ROS_INFO("marker size is %lf", markerSize);
+		double markerAngleDiffSeen = fabs(marker1AngleSeen -  marker2AngleSeen); 
+		if (markerAngleDiffSeen > 180){
+			markerAngleDiffSeen = 360 - markerAngleDiffSeen;
+		}
+		double angleDiff = markerAngleDiff - markerAngleDiffSeen;
+		if(angleDiff > 2){
+		scaling += 0.01;
+		}
+		if (angleDiff < -2){
+		scaling -= 0.01;
+		}
+		ROS_INFO("scaling factor is %lf", scaling);
+		ROS_INFO("ma is  %lf, mas is %lf", markerAngleDiff, markerAngleDiffSeen);
 	}
 	ROS_INFO("a1 is  %lf, as1 is %lf, a2 is %lf, as2 is %lf", marker1Angle, marker1AngleSeen, marker2Angle, marker2AngleSeen);
 	double roverBearing = (bearing1 + bearing2) / 2;
