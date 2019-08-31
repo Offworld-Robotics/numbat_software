@@ -74,8 +74,8 @@
  
   <!-- Set up the ar_track_alvar package to scan for ar tags -->
     <arg name="marker_size" default="21.1" />
-    <arg name="max_new_marker_error" default="0.10" />
-    <arg name="max_track_error" default="0.25" />
+    <arg name="max_new_marker_error" default="0.06" />
+    <arg name="max_track_error" default="0.15" />
     <arg name="cam_image_topic" default="/camera2/image_raw" />
     <arg name="cam_info_topic" default="/camera2/camera_info" />
     <arg name="output_frame" default="/base_link" />
@@ -102,6 +102,6 @@
       <remap from="camera_info"   to="/ar_camera_1/camera_info" />
   </node>
 
-  <node pkg="owr_positioning" type="artags" name="artags2" output="screen"/> 
+  <!-- <node pkg="owr_positioning" type="artags" name="artags2" output="screen"/> -->
    
 </launch>

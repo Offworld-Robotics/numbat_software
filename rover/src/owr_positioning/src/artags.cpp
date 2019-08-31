@@ -156,6 +156,7 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
  	double relY1 = distanceTf1.transform.translation.y;
  	double relX2 = distanceTf2.transform.translation.x;
  	double relY2 = distanceTf2.transform.translation.y;      
+	ROS_INFO("x1 is %lf, y1 is %lf, relX1 is %lf, relY1 is %lf, x2 is %lf, y2 is %lf, relX2 is %lf, relY2 is %lf", marker1x, marker1y, relX1, relY1, marker2x, marker2y, relX2, relY2);
           //calculate the postion of the rover
           geometry_msgs::Pose roverPose;          
 	odomMsg.header.stamp = arMsgTime;
@@ -163,7 +164,6 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
 	      ROS_INFO("****************************************************");
 	//setup nav msg to send to ekf
 	//put pose and covariance
-	odomMsg.pose.pose = roverPose;
 	
 	//put time stamp and publish msg
 //	++odomMsg.header.seq;
@@ -204,11 +204,12 @@ geometry_msgs::TransformStamped artag_localization::getMarkerDistance(int id, ro
     std::string markerFrame = "ar_marker_";
     markerFrame += ss.str();
     
+	ROS_INFO("id is %d", id);
     geometry_msgs::TransformStamped tf;
     
     //get the transform of the camera to the tag	
     try {
-	tf = tfBuffer.lookupTransform(markerFrame, "base_link", time);
+	tf = tfBuffer.lookupTransform("base_link", markerFrame, time);
         } catch (tf2::TransformException & ex) {
             ROS_WARN("%s", ex.what());
             ros::Duration(1.0).sleep();
@@ -230,7 +231,7 @@ double fixBearingRange(double bearing){
 
 geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double relX1, double relY1, double x2, double y2, double relX2, double relY2)
 {
-    geometry_msgs::Pose pose;
+    geometry_msgs::Pose roverPose;
 	//std::cout << " x1 is: " << x1 << " y1 is: " << y1 << " relx1 is: " << relX1 << " relY1 is: " << relY1 << " x2 is: " << x2 << " y2 is: " << y2 << " relX1 is: " << relX1 << " relY2 is: " << relY2 << std::endl;
 	ROS_INFO("x1 is %lf, y1 is %lf, relX1 is %lf, relY1 is %lf, x2 is %lf, y2 is %lf, relX2 is %lf, relY2 is %lf", x1, y1, relX1, relY1, x2, y2, relX2, relY2);
 
@@ -274,30 +275,43 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
 	ROS_INFO("cd is %lf, height is %lf", centerDist, height);
 	//work out which guess is the correct point
 	//first check its correct in the X direction (check if both on left or right)
+	ROS_INFO("x1 is %lf,x2 is %lf yq is %lf y2 is %lf", (x1 - px1), (x2 - px2), (y1 - py1), (y2 - py2));
 	if(((x1 - px1) >= 0) == (relX1 >= 0)){
 		if(((y1 - py1) >= 0) == (relY1 >= 0)){
-			pose.position.x = px1;
-			pose.position.y = py1;
+			roverPose.position.x = px1;
+			roverPose.position.y = py1;
+		}
+	}
+	if(((x2 - px1) >= 0) == (relX2 >= 0)){
+		if(((y2 - py1) >= 0) == (relY2 >= 0)){
+			roverPose.position.x = px1;
+			roverPose.position.y = py1;
+		}
+	}
+
+	if(((x1 - px2) >= 0) == (relX1 >= 0)){
+		if(((y1 - py2) >= 0) == (relY1 >= 0)){
+			roverPose.position.x = px2;
+			roverPose.position.y = py2;
 		}
 	}
 	//check the other point
 	if(((x2 - px2) >= 0) == (relX2 >= 0)){
 		if(((y2 - py2) >= 0) == (relY2 >= 0)){
-			pose.position.x = px2;
-			pose.position.y = py2;
+			roverPose.position.x = px2;
+			roverPose.position.y = py2;
 		}
 	}
-
 	//if pose is = 0 then we couldnt determine which of the two positions we were at and so return before doing more stuff
-	if(pose.position.x == 0 && pose.position.y == 0) {
-		return pose;
+	if(roverPose.position.x == 0 && roverPose.position.y == 0) {
+		return roverPose;
 	}
 	
 	//determine our orientation now that we know our location
 	//find the angle the marker makes from the location of the rover we predicted
 	double PI = 3.14159;
-	double marker1Angle = atan2((y1 - pose.position.y), (x1 - pose.position.x)) * (180 / PI);
-	double marker2Angle = atan2((y2 - pose.position.y), (x2 - pose.position.x)) * (180 / PI);
+	double marker1Angle = atan2((y1 - roverPose.position.y), (x1 - roverPose.position.x)) * (180 / PI);
+	double marker2Angle = atan2((y2 - roverPose.position.y), (x2 - roverPose.position.x)) * (180 / PI);
 	//get the angle the rover see the tag is from itself
 	double marker1AngleSeen = atan2(relY1, relX1) * (180 / PI);
 	double marker2AngleSeen = atan2(relY2, relX2) * (180 / PI);
@@ -323,10 +337,10 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
 		}
 		double angleDiff = markerAngleDiff - markerAngleDiffSeen;
 		if(angleDiff > 2){
-		scaling += 0.01;
+		scaling += 0.001;
 		}
 		if (angleDiff < -2){
-		scaling -= 0.01;
+		scaling -= 0.001;
 		}
 		ROS_INFO("scaling factor is %lf", scaling);
 		ROS_INFO("ma is  %lf, mas is %lf", markerAngleDiff, markerAngleDiffSeen);
@@ -334,17 +348,20 @@ geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double
 	ROS_INFO("a1 is  %lf, as1 is %lf, a2 is %lf, as2 is %lf", marker1Angle, marker1AngleSeen, marker2Angle, marker2AngleSeen);
 	double roverBearing = (bearing1 + bearing2) / 2;
 	//set up quaternion and put the bearing in it for the pose message
-	tf2::Quaternion roverQuat_tf;
+	tf2::Quaternion quat_tf;
 	geometry_msgs::Quaternion roverQuat_msg;
-	roverQuat_tf.setRPY(0, 0, roverBearing);
-	tf2::convert(roverQuat_msg, roverQuat_tf);
-	pose.orientation = roverQuat_msg;
+        //std::cout << quat_tf << "\n";
+	quat_tf.setRPY(0, 0, (roverBearing * (PI / 180)));
+        tf2::convert(quat_tf, roverPose.orientation);
+	//odomMsg.pose.pose.orientation = geometry_msgs::Quaternion(quat_tf[0], quat_tf[1], quat_tf[2], quat_tf[3]);
+	ROS_INFO("x is  %lf, y is %lf, z is %lf, w is %lf", bearing1, bearing2, roverBearing);
 	ROS_INFO("1 is  %lf, 2 is %lf, rover is %lf", bearing1, bearing2, roverBearing);
-	ROS_INFO("px is %lf, yx is %lf", pose.position.x, pose.position.y);
+	ROS_INFO("px is %lf, yx is %lf", roverPose.orientation.x, roverPose.orientation.y);
+	odomMsg.pose.pose = roverPose;
 	++odomMsg.header.seq;
 	odomMsg.header.stamp = ros::Time::now();
 	pub.publish(odomMsg);
-    return pose;
+    return roverPose;
 }
 
 /* random code i used before thats useless but im keeping in case i need it again
