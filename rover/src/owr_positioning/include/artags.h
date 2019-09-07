@@ -27,7 +27,7 @@
 
 #define THRESHOLD 0.0001
 
-class artag_localization {
+class ARTagLocalisation {
     private:
     //stuff to setup the node	
     ros::Publisher pub;
