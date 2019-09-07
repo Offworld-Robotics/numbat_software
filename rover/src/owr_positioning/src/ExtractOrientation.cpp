@@ -1,7 +1,8 @@
 /*
  * Date Started: 13/06/16
+ * Updated: 2019-09-08
  * Original Author: Harry J.E Day
- * Editors: 
+ * Editors: Michael Lloyd
  * ROS Node Name: orientation
  * ROS Package: owr_positioning
  * Purpose: Extracts the orientation of the rover from the odometry message
@@ -9,32 +10,16 @@
 
 #include "ExtractOrientation.h"
 
-//TODO: make this a rosparam
-#define BMP 120.0
-#define RATE (BMP/60.0)
-
-//45 degrees
-#define ARM_MAX_ANGLE 0.785398
-#define WHEEL_MAX_ANGLE ARM_MAX_ANGLE
-
-#define METER 4 // 4 
-
 int main(int argc, char ** argv) {
-    
-    
-    //init ros
-    ros::init(argc, argv, "owr_dance_node");
-    
+    ros::init(argc, argv, "extract_orientation");
     ExtractOrientation p;
     p.spin();
-    
     return EXIT_SUCCESS;   
 }
 
 ExtractOrientation::ExtractOrientation() {
-    
-    quatMsgPub =  nh.advertise<geometry_msgs::Quaternion>("/orientation",1,false);
-    odometrySub = nh.subscribe("/odometry/filtered",1,&ExtractOrientation::odometryCallback, this);
+    quatMsgPub =  nh.advertise<geometry_msgs::Quaternion>("/orientation", 1, false);
+    odometrySub = nh.subscribe("/odometry/filtered", 1, &ExtractOrientation::odometryCallback, this);
     
 }
 

@@ -7,16 +7,12 @@
  * Purpose: Extracts the orientation of the rover from the imu message
  */
 
-
-#ifndef DANCE_NODE_H
-#define DANCE_NODE_H
+#pragma once
 
 #include <ros/ros.h>
 #include <geometry_msgs/Quaternion.h>
 #include <sensor_msgs/Imu.h>
 #include <nav_msgs/Odometry.h>
-
-
 
 class ExtractOrientation {
     public:
@@ -27,8 +23,5 @@ class ExtractOrientation {
         ros::NodeHandle nh;
         ros::Publisher quatMsgPub; 
         ros::Subscriber odometrySub;
-        
-
 };
 
-#endif
