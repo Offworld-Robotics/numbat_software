@@ -4,7 +4,7 @@
  * Updated: 2019/09/08
  * Original Author: Nikola Medimurac
  * Editors: Michael Lloyd 
- * ROS Node Name: arTag_localization
+ * ROS Node Name: ARTagLocalisation
  * ROS Package: owr_positioning
  * Purpose: Creates a transform for the camera location in the world frame
  * using ar tags observed
@@ -15,27 +15,15 @@
  * Combining information of multiple ar tags (ekf maybe?)
  */
 
-#include "artags.h"
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#include <geometry_msgs/TransformStamped.h>
-#include <string>
-#include <cstdlib>
-#include <tf2/LinearMath/Quaternion.h>
-#include <math.h>
-#include <iostream>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-
-
-
+#include "ARTagLocalisation.hpp"
+#include <geometry_msgs/Pose.h>
 
 int main(int argc, char *argv[]) {
-    ROS_INFO("main"); 
     ros::init(argc, argv, "ARTagLocalisation");
-    artag_localization arl;
+    ARTagLocalisation arl;
     arl.run();
     return 0;
 }
-
 
 ARTagLocalisation::ARTagLocalisation() : tfBuffer(), tfListener(tfBuffer) {
 
@@ -63,17 +51,23 @@ ARTagLocalisation::ARTagLocalisation() : tfBuffer(), tfListener(tfBuffer) {
 
 }
 
-
-
-
-
-void artag_localization::run() {
+void ARTagLocalisation::run() {
     while(ros::ok()) { 
       ros::spinOnce();
     }
 }
 
-void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::ConstPtr& msg) {
+//void ARTagLocalisation::callback(const
+//ar_track_alvar_msgs::AlvarMarkers::ConstPtr& msg) {
+
+//}
+
+//
+//  <quack>
+//
+
+
+void ARTagLocalisation::callback(const ar_track_alvar_msgs::AlvarMarkers::ConstPtr& msg) {
     //find the amount of tags found
     int size = msg->markers.size();
 
@@ -150,7 +144,7 @@ void artag_localization::callback(const ar_track_alvar_msgs::AlvarMarkers::Const
     }   
 }
 
-geometry_msgs::TransformStamped artag_localization::getMarkerLocation(int id, ros::Time time){
+geometry_msgs::TransformStamped ARTagLocalisation::getMarkerLocation(int id, ros::Time time){
     //get the name of the marker
     std::stringstream ss;
     ss << id;
@@ -171,7 +165,7 @@ geometry_msgs::TransformStamped artag_localization::getMarkerLocation(int id, ro
     return tf;
 }
 
-geometry_msgs::TransformStamped artag_localization::getMarkerDistance(int id, ros::Time time){
+geometry_msgs::TransformStamped ARTagLocalisation::getMarkerDistance(int id, ros::Time time){
     //get the name of the marker
     std::stringstream ss;
     ss << id;
@@ -203,7 +197,7 @@ double fixBearingRange(double bearing){
 	return bearing;
 }
 
-geometry_msgs::Pose artag_localization::getPosition(double x1, double y1, double relX1, double relY1, double x2, double y2, double relX2, double relY2)
+geometry_msgs::Pose ARTagLocalisation::getPosition(double x1, double y1, double relX1, double relY1, double x2, double y2, double relX2, double relY2)
 {
     geometry_msgs::Pose roverPose;
 	//std::cout << " x1 is: " << x1 << " y1 is: " << y1 << " relx1 is: " << relX1 << " relY1 is: " << relY1 << " x2 is: " << x2 << " y2 is: " << y2 << " relX1 is: " << relX1 << " relY2 is: " << relY2 << std::endl;
