@@ -42,45 +42,26 @@ void OpticalLocalisation::run() {
 }
 
 // FIXME:
-// This is weird and broken will fix later 
+// This is weird and broken will fix later
 void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int cam) {
 
-    cv::Mat frame_gray;
-    cv::cvtColor(cv_bridge::toCvCopy(image)->image, frame_gray, cv::COLOR_BGR2GRAY);
+    // Initialise the current frame's matrix (buffer)
+    cv::Mat curr_gray_frame;
+    // Convert current image from RGB to Gray, store in current buffer.
+    cv::cvtColor(cv_bridge::toCvCopy(image)->image curr_gray_frame,
+           cv::BGR2GRAY);
 
+    // If the previous image is empty, do nothing.
     if(!prev_gray.empty()) {
-        cv::Mat affineTransform = estimateRigidTransform(prev_gray, frame_gray, false);
-        if(!affineTransform.empty()) {
-            cv::Mat translation_delta = affineTransform.col(2);
-            double rotation_delta = atan2(affineTransform.at<double>(1,1), affineTransform.at<double>(0,1)) - M_PI/2.0;
+        void calcOpticalFlowFarneback(InputArray prev, InputArray next,
+                cv::Mat transformMatrix;
+        //estimateAffinePartial2D(prev_gray, curr_gray_frame, transformMatrix,
+        //        cv::RANSAC, )
 
-            double time_scale = 0;
-            ros::Time current_time = ros::Time::now();
-            if(!prev_time.isZero()) {
-                time_scale = (1.0 / ((current_time - prev_time).nsec / 1e9));
-            }
-            prev_time = current_time;
-
-            geometry_msgs::Twist this_twist;
-            this_twist.linear.x = translation_delta.at<double>(0) * time_scale / pixels_per_metre;
-            this_twist.linear.y = translation_delta.at<double>(1) * time_scale / pixels_per_metre;
-            this_twist.angular.z = rotation_delta * time_scale;
-
-            align_axes(this_twist, cam);
-
-            if(is_first) {
-                is_first = false;
-                most_recent_average = this_twist;
-            } else {
-                most_recent_average = average(most_recent, this_twist);
-            }
-            //printTwist(this_twist);
-            most_recent = this_twist;
-
-            publishTwist();
-        }
     }
-    prev_gray = frame_gray;
+
+    // Update previous image value.
+    prev_gray = curr_gray_frame;
 }
 
 void OpticalLocalisation::printTwist(const geometry_msgs::Twist &twist) {
