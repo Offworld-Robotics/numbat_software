@@ -95,6 +95,7 @@ void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& imag
 
         geometry_msgs::TwistWithCovarianceStamped msg;
         // FIXME: Header time
+        msg.header.frame_id = "base_link";
         msg.header.stamp = ros::Time::now();
         msg.header.seq = seq;
         seq++;
