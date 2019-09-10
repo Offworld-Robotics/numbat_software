@@ -54,7 +54,7 @@ void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& imag
     // Initialise the current frame's matrix (buffer)
     // And grab the time the image was taken.
     cv::Mat curr_gray_frame;
-    ros::Time curr_frame_time = image.header.stamp;
+    ros::Time curr_frame_time = image->header.stamp;
 
     // Convert current image from RGB to Gray, store in current buffer.
     cv::cvtColor(cv_bridge::toCvCopy(image)->image, curr_gray_frame,
