@@ -31,10 +31,13 @@ int main(int argc, char *argv[]) {
 }
 
 OpticalLocalisation::OpticalLocalisation() {
+
     sub = nh.subscribe("/testcam/image_raw", 1,
             &OpticalLocalisation::process_image, this);
     pub = nh.advertise<geometry_msgs::TwistWithCovarianceStamped>("/owr/optical_localization_twist", 10, true);
     seq = 0;
+
+
 }
 
 void OpticalLocalisation::run() {
@@ -49,7 +52,9 @@ void OpticalLocalisation::run() {
 void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& image) {
 
     // Initialise the current frame's matrix (buffer)
+    // And grab the time the image was taken.
     cv::Mat curr_gray_frame;
+    ros::Time curr_frame_time = image.header.stamp;
 
     // Convert current image from RGB to Gray, store in current buffer.
     cv::cvtColor(cv_bridge::toCvCopy(image)->image, curr_gray_frame,
@@ -57,10 +62,14 @@ void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& imag
 
     // If the previous image is empty, do nothing.
     if(!prev_gray.empty()) {
-        cv::Mat flow(prev_gray.size(), CV_32FC2); 
+        // Create a vector with two elements, made of floats.
+        cv::Mat flow(prev_gray.size(), CV_32FC2);
+        // TODO: Fix magic numbers.
         cv::calcOpticalFlowFarneback(prev_gray, curr_gray_frame, flow, 0.5, 5, 5, 10, 5, 1.2, 0);
 
-        // create reference matrix
+        // create reference matrix where each value is the index of itself.
+        // Create a new Matrix (Mat) that is the size of the flow frame out
+        // of 32 Float (2 channels).
         cv::Mat baseMat = cv::Mat(flow.size(), CV_32FC2);
         for (int i = 0; i < baseMat.rows; i++) {
             for (int j = 0; j < baseMat.cols; j++) {
@@ -69,16 +78,20 @@ void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& imag
         }
 
         // create final matrix
+        // Final matrix is the reference matrix transformed by the
+        // vector generated in the flow frame.
         cv::Mat toMat = baseMat + flow;
 
-        assert(baseMat.size() == toMat.size());
-
+        // OpenCV stores all matrices internally as arrays with a header
+        // denoting the terminating indices. This reshapes the matrix
+        // representation to only hold 1 column and n rows.
         baseMat = baseMat.reshape(2, baseMat.rows * baseMat.cols);
         toMat = toMat.reshape(2, toMat.rows * toMat.cols);
 
+        // Now that the data is in a format readable by
+        // estimateAffinePartial2D, both are fed into it and a Matrix is
+        // returned containing the transformation.
         cv::Mat at = cv::estimateAffinePartial2D(baseMat, toMat);
-
-        std::cout << at << std::endl;
 
         geometry_msgs::TwistWithCovarianceStamped msg;
         // FIXME: Header time
@@ -93,10 +106,12 @@ void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& imag
         // TODO: Angular z
         msg.twist.twist.linear.x = at.at<double>(0, 2);
         msg.twist.twist.linear.y = at.at<double>(1, 2);
+        // msg.twist.twist.angular.z = ?
         pub.publish(msg);
     }
 
-    // Update previous image value.
+    // Update previous image value & time.
     prev_gray = curr_gray_frame;
+    prev_time = curr_frame_time;
 }
 
