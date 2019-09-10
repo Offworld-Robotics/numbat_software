@@ -43,6 +43,9 @@ void OpticalLocalisation::run() {
     }
 }
 
+
+// TODO Calibration constant (currently pixels absolute instead of pixels per
+//  metre)
 void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& image) {
 
     // Initialise the current frame's matrix (buffer)
@@ -78,10 +81,16 @@ void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& imag
         std::cout << at << std::endl;
 
         geometry_msgs::TwistWithCovarianceStamped msg;
+        // FIXME: Header time
         msg.header.stamp = ros::Time::now();
         msg.header.seq = seq;
         seq++;
 
+        // Angular Velocity
+
+        //
+
+        // TODO: Angular z
         msg.twist.twist.linear.x = at.at<double>(0, 2);
         msg.twist.twist.linear.y = at.at<double>(1, 2);
         pub.publish(msg);
