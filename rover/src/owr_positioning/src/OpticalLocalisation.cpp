@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <utility>
 #include <ros/ros.h>
+#include <ros/console.h>
 #include <cv_bridge/cv_bridge.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TwistWithCovarianceStamped.h>
@@ -32,7 +33,8 @@ int main(int argc, char *argv[]) {
 OpticalLocalisation::OpticalLocalisation() {
     sub = nh.subscribe("/testcam/image_raw", 1,
             &OpticalLocalisation::process_image, this);
-    pub = nh.advertise<sensor_msgs::Image>("/oftest/image", 10, true);
+    pub = nh.advertise<geometry_msgs::TwistWithCovarianceStamped>("/owr/optical_localization_twist", 10, true);
+    seq = 0;
 }
 
 void OpticalLocalisation::run() {
@@ -55,24 +57,33 @@ void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& imag
         cv::Mat flow(prev_gray.size(), CV_32FC2); 
         cv::calcOpticalFlowFarneback(prev_gray, curr_gray_frame, flow, 0.5, 5, 5, 10, 5, 1.2, 0);
 
-	// visualization
-	cv::Mat flow_parts[2];
-	cv::split(flow, flow_parts);
-	cv::Mat magnitude, angle, magn_norm;
-	cv::cartToPolar(flow_parts[0], flow_parts[1], magnitude, angle, true);
-	cv::normalize(magnitude, magn_norm, 0.0f, 1.0f, cv::NORM_MINMAX);
-	angle *= ((1.f / 360.f) * (180.f / 255.f));
+        // create reference matrix
+        cv::Mat baseMat = cv::Mat(flow.size(), CV_32FC2);
+        for (int i = 0; i < baseMat.rows; i++) {
+            for (int j = 0; j < baseMat.cols; j++) {
+                baseMat.at<cv::Vec2f>(i, j) = cv::Vec2f(i, j);
+            }
+        }
 
-	//build hsv image
-	cv::Mat _hsv[3], hsv, hsv8, bgr;
-	_hsv[0] = angle;
-	_hsv[1] = cv::Mat::ones(angle.size(), CV_32F);
-	_hsv[2] = magn_norm;
-	cv::merge(_hsv, 3, hsv);
-	hsv.convertTo(hsv8, CV_8U, 255.0);
-	cv::cvtColor(hsv8, bgr, cv::COLOR_HSV2BGR); 
+        // create final matrix
+        cv::Mat toMat = baseMat + flow;
 
-        sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", bgr).toImageMsg();
+        assert(baseMat.size() == toMat.size());
+
+        baseMat = baseMat.reshape(2, baseMat.rows * baseMat.cols);
+        toMat = toMat.reshape(2, toMat.rows * toMat.cols);
+
+        cv::Mat at = cv::estimateAffinePartial2D(baseMat, toMat);
+
+        std::cout << at << std::endl;
+
+        geometry_msgs::TwistWithCovarianceStamped msg;
+        msg.header.stamp = ros::Time::now();
+        msg.header.seq = seq;
+        seq++;
+
+        msg.twist.twist.linear.x = at.at<double>(0, 2);
+        msg.twist.twist.linear.y = at.at<double>(1, 2);
         pub.publish(msg);
     }
 

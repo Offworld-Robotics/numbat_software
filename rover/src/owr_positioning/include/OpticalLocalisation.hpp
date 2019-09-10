@@ -13,6 +13,7 @@ class OpticalLocalisation {
         ros::Publisher pub;
         ros::Subscriber sub;
         cv::Mat prev_gray;
+        int seq;
 
         void process_image(const sensor_msgs::Image::ConstPtr& image);
 
