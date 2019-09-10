@@ -114,37 +114,13 @@ include_directories(
 ## Declare a cpp library
 # add_library(owr_positioning
 ## Declare a cpp executable
-add_executable(artags src/artags.cpp)
-add_executable(orientation src/ExtractOrientation.cpp)
-add_executable(utm_tf src/UTMTransform.cpp)
-add_executable(gps_tf src/GPSTransform.cpp)
-add_executable(mag src/MagnetConverter.cpp)
-add_executable(optical_localization src/optical_localization.cpp)
-add_executable(image_cropping src/ImageCropping.cpp)
-target_link_libraries(optical_localization ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
-set_target_properties(optical_localization PROPERTIES COMPILE_FLAGS "-O3")
-target_link_libraries(image_cropping ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
-set_target_properties(image_cropping PROPERTIES COMPILE_FLAGS "-O3")
+add_executable(OpticalLocalisation src/OpticalLocalisation.cpp)
+target_link_libraries(OpticalLocalisation ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
+set_target_properties(OpticalLocalisation PROPERTIES COMPILE_FLAGS "-O3")
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(artags
-   ${catkin_LIBRARIES}
-)
-target_link_libraries(orientation
-   ${catkin_LIBRARIES}
-)
-target_link_libraries(gps_tf
-   ${catkin_LIBRARIES}
-)
-target_link_libraries(utm_tf
-        ${catkin_LIBRARIES}
-        )
-
-target_link_libraries(mag
-        ${catkin_LIBRARIES}
-        )
 #   src/${PROJECT_NAME}/owr_positioning.cpp
 # )
 

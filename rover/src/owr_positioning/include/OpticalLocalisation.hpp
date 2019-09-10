@@ -7,18 +7,14 @@
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TwistWithCovarianceStamped.h>
 
-// ????
-#define PIXELS_PER_METRE 1138.825332768
-
 class OpticalLocalisation {
     private:
+        ros::NodeHandle nh;
         ros::Publisher pub;
         ros::Subscriber sub;
         cv::Mat prev_gray;
-        ros::Time prev_time;
 
-        void process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int cam);
-        void printTwist(const geometry_msgs::Twist &twist);
+        void process_image(const sensor_msgs::Image::ConstPtr& image);
 
     public:
         OpticalLocalisation();

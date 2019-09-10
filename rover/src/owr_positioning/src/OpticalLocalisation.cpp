@@ -19,6 +19,7 @@
 #include <geometry_msgs/TwistWithCovarianceStamped.h>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
+#include <opencv2/calib3d.hpp>
 #include "OpticalLocalisation.hpp"
 
 int main(int argc, char *argv[]) {
@@ -29,10 +30,9 @@ int main(int argc, char *argv[]) {
 }
 
 OpticalLocalisation::OpticalLocalisation() {
-    sub = nh.subscribe("/OpticalLocalisation/image_raw", 1,
+    sub = nh.subscribe("/testcam/image_raw", 1,
             &OpticalLocalisation::process_image, this);
-    pub = nh.advertise<geometry_msgs::TwistWithCovarianceStamped>
-            ("/owr/OpticalLocalisation_twist", 10, true);
+    pub = nh.advertise<sensor_msgs::Image>("/oftest/image", 10, true);
 }
 
 void OpticalLocalisation::run() {
@@ -41,30 +41,42 @@ void OpticalLocalisation::run() {
     }
 }
 
-// FIXME:
-// This is weird and broken will fix later
-void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& image, const unsigned int cam) {
+void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& image) {
 
     // Initialise the current frame's matrix (buffer)
     cv::Mat curr_gray_frame;
+
     // Convert current image from RGB to Gray, store in current buffer.
-    cv::cvtColor(cv_bridge::toCvCopy(image)->image curr_gray_frame,
-           cv::BGR2GRAY);
+    cv::cvtColor(cv_bridge::toCvCopy(image)->image, curr_gray_frame,
+           cv::COLOR_RGB2GRAY);
 
     // If the previous image is empty, do nothing.
     if(!prev_gray.empty()) {
-        void calcOpticalFlowFarneback(InputArray prev, InputArray next,
-                cv::Mat transformMatrix;
-        //estimateAffinePartial2D(prev_gray, curr_gray_frame, transformMatrix,
-        //        cv::RANSAC, )
+        cv::Mat flow(prev_gray.size(), CV_32FC2); 
+        cv::calcOpticalFlowFarneback(prev_gray, curr_gray_frame, flow, 0.5, 5, 5, 10, 5, 1.2, 0);
 
+	// visualization
+	cv::Mat flow_parts[2];
+	cv::split(flow, flow_parts);
+	cv::Mat magnitude, angle, magn_norm;
+	cv::cartToPolar(flow_parts[0], flow_parts[1], magnitude, angle, true);
+	cv::normalize(magnitude, magn_norm, 0.0f, 1.0f, cv::NORM_MINMAX);
+	angle *= ((1.f / 360.f) * (180.f / 255.f));
+
+	//build hsv image
+	cv::Mat _hsv[3], hsv, hsv8, bgr;
+	_hsv[0] = angle;
+	_hsv[1] = cv::Mat::ones(angle.size(), CV_32F);
+	_hsv[2] = magn_norm;
+	cv::merge(_hsv, 3, hsv);
+	hsv.convertTo(hsv8, CV_8U, 255.0);
+	cv::cvtColor(hsv8, bgr, cv::COLOR_HSV2BGR); 
+
+        sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", bgr).toImageMsg();
+        pub.publish(msg);
     }
 
     // Update previous image value.
     prev_gray = curr_gray_frame;
-}
-
-void OpticalLocalisation::printTwist(const geometry_msgs::Twist &twist) {
-    ROS_INFO("lin x: %f, lin y: %f, ang z: %f", twist.linear.x, twist.linear.y, twist.angular.z);
 }
 
