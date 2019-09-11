@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find owr_numbat_tf)/launch/tf.launch" />
+  <include file="$(find owr_positioning)/launch/markerLocation.launch" />
+  <include file="$(find owr_positioning)/launch/artags.launch" />
+  <include file="$(find owr_positioning)/launch/artags_ekf.launch" />
+
+</launch>

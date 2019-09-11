@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="tf" type="static_transform_publisher" name="marker0" args="1 0 0 0 0 0 odom /marker0 100" > </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker1" args="2 0 0 0 0 0 odom /marker1 100" > </node>
+ 
+  <node pkg="tf" type="static_transform_publisher" name="marker3" args="3 0 0 0 0 0 odom /marker3 100" > </node>
+ </launch> 

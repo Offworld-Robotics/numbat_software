@@ -1,0 +1,20 @@
+image_width: 640
+image_height: 480
+camera_name: ar_camera_2
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [606.076758, 0.000000, 319.863910, 0.000000, 601.940051, 231.827425, 0.000000, 0.000000, 1.000000]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [0.120054, -0.274680, -0.002124, -0.001999, 0.00000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1, 0, 0 ,0, 1, 0, 0, 0, 1]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [613.619629, 0.000000, 318.846326, 0.000000, 0.000000, 610.323914, 231.143701, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000]

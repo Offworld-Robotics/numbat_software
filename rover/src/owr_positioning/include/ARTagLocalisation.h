@@ -62,7 +62,7 @@ class ARTagLocalisation {
     
     public:
     //functions for initialising and running the node
-    artag_localization();
+    ARTagLocalisation();
     void run();
 };
 

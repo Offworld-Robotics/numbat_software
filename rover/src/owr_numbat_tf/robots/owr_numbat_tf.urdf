@@ -107,7 +107,7 @@
           type="fixed">
     <origin
             xyz="-0.19 -0.67 0.47"
-            rpy="-1.57 0 1.57" />
+            rpy="-1.57 0 2.356" />
 
     <parent
             link="rover_model" />
@@ -116,8 +116,6 @@
     <axis
             xyz="0 0 0" />
   </joint>
-
-
 
  <link
           name="ar_camera_link_2">
@@ -163,8 +161,8 @@
           name="ar_camera_frame_base_2"
           type="fixed">
     <origin
-            xyz="0.19 -0.67 0.47"
-            rpy="-1.57 0 -1.57" />
+            xyz="-0.19 -0.67 0.47"
+            rpy="-1.57 0 0.785" />
 
     <parent
             link="rover_model" />
@@ -173,6 +171,62 @@
     <axis
             xyz="0 0 0" />
   </joint>
+
+ <link
+          name="ar_camera_link_3">
+    <inertial>
+      <origin
+              xyz="-0.000639925729432167 0.000662656077548368 -0.0176677612707939"
+              rpy="0 0 0" />
+      <mass
+              value="0.229160254803044" />
+      <inertia
+              ixx="0.000208997482925673"
+              ixy="4.81938834051271E-07"
+              ixz="1.1237905876103E-06"
+              iyy="0.000213298877696199"
+              iyz="1.24374624615713E-07"
+              izz="0.000112442329412222" />
+    </inertial>
+    <visual>
+      <origin
+              xyz="0 0 0"
+              rpy="0 0 0" />
+      <geometry>
+        <mesh
+                filename="package://owr_numbat_tf/meshes/camera.STL" />
+      </geometry>
+      <material
+              name="">
+        <color
+                rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+              xyz="0 0 0"
+              rpy="0 0 0" />
+      <geometry>
+        <mesh
+                filename="package://owr_numbat_tf/meshes/camera.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+          name="ar_camera_frame_base_3"
+          type="fixed">
+    <origin
+            xyz="-0.19 -0.67 0.47"
+            rpy="-1.57 0 -1.57" />
+
+    <parent
+            link="rover_model" />
+    <child
+            link="ar_camera_link_3" />
+    <axis
+            xyz="0 0 0" />
+  </joint>
+
 
 
 

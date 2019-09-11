@@ -17,8 +17,8 @@
   <!-- flip the image vertically -->
   <arg name="flip_vertical" default="false" />
   <!-- force width and height, 0 means no forcing -->
-  <arg name="width" default="256"/>
-  <arg name="height" default="144"/>
+  <arg name="width" default="0"/>
+  <arg name="height" default="0"/>
   <arg name="buffer_queue_size" default="1"/>
   <!-- if show a image_view window subscribed to the generated stream -->
   <arg name="visualize" default="true"/>
