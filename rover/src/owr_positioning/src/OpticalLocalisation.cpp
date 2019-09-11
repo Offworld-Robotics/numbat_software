@@ -94,14 +94,18 @@ void OpticalLocalisation::process_image(const sensor_msgs::Image::ConstPtr& imag
         cv::Mat at = cv::estimateAffinePartial2D(baseMat, toMat);
 
         geometry_msgs::TwistWithCovarianceStamped msg;
-        // FIXME: Header time
-        msg.header.stamp = ros::Time::now();
+        msg.header.stamp = curr_frame_time;
         msg.header.seq = seq;
         seq++;
 
-        // Angular Velocity
+        // time differential stuff
+        // TODO
 
-        //
+        // Figure out pixel per metre (metre per pixel )
+
+        // Calculate velocity of the direction of x
+        // Calculate the velocity in the direction of y
+        // Calculate the angular velocity between x and y (z?)
 
         // TODO: Angular z
         msg.twist.twist.linear.x = at.at<double>(0, 2);
