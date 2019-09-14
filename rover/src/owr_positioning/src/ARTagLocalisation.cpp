@@ -104,12 +104,31 @@ void ARTagLocalisation::callback(const ar_track_alvar_msgs::AlvarMarkers::ConstP
     int size = msg->markers.size();
 ROS_INFO("size is %d", size);
 //work out which guess is the correct point
+ int idArray[2] = {0};
+ int j = 0;
+ for (int i = 0; i < 20; i++){
+    std::stringstream ss;
+    ss << i;
+    std::string markerFrame = "ar_marker_";
+    markerFrame += ss.str();
 
+    //ROS_INFO("id is %d", id);
+    geometry_msgs::TransformStamped tf;
+
+    //get the transform of the camera to the tag    
+    try {
+        tf = tfBuffer.lookupTransform("base_link", markerFrame, msg->header.stamp);
+	id[j] = i;
+	j++;
+    } catch (tf2::TransformException & ex) {
+  	int idk = 0;
+   }
+  }
     //Dont do anything if no tags were found 
-    if (size != 0){
+    if (idArray[1] != 0){
         ROS_INFO("tag found!");
         //get the id of the first tag
-        int id = msg->markers[0].id;
+        int id = idArray[0]
         //get the time the ar tag message came
         ros::Time arMsgTime =  msg->header.stamp;
 
@@ -119,7 +138,7 @@ ROS_INFO("size is %d", size);
         //odomMsg.header.frame_id = "odom";
 
         //if only 1 marker was found then use a probability appraoch
-        if(size == 1){
+        if(idArray[1] == 0){
             //get the trransform of the marker from the rover
             geometry_msgs::TransformStamped distanceTf = getMarkerDistance(id, arMsgTime);
 
@@ -128,13 +147,13 @@ ROS_INFO("size is %d", size);
         }
 
         //if 2 tags are seen then calculate the position of the rover, only usse first 2 tags found
-        if (size > 1){
+        if (idArray[1] != 0){
             //find location of first tag
             geometry_msgs::TransformStamped markerTf1 = getMarkerLocation(id, arMsgTime);
             geometry_msgs::TransformStamped distanceTf1 = getMarkerDistance(id, arMsgTime);
 
             //find location of second tag
-            id = msg->markers[1].id;
+            id = idArray[1];
             geometry_msgs::TransformStamped markerTf2 = getMarkerLocation(id, arMsgTime);
             geometry_msgs::TransformStamped distanceTf2 = getMarkerDistance(id, arMsgTime);
 
