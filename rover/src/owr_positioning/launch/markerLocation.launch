@@ -1,6 +1,28 @@
 <launch>
-  <node pkg="tf" type="static_transform_publisher" name="marker0" args="1 0 0 0 0 0 odom /marker0 100" > </node>
-  <node pkg="tf" type="static_transform_publisher" name="marker1" args="2 0 0 0 0 0 odom /marker1 100" > </node>
- 
-  <node pkg="tf" type="static_transform_publisher" name="marker3" args="3 0 0 0 0 0 odom /marker3 100" > </node>
- </launch> 
+
+  <node pkg="tf" type="static_transform_publisher" name="start" args="0 0 0 0 0 0 odom /start 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker1" args="1.097 -4.229 .454 0 0 0 odom /marker1 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker2" args="6.058 -1.516 .801 0 0 0 odom /marker2 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker3" args="5.208 -6.990 .861 0 0 0 odom /marker3 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker4" args="11.889 -7.762 .791 0 0 0 odom /marker4 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker6" args="10.581 -15.424 .374 0 0 0 odom /marker6 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker8" args="8.427 -22.020 .505 0 0 0 odom /marker8 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker7" args="2.017 -14.191 .229 0 0 0 odom /marker7 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker9" args="-1.156 -16.800 .253 0 0 0 odom /marker9 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker10" args=".982 -22.035 .451 0 0 0 odom /marker10 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker11" args="2.230 -27.458 .350 0 0 0 odom /marker11 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="w2" args="4.365 -23.413 .037 0 0 0 odom /w2 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker12" args="9.779 -30.305 .171 0 0 0 odom /marker12 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker14" args="1.105 -34.052 .238 0 0 0 odom /marker14 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker13" args="4.253 -36.810 .091 0 0 0 odom /marker13 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="w3" args="-1.436 -37.767 -.199 0 0 0 odom /w3_17 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker15" args="-3.097 -39.320 .079 0 0 0 odom /marker15 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker16" args="-6.224 -36.226 .272 0 0 0 odom /marker16 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="w4" args="-8.369 -31.065 -.087 0 0 0 odom /w4 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker19" args="-1.227 -31.132 -.175 0 0 0 odom /marker19 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker17" args="-4.649 -25.708 .256 0 0 0 odom /marker17 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="marker18" args="-7.821 -27.064 .202 0 0 0 odom /marker18 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="wx" args="-7.325 -24.162 -.756 0 0 0 odom /wx 100"> </node>
+  <node pkg="tf" type="static_transform_publisher" name="w1" args="8.040 -13.266 .504 0 0 0 odom /w1 100"> </node>
+
+</launch> 
