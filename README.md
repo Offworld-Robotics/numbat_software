@@ -1,4 +1,6 @@
-# BLUEsat OWR Software Main Repo
+# NOTE: This codebase was deprecated on 1/1/2020
+
+# Software repository for the Off-World Robotics group rover 'NUMBAT'
 
 This is the main repo for OWR Software, it contains all the ROS code from BLUEsat OWR Software. 
 
