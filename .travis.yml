@@ -1,0 +1,14 @@
+# This config uses industrial_ci (https://github.com/ros-industrial/industrial_ci.git).
+# For troubleshooting, see readme (https://github.com/ros-industrial/industrial_ci/blob/master/README.rst)
+sudo: required 
+dist: xenial 
+language: generic 
+env:
+  - ROS_DISTRO="kinetic"
+install:
+  - git clone --depth 1 https://github.com/ros-industrial/industrial_ci.git .industrial_ci
+  - sudo apt update
+  - bash scripts/get_ros_deps.sh
+  - rosdep update
+script: 
+  - lsb_release -a; bash scripts/travis_script.sh
